@@ -590,7 +590,7 @@
   .sidebar-nav .nav-link {
 	display: flex;
 	align-items: center;
-	font-size: 15px;
+	font-size: 14px;
 	font-weight: 600;
 	color: #049bf3;
 	transition: 0.3;
@@ -635,7 +635,7 @@
   .sidebar-nav .nav-content a {
 	display: flex;
 	align-items: center;
-	font-size: 14px;
+	font-size: 13px;
 	font-weight: 600;
 	color: white;
 	transition: 0.3;
