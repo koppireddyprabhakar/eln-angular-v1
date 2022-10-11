@@ -1,18 +1,61 @@
 <aside id="sidebar" class="sidebar">
-    <ul class="sidebar-nav" id="sidebar-nav">
-       <li class="nav-item"> <a class="nav-link " routerLink="/dashboard"> <i class="bi bi-grid"></i> <span>Project Dashboard</span> </a></li>
-       <li class="nav-item">
-          <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#"> 
-            <i class="bi bi-menu-button-wide"></i><span>Business Admin</span><i class="bi bi-chevron-down ms-auto"></i> </a>
-            <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-               <li> <a routerLink="/accordion"> <i class="bi bi-circle"></i><span>User Management</span> </a></li>
-               <li> <a routerLink="/badges"> <i class="bi bi-circle"></i><span>Department Management</span> </a></li>
-               <li> <a routerLink="/breadcrumbs"> <i class="bi bi-circle"></i><span>Breadcrumbs</span> </a></li>
-               <li> <a routerLink="/buttons"> <i class="bi bi-circle"></i><span>Dosage Management</span> </a></li>
-               <li> <a routerLink="/cards"> <i class="bi bi-circle"></i><span>TestCase Management</span> </a></li>
-               <li> <a routerLink="/carousel"> <i class="bi bi-circle"></i><span>Inward Managment</span> </a></li>
-            </ul>
-       </li>
-      
-    </ul>
- </aside>
+  <ul class="sidebar-nav" id="sidebar-nav">
+    <!-- <li class="nav-item">
+      <a class="nav-link" routerLink="/dashboard">
+        <i class="bi bi-grid"></i> <span>Project Dashboard</span>
+      </a>
+    </li> -->
+    <li class="nav-item">
+      <a
+        class="nav-link collapsed"
+        data-bs-target="#components-nav"
+        data-bs-toggle="collapse"
+
+      >
+        <i class="bi bi-menu-button-wide"></i><span>Business Admin</span
+        ><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul
+        id="components-nav"
+        class="nav-content collapse"
+        data-bs-parent="#sidebar-nav"
+      >
+        <li>
+          <a routerLink="/business-admin/users" routerLinkActive="active">
+            <i class="bi bi-circle"></i><span>User Management</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/business-admin/products" routerLinkActive="active">
+            <i class="bi bi-circle"></i><span>Product Management</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/business-admin/dosages" routerLinkActive="active">
+            <i class="bi bi-circle"></i><span>Dosage Management</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="departments">
+            <i class="bi bi-circle"></i><span>Department Management</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/breadcrumbs">
+            <i class="bi bi-circle"></i><span>Breadcrumbs</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/cards">
+            <i class="bi bi-circle"></i><span>TestCase Management</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/carousel">
+            <i class="bi bi-circle"></i><span>Inward Managment</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</aside>
