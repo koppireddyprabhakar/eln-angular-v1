@@ -5,9 +5,8 @@ import { BusinessAdminComponent } from '@app/business-admin/business-admin.compo
 import { UserComponent } from '@app/business-admin/user/user.component';
 import { ProductComponent } from '@app/business-admin/product/product.component';
 import { DosageComponent } from '@app/business-admin/dosage/dosage.component';
-import { HeaderComponent } from '@app/layouts/header/header.component';
-import { FooterComponent } from '@app/layouts/footer/footer.component';
-import { SidebarComponent } from '@app/layouts/sidebar/sidebar.component';
+import { SharedModule } from '@app/shared/shared.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -15,11 +14,13 @@ import { SidebarComponent } from '@app/layouts/sidebar/sidebar.component';
     UserComponent,
     ProductComponent,
     DosageComponent,
-    HeaderComponent,
-    FooterComponent,
-    SidebarComponent,
   ],
-  imports: [CommonModule, BusinessAdminRoutingModule],
-  exports: [HeaderComponent, FooterComponent, SidebarComponent],
+  imports: [
+    CommonModule,
+    BusinessAdminRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    SharedModule,
+  ],
 })
 export class BusinessAdminModule {}

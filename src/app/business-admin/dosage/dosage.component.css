@@ -1,0 +1,15 @@
+
+
+.align-header{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.align-button{
+  text-align: end;
+  align-self: center;
+}
+
+.add-formulation{
+  padding: 1rem 0;
+}

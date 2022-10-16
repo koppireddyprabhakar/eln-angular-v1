@@ -1,3 +1,164 @@
 <main id="main" class="main">
-  <div>Dosage works</div>
+  <div class="pagetitle">
+    <h1>Dosage Management</h1>
+  </div>
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="align-header">
+              <h5 class="card-title">Dosages</h5>
+              <div class="align-button">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#productForms"
+                  (click)="addDosage()"
+                >
+                  <i class="bi bi-plus-circle"></i> Add Dosage
+                </button>
+              </div>
+            </div>
+
+            <table class="table datatable">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Dosage Id</th>
+                  <th scope="col">Insert Process</th>
+                  <th scope="col">Inserted Date</th>
+                  <th scope="col">Options</th>
+                </tr>
+              </thead>
+              <tbody *ngFor="let dosage of dosages; let i = index">
+                <tr>
+                  <th scope="row">{{ i + 1 }}</th>
+                  <td>{{ dosage.dosageName }}</td>
+                  <td>{{ dosage.dosageId }}</td>
+                  <td>{{ dosage.insertProcess }}</td>
+                  <td>{{ dosage.insertDate }}</td>
+                  <td>
+                    <i
+                      class="bi bi-pencil-square pointer"
+                      data-bs-toggle="modal"
+                      data-bs-target="#productForms"
+                      (click)="selectProduct(dosage)"
+                    ></i>
+                    &nbsp;&nbsp;
+                    <i
+                      class="bi bi-trash pointer"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteForm"
+                      (click)="confirmProductDeletetion(dosage)"
+                    ></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
+
+<div class="modal fade" id="productForms" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Dosage Form</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form class="row g-3" [formGroup]="dosageForm">
+          <div class="col-12">
+            <label for="dosageName" class="form-label">Dosage Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="dosageName"
+              formControlName="dosageName"
+            />
+          </div>
+          <div class="col-12">
+            <section formArrayName="formulations">
+              <div
+                *ngFor="let formula of formulations?.controls; let i = index"
+                [formGroupName]="i"
+              >
+                <label class="col-sm-2 col-form-label">Formulation</label>
+                <div class="col-sm-12">
+                  <select
+                    class="form-select"
+                    aria-label="Default select example"
+                    formControlName="formulationName"
+                  >
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                  </select>
+                </div>
+              </div>
+            </section>
+            <div class="add-formulation">
+              <i class="bi bi-plus-circle pointer"></i
+              ><span class="pointer" (click)="addNewFormulations()"
+                >Add Formulation</span
+              >
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+          #closeButton
+        >
+          Close
+        </button>
+        <button type="button" class="btn btn-primary" (click)="saveDosage()">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="deleteForm" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Dosage</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">Are you sure you want to delete this dosage?</div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+          #closeDeleteButton
+        >
+          Close
+        </button>
+        <button type="button" class="btn btn-primary" (click)="deleteDosage()">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

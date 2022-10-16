@@ -11,7 +11,10 @@ import { PagesRegisterComponent } from './pages/pages-register/pages-register.co
 import { PagesLoginComponent } from './pages/pages-login/pages-login.component';
 import { PagesError404Component } from './pages/pages-error404/pages-error404.component';
 import { PagesBlankComponent } from './pages/pages-blank/pages-blank.component';
-
+import { DashboardModule } from './dashboard/dashboard.module';
+import { BusinessAdminModule } from './business-admin/business-admin.module';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -23,13 +26,18 @@ import { PagesBlankComponent } from './pages/pages-blank/pages-blank.component';
     PagesRegisterComponent,
     PagesLoginComponent,
     PagesError404Component,
-    PagesBlankComponent
+    PagesBlankComponent,
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule,
+    DashboardModule,
+    BusinessAdminModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
