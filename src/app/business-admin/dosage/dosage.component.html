@@ -21,40 +21,24 @@
                 </button>
               </div>
             </div>
-
-            <table class="table datatable">
+            <table
+              datatable
+              [dtOptions]="dtOptions"
+              [dtTrigger]="dtTrigger"
+              class="row-border hover"
+            >
               <thead>
                 <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Name</th>
-                  <th scope="col">Dosage Id</th>
-                  <th scope="col">Insert Process</th>
-                  <th scope="col">Inserted Date</th>
-                  <th scope="col">Options</th>
+                  <th>ID</th>
+                  <th>Dosage Name</th>
+                  <th>Insert Process</th>
                 </tr>
               </thead>
-              <tbody *ngFor="let dosage of dosages; let i = index">
-                <tr>
-                  <th scope="row">{{ i + 1 }}</th>
-                  <td>{{ dosage.dosageName }}</td>
-                  <td>{{ dosage.dosageId }}</td>
-                  <td>{{ dosage.insertProcess }}</td>
-                  <td>{{ dosage.insertDate }}</td>
-                  <td>
-                    <i
-                      class="bi bi-pencil-square pointer"
-                      data-bs-toggle="modal"
-                      data-bs-target="#productForms"
-                      (click)="selectProduct(dosage)"
-                    ></i>
-                    &nbsp;&nbsp;
-                    <i
-                      class="bi bi-trash pointer"
-                      data-bs-toggle="modal"
-                      data-bs-target="#deleteForm"
-                      (click)="confirmProductDeletetion(dosage)"
-                    ></i>
-                  </td>
+              <tbody>
+                <tr *ngFor="let person of dosages">
+                  <td>{{ person.dosageId }}</td>
+                  <td>{{ person.dosageName }}</td>
+                  <td>{{ person.insertProcess }}</td>
                 </tr>
               </tbody>
             </table>

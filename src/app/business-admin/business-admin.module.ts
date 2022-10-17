@@ -7,6 +7,7 @@ import { ProductComponent } from '@app/business-admin/product/product.component'
 import { DosageComponent } from '@app/business-admin/dosage/dosage.component';
 import { SharedModule } from '@app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DataTablesModule } from 'angular-datatables';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FormsModule,
     ReactiveFormsModule,
     SharedModule,
+    DataTablesModule,
   ],
 })
 export class BusinessAdminModule {}

@@ -21,40 +21,24 @@
                 </button>
               </div>
             </div>
-
-            <table class="table datatable">
+            <table
+              datatable
+              [dtOptions]="dtOptions"
+              [dtTrigger]="dtTrigger"
+              class="row-border hover"
+            >
               <thead>
                 <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Name</th>
-                  <th scope="col">Product Id</th>
-                  <th scope="col">Insert Process</th>
-                  <th scope="col">Inserted Date</th>
-                  <th scope="col">Options</th>
+                  <th>ID</th>
+                  <th>Product Name</th>
+                  <th>Insert Process</th>
                 </tr>
               </thead>
-              <tbody *ngFor="let product of products; let i = index">
-                <tr>
-                  <th scope="row">{{ i + 1 }}</th>
-                  <td>{{ product.productName }}</td>
+              <tbody>
+                <tr *ngFor="let product of products">
                   <td>{{ product.productId }}</td>
+                  <td>{{ product.productName }}</td>
                   <td>{{ product.insertProcess }}</td>
-                  <td>{{ product.insertDate }}</td>
-                  <td>
-                    <i
-                      class="bi bi-pencil-square pointer"
-                      data-bs-toggle="modal"
-                      data-bs-target="#productForms"
-                      (click)="selectProduct(product)"
-                    ></i>
-                    &nbsp;&nbsp;
-                    <i
-                      class="bi bi-trash pointer"
-                      data-bs-toggle="modal"
-                      data-bs-target="#deleteForm"
-                      (click)="confirmProductDeletetion(product)"
-                    ></i>
-                  </td>
                 </tr>
               </tbody>
             </table>

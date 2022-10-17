@@ -1,16 +1,13 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { DosageService } from '@app/services/dosage/dosage.service';
-import { finalize } from 'rxjs';
+import { finalize, Subject } from 'rxjs';
 import { Dosages } from './dosage.interface';
 
 @Component({
   selector: 'app-dosage',
   templateUrl: './dosage.component.html',
-  styleUrls: [
-    './dosage.component.css',
-    '../../../assets/css/simple-datatables.css',
-  ],
+  styleUrls: ['./dosage.component.css'],
 })
 export class DosageComponent implements OnInit {
   dosages: Dosages[] = [];
@@ -19,6 +16,10 @@ export class DosageComponent implements OnInit {
     dosageName: [''],
     formulations: this.formBuilder.array([this.addFormulations()]),
   });
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions = {
+    pagingType: 'full_numbers',
+  };
 
   formulations = this.dosageForm.get('formulations') as FormArray;
 
@@ -53,6 +54,7 @@ export class DosageComponent implements OnInit {
   getDosages() {
     this.dosageService.getDosages().subscribe((dosages) => {
       this.dosages = [...dosages];
+      this.dtTrigger.next(this.dosages);
     });
   }
 
@@ -116,5 +118,9 @@ export class DosageComponent implements OnInit {
         })
       )
       .subscribe(() => {});
+  }
+
+  ngOnDestroy(): void {
+    this.dtTrigger.unsubscribe();
   }
 }

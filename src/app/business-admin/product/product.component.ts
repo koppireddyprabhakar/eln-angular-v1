@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ProductService } from '@app/services/product/product.service';
-import { finalize } from 'rxjs';
+import { finalize, Subject } from 'rxjs';
 import { Products } from './product.interface';
 
 @Component({
@@ -22,6 +22,10 @@ export class ProductComponent implements OnInit {
     productName: [''],
     productCode: [''],
   });
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions = {
+    pagingType: 'full_numbers',
+  };
 
   @ViewChild('closeButton') closeButton: ElementRef;
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
@@ -43,6 +47,7 @@ export class ProductComponent implements OnInit {
   getProducts() {
     this.productService.getProducts().subscribe((products) => {
       this.products = [...products];
+      this.dtTrigger.next(this.products);
     });
   }
 
@@ -97,5 +102,9 @@ export class ProductComponent implements OnInit {
         })
       )
       .subscribe(() => {});
+  }
+
+  ngOnDestroy(): void {
+    this.dtTrigger.unsubscribe();
   }
 }
