@@ -5,8 +5,14 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { ProductService } from '@app/services/product/product.service';
+import { ToastrService } from 'ngx-toastr';
 import { finalize, Subject } from 'rxjs';
 import { Products } from './product.interface';
 
@@ -19,20 +25,22 @@ export class ProductComponent implements OnInit {
   products: Products[] = [];
   selectedProduct: Products = {} as Products;
   productForm = this.formBuilder.group({
-    productName: [''],
+    productName: ['', [Validators.required]],
     productCode: [''],
   });
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions = {
     pagingType: 'full_numbers',
   };
+  loader = false;
 
   @ViewChild('closeButton') closeButton: ElementRef;
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
 
   constructor(
     private readonly productService: ProductService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -45,9 +53,12 @@ export class ProductComponent implements OnInit {
   }
 
   getProducts() {
+    this.dtTrigger.next([]);
+    this.loader = true;
     this.productService.getProducts().subscribe((products) => {
       this.products = [...products];
       this.dtTrigger.next(this.products);
+      this.loader = false;
     });
   }
 
@@ -56,30 +67,46 @@ export class ProductComponent implements OnInit {
     const newProduct: { productName: string | null } = {
       productName: this.productForm.get('productName')!.value,
     };
-    if (Object.keys(this.selectedProduct).length === 0) {
-      this.productService
-        .saveProduct(newProduct)
-        .pipe(
-          finalize(() => {
-            this.closeButton.nativeElement.click();
-            this.getProducts();
-          })
-        )
-        .subscribe(() => {});
+    if (this.productForm.get('productName')!.value) {
+      if (Object.keys(this.selectedProduct).length === 0) {
+        this.productService
+          .saveProduct(newProduct)
+          .pipe(
+            finalize(() => {
+              this.toastr.success(
+                'Product has been added succesfully',
+                'Success'
+              );
+              this.dtTrigger.unsubscribe();
+              this.closeButton.nativeElement.click();
+              this.getProducts();
+              this.loader = false;
+            })
+          )
+          .subscribe(() => {});
+      } else {
+        this.selectedProduct = {
+          ...this.selectedProduct,
+          productName: this.productForm.get('productName')!.value,
+        };
+        this.productService
+          .updateProduct(this.selectedProduct)
+          .pipe(
+            finalize(() => {
+              this.toastr.success(
+                'Product has been updated succesfully',
+                'Success'
+              );
+              this.dtTrigger.unsubscribe();
+              this.closeButton.nativeElement.click();
+              this.getProducts();
+              this.loader = false;
+            })
+          )
+          .subscribe(() => {});
+      }
     } else {
-      this.selectedProduct = {
-        ...this.selectedProduct,
-        productName: this.productForm.get('productName')!.value,
-      };
-      this.productService
-        .updateProduct(this.selectedProduct)
-        .pipe(
-          finalize(() => {
-            this.closeButton.nativeElement.click();
-            this.getProducts();
-          })
-        )
-        .subscribe(() => {});
+      this.productForm.get('productName')?.markAsDirty();
     }
   }
 
@@ -97,8 +124,14 @@ export class ProductComponent implements OnInit {
       .deleteProduct(this.selectedProduct.productId)
       .pipe(
         finalize(() => {
+          this.toastr.success(
+            'Product has been deleted succesfully',
+            'Success'
+          );
+          this.dtTrigger.unsubscribe();
           this.closeDeleteButton.nativeElement.click();
           this.getProducts();
+          this.loader = false;
         })
       )
       .subscribe(() => {});

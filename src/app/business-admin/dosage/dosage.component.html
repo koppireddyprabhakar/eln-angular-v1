@@ -21,24 +21,57 @@
                 </button>
               </div>
             </div>
+            <div *ngIf="loader" class="loader-height">
+              <div class="spinner-grow body-color" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <div class="spinner-grow sidebar-color" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <div class="spinner-grow btn-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
             <table
               datatable
               [dtOptions]="dtOptions"
               [dtTrigger]="dtTrigger"
               class="row-border hover"
             >
-              <thead>
+              <thead *ngIf="!loader">
                 <tr>
-                  <th>ID</th>
                   <th>Dosage Name</th>
-                  <th>Insert Process</th>
+                  <th>Formulation Types</th>
+                  <th>Status</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let person of dosages">
-                  <td>{{ person.dosageId }}</td>
-                  <td>{{ person.dosageName }}</td>
-                  <td>{{ person.insertProcess }}</td>
+                <tr *ngFor="let dosage of dosages">
+                  <td>{{ dosage.dosageName }}</td>
+                  <td>Capsules , Tablets,Capsules , Tablets,Capsules</td>
+                  <td>Active</td>
+                  <td>
+                    <button
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#productForms"
+                      (click)="selectProduct(dosage)"
+                      class="btn btn-outline-primary"
+                    >
+                      Edit
+                    </button>
+                    &nbsp;&nbsp;
+                    <button
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteForm"
+                      (click)="confirmProductDeletetion(dosage)"
+                      class="btn btn-outline-danger"
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -71,6 +104,18 @@
               id="dosageName"
               formControlName="dosageName"
             />
+          </div>
+          <div
+            *ngIf="
+              dosageForm.controls['dosageName'].invalid &&
+              (dosageForm.controls['dosageName'].dirty ||
+                dosageForm.controls['dosageName'].touched) &&
+              dosageForm.get('dosageName')?.errors &&
+              dosageForm.get('dosageName')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please enter Dosage Name
           </div>
           <div class="col-12">
             <section formArrayName="formulations">

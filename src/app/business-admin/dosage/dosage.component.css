@@ -13,3 +13,10 @@
 .add-formulation{
   padding: 1rem 0;
 }
+
+.loader-height{
+  min-height: 20rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

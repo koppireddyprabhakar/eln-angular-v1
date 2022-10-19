@@ -5,7 +5,7 @@ export const elnEndpointsConfig: EndpointConfig = {
     updateProduct: '/product/update-product',
     deleteProduct: '/product/delete-product',
     getDosages: '/dosage/get-dosages',
-    postDosage: '/dosage/create-dosage',
+    postDosage: '/dosage/save-dosage-formulations',
     updateDosage: '/dosage/update-dosage',
     deleteDosage: '/dosage/delete-dosage',
   },

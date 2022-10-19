@@ -1075,3 +1075,30 @@
   .pointer{
     cursor: pointer;
   }
+
+  .btn-primary{
+    background-color: #049bf3;
+  }
+
+  .btn-primary:hover {
+    background-color: #049bf3;
+    border-color: #049bf3;
+}
+
+  .btn-outline-primary{
+    border-color: #049bf3;
+    color:  #049bf3;
+  }
+
+  .btn-outline-primary:hover{
+    background-color: #049bf3;
+    border-color: #049bf3;
+  }
+
+  .sidebar-color{
+    background-color: #2C3E50;
+  }
+
+  .body-color{
+    background-color: #444444;
+  }

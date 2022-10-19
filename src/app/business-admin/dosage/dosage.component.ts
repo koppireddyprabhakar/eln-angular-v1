@@ -1,6 +1,13 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { DosageService } from '@app/services/dosage/dosage.service';
+import { ToastrService } from 'ngx-toastr';
 import { finalize, Subject } from 'rxjs';
 import { Dosages } from './dosage.interface';
 
@@ -13,13 +20,14 @@ export class DosageComponent implements OnInit {
   dosages: Dosages[] = [];
   selectedDosage: Dosages = {} as Dosages;
   dosageForm = this.formBuilder.group({
-    dosageName: [''],
+    dosageName: ['', [Validators.required]],
     formulations: this.formBuilder.array([this.addFormulations()]),
   });
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions = {
     pagingType: 'full_numbers',
   };
+  loader = false;
 
   formulations = this.dosageForm.get('formulations') as FormArray;
 
@@ -28,7 +36,8 @@ export class DosageComponent implements OnInit {
 
   constructor(
     private readonly dosageService: DosageService,
-    private readonly formBuilder: FormBuilder
+    private readonly formBuilder: FormBuilder,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -52,14 +61,15 @@ export class DosageComponent implements OnInit {
   }
 
   getDosages() {
+    this.loader = true;
     this.dosageService.getDosages().subscribe((dosages) => {
       this.dosages = [...dosages];
       this.dtTrigger.next(this.dosages);
+      this.loader = false;
     });
   }
 
   saveDosage() {
-    console.log(this.dosageForm.value);
     const newDosage: any = {
       dosageName: this.dosageForm.get('dosageName')!.value,
       formulations: [
@@ -70,32 +80,48 @@ export class DosageComponent implements OnInit {
         },
       ],
     };
-    if (Object.keys(this.selectedDosage).length === 0) {
-      console.log('create');
-      this.dosageService
-        .saveDosage(newDosage)
-        .pipe(
-          finalize(() => {
-            this.closeButton.nativeElement.click();
-            this.getDosages();
-          })
-        )
-        .subscribe(() => {});
+    if (this.dosageForm.get('dosageName')!.value) {
+      if (Object.keys(this.selectedDosage).length === 0) {
+        console.log('create');
+        this.dosageService
+          .saveDosage(newDosage)
+          .pipe(
+            finalize(() => {
+              this.toastr.success(
+                'Dosage has been added succesfully',
+                'Success'
+              );
+              this.dtTrigger.unsubscribe();
+              this.closeButton.nativeElement.click();
+              this.getDosages();
+              this.loader = false;
+            })
+          )
+          .subscribe(() => {});
+      } else {
+        console.log('update');
+        this.selectedDosage = {
+          ...this.selectedDosage,
+          dosageName: this.dosageForm.get('dosageName')!.value,
+        };
+        this.dosageService
+          .updateDosage(this.selectedDosage)
+          .pipe(
+            finalize(() => {
+              this.toastr.success(
+                'Dosage has been updated succesfully',
+                'Success'
+              );
+              this.dtTrigger.unsubscribe();
+              this.closeButton.nativeElement.click();
+              this.getDosages();
+              this.loader = false;
+            })
+          )
+          .subscribe(() => {});
+      }
     } else {
-      console.log('update');
-      this.selectedDosage = {
-        ...this.selectedDosage,
-        dosageName: this.dosageForm.get('dosageName')!.value,
-      };
-      this.dosageService
-        .updateDosage(this.selectedDosage)
-        .pipe(
-          finalize(() => {
-            this.closeButton.nativeElement.click();
-            this.getDosages();
-          })
-        )
-        .subscribe(() => {});
+      this.dosageForm.get('dosageName')?.markAsDirty();
     }
   }
 
@@ -113,8 +139,11 @@ export class DosageComponent implements OnInit {
       .deleteDosage(this.selectedDosage.dosageId)
       .pipe(
         finalize(() => {
+          this.toastr.success('Dosage has been deleted succesfully', 'Success');
+          this.dtTrigger.unsubscribe();
           this.closeDeleteButton.nativeElement.click();
           this.getDosages();
+          this.loader = false;
         })
       )
       .subscribe(() => {});
