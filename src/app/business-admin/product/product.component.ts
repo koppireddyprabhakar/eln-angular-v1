@@ -11,7 +11,8 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { ProductService } from '@app/services/product/product.service';
+import { GlobalService } from '@app/shared/services/global/global.service';
+import { ProductService } from '@app/shared/services/product/product.service';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, Subject } from 'rxjs';
 import { Products } from './product.interface';
@@ -40,6 +41,8 @@ export class ProductComponent implements OnInit {
   constructor(
     private readonly productService: ProductService,
     private readonly formBuilder: FormBuilder,
+    private readonly globalService: GlobalService,
+
     private toastr: ToastrService
   ) {}
 
@@ -53,16 +56,19 @@ export class ProductComponent implements OnInit {
   }
 
   getProducts() {
+    this.globalService.showLoader();
     this.dtTrigger.next([]);
     this.loader = true;
     this.productService.getProducts().subscribe((products) => {
       this.products = [...products];
       this.dtTrigger.next(this.products);
       this.loader = false;
+      this.globalService.hideLoader();
     });
   }
 
   saveProduct() {
+    this.globalService.showLoader();
     console.log(this.productForm.get('productName')!.value);
     const newProduct: { productName: string | null } = {
       productName: this.productForm.get('productName')!.value,
@@ -81,6 +87,7 @@ export class ProductComponent implements OnInit {
               this.closeButton.nativeElement.click();
               this.getProducts();
               this.loader = false;
+              this.globalService.hideLoader();
             })
           )
           .subscribe(() => {});
@@ -97,8 +104,10 @@ export class ProductComponent implements OnInit {
                 'Product has been updated succesfully',
                 'Success'
               );
-              this.dtTrigger.unsubscribe();
               this.closeButton.nativeElement.click();
+              this.dtTrigger.unsubscribe();
+
+              console.log('four');
               this.getProducts();
               this.loader = false;
             })

@@ -1,8 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ClientService } from '@app/shared/services/client/client.service';
 import { elnEndpointsConfig } from '@config/endpoints/eln.endpoints.config';
 import { catchError, throwError } from 'rxjs';
-import { ClientService } from '../client/client.service';
 
 @Injectable({
   providedIn: 'root',

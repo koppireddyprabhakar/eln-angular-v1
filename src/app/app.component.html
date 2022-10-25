@@ -1,1 +1,19 @@
-<router-outlet></router-outlet>
+<div class="cc_loading" *ngIf="isLoadingEnabled()">
+  <div class="loader-height">
+    <div class="spinner-grow btn-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow btn-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow btn-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</div>
+<div *ngIf="!isLoadingEnabled()">
+  <app-header></app-header>
+  <app-sidebar></app-sidebar>
+  <router-outlet></router-outlet>
+  <app-footer></app-footer>
+</div>

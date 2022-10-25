@@ -6,7 +6,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { DosageService } from '@app/services/dosage/dosage.service';
+import { DosageService } from '@app/shared/services/dosage/dosage.service';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, Subject } from 'rxjs';
 import { Dosages } from './dosage.interface';

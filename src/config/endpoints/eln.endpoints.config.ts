@@ -8,6 +8,10 @@ export const elnEndpointsConfig: EndpointConfig = {
     postDosage: '/dosage/save-dosage-formulations',
     updateDosage: '/dosage/update-dosage',
     deleteDosage: '/dosage/delete-dosage',
+    getTests: '/test/get-tests',
+    createTest: '/test/create-test',
+    updateTest: '/test/update-test',
+    deleteTest: '/test/delete-test',
   },
 };
 

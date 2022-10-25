@@ -1102,3 +1102,10 @@
   .body-color{
     background-color: #444444;
   }
+
+
+  .cc_loading { background: black; /* The Fallback */ background: rgba(0, 0, 0, 0.8); position: fixed; top: 0; bottom: 0; left: 0; right: 0; z-index: 9000; text-align: center; }
+/* .cc_loading div { margin: 0; position: absolute; top: 50%; left: 50%; margin-right: -50%; transform: translate(-50%, -50%); }
+.cc_loading div p { color: white; font-size: 40px; line-height: 0.5em; }
+.cc_loading:after { content: ""; pointer-events: none; position: absolute; top: 50%; left: 50%; border-top: 20px solid; border-right: 20px solid; border-radius: 0 200px 0 0; width: 100px; height: 100px; margin-top: -120px; -webkit-transform-origin: 0% 100%; transform-origin: 0% 100%; -webkit-animation: spinning 0.5s linear infinite, colors 4s infinite; animation: spinning 0.5s linear infinite, colors 4s infinite; }
+.cc_loading div p { pointer-events: none; font-weight: 600; margin: 0; -webkit-animation: pulsing 0.75s linear infinite; animation: pulsing 0.75s linear infinite; } */

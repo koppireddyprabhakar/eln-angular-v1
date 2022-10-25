@@ -1,6 +1,6 @@
 <main id="main" class="main">
   <div class="pagetitle">
-    <h1>Dosage Management</h1>
+    <h1>Test Management</h1>
   </div>
   <section class="section">
     <div class="row">
@@ -8,16 +8,16 @@
         <div class="card">
           <div class="card-body">
             <div class="align-header">
-              <h5 class="card-title">Dosages</h5>
+              <h5 class="card-title">Tests</h5>
               <div class="align-button">
                 <button
                   type="button"
                   class="btn btn-primary"
                   data-bs-toggle="modal"
                   data-bs-target="#productForms"
-                  (click)="addDosage()"
+                  (click)="addTest()"
                 >
-                  <i class="bi bi-plus-circle"></i> Add Dosage
+                  <i class="bi bi-plus-circle"></i> Add Test
                 </button>
               </div>
             </div>
@@ -29,23 +29,23 @@
             >
               <thead *ngIf="!loader">
                 <tr>
-                  <th>Dosage Name</th>
-                  <th>Formulation Types</th>
+                  <th>Test Name</th>
+                  <th>Test Types</th>
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let dosage of dosages">
-                  <td>{{ dosage.dosageName }}</td>
-                  <td>Capsules , Tablets,Capsules , Tablets,Capsules</td>
+                <tr *ngFor="let test of tests">
+                  <td>{{ test.testName | titlecase }}</td>
+                  <td>Test 1, Test 2, Test 3, Test 4, Test 5</td>
                   <td>Active</td>
                   <td>
                     <button
                       type="button"
                       data-bs-toggle="modal"
                       data-bs-target="#productForms"
-                      (click)="selectProduct(dosage)"
+                      (click)="selectTest(test)"
                       class="btn btn-outline-primary"
                     >
                       Edit
@@ -55,7 +55,7 @@
                       type="button"
                       data-bs-toggle="modal"
                       data-bs-target="#deleteForm"
-                      (click)="confirmProductDeletetion(dosage)"
+                      (click)="confirmTesttDeletetion(test)"
                       class="btn btn-outline-danger"
                     >
                       Delete
@@ -75,7 +75,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Dosage Form</h5>
+        <h5 class="modal-title">Test Form</h5>
         <button
           type="button"
           class="btn-close"
@@ -84,53 +84,66 @@
         ></button>
       </div>
       <div class="modal-body">
-        <form class="row g-3" [formGroup]="dosageForm">
+        <form class="row g-3" [formGroup]="testForm">
           <div class="col-12">
-            <label for="dosageName" class="form-label">Dosage Name</label>
+            <label for="testName" class="form-label">Test Name</label>
             <input
               type="text"
               class="form-control"
-              id="dosageName"
-              formControlName="dosageName"
+              id="testName"
+              formControlName="testName"
             />
           </div>
           <div
             *ngIf="
-              dosageForm.controls['dosageName'].invalid &&
-              (dosageForm.controls['dosageName'].dirty ||
-                dosageForm.controls['dosageName'].touched) &&
-              dosageForm.get('dosageName')?.errors &&
-              dosageForm.get('dosageName')?.hasError('required')
+              testForm.controls['testName'].invalid &&
+              (testForm.controls['testName'].dirty ||
+                testForm.controls['testName'].touched) &&
+              testForm.get('testName')?.errors &&
+              testForm.get('testName')?.hasError('required')
             "
             class="text-danger"
           >
-            Please enter Dosage Name
+            Please enter Test Name
           </div>
           <div class="col-12">
-            <section formArrayName="formulations">
+            <label for="testDescription" class="form-label"
+              >Test Description</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="testDescription"
+              formControlName="testDescription"
+            />
+          </div>
+          <div class="col-12">
+            <section formArrayName="dosageId">
               <div
-                *ngFor="let formula of formulations?.controls; let i = index"
+                *ngFor="let formula of dosageId?.controls; let i = index"
                 [formGroupName]="i"
               >
-                <label class="col-sm-2 col-form-label">Formulation</label>
+                <label class="col-sm-2 col-form-label">Dosage</label>
                 <div class="col-sm-12">
                   <select
                     class="form-select"
                     aria-label="Default select example"
-                    formControlName="formulationName"
+                    formControlName="dosageId"
                   >
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                    <option value="null">Select</option>
+                    <option
+                      *ngFor="let dosage of dosagesList"
+                      [ngValue]="dosage.dosageId"
+                    >
+                      {{ dosage.dosageName | titlecase }}
+                    </option>
                   </select>
                 </div>
               </div>
             </section>
             <div class="add-formulation">
               <i class="bi bi-plus-circle pointer"></i
-              ><span class="pointer" (click)="addNewFormulations()"
-                >Add Formulation</span
-              >
+              ><span class="pointer" (click)="addNewDosages()">Add Dosage</span>
             </div>
           </div>
         </form>
@@ -144,7 +157,7 @@
         >
           Close
         </button>
-        <button type="button" class="btn btn-primary" (click)="saveDosage()">
+        <button type="button" class="btn btn-primary" (click)="saveTest()">
           Save
         </button>
       </div>
@@ -155,7 +168,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Delete Dosage</h5>
+        <h5 class="modal-title">Delete Test</h5>
         <button
           type="button"
           class="btn-close"
@@ -163,7 +176,7 @@
           aria-label="Close"
         ></button>
       </div>
-      <div class="modal-body">Are you sure you want to delete this dosage?</div>
+      <div class="modal-body">Are you sure you want to delete this Test?</div>
       <div class="modal-footer">
         <button
           type="button"
@@ -173,7 +186,7 @@
         >
           Close
         </button>
-        <button type="button" class="btn btn-primary" (click)="deleteDosage()">
+        <button type="button" class="btn btn-primary" (click)="deleteTest()">
           Delete
         </button>
       </div>

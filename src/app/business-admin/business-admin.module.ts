@@ -8,6 +8,7 @@ import { DosageComponent } from '@app/business-admin/dosage/dosage.component';
 import { SharedModule } from '@app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DataTablesModule } from 'angular-datatables';
+import { TestComponent } from './test/test.component';
 
 @NgModule({
   declarations: [
@@ -15,13 +16,13 @@ import { DataTablesModule } from 'angular-datatables';
     UserComponent,
     ProductComponent,
     DosageComponent,
+    TestComponent,
   ],
   imports: [
     CommonModule,
     BusinessAdminRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    SharedModule,
     DataTablesModule,
   ],
 })

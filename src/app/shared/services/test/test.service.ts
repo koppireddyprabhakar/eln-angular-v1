@@ -1,43 +1,37 @@
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpParams,
-} from '@angular/common/http';
-import { catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
 import { elnEndpointsConfig } from '@config/endpoints/eln.endpoints.config';
+import { catchError, throwError } from 'rxjs';
 import { ClientService } from '../client/client.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ProductService {
+export class TestService {
   constructor(
     private readonly http: HttpClient,
     private readonly clientService: ClientService
   ) {}
 
-  getProducts() {
-    const url = elnEndpointsConfig.endpoints['getProducts'];
+  getTests() {
+    const url = elnEndpointsConfig.endpoints['getTests'];
     return this.http
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
-  saveProduct(product: { productName: string | null }) {
-    const url = elnEndpointsConfig.endpoints['postProduct'];
+  saveTest(product: { productName: string | null }) {
+    const url = elnEndpointsConfig.endpoints['createTest'];
     return this.http.post<string>(url, product);
   }
 
-  updateProduct(product: { productName: string | null }) {
-    const url = elnEndpointsConfig.endpoints['updateProduct'];
+  updateTest(product: { productName: string | null }) {
+    const url = elnEndpointsConfig.endpoints['updateTest'];
     return this.http.post<string>(url, product);
   }
 
-  deleteProduct(productId: number) {
-    const url = `${elnEndpointsConfig.endpoints['deleteProduct']}?productId=${productId}`;
+  deleteTest(testId: number) {
+    const url = `${elnEndpointsConfig.endpoints['deleteTest']}?testId=${testId}`;
     return this.http.get<string>(url);
   }
 
