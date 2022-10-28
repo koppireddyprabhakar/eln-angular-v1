@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   OnInit,
+  TemplateRef,
   ViewChild,
 } from '@angular/core';
 import {
@@ -14,7 +15,7 @@ import {
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { ProductService } from '@app/shared/services/product/product.service';
 import { ToastrService } from 'ngx-toastr';
-import { finalize, Subject } from 'rxjs';
+import { finalize, Subject, takeWhile } from 'rxjs';
 import { Products } from './product.interface';
 
 @Component({
@@ -25,29 +26,40 @@ import { Products } from './product.interface';
 export class ProductComponent implements OnInit {
   products: Products[] = [];
   selectedProduct: Products = {} as Products;
+  subscribeFlag = true;
   productForm = this.formBuilder.group({
     productName: ['', [Validators.required]],
     productCode: [''],
   });
-  dtTrigger: Subject<any> = new Subject<any>();
-  dtOptions = {
-    pagingType: 'full_numbers',
-  };
-  loader = false;
+  columns: any;
+  options: any = {};
 
   @ViewChild('closeButton') closeButton: ElementRef;
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
+  @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
   constructor(
     private readonly productService: ProductService,
     private readonly formBuilder: FormBuilder,
     private readonly globalService: GlobalService,
-
     private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
     this.getProducts();
+    this.columns = [
+      { key: 'productName', title: 'Product Name' },
+      { key: 'insertProcess', title: 'Insert Process' },
+      { key: 'status', title: 'Status' },
+      {
+        key: 'options',
+        title: '<div class="blue">Options</div>',
+        align: { head: 'center', body: 'center' },
+        sorting: false,
+        width: 80,
+        cellTemplate: this.actionTpl,
+      },
+    ];
   }
 
   addProduct() {
@@ -57,19 +69,22 @@ export class ProductComponent implements OnInit {
 
   getProducts() {
     this.globalService.showLoader();
-    this.dtTrigger.next([]);
-    this.loader = true;
-    this.productService.getProducts().subscribe((products) => {
-      this.products = [...products];
-      this.dtTrigger.next(this.products);
-      this.loader = false;
-      this.globalService.hideLoader();
-    });
+    this.productService
+      .getProducts()
+      .pipe(takeWhile(() => this.subscribeFlag))
+      .subscribe((products) => {
+        const newProductsList = products.map((product: any) => ({
+          ...product,
+          status: 'Active',
+        }));
+        this.products = newProductsList;
+        console.log(this.products);
+        this.globalService.hideLoader();
+      });
   }
 
   saveProduct() {
     this.globalService.showLoader();
-    console.log(this.productForm.get('productName')!.value);
     const newProduct: { productName: string | null } = {
       productName: this.productForm.get('productName')!.value,
     };
@@ -78,19 +93,19 @@ export class ProductComponent implements OnInit {
         this.productService
           .saveProduct(newProduct)
           .pipe(
+            takeWhile(() => this.subscribeFlag),
             finalize(() => {
-              this.toastr.success(
-                'Product has been added succesfully',
-                'Success'
-              );
-              this.dtTrigger.unsubscribe();
-              this.closeButton.nativeElement.click();
-              this.getProducts();
-              this.loader = false;
               this.globalService.hideLoader();
             })
           )
-          .subscribe(() => {});
+          .subscribe(() => {
+            this.getProducts();
+            this.closeButton.nativeElement.click();
+            this.toastr.success(
+              'Product has been added succesfully',
+              'Success'
+            );
+          });
       } else {
         this.selectedProduct = {
           ...this.selectedProduct,
@@ -100,19 +115,17 @@ export class ProductComponent implements OnInit {
           .updateProduct(this.selectedProduct)
           .pipe(
             finalize(() => {
-              this.toastr.success(
-                'Product has been updated succesfully',
-                'Success'
-              );
-              this.closeButton.nativeElement.click();
-              this.dtTrigger.unsubscribe();
-
-              console.log('four');
-              this.getProducts();
-              this.loader = false;
+              this.globalService.hideLoader();
             })
           )
-          .subscribe(() => {});
+          .subscribe(() => {
+            this.getProducts();
+            this.closeButton.nativeElement.click();
+            this.toastr.success(
+              'Product has been updated succesfully',
+              'Success'
+            );
+          });
       }
     } else {
       this.productForm.get('productName')?.markAsDirty();
@@ -132,21 +145,19 @@ export class ProductComponent implements OnInit {
     this.productService
       .deleteProduct(this.selectedProduct.productId)
       .pipe(
+        takeWhile(() => this.subscribeFlag),
         finalize(() => {
-          this.toastr.success(
-            'Product has been deleted succesfully',
-            'Success'
-          );
-          this.dtTrigger.unsubscribe();
-          this.closeDeleteButton.nativeElement.click();
-          this.getProducts();
-          this.loader = false;
+          this.globalService.hideLoader();
         })
       )
-      .subscribe(() => {});
+      .subscribe(() => {
+        this.getProducts();
+        this.closeDeleteButton.nativeElement.click();
+        this.toastr.success('Product has been deleted succesfully', 'Success');
+      });
   }
 
   ngOnDestroy(): void {
-    this.dtTrigger.unsubscribe();
+    this.subscribeFlag = false;
   }
 }

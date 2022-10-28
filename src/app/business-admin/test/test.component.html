@@ -21,49 +21,41 @@
                 </button>
               </div>
             </div>
-            <table
-              datatable
-              [dtOptions]="dtOptions"
-              [dtTrigger]="dtTrigger"
-              class="row-border hover"
-            >
-              <thead *ngIf="!loader">
-                <tr>
-                  <th>Test Name</th>
-                  <th>Test Types</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let test of tests">
-                  <td>{{ test.testName | titlecase }}</td>
-                  <td>Test 1, Test 2, Test 3, Test 4, Test 5</td>
-                  <td>Active</td>
-                  <td>
-                    <button
-                      type="button"
-                      data-bs-toggle="modal"
-                      data-bs-target="#productForms"
-                      (click)="selectTest(test)"
-                      class="btn btn-outline-primary"
-                    >
-                      Edit
-                    </button>
-                    &nbsp;&nbsp;
-                    <button
-                      type="button"
-                      data-bs-toggle="modal"
-                      data-bs-target="#deleteForm"
-                      (click)="confirmTesttDeletetion(test)"
-                      class="btn btn-outline-danger"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="tableNgx">
+              <ngx-datatable
+                tableClass="table table-striped table-bordered table-hover tableNgx"
+                [data]="tests"
+                [options]="options"
+                [columns]="columns"
+              >
+                <ng-template
+                  #actionTpl
+                  let-row
+                  let-rowIndex="rowIndex"
+                  let-columnValue="columnValue"
+                >
+                  <button
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#productForms"
+                    (click)="selectTest(row)"
+                    class="btn btn-outline-primary"
+                  >
+                    Edit
+                  </button>
+                  &nbsp;&nbsp;
+                  <button
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteForm"
+                    (click)="confirmTesttDeletetion(row)"
+                    class="btn btn-outline-danger"
+                  >
+                    Delete
+                  </button>
+                </ng-template>
+              </ngx-datatable>
+            </div>
           </div>
         </div>
       </div>

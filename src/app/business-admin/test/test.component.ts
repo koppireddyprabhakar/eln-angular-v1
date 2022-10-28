@@ -1,9 +1,16 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DosageService } from '@app/shared/services/dosage/dosage.service';
+import { GlobalService } from '@app/shared/services/global/global.service';
 import { TestService } from '@app/shared/services/test/test.service';
 import { ToastrService } from 'ngx-toastr';
-import { finalize, Subject } from 'rxjs';
+import { finalize, Subject, takeWhile } from 'rxjs';
 import { Dosages } from '../dosage/dosage.interface';
 
 @Component({
@@ -15,32 +22,45 @@ export class TestComponent implements OnInit {
   tests: any = [];
   dosagesList: Dosages[] = [];
   selectedTest: any = {};
+  subscribeFlag = true;
   testForm = this.formBuilder.group({
     testName: ['', [Validators.required]],
     testDescription: [''],
     dosageId: this.formBuilder.array([this.addDosages()]),
   });
-  dtTrigger: Subject<any> = new Subject<any>();
-  dtOptions = {
-    pagingType: 'full_numbers',
-  };
-  loader = false;
+  columns: any;
+  options: any = {};
 
   dosageId = this.testForm.get('dosageId') as FormArray;
 
   @ViewChild('closeButton') closeButton: ElementRef;
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
+  @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
   constructor(
     private readonly testService: TestService,
     private readonly dosageService: DosageService,
     private readonly formBuilder: FormBuilder,
+    private readonly globalService: GlobalService,
     private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
     this.getTests();
     this.getDosages();
+    this.columns = [
+      { key: 'testName', title: 'Test Name' },
+      { key: 'testTypes', title: 'Insert Process' },
+      { key: 'status', title: 'Status' },
+      {
+        key: 'options',
+        title: '<div class="blue">Options</div>',
+        align: { head: 'center', body: 'center' },
+        sorting: false,
+        width: 80,
+        cellTemplate: this.actionTpl,
+      },
+    ];
   }
 
   addDosages(): FormGroup {
@@ -51,7 +71,6 @@ export class TestComponent implements OnInit {
 
   addNewDosages() {
     this.dosageId.push(this.addDosages());
-    console.log(this.dosageId);
   }
 
   addTest() {
@@ -64,16 +83,23 @@ export class TestComponent implements OnInit {
   }
 
   getTests() {
-    this.loader = true;
-    this.testService.getTests().subscribe((tests) => {
-      this.tests = [...tests];
-      this.dtTrigger.next(this.tests);
-      this.loader = false;
-    });
+    this.globalService.showLoader();
+    this.testService
+      .getTests()
+      .pipe(takeWhile(() => this.subscribeFlag))
+      .subscribe((tests) => {
+        const testList = tests.map((test: any) => ({
+          ...test,
+          testTypes: 'Test 1, Test 2, Test 3, Test 4, Test 5',
+          status: 'Active',
+        }));
+        this.tests = testList;
+        console.log(this.tests);
+        this.globalService.hideLoader();
+      });
   }
 
   getDosages() {
-    this.loader = true;
     this.dosageService.getDosages().subscribe((dosages) => {
       this.dosagesList = [...dosages];
     });
@@ -81,7 +107,6 @@ export class TestComponent implements OnInit {
 
   saveTest() {
     const selectedDosages = this.testForm.get('dosageId')!.value;
-    console.log(selectedDosages);
     const newDosage: any = {
       testName: this.testForm.get('testName')!.value,
       dosageTestReqeustList: selectedDosages,
@@ -94,38 +119,25 @@ export class TestComponent implements OnInit {
         console.log('create');
         this.testService
           .saveTest(newDosage)
-          .pipe(
-            finalize(() => {
-              this.toastr.success('Test has been added succesfully', 'Success');
-              this.dtTrigger.unsubscribe();
-              this.closeButton.nativeElement.click();
-              this.getTests();
-              this.loader = false;
-            })
-          )
-          .subscribe(() => {});
+          .pipe(takeWhile(() => this.subscribeFlag))
+          .subscribe(() => {
+            this.getTests();
+            this.closeButton.nativeElement.click();
+            this.toastr.success('Test has been added succesfully', 'Success');
+          });
       } else {
-        console.log('update');
         this.selectedTest = {
           ...this.selectedTest,
           testName: this.testForm.get('testName')!.value,
         };
-        console.log(this.selectedTest);
         this.testService
           .updateTest(this.selectedTest)
-          .pipe(
-            finalize(() => {
-              this.toastr.success(
-                'Test has been updated succesfully',
-                'Success'
-              );
-              this.dtTrigger.unsubscribe();
-              this.closeButton.nativeElement.click();
-              this.getTests();
-              this.loader = false;
-            })
-          )
-          .subscribe(() => {});
+          .pipe(takeWhile(() => this.subscribeFlag))
+          .subscribe(() => {
+            this.getTests();
+            this.closeButton.nativeElement.click();
+            this.toastr.success('Test has been updated succesfully', 'Success');
+          });
       }
     } else {
       this.testForm.get('testName')?.markAsDirty();
@@ -133,7 +145,6 @@ export class TestComponent implements OnInit {
   }
 
   selectTest(test: any) {
-    console.log(test);
     this.selectedTest = test;
     this.testForm.patchValue({ testName: test.testName });
   }
@@ -145,19 +156,15 @@ export class TestComponent implements OnInit {
   deleteTest() {
     this.testService
       .deleteTest(this.selectedTest.testId)
-      .pipe(
-        finalize(() => {
-          this.toastr.success('Test has been deleted succesfully', 'Success');
-          this.dtTrigger.unsubscribe();
-          this.closeDeleteButton.nativeElement.click();
-          this.getTests();
-          this.loader = false;
-        })
-      )
-      .subscribe(() => {});
+      .pipe(takeWhile(() => this.subscribeFlag))
+      .subscribe(() => {
+        this.getTests();
+        this.closeDeleteButton.nativeElement.click();
+        this.toastr.success('Test has been deleted succesfully', 'Success');
+      });
   }
 
   ngOnDestroy(): void {
-    this.dtTrigger.unsubscribe();
+    this.subscribeFlag = false;
   }
 }

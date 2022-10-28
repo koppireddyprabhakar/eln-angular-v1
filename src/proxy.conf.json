@@ -1,6 +1,6 @@
 [
   {
-    "context": ["/product/", "/dosage", "/test"],
+    "context": ["/product/", "/dosage", "/lab-test"],
     "target": "http://localhost:8080/",
     "secure": false,
     "logLevel": "debug",

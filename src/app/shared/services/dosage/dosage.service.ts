@@ -15,9 +15,7 @@ export class DosageService {
 
   getDosages() {
     const url = elnEndpointsConfig.endpoints['getDosages'];
-    return this.http
-      .get<any>(url)
-      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+    return this.http.get<any>(url);
   }
 
   saveDosage(product: { dosageName: string | null }) {
@@ -27,12 +25,12 @@ export class DosageService {
 
   updateDosage(product: { dosageName: string | null }) {
     const url = elnEndpointsConfig.endpoints['updateDosage'];
-    return this.http.post<string>(url, product);
+    return this.http.put<string>(url, product);
   }
 
   deleteDosage(productId: number) {
     const url = `${elnEndpointsConfig.endpoints['deleteDosage']}?dosageId=${productId}`;
-    return this.http.get<string>(url);
+    return this.http.delete<string>(url);
   }
 
   handleError(error: HttpErrorResponse) {

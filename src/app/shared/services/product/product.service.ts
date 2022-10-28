@@ -27,12 +27,12 @@ export class ProductService {
 
   updateProduct(product: { productName: string | null }) {
     const url = elnEndpointsConfig.endpoints['updateProduct'];
-    return this.http.post<string>(url, product);
+    return this.http.put<string>(url, product);
   }
 
   deleteProduct(productId: number) {
     const url = `${elnEndpointsConfig.endpoints['deleteProduct']}?productId=${productId}`;
-    return this.http.get<string>(url);
+    return this.http.delete<string>(url);
   }
 
   handleError(error: HttpErrorResponse) {

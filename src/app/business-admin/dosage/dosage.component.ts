@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -7,8 +13,9 @@ import {
   Validators,
 } from '@angular/forms';
 import { DosageService } from '@app/shared/services/dosage/dosage.service';
+import { GlobalService } from '@app/shared/services/global/global.service';
 import { ToastrService } from 'ngx-toastr';
-import { finalize, Subject } from 'rxjs';
+import { finalize, Subject, takeUntil, takeWhile } from 'rxjs';
 import { Dosages } from './dosage.interface';
 
 @Component({
@@ -19,29 +26,43 @@ import { Dosages } from './dosage.interface';
 export class DosageComponent implements OnInit {
   dosages: Dosages[] = [];
   selectedDosage: Dosages = {} as Dosages;
+  subscribeFlag = true;
   dosageForm = this.formBuilder.group({
     dosageName: ['', [Validators.required]],
     formulations: this.formBuilder.array([this.addFormulations()]),
   });
-  dtTrigger: Subject<any> = new Subject<any>();
-  dtOptions = {
-    pagingType: 'full_numbers',
-  };
-  loader = false;
+
+  columns: any = [];
+  options: any = {};
 
   formulations = this.dosageForm.get('formulations') as FormArray;
 
   @ViewChild('closeButton') closeButton: ElementRef;
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
+  @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
   constructor(
     private readonly dosageService: DosageService,
     private readonly formBuilder: FormBuilder,
+    private readonly globalService: GlobalService,
     private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
     this.getDosages();
+    this.columns = [
+      { key: 'dosageName', title: 'Dosage Name' },
+      { key: 'formulations', title: 'Formulations' },
+      { key: 'status', title: 'Status' },
+      {
+        key: 'options',
+        title: '<div class="blue">Options</div>',
+        align: { head: 'center', body: 'center' },
+        sorting: false,
+        width: 80,
+        cellTemplate: this.actionTpl,
+      },
+    ];
   }
 
   addFormulations(): FormGroup {
@@ -61,15 +82,23 @@ export class DosageComponent implements OnInit {
   }
 
   getDosages() {
-    this.loader = true;
-    this.dosageService.getDosages().subscribe((dosages) => {
-      this.dosages = [...dosages];
-      this.dtTrigger.next(this.dosages);
-      this.loader = false;
-    });
+    this.globalService.showLoader();
+    this.dosageService
+      .getDosages()
+      .pipe(takeWhile(() => this.subscribeFlag))
+      .subscribe((dosages) => {
+        const newDosagesList = dosages.map((dosage: any) => ({
+          ...dosage,
+          formulations: 'Capsules, Tablets, Formula1',
+          status: 'Active',
+        }));
+        this.dosages = newDosagesList;
+        this.globalService.hideLoader();
+      });
   }
 
   saveDosage() {
+    this.globalService.showLoader();
     const newDosage: any = {
       dosageName: this.dosageForm.get('dosageName')!.value,
       formulations: [
@@ -82,43 +111,49 @@ export class DosageComponent implements OnInit {
     };
     if (this.dosageForm.get('dosageName')!.value) {
       if (Object.keys(this.selectedDosage).length === 0) {
-        console.log('create');
         this.dosageService
           .saveDosage(newDosage)
           .pipe(
+            takeWhile(() => this.subscribeFlag),
             finalize(() => {
-              this.toastr.success(
-                'Dosage has been added succesfully',
-                'Success'
-              );
-              this.dtTrigger.unsubscribe();
-              this.closeButton.nativeElement.click();
-              this.getDosages();
-              this.loader = false;
+              this.globalService.hideLoader();
             })
           )
-          .subscribe(() => {});
+          .subscribe(() => {
+            this.getDosages();
+            this.closeButton.nativeElement.click();
+            this.toastr.success(
+              'Dosage has been updated succesfully',
+              'Success'
+            );
+          });
       } else {
-        console.log('update');
         this.selectedDosage = {
           ...this.selectedDosage,
           dosageName: this.dosageForm.get('dosageName')!.value,
+          formulations: [
+            {
+              formulationName: 'string',
+              dosageId: 0,
+            },
+          ], //change later
         };
         this.dosageService
           .updateDosage(this.selectedDosage)
           .pipe(
+            takeWhile(() => this.subscribeFlag),
             finalize(() => {
-              this.toastr.success(
-                'Dosage has been updated succesfully',
-                'Success'
-              );
-              this.dtTrigger.unsubscribe();
-              this.closeButton.nativeElement.click();
-              this.getDosages();
-              this.loader = false;
+              this.globalService.hideLoader();
             })
           )
-          .subscribe(() => {});
+          .subscribe(() => {
+            this.getDosages();
+            this.toastr.success(
+              'Dosage has been updated succesfully',
+              'Success'
+            );
+            this.closeButton.nativeElement.click();
+          });
       }
     } else {
       this.dosageForm.get('dosageName')?.markAsDirty();
@@ -138,18 +173,19 @@ export class DosageComponent implements OnInit {
     this.dosageService
       .deleteDosage(this.selectedDosage.dosageId)
       .pipe(
+        takeWhile(() => this.subscribeFlag),
         finalize(() => {
-          this.toastr.success('Dosage has been deleted succesfully', 'Success');
-          this.dtTrigger.unsubscribe();
-          this.closeDeleteButton.nativeElement.click();
-          this.getDosages();
-          this.loader = false;
+          this.globalService.hideLoader();
         })
       )
-      .subscribe(() => {});
+      .subscribe(() => {
+        this.getDosages();
+        this.closeDeleteButton.nativeElement.click();
+        this.toastr.success('Dosage has been deleted succesfully', 'Success');
+      });
   }
 
   ngOnDestroy(): void {
-    this.dtTrigger.unsubscribe();
+    this.subscribeFlag = false;
   }
 }

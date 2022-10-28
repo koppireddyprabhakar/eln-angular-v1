@@ -27,12 +27,12 @@ export class TestService {
 
   updateTest(product: { productName: string | null }) {
     const url = elnEndpointsConfig.endpoints['updateTest'];
-    return this.http.post<string>(url, product);
+    return this.http.put<string>(url, product);
   }
 
   deleteTest(testId: number) {
     const url = `${elnEndpointsConfig.endpoints['deleteTest']}?testId=${testId}`;
-    return this.http.get<string>(url);
+    return this.http.delete<string>(url);
   }
 
   handleError(error: HttpErrorResponse) {
