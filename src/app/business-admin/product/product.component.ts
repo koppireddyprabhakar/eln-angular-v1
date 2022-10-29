@@ -78,7 +78,6 @@ export class ProductComponent implements OnInit {
           status: 'Active',
         }));
         this.products = newProductsList;
-        console.log(this.products);
         this.globalService.hideLoader();
       });
   }
