@@ -12,6 +12,10 @@ export const elnEndpointsConfig: EndpointConfig = {
     createTest: '/lab-test/create-lab-test',
     updateTest: '/lab-test/update-lab-test',
     deleteTest: '/lab-test/delete-lab-test',
+    getTeams: '/teams/get-teams',
+    createTeam: '/teams/create-team',
+    updateTeam: '/teams/update-team',
+    deleteTeam: '/teams/delete-team',
   },
 };
 

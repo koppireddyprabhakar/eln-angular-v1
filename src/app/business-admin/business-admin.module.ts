@@ -9,6 +9,7 @@ import { SharedModule } from '@app/shared/shared.module';
 import { NgxDatatableModule } from '@tusharghoshbd/ngx-datatable';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TestComponent } from './test/test.component';
+import { TeamComponent } from './team/team.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { TestComponent } from './test/test.component';
     ProductComponent,
     DosageComponent,
     TestComponent,
+    TeamComponent,
   ],
   imports: [
     CommonModule,
