@@ -9,6 +9,9 @@ body {
   font-family: "Open Sans", sans-serif;
   background: #f6f9ff;
   color: #444444;
+  min-height: 100vh !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 a {
@@ -657,6 +660,7 @@ h6 {
   margin-right: 8px;
   line-height: 0;
   border-radius: 50%;
+  color: white;
 }
 .sidebar-nav .nav-content a:hover,
 .sidebar-nav .nav-content a.active {
@@ -1099,7 +1103,8 @@ h6 {
   background-color: #049bf3;
 }
 
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-primary:focus {
   background-color: #049bf3;
   border-color: #049bf3;
 }
@@ -1132,4 +1137,12 @@ h6 {
   right: 0;
   z-index: 9000;
   text-align: center;
+}
+/*
+.body {
+
+} */
+
+.footer {
+  margin-top: auto;
 }

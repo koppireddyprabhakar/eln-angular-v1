@@ -10,6 +10,9 @@ import { NgxDatatableModule } from '@tusharghoshbd/ngx-datatable';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TestComponent } from './test/test.component';
 import { TeamComponent } from './team/team.component';
+import { InwardManagementComponent } from './inward-management/inward-management.component';
+import { AddTestComponent } from './test/add-test/add-test.component';
+import { AddUserComponent } from './user/add-user/add-user.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +22,9 @@ import { TeamComponent } from './team/team.component';
     DosageComponent,
     TestComponent,
     TeamComponent,
+    InwardManagementComponent,
+    AddTestComponent,
+    AddUserComponent,
   ],
   imports: [
     CommonModule,

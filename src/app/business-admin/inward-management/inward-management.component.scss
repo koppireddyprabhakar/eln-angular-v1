@@ -25,7 +25,8 @@
 .tableNgx ::ng-deep .text-right {
   text-align: right;
 }
-
-.tableNgx > ::ng-deep .form-control {
-  border-radius: 0.25rem !important;
+.tableNgx ::ng-deep{
+   .form-control {
+    border-radius: 0.25rem !important;
+  }
 }

@@ -1,0 +1,145 @@
+<main id="main" class="main">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">User Form</h5>
+      <form class="row g-3" [formGroup]="userForm">
+        <div class="col-6">
+          <label for="excipientsName" class="form-label">First Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="excipientsName"
+            formControlName="excipientsName"
+          />
+        </div>
+        <div
+          *ngIf="
+            userForm.controls['excipientsName'].invalid &&
+            (userForm.controls['excipientsName'].dirty ||
+              userForm.controls['excipientsName'].touched) &&
+            userForm.get('excipientsName')?.errors &&
+            userForm.get('excipientsName')?.hasError('required')
+          "
+          class="text-danger"
+        >
+          Please enter Product Name
+        </div>
+        <div class="col-6">
+          <label for="materialName" class="form-label">Last Name</label>
+          <input
+            type="email"
+            class="form-control"
+            id="materialName"
+            formControlName="materialName"
+          />
+        </div>
+        <div class="col-6">
+          <label for="materialType" class="form-label">Date of birth</label>
+          <input
+            type="email"
+            class="form-control"
+            id="materialType"
+            formControlName="materialType"
+          />
+        </div>
+        <div class="col-6">
+          <label for="batchNumber" class="form-label">Gender</label>
+          <input
+            type="email"
+            class="form-control"
+            id="batchNumber"
+            formControlName="batchNumber"
+          />
+        </div>
+        <div class="col-6">
+          <label for="sourceName" class="form-label">DepartmentId</label>
+          <input
+            type="email"
+            class="form-control"
+            id="sourceName"
+            formControlName="sourceName"
+          />
+        </div>
+        <div class="col-6">
+          <label for="potency" class="form-label">Role Id</label>
+          <input
+            type="email"
+            class="form-control"
+            id="potency"
+            formControlName="potency"
+          />
+        </div>
+        <div class="col-6">
+          <label for="grade" class="form-label">Contact Number</label>
+          <input
+            type="email"
+            class="form-control"
+            id="grade"
+            formControlName="grade"
+          />
+        </div>
+        <div class="col-6">
+          <label for="grade" class="form-label">Mail Id</label>
+          <input
+            type="email"
+            class="form-control"
+            id="grade"
+            formControlName="grade"
+          />
+        </div>
+        <div class="col-6">
+          <label for="grade" class="form-label">Address Line 1</label>
+          <input
+            type="email"
+            class="form-control"
+            id="grade"
+            formControlName="grade"
+          />
+        </div>
+        <div class="col-6">
+          <label for="grade" class="form-label">Address Line 2</label>
+          <input
+            type="email"
+            class="form-control"
+            id="grade"
+            formControlName="grade"
+          />
+        </div>
+        <div class="col-6">
+          <label for="grade" class="form-label">City</label>
+          <input
+            type="email"
+            class="form-control"
+            id="grade"
+            formControlName="grade"
+          />
+        </div>
+        <div class="col-6">
+          <label for="grade" class="form-label">ZipCode</label>
+          <input
+            type="email"
+            class="form-control"
+            id="grade"
+            formControlName="grade"
+          />
+        </div>
+        <div class="col-6">
+          <label for="grade" class="form-label">Team Id</label>
+          <input
+            type="email"
+            class="form-control"
+            id="grade"
+            formControlName="grade"
+          />
+        </div>
+      </form>
+      <div class="text-center pt-4">
+        <button type="button" class="btn btn-secondary" #closeButton>
+          Close
+        </button>
+        &nbsp;&nbsp;&nbsp;
+        <button type="button" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</main>

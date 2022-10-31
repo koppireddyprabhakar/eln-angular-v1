@@ -1,0 +1,85 @@
+<main id="main" class="main">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Test Case Form</h5>
+      <form [formGroup]="testForm">
+        <div formArrayName="testRow">
+          <div
+            class="row gx-3 pb-4"
+            *ngFor="let formula of testRow?.controls; let i = index"
+            [formGroupName]="i"
+          >
+            <div class="col-4">
+              <label for="testName" class="form-label">Test Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="testName"
+                formControlName="testName"
+              />
+              <span
+                *ngIf="
+                  testRow.at(i).get('testName')?.invalid &&
+                  (testRow.at(i).get('testName')?.dirty ||
+                    testRow.at(i).get('testName')?.touched) &&
+                  testRow.at(i).get('testName')?.errors &&
+                  testRow.at(i).get('testName')?.hasError('required')
+                "
+                class="text-danger pt-3"
+              >
+                Please enter Test Name
+              </span>
+            </div>
+
+            <div class="col-4">
+              <label for="description" class="form-label"
+                >Test Description</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="description"
+                formControlName="description"
+              />
+            </div>
+            <div class="col-4">
+              <label class="form-label">Dosage</label>
+              <div class="col-12">
+                <select
+                  class="form-select"
+                  aria-label="Default select example"
+                  formControlName="dosageId"
+                >
+                  <option value="null">Select</option>
+                  <option
+                    *ngFor="let dosage of dosagesList"
+                    [ngValue]="dosage.dosageId"
+                  >
+                    {{ dosage.dosageName | titlecase }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="!editForm" class="add-formulation">
+          <i class="bi bi-plus-circle pointer"></i> &nbsp;<span
+            class="pointer"
+            (click)="addNewTest()"
+            >Add Test</span
+          >
+        </div>
+      </form>
+      <div class="text-center">
+        <button type="button" class="btn btn-secondary" #closeButton>
+          Close
+        </button>
+        &nbsp;&nbsp;&nbsp;
+        <button type="button" class="btn btn-primary" (click)="saveTest()">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</main>

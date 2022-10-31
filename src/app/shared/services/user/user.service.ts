@@ -7,38 +7,31 @@ import { ClientService } from '../client/client.service';
 @Injectable({
   providedIn: 'root',
 })
-export class TestService {
+export class UserService {
   constructor(
     private readonly http: HttpClient,
     private readonly clientService: ClientService
   ) {}
 
-  getTests() {
-    const url = elnEndpointsConfig.endpoints['getTests'];
+  getUsers() {
+    const url = elnEndpointsConfig.endpoints['getUsers'];
     return this.http
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
-  getTestById(id: number) {
-    const url = `${elnEndpointsConfig.endpoints['getTestByID']}?testId=${id}`;
-    return this.http
-      .get<any>(url)
-      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  saveUser(userData) {
+    const url = elnEndpointsConfig.endpoints['createUser'];
+    return this.http.post<string>(url, userData);
   }
 
-  saveTest(product: { productName: string | null }) {
-    const url = elnEndpointsConfig.endpoints['createTest'];
-    return this.http.post<string>(url, product);
+  updateUser(userData) {
+    const url = elnEndpointsConfig.endpoints['updateUser'];
+    return this.http.put<string>(url, userData);
   }
 
-  updateTest(product: { productName: string | null }) {
-    const url = elnEndpointsConfig.endpoints['updateTest'];
-    return this.http.put<string>(url, product);
-  }
-
-  deleteTest(testId: number) {
-    const url = `${elnEndpointsConfig.endpoints['deleteTest']}?testId=${testId}`;
+  deleteUser(userId: number) {
+    const url = `${elnEndpointsConfig.endpoints['deleteUser']}?userId=${userId}`;
     return this.http.delete<string>(url);
   }
 

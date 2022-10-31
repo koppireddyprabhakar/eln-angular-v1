@@ -2,9 +2,12 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { UserComponent } from '@app/business-admin/user/user.component';
 import { DosageComponent } from './dosage/dosage.component';
+import { InwardManagementComponent } from './inward-management/inward-management.component';
 import { ProductComponent } from './product/product.component';
 import { TeamComponent } from './team/team.component';
+import { AddTestComponent } from './test/add-test/add-test.component';
 import { TestComponent } from './test/test.component';
+import { AddUserComponent } from './user/add-user/add-user.component';
 
 const routes: Routes = [
   {
@@ -12,7 +15,16 @@ const routes: Routes = [
     children: [
       {
         path: 'users',
-        component: UserComponent,
+        children: [
+          {
+            path: '',
+            component: UserComponent,
+          },
+          {
+            path: 'add-user',
+            component: AddUserComponent,
+          },
+        ],
       },
       {
         path: 'products',
@@ -24,11 +36,24 @@ const routes: Routes = [
       },
       {
         path: 'test',
-        component: TestComponent,
+        children: [
+          {
+            path: '',
+            component: TestComponent,
+          },
+          {
+            path: 'add-test',
+            component: AddTestComponent,
+          },
+        ],
       },
       {
         path: 'team',
         component: TeamComponent,
+      },
+      {
+        path: 'inward-management',
+        component: InwardManagementComponent,
       },
     ],
   },

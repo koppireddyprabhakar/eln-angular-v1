@@ -6,6 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { DosageService } from '@app/shared/services/dosage/dosage.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { TestService } from '@app/shared/services/test/test.service';
@@ -20,18 +21,11 @@ import { Dosages } from '../dosage/dosage.interface';
 })
 export class TestComponent implements OnInit {
   tests: any = [];
-  dosagesList: Dosages[] = [];
   selectedTest: any = {};
   subscribeFlag = true;
-  testForm = this.formBuilder.group({
-    testName: ['', [Validators.required]],
-    testDescription: [''],
-    dosageId: this.formBuilder.array([this.addDosages()]),
-  });
   columns: any;
   options: any = {};
-
-  dosageId = this.testForm.get('dosageId') as FormArray;
+  showAddForm = false;
 
   @ViewChild('closeButton') closeButton: ElementRef;
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
@@ -42,15 +36,16 @@ export class TestComponent implements OnInit {
     private readonly dosageService: DosageService,
     private readonly formBuilder: FormBuilder,
     private readonly globalService: GlobalService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private route: Router
   ) {}
 
   ngOnInit(): void {
     this.getTests();
-    this.getDosages();
+
     this.columns = [
       { key: 'testName', title: 'Test Name' },
-      { key: 'testTypes', title: 'Insert Process' },
+      { key: 'testTypes', title: 'Dosages' },
       { key: 'status', title: 'Status' },
       {
         key: 'options',
@@ -63,19 +58,12 @@ export class TestComponent implements OnInit {
     ];
   }
 
-  addDosages(): FormGroup {
+  addTests(): FormGroup {
     return this.formBuilder.group({
+      testName: ['', [Validators.required]],
+      description: [''],
       dosageId: [null],
     });
-  }
-
-  addNewDosages() {
-    this.dosageId.push(this.addDosages());
-  }
-
-  addTest() {
-    this.selectedTest = {};
-    this.testForm.reset();
   }
 
   changeToInt(id: any): number {
@@ -90,8 +78,8 @@ export class TestComponent implements OnInit {
       .subscribe((tests) => {
         const testList = tests.map((test: any) => ({
           ...test,
-          testTypes: 'Test 1, Test 2, Test 3, Test 4, Test 5',
-          status: 'Active',
+          testTypes: 'Dosage 1, Dosage 2, Dosage 3, Dosage 4, Dosage 5',
+          status: 'str',
         }));
         this.tests = testList;
         console.log(this.tests);
@@ -99,54 +87,10 @@ export class TestComponent implements OnInit {
       });
   }
 
-  getDosages() {
-    this.dosageService.getDosages().subscribe((dosages) => {
-      this.dosagesList = [...dosages];
-    });
-  }
-
-  saveTest() {
-    const selectedDosages = this.testForm.get('dosageId')!.value;
-    const newDosage: any = {
-      testName: this.testForm.get('testName')!.value,
-      dosageTestReqeustList: selectedDosages,
-    };
-    if (
-      this.testForm.get('testName')!.value &&
-      this.testForm.get('dosageId')!.value
-    ) {
-      if (Object.keys(this.selectedTest).length === 0) {
-        console.log('create');
-        this.testService
-          .saveTest(newDosage)
-          .pipe(takeWhile(() => this.subscribeFlag))
-          .subscribe(() => {
-            this.getTests();
-            this.closeButton.nativeElement.click();
-            this.toastr.success('Test has been added succesfully', 'Success');
-          });
-      } else {
-        this.selectedTest = {
-          ...this.selectedTest,
-          testName: this.testForm.get('testName')!.value,
-        };
-        this.testService
-          .updateTest(this.selectedTest)
-          .pipe(takeWhile(() => this.subscribeFlag))
-          .subscribe(() => {
-            this.getTests();
-            this.closeButton.nativeElement.click();
-            this.toastr.success('Test has been updated succesfully', 'Success');
-          });
-      }
-    } else {
-      this.testForm.get('testName')?.markAsDirty();
-    }
-  }
-
   selectTest(test: any) {
-    this.selectedTest = test;
-    this.testForm.patchValue({ testName: test.testName });
+    this.route.navigateByUrl(
+      `/business-admin/test/add-test?testId=${test.testId}`
+    );
   }
 
   confirmTesttDeletetion(test: any) {
