@@ -52,7 +52,7 @@ export class DosageComponent implements OnInit {
     this.getDosages();
     this.columns = [
       { key: 'dosageName', title: 'Dosage Name' },
-      { key: 'formulations', title: 'Formulations' },
+      { key: 'formulationsList', title: 'Formulations' },
       { key: 'status', title: 'Status' },
       {
         key: 'options',
@@ -77,6 +77,8 @@ export class DosageComponent implements OnInit {
   }
 
   addDosage() {
+    this.formulations.clear();
+    this.addNewFormulations();
     this.selectedDosage = {} as Dosages;
     this.dosageForm.reset();
   }
@@ -89,9 +91,12 @@ export class DosageComponent implements OnInit {
       .subscribe((dosages) => {
         const newDosagesList = dosages.map((dosage: any) => ({
           ...dosage,
-          formulations: 'Capsules, Tablets, Formula1',
+          formulationsList: dosage.formulations.map(
+            (dosage) => dosage.formulationName
+          ),
           status: 'Active',
         }));
+        console.log(newDosagesList);
         this.dosages = newDosagesList;
         this.globalService.hideLoader();
       });
@@ -101,14 +106,9 @@ export class DosageComponent implements OnInit {
     this.globalService.showLoader();
     const newDosage: any = {
       dosageName: this.dosageForm.get('dosageName')!.value,
-      formulations: [
-        {
-          formulationId: 4,
-          formulationName: 'Tablet',
-          dosageId: 0,
-        },
-      ],
+      formulations: this.formulations.value,
     };
+    console.log(newDosage);
     if (this.dosageForm.get('dosageName')!.value) {
       if (Object.keys(this.selectedDosage).length === 0) {
         this.dosageService
@@ -131,13 +131,22 @@ export class DosageComponent implements OnInit {
         this.selectedDosage = {
           ...this.selectedDosage,
           dosageName: this.dosageForm.get('dosageName')!.value,
-          formulations: [
-            {
-              formulationName: 'string',
-              dosageId: 0,
-            },
-          ], //change later
+          formulations: this.formulations.value.map((formula, index) => {
+            if (this.selectedDosage.formulations[index]?.formulationId) {
+              return {
+                formulationName: formula.formulationName,
+                formulationId:
+                  this.selectedDosage.formulations[index]?.formulationId || 0,
+                dosageId: this.selectedDosage.dosageId,
+              };
+            } else {
+              return {
+                formulationName: formula.formulationName,
+              };
+            }
+          }),
         };
+        console.log(this.selectedDosage);
         this.dosageService
           .updateDosage(this.selectedDosage)
           .pipe(
@@ -162,7 +171,16 @@ export class DosageComponent implements OnInit {
 
   selectProduct(product: Dosages) {
     this.selectedDosage = product;
+    this.formulations.clear();
+    console.log(this.formulations.value);
     this.dosageForm.patchValue({ dosageName: product.dosageName });
+    this.selectedDosage.formulations.forEach((formulation, index) => {
+      console.log(formulation);
+      this.formulations.push(this.addFormulations());
+      this.formulations
+        .at(index)
+        .patchValue({ formulationName: formulation.formulationName });
+    });
   }
 
   confirmProductDeletetion(product: Dosages) {

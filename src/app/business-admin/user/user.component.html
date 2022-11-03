@@ -8,7 +8,7 @@
         <div class="card">
           <div class="card-body">
             <div class="align-header">
-              <h5 class="card-title">Tests</h5>
+              <h5 class="card-title">Users</h5>
               <div class="align-button">
                 <a routerLink="/business-admin/users/add-user">
                   <button type="button" class="btn btn-primary">
@@ -25,6 +25,17 @@
                 [columns]="columns"
               >
                 <ng-template
+                  #nameTpl
+                  let-row
+                  let-rowIndex="rowIndex"
+                  let-columnValue="columnValue"
+                >
+                  <span
+                    >{{ row.firstName | titlecase }} &nbsp;
+                    {{ row.lastName | titlecase }}</span
+                  >
+                </ng-template>
+                <ng-template
                   #actionTpl
                   let-row
                   let-rowIndex="rowIndex"
@@ -32,7 +43,7 @@
                 >
                   <button
                     type="button"
-                    (click)="selectTest(row)"
+                    (click)="selectUser(row)"
                     class="btn btn-outline-primary"
                   >
                     Edit
@@ -42,7 +53,7 @@
                     type="button"
                     data-bs-toggle="modal"
                     data-bs-target="#deleteForm"
-                    (click)="confirmTesttDeletetion(row)"
+                    (click)="confirmUserDeletetion(row)"
                     class="btn btn-outline-danger"
                   >
                     Delete
@@ -61,7 +72,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Delete Test</h5>
+        <h5 class="modal-title">Delete User</h5>
         <button
           type="button"
           class="btn-close"
@@ -69,7 +80,7 @@
           aria-label="Close"
         ></button>
       </div>
-      <div class="modal-body">Are you sure you want to delete this Test?</div>
+      <div class="modal-body">Are you sure you want to delete this User?</div>
       <div class="modal-footer">
         <button
           type="button"
@@ -79,7 +90,7 @@
         >
           Close
         </button>
-        <button type="button" class="btn btn-primary" (click)="deleteTest()">
+        <button type="button" class="btn btn-primary" (click)="deleteUser()">
           Delete
         </button>
       </div>

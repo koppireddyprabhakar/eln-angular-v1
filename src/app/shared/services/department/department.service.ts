@@ -7,39 +7,17 @@ import { ClientService } from '../client/client.service';
 @Injectable({
   providedIn: 'root',
 })
-export class UserService {
+export class DepartmentService {
   constructor(
     private readonly http: HttpClient,
     private readonly clientService: ClientService
   ) {}
 
-  getUsers() {
-    const url = elnEndpointsConfig.endpoints['getUsers'];
+  getDepartments() {
+    const url = elnEndpointsConfig.endpoints['getDepartments'];
     return this.http
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
-  }
-
-  saveUser(userData) {
-    const url = elnEndpointsConfig.endpoints['createUser'];
-    return this.http.post<string>(url, userData);
-  }
-
-  updateUser(userData) {
-    const url = elnEndpointsConfig.endpoints['updateUser'];
-    return this.http.put<string>(url, userData);
-  }
-
-  getUserById(id) {
-    const url = `${elnEndpointsConfig.endpoints['getUserByID']}?userId=${id}`;
-    return this.http
-      .get<any>(url)
-      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
-  }
-
-  deleteUser(userId: number) {
-    const url = `${elnEndpointsConfig.endpoints['deleteUser']}?userId=${userId}`;
-    return this.http.delete<string>(url);
   }
 
   handleError(error: HttpErrorResponse) {

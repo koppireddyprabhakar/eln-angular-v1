@@ -6,10 +6,14 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { DepartmentService } from '@app/shared/services/department/department.service';
+import { DosageService } from '@app/shared/services/dosage/dosage.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { TeamService } from '@app/shared/services/team/team.service';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, takeWhile } from 'rxjs';
+import { Dosages } from '../dosage/dosage.interface';
+import { Departments } from '../user/user.interface';
 import { TeamsList } from './team.interface';
 
 @Component({
@@ -19,10 +23,14 @@ import { TeamsList } from './team.interface';
 })
 export class TeamComponent implements OnInit {
   teams: TeamsList[] = [];
-  selectedTeam: TeamsList = {} as TeamsList;
+  dosages: Dosages[] = [];
+  departmentList: Departments[] = [];
+  selectedTeam: any = {};
   subscribeFlag = true;
   teamForm = this.formBuilder.group({
     teamName: ['', [Validators.required]],
+    deptId: [null, [Validators.required]],
+    dosageId: [null, [Validators.required]],
   });
   columns: any;
   options: any = {};
@@ -35,6 +43,8 @@ export class TeamComponent implements OnInit {
     private readonly teamService: TeamService,
     private readonly formBuilder: FormBuilder,
     private readonly globalService: GlobalService,
+    private readonly departmentService: DepartmentService,
+    private readonly dosageService: DosageService,
     private toastr: ToastrService
   ) {}
 
@@ -53,11 +63,34 @@ export class TeamComponent implements OnInit {
       },
     ];
     this.getTeams();
+    this.getDepartments();
+    this.getDosages();
   }
 
   addTeam() {
     this.selectedTeam = {} as TeamsList;
     this.teamForm.reset();
+  }
+
+  getDepartments() {
+    this.departmentService.getDepartments().subscribe((department) => {
+      this.departmentList = department;
+    });
+  }
+
+  getDosages() {
+    this.dosageService
+      .getDosages()
+      .pipe(takeWhile(() => this.subscribeFlag))
+      .subscribe((dosages) => {
+        const newDosagesList = dosages.map((dosage: any) => ({
+          ...dosage,
+          formulationsList: dosage.formulations.map(
+            (dosage) => dosage.formulationName
+          ),
+        }));
+        this.dosages = newDosagesList;
+      });
   }
 
   getTeams() {
@@ -77,8 +110,10 @@ export class TeamComponent implements OnInit {
 
   saveTeam() {
     this.globalService.showLoader();
-    const newTeam: { teamName: string | null } = {
+    const newTeam = {
       teamName: this.teamForm.get('teamName')!.value,
+      deptId: this.teamForm.get('deptId')!.value,
+      teamDosages: [{ dosageId: this.teamForm.get('dosageId')!.value }],
     };
     if (this.teamForm.get('teamName')!.value) {
       if (Object.keys(this.selectedTeam).length === 0) {
@@ -98,7 +133,7 @@ export class TeamComponent implements OnInit {
       } else {
         this.selectedTeam = {
           ...this.selectedTeam,
-          teamName: this.teamForm.get('teamName')!.value,
+          ...newTeam,
         };
         this.teamService
           .updateTeam(this.selectedTeam)
@@ -118,9 +153,14 @@ export class TeamComponent implements OnInit {
     }
   }
 
-  selectTeam(team: TeamsList) {
+  selectTeam(team) {
     this.selectedTeam = team;
-    this.teamForm.patchValue({ teamName: team.teamName });
+    console.log(this.selectedTeam);
+    this.teamForm.patchValue({
+      teamName: team.teamName,
+      deptId: team.deptId,
+      dosageId: team.dosageId,
+    });
   }
 
   confirmTeamDeletetion(team: TeamsList) {

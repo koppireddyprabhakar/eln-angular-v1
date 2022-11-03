@@ -20,11 +20,14 @@ export const elnEndpointsConfig: EndpointConfig = {
     getUsers: '/usersDetails/get-users-details',
     createUser: '/usersDetails/create-users-details',
     updateUser: '/usersDetails/update-users-details',
+    getUserByID: '/usersDetails/get-users-details-by-id',
     deleteUser: '/usersDetails/delete-users-details',
     getExcipients: 'excipients/get-excipients',
     createExcipient: 'excipients/create-excipient',
     updateExcipient: 'excipients/update-excipient',
     deleteExcipient: 'excipients/delete-excipient',
+    getDepartments: 'department/get-departments',
+    getUserRoles: 'userrole/get-user-roles',
   },
 };
 

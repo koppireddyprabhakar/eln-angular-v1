@@ -4,141 +4,164 @@
       <h5 class="card-title">User Form</h5>
       <form class="row g-3" [formGroup]="userForm">
         <div class="col-6">
-          <label for="excipientsName" class="form-label">First Name</label>
+          <label for="firstName" class="form-label">First Name</label>
           <input
             type="text"
             class="form-control"
-            id="excipientsName"
-            formControlName="excipientsName"
+            id="firstName"
+            formControlName="firstName"
           />
         </div>
         <div
           *ngIf="
-            userForm.controls['excipientsName'].invalid &&
-            (userForm.controls['excipientsName'].dirty ||
-              userForm.controls['excipientsName'].touched) &&
-            userForm.get('excipientsName')?.errors &&
-            userForm.get('excipientsName')?.hasError('required')
+            userForm.controls['firstName'].invalid &&
+            (userForm.controls['firstName'].dirty ||
+              userForm.controls['firstName'].touched) &&
+            userForm.get('firstName')?.errors &&
+            userForm.get('firstName')?.hasError('required')
           "
           class="text-danger"
         >
           Please enter Product Name
         </div>
         <div class="col-6">
-          <label for="materialName" class="form-label">Last Name</label>
+          <label for="lastName" class="form-label">Last Name</label>
           <input
-            type="email"
+            type="text"
             class="form-control"
-            id="materialName"
-            formControlName="materialName"
+            id="lastName"
+            formControlName="lastName"
           />
         </div>
         <div class="col-6">
-          <label for="materialType" class="form-label">Date of birth</label>
+          <label for="dateOfBirth" class="form-label">Date of birth</label>
           <input
-            type="email"
+            type="date"
             class="form-control"
-            id="materialType"
-            formControlName="materialType"
+            id="dateOfBirth"
+            formControlName="dateOfBirth"
           />
         </div>
         <div class="col-6">
-          <label for="batchNumber" class="form-label">Gender</label>
+          <label for="gender" class="form-label">Gender</label>
+          <select
+            class="form-select"
+            aria-label="Gender"
+            formControlName="gender"
+          >
+            <option *ngFor="let gender of genderList" [ngValue]="gender.value">
+              {{ gender.label | titlecase }}
+            </option>
+          </select>
+        </div>
+        <div class="col-6">
+          <label for="deptId" class="form-label">DepartmentId</label>
+          <select
+            class="form-select"
+            aria-label="Department Id"
+            formControlName="deptId"
+          >
+            <option *ngFor="let dept of departmentList" [ngValue]="dept.deptId">
+              {{ dept.departmentName | titlecase }}
+            </option>
+          </select>
+        </div>
+        <div class="col-6">
+          <label for="roleId" class="form-label">Role Id</label>
+          <select
+            class="form-select"
+            aria-label="Role Id"
+            formControlName="roleId"
+          >
+            <option
+              *ngFor="let userRole of userRoles"
+              [ngValue]="userRole.roleId"
+            >
+              {{ userRole.roleName | titlecase }}
+            </option>
+          </select>
+        </div>
+        <div class="col-6">
+          <label for="contactNo" class="form-label">Contact Number</label>
           <input
-            type="email"
+            type="number"
             class="form-control"
-            id="batchNumber"
-            formControlName="batchNumber"
+            id="contactNo"
+            formControlName="contactNo"
           />
         </div>
         <div class="col-6">
-          <label for="sourceName" class="form-label">DepartmentId</label>
+          <label for="mailId" class="form-label">Mail Id</label>
           <input
             type="email"
             class="form-control"
-            id="sourceName"
-            formControlName="sourceName"
+            id="mailId"
+            formControlName="mailId"
           />
         </div>
         <div class="col-6">
-          <label for="potency" class="form-label">Role Id</label>
+          <label for="addressLine1" class="form-label">Address Line 1</label>
           <input
-            type="email"
+            type="text"
             class="form-control"
-            id="potency"
-            formControlName="potency"
+            id="addressLine1"
+            formControlName="addressLine1"
           />
         </div>
         <div class="col-6">
-          <label for="grade" class="form-label">Contact Number</label>
+          <label for="addressLine2" class="form-label">Address Line 2</label>
           <input
-            type="email"
+            type="text"
             class="form-control"
-            id="grade"
-            formControlName="grade"
+            id="addressLine2"
+            formControlName="addressLine2"
           />
         </div>
         <div class="col-6">
-          <label for="grade" class="form-label">Mail Id</label>
+          <label for="city" class="form-label">City</label>
           <input
-            type="email"
+            type="text"
             class="form-control"
-            id="grade"
-            formControlName="grade"
+            id="city"
+            formControlName="city"
           />
         </div>
         <div class="col-6">
-          <label for="grade" class="form-label">Address Line 1</label>
+          <label for="zipCode" class="form-label">ZipCode</label>
           <input
-            type="email"
+            type="number"
             class="form-control"
-            id="grade"
-            formControlName="grade"
+            id="zipCode"
+            formControlName="zipCode"
           />
         </div>
         <div class="col-6">
-          <label for="grade" class="form-label">Address Line 2</label>
-          <input
-            type="email"
-            class="form-control"
-            id="grade"
-            formControlName="grade"
-          />
-        </div>
-        <div class="col-6">
-          <label for="grade" class="form-label">City</label>
-          <input
-            type="email"
-            class="form-control"
-            id="grade"
-            formControlName="grade"
-          />
-        </div>
-        <div class="col-6">
-          <label for="grade" class="form-label">ZipCode</label>
-          <input
-            type="email"
-            class="form-control"
-            id="grade"
-            formControlName="grade"
-          />
-        </div>
-        <div class="col-6">
-          <label for="grade" class="form-label">Team Id</label>
-          <input
-            type="email"
-            class="form-control"
-            id="grade"
-            formControlName="grade"
-          />
+          <label for="teamId" class="form-label">Team Id</label>
+
+          <select
+            class="form-select"
+            aria-label="Teams"
+            formControlName="teamId"
+          >
+            <option *ngFor="let team of teams" [ngValue]="team.teamId">
+              {{ team.teamName | titlecase }}
+            </option>
+          </select>
         </div>
       </form>
       <div class="text-center pt-4">
-        <button type="button" class="btn btn-secondary" #closeButton>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="redirectToUsers()"
+          #closeButton
+        >
           Close
         </button>
         &nbsp;&nbsp;&nbsp;
-        <button type="button" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-primary" (click)="saveUser()">
+          Save
+        </button>
       </div>
     </div>
   </div>

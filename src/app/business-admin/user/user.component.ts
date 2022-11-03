@@ -20,7 +20,7 @@ import { takeWhile } from 'rxjs';
 })
 export class UserComponent implements OnInit {
   users: any = [];
-  selectedTest: any = {};
+  selectedUser: any = {};
   subscribeFlag = true;
   columns: any;
   options: any = {};
@@ -29,6 +29,7 @@ export class UserComponent implements OnInit {
   @ViewChild('closeButton') closeButton: ElementRef;
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
+  @ViewChild('nameTpl', { static: true }) nameTpl: TemplateRef<any>;
 
   constructor(
     private readonly userService: UserService,
@@ -43,9 +44,19 @@ export class UserComponent implements OnInit {
     this.getUsers();
 
     this.columns = [
-      { key: 'testName', title: 'Test Name' },
-      { key: 'testTypes', title: 'Dosages' },
-      { key: 'status', title: 'Status' },
+      {
+        key: 'name',
+        title: '<div class="blue">Name</div>',
+        align: { head: 'center', body: 'center' },
+        sorting: false,
+        cellTemplate: this.nameTpl,
+      },
+      { key: 'dateOfBirth', title: 'DOB' },
+      { key: 'gender', title: 'Gender' },
+      { key: 'roleName', title: 'Role Name' },
+      { key: 'departmentName', title: 'Department Name' },
+      { key: 'contactNo', title: 'Contact Number' },
+      { key: 'mailId', title: 'Mail Id' },
       {
         key: 'options',
         title: '<div class="blue">Options</div>',
@@ -55,14 +66,6 @@ export class UserComponent implements OnInit {
         cellTemplate: this.actionTpl,
       },
     ];
-  }
-
-  addTests(): FormGroup {
-    return this.formBuilder.group({
-      testName: ['', [Validators.required]],
-      description: [''],
-      dosageId: [null],
-    });
   }
 
   changeToInt(id: any): number {
@@ -85,25 +88,25 @@ export class UserComponent implements OnInit {
       });
   }
 
-  selectTest(test: any) {
+  selectUser(user: any) {
     this.route.navigateByUrl(
-      `/business-admin/test/add-test?testId=${test.testId}`
+      `/business-admin/users/add-user?userId=${user.userId}`
     );
   }
 
-  confirmTesttDeletetion(test: any) {
-    this.selectedTest = test;
+  confirmUserDeletetion(user: any) {
+    this.selectedUser = user;
   }
 
-  deleteTest() {
-    // this.userService
-    //   .deleteTest(this.selectedTest.testId)
-    //   .pipe(takeWhile(() => this.subscribeFlag))
-    //   .subscribe(() => {
-    //     this.getTests();
-    //     this.closeDeleteButton.nativeElement.click();
-    //     this.toastr.success('Test has been deleted succesfully', 'Success');
-    //   });
+  deleteUser() {
+    this.userService
+      .deleteUser(this.selectedUser.userId)
+      .pipe(takeWhile(() => this.subscribeFlag))
+      .subscribe(() => {
+        this.getUsers();
+        this.closeDeleteButton.nativeElement.click();
+        this.toastr.success('User has been deleted succesfully', 'Success');
+      });
   }
 
   ngOnDestroy(): void {

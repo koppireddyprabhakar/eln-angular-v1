@@ -49,7 +49,7 @@ export class ProductComponent implements OnInit {
     this.getProducts();
     this.columns = [
       { key: 'productName', title: 'Product Name' },
-      { key: 'insertProcess', title: 'Insert Process' },
+      { key: 'productCode', title: 'Product Code' },
       { key: 'status', title: 'Status' },
       {
         key: 'options',
@@ -84,8 +84,9 @@ export class ProductComponent implements OnInit {
 
   saveProduct() {
     this.globalService.showLoader();
-    const newProduct: { productName: string | null } = {
+    const newProduct = {
       productName: this.productForm.get('productName')!.value,
+      productCode: this.productForm.get('productCode')!.value,
     };
     if (this.productForm.get('productName')!.value) {
       if (Object.keys(this.selectedProduct).length === 0) {
@@ -108,7 +109,7 @@ export class ProductComponent implements OnInit {
       } else {
         this.selectedProduct = {
           ...this.selectedProduct,
-          productName: this.productForm.get('productName')!.value,
+          ...newProduct,
         };
         this.productService
           .updateProduct(this.selectedProduct)

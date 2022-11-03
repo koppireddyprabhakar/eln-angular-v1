@@ -86,6 +86,37 @@
               formControlName="teamName"
             />
           </div>
+          <div class="col-12">
+            <label for="dosageId" class="form-label">Dosage</label>
+            <select
+              class="form-select"
+              aria-label="Dosage"
+              formControlName="dosageId"
+            >
+              <option
+                *ngFor="let dosage of dosages"
+                [ngValue]="dosage.dosageId"
+              >
+                {{ dosage.dosageName | titlecase }}
+              </option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label for="deptId" class="form-label">Department</label>
+            <select
+              class="form-select"
+              aria-label="Department"
+              formControlName="deptId"
+            >
+              <option
+                *ngFor="let department of departmentList"
+                [ngValue]="department.deptId"
+              >
+                {{ department.departmentName | titlecase }}
+              </option>
+            </select>
+          </div>
+
           <div
             *ngIf="
               teamForm.controls['teamName'].invalid &&

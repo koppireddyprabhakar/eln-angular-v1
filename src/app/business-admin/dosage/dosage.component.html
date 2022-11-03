@@ -105,17 +105,13 @@
                 [formGroupName]="i"
               >
                 <label class="col-sm-2 col-form-label">Formulation</label>
-                <div class="col-sm-12">
-                  <select
-                    class="form-select"
-                    aria-label="Default select example"
-                    formControlName="formulationName"
-                  >
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                  </select>
-                </div>
+
+                <input
+                  type="text"
+                  class="form-control"
+                  id="formulationName"
+                  formControlName="formulationName"
+                />
               </div>
             </section>
             <div class="add-formulation">

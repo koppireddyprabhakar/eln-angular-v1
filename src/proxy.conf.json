@@ -6,7 +6,9 @@
       "/lab-test",
       "/teams",
       "/excipients",
-      "/usersDetails"
+      "/usersDetails",
+      "/department",
+      "/userrole"
     ],
     "target": "http://localhost:8080/",
     "secure": false,
