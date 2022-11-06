@@ -83,12 +83,12 @@ export class ProductComponent implements OnInit {
   }
 
   saveProduct() {
-    this.globalService.showLoader();
     const newProduct = {
       productName: this.productForm.get('productName')!.value,
       productCode: this.productForm.get('productCode')!.value,
     };
     if (this.productForm.get('productName')!.value) {
+      this.globalService.showLoader();
       if (Object.keys(this.selectedProduct).length === 0) {
         this.productService
           .saveProduct(newProduct)

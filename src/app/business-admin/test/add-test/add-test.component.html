@@ -42,7 +42,12 @@
                 formControlName="description"
               />
             </div>
-            <div class="col-4">
+            <div
+              [ngClass]="{
+                'col-4': testRow.value.length === 1,
+                'col-3': testRow.value.length > 1
+              }"
+            >
               <label class="form-label">Dosage</label>
               <div class="col-12">
                 <select
@@ -58,6 +63,12 @@
                     {{ dosage.dosageName | titlecase }}
                   </option>
                 </select>
+              </div>
+            </div>
+            <div *ngIf="testRow.value.length > 1" class="col-1">
+              <div for="description" class="form-label">&nbsp;</div>
+              <div class="delete-test">
+                <i class="bi bi-trash-fill pointer" (click)="deleteTest(i)"></i>
               </div>
             </div>
           </div>

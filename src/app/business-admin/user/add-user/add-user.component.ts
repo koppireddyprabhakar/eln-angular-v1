@@ -18,8 +18,8 @@ import { Departments, Teams, UserRoles } from '../user.interface';
 })
 export class AddUserComponent implements OnInit {
   genderList = [
-    { label: 'Male', value: 'Male' },
-    { label: 'Female', value: 'Female' },
+    { label: 'Male', value: 'MALE' },
+    { label: 'Female', value: 'FEMALE' },
   ];
   departmentList: Departments[] = [];
   userRoles: UserRoles[] = [];
@@ -31,12 +31,12 @@ export class AddUserComponent implements OnInit {
   userForm = this.formBuilder.group({
     firstName: ['', [Validators.required]],
     lastName: [''],
-    dateOfBirth: [''],
-    gender: [''],
-    deptId: [''],
-    roleId: [''],
-    contactNo: [''],
-    mailId: ['', [Validators.email]],
+    dateOfBirth: ['', [Validators.required]],
+    gender: ['', [Validators.required]],
+    deptId: ['', [Validators.required]],
+    roleId: ['', [Validators.required]],
+    contactNo: ['', [Validators.required]],
+    mailId: ['', [Validators.email, Validators.required]],
     addressLine1: [''],
     addressLine2: [''],
     city: [''],
@@ -58,7 +58,6 @@ export class AddUserComponent implements OnInit {
 
   ngOnInit(): void {
     this.userId = this.activatedRoute.snapshot.queryParams['userId'];
-
     if (this.userId) {
       console.log('here');
       this.getUserById();
@@ -70,12 +69,11 @@ export class AddUserComponent implements OnInit {
   }
 
   saveUser() {
-    this.globalService.showLoader();
     const dob = this.userForm.get('dateOfBirth')?.value || '';
     const newUser = {
       firstName: this.userForm.get('firstName')?.value,
       lastName: this.userForm.get('lastName')?.value,
-      dateOfBirth: new Date(dob).toISOString().split('T')[0],
+      dateOfBirth: (dob && new Date(dob)?.toISOString().split('T')[0]) || '',
       gender: this.userForm.get('gender')?.value,
       deptId: this.userForm.get('deptId')?.value,
       roleId: this.userForm.get('roleId')?.value,
@@ -87,7 +85,9 @@ export class AddUserComponent implements OnInit {
       zipCode: this.userForm.get('zipCode')?.value,
       userTeamRequests: [{ teamId: this.userForm.get('teamId')?.value }],
     };
+    console.log(this.selectedUser);
     if (!this.userForm.invalid) {
+      this.globalService.showLoader();
       if (Object.keys(this.selectedUser).length === 0) {
         this.userService
           .saveUser(newUser)
@@ -102,12 +102,14 @@ export class AddUserComponent implements OnInit {
             this.route.navigate(['/business-admin/users/']);
           });
       } else {
-        this.selectedUser = {
-          ...this.selectedUser,
-          ...newUser,
-        };
+        this.selectedUser = [
+          {
+            ...this.selectedUser,
+            ...newUser,
+          },
+        ];
         this.userService
-          .updateUser(this.selectedUser)
+          .updateUser(this.selectedUser[0])
           .pipe(
             takeWhile(() => this.subscribeFlag),
             finalize(() => {
@@ -123,7 +125,14 @@ export class AddUserComponent implements OnInit {
           .subscribe(() => {});
       }
     } else {
-      this.userForm.markAsDirty();
+      console.log('her');
+      this.userForm.get('firstName')?.markAsDirty();
+      this.userForm.get('dateOfBirth')?.markAsDirty();
+      this.userForm.get('gender')?.markAsDirty();
+      this.userForm.get('deptId')?.markAsDirty();
+      this.userForm.get('roleId')?.markAsDirty();
+      this.userForm.get('contactNo')?.markAsDirty();
+      this.userForm.get('mailId')?.markAsDirty();
     }
   }
 
@@ -150,12 +159,14 @@ export class AddUserComponent implements OnInit {
   }
 
   getUserById() {
+    this.globalService.showLoader();
     this.userService
       .getUserById(this.userId)
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((selectedUser) => {
+        this.globalService.hideLoader();
         console.log(selectedUser);
-        this.selectedUser = this.selectedUser;
+        this.selectedUser = selectedUser;
         this.userForm.patchValue({
           firstName: selectedUser.firstName,
           lastName: selectedUser.lastName,

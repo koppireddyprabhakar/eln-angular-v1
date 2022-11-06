@@ -85,6 +85,18 @@
               id="teamName"
               formControlName="teamName"
             />
+            <span
+              *ngIf="
+                teamForm.controls['teamName'].invalid &&
+                (teamForm.controls['teamName'].dirty ||
+                  teamForm.controls['teamName'].touched) &&
+                teamForm.get('teamName')?.errors &&
+                teamForm.get('teamName')?.hasError('required')
+              "
+              class="text-danger"
+            >
+              Please enter Team Name
+            </span>
           </div>
           <div class="col-12">
             <label for="dosageId" class="form-label">Dosage</label>
@@ -100,6 +112,18 @@
                 {{ dosage.dosageName | titlecase }}
               </option>
             </select>
+            <span
+              *ngIf="
+                teamForm.controls['dosageId'].invalid &&
+                (teamForm.controls['dosageId'].dirty ||
+                  teamForm.controls['dosageId'].touched) &&
+                teamForm.get('dosageId')?.errors &&
+                teamForm.get('dosageId')?.hasError('required')
+              "
+              class="text-danger"
+            >
+              Please select a Dosage
+            </span>
           </div>
           <div class="col-12">
             <label for="deptId" class="form-label">Department</label>
@@ -115,19 +139,18 @@
                 {{ department.departmentName | titlecase }}
               </option>
             </select>
-          </div>
-
-          <div
-            *ngIf="
-              teamForm.controls['teamName'].invalid &&
-              (teamForm.controls['teamName'].dirty ||
-                teamForm.controls['teamName'].touched) &&
-              teamForm.get('teamName')?.errors &&
-              teamForm.get('teamName')?.hasError('required')
-            "
-            class="text-danger"
-          >
-            Please enter Team Name
+            <span
+              *ngIf="
+                teamForm.controls['deptId'].invalid &&
+                (teamForm.controls['deptId'].dirty ||
+                  teamForm.controls['deptId'].touched) &&
+                teamForm.get('deptId')?.errors &&
+                teamForm.get('deptId')?.hasError('required')
+              "
+              class="text-danger"
+            >
+              Please select a Department
+            </span>
           </div>
         </form>
       </div>

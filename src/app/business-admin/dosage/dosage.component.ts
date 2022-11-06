@@ -15,7 +15,7 @@ import {
 import { DosageService } from '@app/shared/services/dosage/dosage.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { ToastrService } from 'ngx-toastr';
-import { finalize, Subject, takeUntil, takeWhile } from 'rxjs';
+import { finalize, takeWhile } from 'rxjs';
 import { Dosages } from './dosage.interface';
 
 @Component({
@@ -103,13 +103,13 @@ export class DosageComponent implements OnInit {
   }
 
   saveDosage() {
-    this.globalService.showLoader();
     const newDosage: any = {
       dosageName: this.dosageForm.get('dosageName')!.value,
       formulations: this.formulations.value,
     };
     console.log(newDosage);
     if (this.dosageForm.get('dosageName')!.value) {
+      this.globalService.showLoader();
       if (Object.keys(this.selectedDosage).length === 0) {
         this.dosageService
           .saveDosage(newDosage)
@@ -201,6 +201,10 @@ export class DosageComponent implements OnInit {
         this.closeDeleteButton.nativeElement.click();
         this.toastr.success('Dosage has been deleted succesfully', 'Success');
       });
+  }
+
+  deleteFormulation(index) {
+    this.formulations.removeAt(index);
   }
 
   ngOnDestroy(): void {

@@ -121,8 +121,14 @@ export class AddTestComponent implements OnInit, OnDestroy {
           });
       }
     } else {
-      this.testRow.at(0).get('testName')?.markAsDirty();
+      this.testRow.value.forEach((element, index) => {
+        this.testRow.at(index).get('testName')?.markAsDirty();
+      });
     }
+  }
+
+  deleteTest(index) {
+    this.testRow.removeAt(index);
   }
 
   ngOnDestroy(): void {

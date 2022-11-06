@@ -109,13 +109,13 @@ export class TeamComponent implements OnInit {
   }
 
   saveTeam() {
-    this.globalService.showLoader();
     const newTeam = {
       teamName: this.teamForm.get('teamName')!.value,
       deptId: this.teamForm.get('deptId')!.value,
       teamDosages: [{ dosageId: this.teamForm.get('dosageId')!.value }],
     };
-    if (this.teamForm.get('teamName')!.value) {
+    if (!this.teamForm.invalid) {
+      this.globalService.showLoader();
       if (Object.keys(this.selectedTeam).length === 0) {
         this.teamService
           .saveTeam(newTeam)
@@ -150,6 +150,8 @@ export class TeamComponent implements OnInit {
       }
     } else {
       this.teamForm.get('teamName')?.markAsDirty();
+      this.teamForm.get('dosageId')?.markAsDirty();
+      this.teamForm.get('deptId')?.markAsDirty();
     }
   }
 

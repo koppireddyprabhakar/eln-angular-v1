@@ -103,15 +103,32 @@
               <div
                 *ngFor="let formula of formulations?.controls; let i = index"
                 [formGroupName]="i"
+                class="formultion-row"
               >
-                <label class="col-sm-2 col-form-label">Formulation</label>
+                <div
+                  [ngClass]="{
+                    'col-12': formulations.value.length === 1,
+                    'col-11': formulations.value.length > 1
+                  }"
+                >
+                  <label class="col-sm-2 col-form-label">Formulation</label>
 
-                <input
-                  type="text"
-                  class="form-control"
-                  id="formulationName"
-                  formControlName="formulationName"
-                />
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="formulationName"
+                    formControlName="formulationName"
+                  />
+                </div>
+                <div *ngIf="formulations.value.length > 1" class="col-1">
+                  <div for="description" class="form-label">&nbsp;</div>
+                  <div class="delete-formulation">
+                    <i
+                      class="bi bi-trash-fill pointer"
+                      (click)="deleteFormulation(i)"
+                    ></i>
+                  </div>
+                </div>
               </div>
             </section>
             <div class="add-formulation">

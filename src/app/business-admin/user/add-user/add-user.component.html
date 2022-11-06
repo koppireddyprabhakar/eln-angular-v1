@@ -11,19 +11,20 @@
             id="firstName"
             formControlName="firstName"
           />
+          <span
+            *ngIf="
+              userForm.controls['firstName'].invalid &&
+              (userForm.controls['firstName'].dirty ||
+                userForm.controls['firstName'].touched) &&
+              userForm.get('firstName')?.errors &&
+              userForm.get('firstName')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please enter First Name
+          </span>
         </div>
-        <div
-          *ngIf="
-            userForm.controls['firstName'].invalid &&
-            (userForm.controls['firstName'].dirty ||
-              userForm.controls['firstName'].touched) &&
-            userForm.get('firstName')?.errors &&
-            userForm.get('firstName')?.hasError('required')
-          "
-          class="text-danger"
-        >
-          Please enter Product Name
-        </div>
+
         <div class="col-6">
           <label for="lastName" class="form-label">Last Name</label>
           <input
@@ -41,6 +42,18 @@
             id="dateOfBirth"
             formControlName="dateOfBirth"
           />
+          <span
+            *ngIf="
+              userForm.controls['dateOfBirth'].invalid &&
+              (userForm.controls['dateOfBirth'].dirty ||
+                userForm.controls['dateOfBirth'].touched) &&
+              userForm.get('dateOfBirth')?.errors &&
+              userForm.get('dateOfBirth')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please enter DOB
+          </span>
         </div>
         <div class="col-6">
           <label for="gender" class="form-label">Gender</label>
@@ -53,6 +66,18 @@
               {{ gender.label | titlecase }}
             </option>
           </select>
+          <span
+            *ngIf="
+              userForm.controls['gender'].invalid &&
+              (userForm.controls['gender'].dirty ||
+                userForm.controls['gender'].touched) &&
+              userForm.get('gender')?.errors &&
+              userForm.get('gender')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please select Gender
+          </span>
         </div>
         <div class="col-6">
           <label for="deptId" class="form-label">DepartmentId</label>
@@ -65,6 +90,18 @@
               {{ dept.departmentName | titlecase }}
             </option>
           </select>
+          <span
+            *ngIf="
+              userForm.controls['deptId'].invalid &&
+              (userForm.controls['deptId'].dirty ||
+                userForm.controls['deptId'].touched) &&
+              userForm.get('deptId')?.errors &&
+              userForm.get('deptId')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please select Department Id
+          </span>
         </div>
         <div class="col-6">
           <label for="roleId" class="form-label">Role Id</label>
@@ -80,6 +117,18 @@
               {{ userRole.roleName | titlecase }}
             </option>
           </select>
+          <span
+            *ngIf="
+              userForm.controls['roleId'].invalid &&
+              (userForm.controls['roleId'].dirty ||
+                userForm.controls['roleId'].touched) &&
+              userForm.get('roleId')?.errors &&
+              userForm.get('roleId')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please select Role Id
+          </span>
         </div>
         <div class="col-6">
           <label for="contactNo" class="form-label">Contact Number</label>
@@ -89,6 +138,18 @@
             id="contactNo"
             formControlName="contactNo"
           />
+          <span
+            *ngIf="
+              userForm.controls['contactNo'].invalid &&
+              (userForm.controls['contactNo'].dirty ||
+                userForm.controls['contactNo'].touched) &&
+              userForm.get('contactNo')?.errors &&
+              userForm.get('contactNo')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please enter Contact Number
+          </span>
         </div>
         <div class="col-6">
           <label for="mailId" class="form-label">Mail Id</label>
@@ -98,6 +159,18 @@
             id="mailId"
             formControlName="mailId"
           />
+          <span
+            *ngIf="
+              userForm.controls['mailId'].invalid &&
+              (userForm.controls['mailId'].dirty ||
+                userForm.controls['mailId'].touched) &&
+              userForm.get('mailId')?.errors &&
+              userForm.get('mailId')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please enter Mail Id
+          </span>
         </div>
         <div class="col-6">
           <label for="addressLine1" class="form-label">Address Line 1</label>

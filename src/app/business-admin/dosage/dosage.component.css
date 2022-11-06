@@ -29,3 +29,12 @@
 .tableNgx ::ng-deep .text-right {
   text-align: right;
 }
+
+.delete-formulation {
+  padding: 1rem;
+  color: #dc3545;
+}
+
+.formultion-row {
+  display: flex;
+}
