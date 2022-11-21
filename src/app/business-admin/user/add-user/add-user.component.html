@@ -3,7 +3,7 @@
     <div class="card-body">
       <h5 class="card-title">User Form</h5>
       <form class="row g-3" [formGroup]="userForm">
-        <div class="col-6">
+        <div class="col-4">
           <label for="firstName" class="form-label">First Name</label>
           <input
             type="text"
@@ -25,7 +25,7 @@
           </span>
         </div>
 
-        <div class="col-6">
+        <div class="col-4">
           <label for="lastName" class="form-label">Last Name</label>
           <input
             type="text"
@@ -34,7 +34,7 @@
             formControlName="lastName"
           />
         </div>
-        <div class="col-6">
+        <div class="col-4">
           <label for="dateOfBirth" class="form-label">Date of birth</label>
           <input
             type="date"
@@ -55,7 +55,7 @@
             Please enter DOB
           </span>
         </div>
-        <div class="col-6">
+        <div class="col-4">
           <label for="gender" class="form-label">Gender</label>
           <select
             class="form-select"
@@ -79,8 +79,8 @@
             Please select Gender
           </span>
         </div>
-        <div class="col-6">
-          <label for="deptId" class="form-label">DepartmentId</label>
+        <div class="col-4">
+          <label for="deptId" class="form-label">Department Name</label>
           <select
             class="form-select"
             aria-label="Department Id"
@@ -100,11 +100,11 @@
             "
             class="text-danger"
           >
-            Please select Department Id
+            Please select Department Name
           </span>
         </div>
-        <div class="col-6">
-          <label for="roleId" class="form-label">Role Id</label>
+        <div class="col-4">
+          <label for="roleId" class="form-label">Role Name</label>
           <select
             class="form-select"
             aria-label="Role Id"
@@ -127,10 +127,34 @@
             "
             class="text-danger"
           >
-            Please select Role Id
+            Please select Role Name
           </span>
         </div>
-        <div class="col-6">
+        <div class="col-4">
+          <label for="teamId" class="form-label">Team Name</label>
+
+          <select
+            class="form-select"
+            aria-label="Teams"
+            formControlName="teamId"
+          >
+            <option *ngFor="let team of teams" [ngValue]="team.teamId">
+              {{ team.teamName | titlecase }}
+            </option>
+          </select>
+        </div>
+        <div class="col-4">
+          <label for="teamId" class="form-label">Dosage Name</label>
+
+          <select
+            class="form-select"
+            aria-label="Teams"
+            formControlName="teamId"
+          >
+            <option>Select</option>
+          </select>
+        </div>
+        <div class="col-4">
           <label for="contactNo" class="form-label">Contact Number</label>
           <input
             type="number"
@@ -151,7 +175,7 @@
             Please enter Contact Number
           </span>
         </div>
-        <div class="col-6">
+        <div class="col-4">
           <label for="mailId" class="form-label">Mail Id</label>
           <input
             type="email"
@@ -172,7 +196,7 @@
             Please enter Mail Id
           </span>
         </div>
-        <div class="col-6">
+        <div class="col-4">
           <label for="addressLine1" class="form-label">Address Line 1</label>
           <input
             type="text"
@@ -181,7 +205,7 @@
             formControlName="addressLine1"
           />
         </div>
-        <div class="col-6">
+        <div class="col-4">
           <label for="addressLine2" class="form-label">Address Line 2</label>
           <input
             type="text"
@@ -190,7 +214,7 @@
             formControlName="addressLine2"
           />
         </div>
-        <div class="col-6">
+        <div class="col-4">
           <label for="city" class="form-label">City</label>
           <input
             type="text"
@@ -199,7 +223,7 @@
             formControlName="city"
           />
         </div>
-        <div class="col-6">
+        <div class="col-4">
           <label for="zipCode" class="form-label">ZipCode</label>
           <input
             type="number"
@@ -207,19 +231,6 @@
             id="zipCode"
             formControlName="zipCode"
           />
-        </div>
-        <div class="col-6">
-          <label for="teamId" class="form-label">Team Id</label>
-
-          <select
-            class="form-select"
-            aria-label="Teams"
-            formControlName="teamId"
-          >
-            <option *ngFor="let team of teams" [ngValue]="team.teamId">
-              {{ team.teamName | titlecase }}
-            </option>
-          </select>
         </div>
       </form>
       <div class="text-center pt-4">

@@ -37,9 +37,9 @@ export class UserService {
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
-  deleteUser(userId: number) {
-    const url = `${elnEndpointsConfig.endpoints['deleteUser']}?userId=${userId}`;
-    return this.http.delete<string>(url);
+  deleteUser(user) {
+    const url = `${elnEndpointsConfig.endpoints['deleteUser']}`;
+    return this.http.delete<string>(url, { body: user });
   }
 
   handleError(error: HttpErrorResponse) {

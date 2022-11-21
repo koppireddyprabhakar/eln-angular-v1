@@ -31,9 +31,9 @@ export class TeamService {
     return this.http.put<string>(url, product);
   }
 
-  deleteTeam(teamId: number) {
-    const url = `${elnEndpointsConfig.endpoints['deleteTeam']}?teamsId=${teamId}`;
-    return this.http.delete<string>(url);
+  deleteTeam(team) {
+    const url = `${elnEndpointsConfig.endpoints['deleteTeam']}`;
+    return this.http.delete<string>(url, { body: team });
   }
 
   handleError(error: HttpErrorResponse) {

@@ -1,0 +1,24 @@
+
+// .tableNgx ::ng-deep{
+//    .form-control {
+//     border-radius: 0.25rem !important;
+//   }
+//   .text-right {
+//     text-align: right;
+//   }
+
+//   label {
+//     display: inline-block;
+//     max-width: 100%;
+//     margin-bottom: 5px;
+//     font-weight: 700;
+//   }
+// }
+
+ :host{
+  ::ng-deep {
+    .form-control {
+      border-radius: 0.25rem !important;
+    }
+  }
+ }

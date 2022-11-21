@@ -14,7 +14,7 @@
                   type="button"
                   class="btn btn-primary"
                   data-bs-toggle="modal"
-                  data-bs-target="#productForms"
+                  data-bs-target="#inwardForms"
                   (click)="addInward()"
                 >
                   <i class="bi bi-plus-circle"></i> Add Inward
@@ -37,10 +37,11 @@
                   <button
                     type="button"
                     data-bs-toggle="modal"
-                    data-bs-target="#productForms"
+                    data-bs-target="#inwardForms"
                     class="btn btn-outline-primary"
+                    (click)="selectInward(row)"
                   >
-                    <!--    (click)="selectProduct(row)" -->
+                    <!--    -->
                     Edit
                   </button>
                   &nbsp;&nbsp;
@@ -49,8 +50,9 @@
                     data-bs-toggle="modal"
                     data-bs-target="#deleteForm"
                     class="btn btn-outline-danger"
+                    (click)="confirmInwardDeletetion(row)"
                   >
-                    <!--  (click)="confirmProductDeletetion(row)" -->
+                    <!--   -->
                     Delete
                   </button>
                 </ng-template>
@@ -63,7 +65,7 @@
   </section>
 </main>
 
-<div class="modal fade" id="productForms" tabindex="-1">
+<div class="modal fade" id="inwardForms" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -76,7 +78,7 @@
         ></button>
       </div>
       <div class="modal-body">
-        <form class="row g-3" [formGroup]="productForm">
+        <form class="row g-3" [formGroup]="inwardForm">
           <div class="col-12">
             <label for="excipientsName" class="form-label">Inward Name</label>
             <input
@@ -85,19 +87,20 @@
               id="excipientsName"
               formControlName="excipientsName"
             />
+            <span
+              *ngIf="
+                inwardForm.controls['excipientsName'].invalid &&
+                (inwardForm.controls['excipientsName'].dirty ||
+                  inwardForm.controls['excipientsName'].touched) &&
+                inwardForm.get('excipientsName')?.errors &&
+                inwardForm.get('excipientsName')?.hasError('required')
+              "
+              class="text-danger"
+            >
+              Please enter Inward Name
+            </span>
           </div>
-          <div
-            *ngIf="
-              productForm.controls['excipientsName'].invalid &&
-              (productForm.controls['excipientsName'].dirty ||
-                productForm.controls['excipientsName'].touched) &&
-              productForm.get('excipientsName')?.errors &&
-              productForm.get('excipientsName')?.hasError('required')
-            "
-            class="text-danger"
-          >
-            Please enter Product Name
-          </div>
+
           <div class="col-6">
             <label for="materialName" class="form-label">Material Name</label>
             <input
@@ -163,8 +166,10 @@
         >
           Close
         </button>
-        <!-- (click)="saveProduct()" -->
-        <button type="button" class="btn btn-primary">Save</button>
+        <!-- -->
+        <button type="button" class="btn btn-primary" (click)="saveInward()">
+          Save
+        </button>
       </div>
     </div>
   </div>
@@ -173,7 +178,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Delete Product</h5>
+        <h5 class="modal-title">Delete Inward</h5>
         <button
           type="button"
           class="btn-close"
@@ -181,9 +186,7 @@
           aria-label="Close"
         ></button>
       </div>
-      <div class="modal-body">
-        Are you sure you want to delete this product?
-      </div>
+      <div class="modal-body">Are you sure you want to delete this Inward?</div>
       <div class="modal-footer">
         <button
           type="button"
@@ -193,8 +196,10 @@
         >
           Close
         </button>
-        <!-- (click)="deleteProduct()" -->
-        <button type="button" class="btn btn-primary">Delete</button>
+        <!--  -->
+        <button type="button" class="btn btn-primary" (click)="deleteInward()">
+          Delete
+        </button>
       </div>
     </div>
   </div>

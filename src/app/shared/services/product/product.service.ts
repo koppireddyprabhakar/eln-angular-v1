@@ -30,9 +30,9 @@ export class ProductService {
     return this.http.put<string>(url, product);
   }
 
-  deleteProduct(productId: number) {
-    const url = `${elnEndpointsConfig.endpoints['deleteProduct']}?productId=${productId}`;
-    return this.http.delete<string>(url);
+  deleteProduct(product) {
+    const url = `${elnEndpointsConfig.endpoints['deleteProduct']}`;
+    return this.http.delete<string>(url, { body: product });
   }
 
   handleError(error: HttpErrorResponse) {

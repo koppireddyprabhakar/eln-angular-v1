@@ -114,15 +114,13 @@ export class AddUserComponent implements OnInit {
             takeWhile(() => this.subscribeFlag),
             finalize(() => {
               this.globalService.hideLoader();
-              this.route.navigate(['/business-admin/users/']);
-              this.toastr.success(
-                'Test has been updated succesfully',
-                'Success'
-              );
-              this.editForm = false;
             })
           )
-          .subscribe(() => {});
+          .subscribe(() => {
+            this.route.navigate(['/business-admin/users/']);
+            this.toastr.success('Test has been updated succesfully', 'Success');
+            this.editForm = false;
+          });
       }
     } else {
       console.log('her');

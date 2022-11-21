@@ -125,7 +125,12 @@
                   <div class="delete-formulation">
                     <i
                       class="bi bi-trash-fill pointer"
-                      (click)="deleteFormulation(i)"
+                      (click)="
+                        deleteFormulation(
+                          i,
+                          formulations.value[i].formulationId
+                        )
+                      "
                     ></i>
                   </div>
                 </div>

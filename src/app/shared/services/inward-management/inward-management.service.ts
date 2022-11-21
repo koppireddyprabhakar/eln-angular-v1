@@ -20,18 +20,20 @@ export class InwardManagementService {
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
-  saveTest(product: { productName: string | null }) {
-    const url = elnEndpointsConfig.endpoints['create-excipient'];
-    return this.http.post<string>(url, product);
+  saveInward(inward) {
+    const url = elnEndpointsConfig.endpoints['createExcipient'];
+    console.log(url);
+    console.log(inward);
+    return this.http.post<string>(url, inward);
   }
 
-  updateTest(product: { productName: string | null }) {
-    const url = elnEndpointsConfig.endpoints['update-excipient'];
-    return this.http.put<string>(url, product);
+  updateInward(inward) {
+    const url = elnEndpointsConfig.endpoints['updateExcipient'];
+    return this.http.put<string>(url, inward);
   }
 
-  deleteTest(excipientId: number) {
-    const url = `${elnEndpointsConfig.endpoints['delete-excipient']}?excipientId =${excipientId}`;
+  deleteExcipient(excipientId: number) {
+    const url = `${elnEndpointsConfig.endpoints['deleteExcipient']}?excipientId=${excipientId}`;
     return this.http.delete<string>(url);
   }
 

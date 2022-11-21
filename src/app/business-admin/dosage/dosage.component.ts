@@ -68,12 +68,12 @@ export class DosageComponent implements OnInit {
   addFormulations(): FormGroup {
     return this.formBuilder.group({
       formulationName: [null],
+      formulationId: [null],
     });
   }
 
   addNewFormulations() {
     this.formulations.push(this.addFormulations());
-    console.log(this.formulations);
   }
 
   addDosage() {
@@ -96,21 +96,19 @@ export class DosageComponent implements OnInit {
           ),
           status: 'Active',
         }));
-        console.log(newDosagesList);
         this.dosages = newDosagesList;
         this.globalService.hideLoader();
       });
   }
 
   saveDosage() {
-    const newDosage: any = {
-      dosageName: this.dosageForm.get('dosageName')!.value,
-      formulations: this.formulations.value,
-    };
-    console.log(newDosage);
     if (this.dosageForm.get('dosageName')!.value) {
       this.globalService.showLoader();
       if (Object.keys(this.selectedDosage).length === 0) {
+        const newDosage: any = {
+          dosageName: this.dosageForm.get('dosageName')!.value,
+          formulations: this.formulations.value,
+        };
         this.dosageService
           .saveDosage(newDosage)
           .pipe(
@@ -131,22 +129,7 @@ export class DosageComponent implements OnInit {
         this.selectedDosage = {
           ...this.selectedDosage,
           dosageName: this.dosageForm.get('dosageName')!.value,
-          formulations: this.formulations.value.map((formula, index) => {
-            if (this.selectedDosage.formulations[index]?.formulationId) {
-              return {
-                formulationName: formula.formulationName,
-                formulationId:
-                  this.selectedDosage.formulations[index]?.formulationId || 0,
-                dosageId: this.selectedDosage.dosageId,
-              };
-            } else {
-              return {
-                formulationName: formula.formulationName,
-              };
-            }
-          }),
         };
-        console.log(this.selectedDosage);
         this.dosageService
           .updateDosage(this.selectedDosage)
           .pipe(
@@ -172,14 +155,13 @@ export class DosageComponent implements OnInit {
   selectProduct(product: Dosages) {
     this.selectedDosage = product;
     this.formulations.clear();
-    console.log(this.formulations.value);
     this.dosageForm.patchValue({ dosageName: product.dosageName });
     this.selectedDosage.formulations.forEach((formulation, index) => {
-      console.log(formulation);
       this.formulations.push(this.addFormulations());
-      this.formulations
-        .at(index)
-        .patchValue({ formulationName: formulation.formulationName });
+      this.formulations.at(index).patchValue({
+        formulationName: formulation.formulationName,
+        formulationId: formulation.formulationId,
+      });
     });
   }
 
@@ -203,8 +185,12 @@ export class DosageComponent implements OnInit {
       });
   }
 
-  deleteFormulation(index) {
+  deleteFormulation(index, id) {
     this.formulations.removeAt(index);
+    const formIndex = this.selectedDosage.formulations.findIndex(
+      (formulae) => formulae.formulationId === id
+    );
+    this.selectedDosage.formulations[formIndex].status = 'Inactive';
   }
 
   ngOnDestroy(): void {

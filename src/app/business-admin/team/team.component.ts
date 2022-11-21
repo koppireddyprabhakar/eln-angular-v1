@@ -51,6 +51,8 @@ export class TeamComponent implements OnInit {
   ngOnInit(): void {
     this.columns = [
       { key: 'teamName', title: 'Team Name' },
+      { key: 'departmentName', title: 'Department Name' },
+      { key: 'dosageName', title: 'Dosage Name' },
       { key: 'insertProcess', title: 'Insert Process' },
       { key: 'status', title: 'Status' },
       {
@@ -112,7 +114,15 @@ export class TeamComponent implements OnInit {
     const newTeam = {
       teamName: this.teamForm.get('teamName')!.value,
       deptId: this.teamForm.get('deptId')!.value,
-      teamDosages: [{ dosageId: this.teamForm.get('dosageId')!.value }],
+      teamDosages: [
+        {
+          teamId:
+            Object.keys(this.selectedTeam).length === 0
+              ? 0
+              : this.selectedTeam.teamId,
+          dosageId: this.teamForm.get('dosageId')!.value,
+        },
+      ],
     };
     if (!this.teamForm.invalid) {
       this.globalService.showLoader();
@@ -170,8 +180,9 @@ export class TeamComponent implements OnInit {
   }
 
   deleteTeam() {
+    this.selectedTeam = { ...this.selectedTeam, status: 'Inactive' };
     this.teamService
-      .deleteTeam(this.selectedTeam.teamId)
+      .deleteTeam(this.selectedTeam)
       .pipe(
         takeWhile(() => this.subscribeFlag),
         finalize(() => {

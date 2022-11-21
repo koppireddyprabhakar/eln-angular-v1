@@ -47,7 +47,7 @@ export class UserComponent implements OnInit {
       {
         key: 'name',
         title: '<div class="blue">Name</div>',
-        align: { head: 'center', body: 'center' },
+        align: { head: 'left', body: 'left' },
         sorting: false,
         cellTemplate: this.nameTpl,
       },
@@ -99,8 +99,9 @@ export class UserComponent implements OnInit {
   }
 
   deleteUser() {
+    this.selectedUser = { ...this.selectedUser, status: 'Inactive' };
     this.userService
-      .deleteUser(this.selectedUser.userId)
+      .deleteUser(this.selectedUser)
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe(() => {
         this.getUsers();

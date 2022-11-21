@@ -142,8 +142,13 @@ export class ProductComponent implements OnInit {
   }
 
   deleteProduct() {
+    this.selectedProduct = {
+      ...this.selectedProduct,
+      status: 'string',
+      productCode: 'Inactive',
+    };
     this.productService
-      .deleteProduct(this.selectedProduct.productId)
+      .deleteProduct(this.selectedProduct)
       .pipe(
         takeWhile(() => this.subscribeFlag),
         finalize(() => {

@@ -9,7 +9,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { ToastrService } from 'ngx-toastr';
-import { takeWhile } from 'rxjs';
+import { finalize, takeWhile } from 'rxjs';
 
 @Component({
   selector: 'app-inward-management',
@@ -20,7 +20,7 @@ export class InwardManagementComponent implements OnInit {
   inwards: any = [];
   selectedInward: any = {};
   subscribeFlag = true;
-  productForm = this.formBuilder.group({
+  inwardForm = this.formBuilder.group({
     excipientsName: ['', [Validators.required]],
     materialName: [''],
     materialType: [''],
@@ -44,12 +44,12 @@ export class InwardManagementComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getProducts();
+    this.getExcipients();
     this.columns = [
-      { key: 'inwardName', title: 'Inward Name' },
+      { key: 'excipientsName', title: 'Inward Name' },
       { key: 'materialName', title: 'Material Name' },
       { key: 'materialType', title: 'Material Type' },
-      { key: 'batchNumber', title: 'Batch Number' },
+      { key: 'batchNo', title: 'Batch Number' },
       { key: 'sourceName', title: 'Source Name' },
       { key: 'potency', title: 'Potency' },
       { key: 'grade', title: 'Grade' },
@@ -66,10 +66,10 @@ export class InwardManagementComponent implements OnInit {
 
   addInward() {
     this.selectedInward = {};
-    this.productForm.reset();
+    this.inwardForm.reset();
   }
 
-  getProducts() {
+  getExcipients() {
     this.globalService.showLoader();
     this.inwardService
       .getInwards()
@@ -84,79 +84,97 @@ export class InwardManagementComponent implements OnInit {
       });
   }
 
-  // saveProduct() {
-  //   this.globalService.showLoader();
-  //   const newProduct: { productName: string | null } = {
-  //     productName: this.productForm.get('productName')!.value,
-  //   };
-  //   if (this.productForm.get('productName')!.value) {
-  //     if (Object.keys(this.selectedInward).length === 0) {
-  //       this.inwardService
-  //         .saveProduct(newProduct)
-  //         .pipe(
-  //           takeWhile(() => this.subscribeFlag),
-  //           finalize(() => {
-  //             this.globalService.hideLoader();
-  //           })
-  //         )
-  //         .subscribe(() => {
-  //           this.getProducts();
-  //           this.closeButton.nativeElement.click();
-  //           this.toastr.success(
-  //             'Product has been added succesfully',
-  //             'Success'
-  //           );
-  //         });
-  //     } else {
-  //       this.selectedInward = {
-  //         ...this.selectedInward,
-  //         productName: this.productForm.get('productName')!.value,
-  //       };
-  //       this.inwardService
-  //         .updateProduct(this.selectedInward)
-  //         .pipe(
-  //           finalize(() => {
-  //             this.globalService.hideLoader();
-  //           })
-  //         )
-  //         .subscribe(() => {
-  //           this.getProducts();
-  //           this.closeButton.nativeElement.click();
-  //           this.toastr.success(
-  //             'Product has been updated succesfully',
-  //             'Success'
-  //           );
-  //         });
-  //     }
-  //   } else {
-  //     this.productForm.get('productName')?.markAsDirty();
-  //   }
-  // }
+  saveInward() {
+    this.globalService.showLoader();
+    const newInward = {
+      excipientsName: this.inwardForm.get('excipientsName')!.value,
+      materialName: this.inwardForm.get('materialName')!.value,
+      materialType: this.inwardForm.get('materialType')!.value,
+      batchNo: this.inwardForm.get('batchNumber')!.value,
+      sourceName: this.inwardForm.get('sourceName')!.value,
+      potency: this.inwardForm.get('potency')!.value,
+      grade: this.inwardForm.get('grade')!.value,
+      status: 'New',
+    };
+    if (this.inwardForm.valid) {
+      if (Object.keys(this.selectedInward).length === 0) {
+        this.inwardService
+          .saveInward(newInward)
+          .pipe(
+            takeWhile(() => this.subscribeFlag),
+            finalize(() => {
+              this.globalService.hideLoader();
+            })
+          )
+          .subscribe(() => {
+            this.getExcipients();
+            this.closeButton.nativeElement.click();
+            this.toastr.success('Inward has been added succesfully', 'Success');
+          });
+      } else {
+        this.selectedInward = {
+          ...this.selectedInward,
+          excipientsName: this.inwardForm.get('excipientsName')!.value,
+          materialName: this.inwardForm.get('materialName')!.value,
+          materialType: this.inwardForm.get('materialType')!.value,
+          batchNo: this.inwardForm.get('batchNumber')!.value,
+          sourceName: this.inwardForm.get('sourceName')!.value,
+          potency: this.inwardForm.get('potency')!.value,
+          grade: this.inwardForm.get('grade')!.value,
+        };
+        this.inwardService
+          .updateInward(this.selectedInward)
+          .pipe(
+            finalize(() => {
+              this.globalService.hideLoader();
+            })
+          )
+          .subscribe(() => {
+            this.getExcipients();
+            this.closeButton.nativeElement.click();
+            this.toastr.success(
+              'Inward has been updated succesfully',
+              'Success'
+            );
+          });
+      }
+    } else {
+      this.inwardForm.get('excipientsName')?.markAsDirty();
+    }
+  }
 
-  // selectProduct(product: Products) {
-  //   this.selectedInward = product;
-  //   this.productForm.patchValue({ productName: product.productName });
-  // }
+  selectInward(inward) {
+    this.selectedInward = inward;
+    this.inwardForm.patchValue({
+      excipientsName: inward.excipientsName,
+      materialName: inward.materialName,
+      materialType: inward.materialType,
+      batchNumber: inward.batchNo,
+      sourceName: inward.sourceName,
+      potency: inward.potency,
+      grade: inward.grade,
+    });
+  }
 
-  // confirmProductDeletetion(product: Products) {
-  //   this.selectedInward = product;
-  // }
+  confirmInwardDeletetion(inward) {
+    this.selectedInward = inward;
+  }
 
-  // deleteProduct() {
-  //   this.inwardService
-  //     .deleteProduct(this.selectedInward.productId)
-  //     .pipe(
-  //       takeWhile(() => this.subscribeFlag),
-  //       finalize(() => {
-  //         this.globalService.hideLoader();
-  //       })
-  //     )
-  //     .subscribe(() => {
-  //       this.getProducts();
-  //       this.closeDeleteButton.nativeElement.click();
-  //       this.toastr.success('Product has been deleted succesfully', 'Success');
-  //     });
-  // }
+  deleteInward() {
+    this.inwardService
+      .deleteExcipient(this.selectedInward.excipientId)
+      .pipe(
+        takeWhile(() => this.subscribeFlag),
+        finalize(() => {
+          this.globalService.hideLoader();
+        })
+      )
+      .subscribe(() => {
+        this.getExcipients();
+        this.closeDeleteButton.nativeElement.click();
+        this.toastr.success('Inward has been deleted succesfully', 'Success');
+      });
+  }
 
   ngOnDestroy(): void {
     this.subscribeFlag = false;

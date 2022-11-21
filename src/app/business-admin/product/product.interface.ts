@@ -5,4 +5,6 @@ export interface Products {
   updateProcess?: any;
   productId: number;
   productName: string | null;
+  productCode?: string | null;
+  status?: string;
 }
