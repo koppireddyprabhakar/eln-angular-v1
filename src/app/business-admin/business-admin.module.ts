@@ -13,6 +13,8 @@ import { TeamComponent } from './team/team.component';
 import { InwardManagementComponent } from './inward-management/inward-management.component';
 import { AddTestComponent } from './test/add-test/add-test.component';
 import { AddUserComponent } from './user/add-user/add-user.component';
+import { ProjectManagementComponent } from './project-management/project-management.component';
+import { AddProjectManagementComponent } from './project-management/add-project-management/add-project-management.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { AddUserComponent } from './user/add-user/add-user.component';
     InwardManagementComponent,
     AddTestComponent,
     AddUserComponent,
+    ProjectManagementComponent,
+    AddProjectManagementComponent,
   ],
   imports: [
     CommonModule,

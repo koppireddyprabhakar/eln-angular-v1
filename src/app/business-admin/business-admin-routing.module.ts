@@ -4,6 +4,8 @@ import { UserComponent } from '@app/business-admin/user/user.component';
 import { DosageComponent } from './dosage/dosage.component';
 import { InwardManagementComponent } from './inward-management/inward-management.component';
 import { ProductComponent } from './product/product.component';
+import { AddProjectManagementComponent } from './project-management/add-project-management/add-project-management.component';
+import { ProjectManagementComponent } from './project-management/project-management.component';
 import { TeamComponent } from './team/team.component';
 import { AddTestComponent } from './test/add-test/add-test.component';
 import { TestComponent } from './test/test.component';
@@ -54,6 +56,19 @@ const routes: Routes = [
       {
         path: 'inward-management',
         component: InwardManagementComponent,
+      },
+      {
+        path: 'project-management',
+        children: [
+          {
+            path: '',
+            component: ProjectManagementComponent,
+          },
+          {
+            path: 'add-project',
+            component: AddProjectManagementComponent,
+          },
+        ],
       },
     ],
   },

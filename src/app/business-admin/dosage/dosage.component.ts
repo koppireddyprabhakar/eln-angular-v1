@@ -59,7 +59,7 @@ export class DosageComponent implements OnInit {
         title: '<div class="blue">Options</div>',
         align: { head: 'center', body: 'center' },
         sorting: false,
-        width: 80,
+        width: 150,
         cellTemplate: this.actionTpl,
       },
     ];

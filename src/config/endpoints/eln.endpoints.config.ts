@@ -28,6 +28,15 @@ export const elnEndpointsConfig: EndpointConfig = {
     deleteExcipient: 'excipients/delete-excipient',
     getDepartments: 'department/get-departments',
     getUserRoles: 'userrole/get-user-roles',
+    createProject: 'project/create-project',
+    updateProject: 'project/update-project',
+    deleteProject: 'project/delete-project',
+    getProjects: 'project/get-projects',
+    getProjectById: 'project/get-project-by-id',
+    getProjectsTeams: 'project/get-formulations-teams',
+    getProjectsTeamsId:
+      'formulation/get-projects-by-dosage-or-team-id?teamId=5',
+    getMarkets: 'market/get-markets',
   },
 };
 

@@ -1,0 +1,266 @@
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Projects</h1>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Projects</h5>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="home-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#home"
+              type="button"
+              role="tab"
+              aria-controls="home"
+              aria-selected="true"
+            >
+              All Projects
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="profile-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#profile"
+              type="button"
+              role="tab"
+              aria-controls="profile"
+              aria-selected="false"
+              (click)="getMyProjects()"
+            >
+              My Projects
+            </button>
+          </li>
+        </ul>
+        <div class="tab-content pt-2" id="myTabContent">
+          <div
+            class="tab-pane fade show active"
+            id="home"
+            role="tabpanel"
+            aria-labelledby="home-tab"
+          >
+            <div class="tableNgx">
+              <ngx-datatable
+                tableClass="table table-striped table-bordered table-hover tableNgx"
+                [data]="projects"
+                [options]="options"
+                [columns]="columns"
+              >
+                <!-- <ng-template
+              #actionTpl
+              let-row
+              let-rowIndex="rowIndex"
+              let-columnValue="columnValue"
+            >
+              <button
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#inwardForms"
+                class="btn btn-outline-primary"
+                (click)="selectInward(row)"
+              >
+                Edit
+              </button>
+              &nbsp;&nbsp;
+              <button
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteForm"
+                class="btn btn-outline-danger"
+                (click)="confirmInwardDeletetion(row)"
+              >
+                Delete
+              </button>
+            </ng-template> -->
+              </ngx-datatable>
+            </div>
+          </div>
+          <div
+            class="tab-pane fade"
+            id="profile"
+            role="tabpanel"
+            aria-labelledby="profile-tab"
+          >
+            <div class="tableNgx">
+              <ngx-datatable
+                tableClass="table table-striped table-bordered table-hover tableNgx"
+                [data]="myProjects"
+                [options]="options"
+                [columns]="columns"
+              >
+                <ng-template
+                  #actionTpl
+                  let-row
+                  let-rowIndex="rowIndex"
+                  let-columnValue="columnValue"
+                >
+                  <!-- <button
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#inwardForms"
+              class="btn btn-outline-primary"
+              (click)="selectInward(row)"
+            >
+              Edit
+            </button> -->
+                  &nbsp;&nbsp;
+                  <button
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteForm"
+                    class="btn btn-outline-danger"
+                  >
+                    Create Exp Formulation
+                  </button>
+                </ng-template>
+              </ngx-datatable>
+            </div>
+          </div>
+          <div
+            class="tab-pane fade"
+            id="contact"
+            role="tabpanel"
+            aria-labelledby="contact-tab"
+          >
+            Saepe animi et soluta ad odit soluta sunt. Nihil quos omnis animi
+            debitis cumque. Accusantium quibusdam perspiciatis qui qui omnis
+            magnam. Officiis accusamus impedit molestias nostrum veniam. Qui
+            amet ipsum iure. Dignissimos fuga tempore dolor.
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">Experiments</h5>
+        <ul class="nav nav-tabs" id="myTab1" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="exp-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#exp"
+              type="button"
+              role="tab"
+              aria-controls="exp"
+              aria-selected="true"
+            >
+              Experiments
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="myExp-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#myExp"
+              type="button"
+              role="tab"
+              aria-controls="myExp"
+              aria-selected="false"
+            >
+              My Experiments
+            </button>
+          </li>
+        </ul>
+        <div class="tab-content pt-2" id="myTab1Content">
+          <div
+            class="tab-pane fade show active"
+            id="exp"
+            role="tabpanel"
+            aria-labelledby="exp-tab"
+          >
+            <div class="tableNgx">
+              <ngx-datatable
+                tableClass="table table-striped table-bordered table-hover tableNgx"
+                [data]="projects"
+                [options]="options"
+                [columns]="expColumns"
+              >
+                <!-- <ng-template
+              #actionTpl
+              let-row
+              let-rowIndex="rowIndex"
+              let-columnValue="columnValue"
+            >
+              <button
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#inwardForms"
+                class="btn btn-outline-primary"
+                (click)="selectInward(row)"
+              >
+                Edit
+              </button>
+              &nbsp;&nbsp;
+              <button
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteForm"
+                class="btn btn-outline-danger"
+                (click)="confirmInwardDeletetion(row)"
+              >
+                Delete
+              </button>
+            </ng-template> -->
+              </ngx-datatable>
+            </div>
+          </div>
+          <div
+            class="tab-pane fade"
+            id="myExp"
+            role="tabpanel"
+            aria-labelledby="myExp-tab"
+          >
+            <div class="tableNgx">
+              <ngx-datatable
+                tableClass="table table-striped table-bordered table-hover tableNgx"
+                [data]="myProjects"
+                [options]="options"
+                [columns]="expColumns"
+              >
+                <ng-template
+                  #actionTpl
+                  let-row
+                  let-rowIndex="rowIndex"
+                  let-columnValue="columnValue"
+                >
+                  <!-- <button
+              type="button"
+              data-bs-toggle="modal"
+              data-bs-target="#inwardForms"
+              class="btn btn-outline-primary"
+              (click)="selectInward(row)"
+            >
+              Edit
+            </button> -->
+                  &nbsp;&nbsp;
+                  <button
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteForm"
+                    class="btn btn-outline-danger"
+                  >
+                    Create Exp Formulation
+                  </button>
+                </ng-template>
+              </ngx-datatable>
+            </div>
+          </div>
+          <div
+            class="tab-pane fade"
+            id="contact"
+            role="tabpanel"
+            aria-labelledby="contact-tab"
+          >
+            Saepe animi et soluta ad odit soluta sunt. Nihil quos omnis animi
+            debitis cumque. Accusantium quibusdam perspiciatis qui qui omnis
+            magnam. Officiis accusamus impedit molestias nostrum veniam. Qui
+            amet ipsum iure. Dignissimos fuga tempore dolor.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

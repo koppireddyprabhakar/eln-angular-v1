@@ -9,6 +9,7 @@ import { PagesFaqComponent } from './pages/pages-faq/pages-faq.component';
 import { PagesLoginComponent } from './pages/pages-login/pages-login.component';
 import { PagesRegisterComponent } from './pages/pages-register/pages-register.component';
 import { UsersProfileComponent } from './pages/users-profile/users-profile.component';
+import { FormulationsComponent } from './formulations/formulations.component';
 
 // const routes: Routes = [
 //   { path: '', component: DashboardComponent },
@@ -42,6 +43,14 @@ const routes: Routes = [
     loadChildren: () =>
       import('@app/business-admin/business-admin.module').then(
         (route) => route.BusinessAdminModule
+      ),
+  },
+  {
+    path: 'formulations-page',
+    component: FormulationsComponent,
+    loadChildren: () =>
+      import('@app/dashboard/dashboard-routing.module').then(
+        (route) => route.DashboardRoutingModule
       ),
   },
 ];

@@ -1,0 +1,211 @@
+<main id="main" class="main">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">User Form</h5>
+      <form class="row g-3" [formGroup]="projectForm">
+        <div class="col-4">
+          <label for="projectName" class="form-label">Project Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="projectName"
+            formControlName="projectName"
+          />
+          <span
+            *ngIf="
+              projectForm.controls['projectName'].invalid &&
+              (projectForm.controls['projectName'].dirty ||
+                projectForm.controls['projectName'].touched) &&
+              projectForm.get('projectName')?.errors &&
+              projectForm.get('projectName')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please enter Project Name
+          </span>
+        </div>
+
+        <div class="col-4">
+          <label for="productName" class="form-label">Product Name</label>
+          <select
+            class="form-select"
+            aria-label="Teams"
+            formControlName="productName"
+            (change)="productChange()"
+          >
+            <option
+              *ngFor="let product of products"
+              [ngValue]="product.productId"
+            >
+              {{ product.productName | titlecase }}
+            </option>
+          </select>
+          <span
+            *ngIf="
+              projectForm.controls['productName'].invalid &&
+              (projectForm.controls['productName'].dirty ||
+                projectForm.controls['productName'].touched) &&
+              projectForm.get('productName')?.errors &&
+              projectForm.get('productName')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please enter Product Name
+          </span>
+        </div>
+        <div class="col-4">
+          <label for="productCode" class="form-label">Product Code</label>
+          <input
+            type="number"
+            class="form-control"
+            id="projectName"
+            [value]="productCode"
+            readonly
+          />
+        </div>
+
+        <div class="col-4">
+          <label for="dosageForm" class="form-label">Dosage Form</label>
+          <select
+            class="form-select"
+            aria-label="Teams"
+            formControlName="dosageForm"
+            (change)="dosageChange()"
+          >
+            <option *ngFor="let dosage of dosages" [ngValue]="dosage.dosageId">
+              {{ dosage.dosageName | titlecase }}
+            </option>
+          </select>
+          <span
+            *ngIf="
+              projectForm.controls['dosageForm'].invalid &&
+              (projectForm.controls['dosageForm'].dirty ||
+                projectForm.controls['dosageForm'].touched) &&
+              projectForm.get('dosageForm')?.errors &&
+              projectForm.get('dosageForm')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please select Dosage
+          </span>
+        </div>
+        <div class="col-4">
+          <label for="strength" class="form-label">Strength</label>
+          <input
+            type="text"
+            class="form-control"
+            id="strength"
+            formControlName="strength"
+          />
+          <span
+            *ngIf="
+              projectForm.controls['strength'].invalid &&
+              (projectForm.controls['strength'].dirty ||
+                projectForm.controls['strength'].touched) &&
+              projectForm.get('strength')?.errors &&
+              projectForm.get('strength')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please enter Strength
+          </span>
+        </div>
+        <div class="col-4">
+          <label for="formulationType" class="form-label"
+            >Formulation Type</label
+          >
+          <select
+            class="form-select"
+            aria-label="Teams"
+            formControlName="formulationType"
+            (change)="formulationChange()"
+          >
+            <option
+              *ngFor="let formulation of formulations"
+              [ngValue]="formulation.formulationId"
+            >
+              {{ formulation.formulationName | titlecase }}
+            </option>
+          </select>
+          <span
+            *ngIf="
+              projectForm.controls['formulationType'].invalid &&
+              (projectForm.controls['formulationType'].dirty ||
+                projectForm.controls['formulationType'].touched) &&
+              projectForm.get('formulationType')?.errors &&
+              projectForm.get('formulationType')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please select Formulation
+          </span>
+        </div>
+        <div class="col-4">
+          <label for="team" class="form-label">Formulation Team</label>
+          <select
+            class="form-select"
+            aria-label="Teams"
+            formControlName="team"
+            (change)="teamChange()"
+          >
+            <option *ngFor="let team of teams" [ngValue]="team.teamId">
+              {{ team.teamName | titlecase }}
+            </option>
+          </select>
+          <span
+            *ngIf="
+              projectForm.controls['team'].invalid &&
+              (projectForm.controls['team'].dirty ||
+                projectForm.controls['team'].touched) &&
+              projectForm.get('team')?.errors &&
+              projectForm.get('team')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please select Formulation
+          </span>
+        </div>
+
+        <div class="col-4">
+          <label for="market" class="form-label">Market</label>
+          <select
+            class="form-select"
+            aria-label="Market"
+            formControlName="market"
+            (change)="marketChange()"
+          >
+            <option *ngFor="let market of markets" [ngValue]="market.marketId">
+              {{ market.marketName }}
+            </option>
+          </select>
+          <span
+            *ngIf="
+              projectForm.controls['market'].invalid &&
+              (projectForm.controls['market'].dirty ||
+                projectForm.controls['market'].touched) &&
+              projectForm.get('market')?.errors &&
+              projectForm.get('market')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please select Market
+          </span>
+        </div>
+      </form>
+      <div class="text-center pt-4">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="redirectToUsers()"
+          #closeButton
+        >
+          Close
+        </button>
+        &nbsp;&nbsp;&nbsp;
+        <button type="button" class="btn btn-primary" (click)="saveProject()">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</main>
