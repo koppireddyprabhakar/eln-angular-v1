@@ -7,21 +7,14 @@ import { ClientService } from '../client/client.service';
 @Injectable({
   providedIn: 'root',
 })
-export class FormulationsService {
+export class ExperimentService {
   constructor(
     private readonly http: HttpClient,
     private readonly clientService: ClientService
   ) {}
 
-  getProjectsTeamsId() {
-    const url = elnEndpointsConfig.endpoints['getProjectsTeamsId'];
-    return this.http
-      .get<any>(url)
-      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
-  }
-
-  getExperimentsByUserId() {
-    const url = elnEndpointsConfig.endpoints['getExperimentsById'];
+  getExperiments() {
+    const url = elnEndpointsConfig.endpoints['getExperiments'];
     return this.http
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));

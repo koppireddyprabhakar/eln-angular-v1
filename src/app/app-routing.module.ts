@@ -10,6 +10,7 @@ import { PagesLoginComponent } from './pages/pages-login/pages-login.component';
 import { PagesRegisterComponent } from './pages/pages-register/pages-register.component';
 import { UsersProfileComponent } from './pages/users-profile/users-profile.component';
 import { FormulationsComponent } from './formulations/formulations.component';
+import { CreateFormulationComponent } from './formulations/create-formulation/create-formulation.component';
 
 // const routes: Routes = [
 //   { path: '', component: DashboardComponent },
@@ -46,12 +47,12 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'formulations-page',
+    path: 'forms-page',
     component: FormulationsComponent,
-    loadChildren: () =>
-      import('@app/dashboard/dashboard-routing.module').then(
-        (route) => route.DashboardRoutingModule
-      ),
+  },
+  {
+    path: 'create-forms',
+    component: CreateFormulationComponent,
   },
 ];
 

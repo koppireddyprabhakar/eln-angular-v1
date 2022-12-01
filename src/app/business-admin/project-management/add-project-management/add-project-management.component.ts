@@ -67,19 +67,12 @@ export class AddProjectManagementComponent implements OnInit {
     this.getTeams();
     this.projectId = this.activatedRoute.snapshot.queryParams['projectId'];
     if (this.projectId) {
-      console.log('here');
-
       this.getProjectByID();
       this.editForm = true;
     }
   }
 
   saveProject() {
-    console.log(this.productName);
-    console.log(this.dosageName);
-    console.log(this.formulationName);
-    console.log(this.marketName);
-    console.log(this.teamName);
     let newProject: any = {
       projectName: this.projectForm.get('projectName')?.value,
       productId: this.productId,
@@ -95,9 +88,7 @@ export class AddProjectManagementComponent implements OnInit {
       marketId: this.projectForm.get('market')?.value,
       markertName: this.marketName,
     };
-    console.log(newProject);
-    console.log(this.projectForm);
-    console.log(this.projectForm.invalid);
+
     if (!this.projectForm.invalid) {
       this.globalService.showLoader();
       if (Object.keys(this.selectedProject).length === 0) {
@@ -141,7 +132,6 @@ export class AddProjectManagementComponent implements OnInit {
             ...newProject,
           },
         ];
-        console.log(this.selectedProject);
         this.projectService
           .updateProject(this.selectedProject[0])
           .pipe(
@@ -160,7 +150,6 @@ export class AddProjectManagementComponent implements OnInit {
           });
       }
     } else {
-      console.log('her');
       this.projectForm.get('projectName')?.markAsDirty();
       // this.projectForm.get('status')?.markAsDirty();
       this.projectForm.get('productName')?.markAsDirty();
@@ -200,45 +189,37 @@ export class AddProjectManagementComponent implements OnInit {
   }
 
   productChange() {
-    console.log(this.projectForm.get('productName'));
     const product: any = this.products.filter(
       (prod) => prod.productId === this.projectForm.get('productName')?.value
     )[0];
-    console.log(product);
     this.productId = product.productId;
     this.productCode = product.productCode;
     this.productName = product.productName;
   }
   teamChange() {
-    console.log(this.projectForm.get('productName'));
     const team: any = this.teams.filter(
       (team) => team.teamId === this.projectForm.get('team')?.value
     )[0];
     this.teamName = team.teamName;
   }
   marketChange() {
-    console.log(this.projectForm.get('productName'));
     const market: any = this.markets.filter(
       (market) => market.marketId === this.projectForm.get('market')?.value
     )[0];
-    console.log(market);
     this.marketName = market.marketName;
   }
 
   formulationChange() {
-    console.log(this.projectForm.get('productName'));
     const formulation: any = this.formulations.filter(
       (formulae) =>
         formulae.formulationId ===
         this.projectForm.get('formulationType')?.value
     )[0];
-    console.log(formulation);
     this.formulationId = formulation.formulationId;
     this.formulationName = formulation.formulationName;
   }
 
   dosageChange() {
-    console.log(this.projectForm.get('dosageForm'));
     const dosage = this.dosages.filter(
       (dosage) => dosage.dosageId === this.projectForm.get('dosageForm')?.value
     )[0];
@@ -247,11 +228,8 @@ export class AddProjectManagementComponent implements OnInit {
     this.formulations = this.dosages.filter(
       (dosage) => dosage.dosageId === this.dosageId
     )[0].formulations;
-    console.log(this.dosages);
-    console.log(this.dosageId);
-    console.log(this.formulations);
-    console.log(this.formulations);
-    this.projectForm.get('formulationType')?.setValue('');
+
+    this.projectForm.get('formulationType')?.setValue(null);
     this.projectForm.get('formulationType')?.updateValueAndValidity();
   }
 
@@ -262,15 +240,12 @@ export class AddProjectManagementComponent implements OnInit {
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((selectedProject) => {
         this.globalService.hideLoader();
-        console.log(selectedProject);
 
         setTimeout(() => {
           // <<<---using ()=> syntax
-          console.log(this.dosages);
           this.formulations = this.dosages.filter(
             (dosage) => dosage.dosageId === selectedProject.dosageId
           )[0].formulations;
-          console.log(this.formulations);
           this.selectedProject = selectedProject;
           this.projectForm.patchValue({
             projectName: selectedProject.projectName,
@@ -282,8 +257,6 @@ export class AddProjectManagementComponent implements OnInit {
             market: selectedProject.marketId,
           });
         }, 2000);
-
-        console.log(this.projectForm);
       });
   }
 

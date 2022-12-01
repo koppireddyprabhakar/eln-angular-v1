@@ -1,0 +1,237 @@
+<main id="main" class="main body-height">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <ul
+          class="nav nav-tabs outer-tab-border pt-4"
+          id="myTab"
+          role="tablist"
+        >
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="summary-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#summary"
+              type="button"
+              role="tab"
+              aria-controls="summary"
+              aria-selected="false"
+            >
+              Summary
+            </button>
+          </li>
+          <li
+            class="nav-item"
+            role="presentation"
+            *ngFor="let dumm of dummyTabs; index as i"
+          >
+            <button
+              *ngIf="!dumm.isEdit"
+              class="nav-link"
+              id="{{ dumm.value }}-tab"
+              data-bs-toggle="tab"
+              [attr.data-bs-target]="'#' + dumm.value"
+              type="button"
+              role="tab"
+              [attr.aria-controls]="dumm.value"
+              aria-selected="true"
+            >
+              {{ dumm.label }}
+              <i
+                class="bi bi-pencil-square"
+                *ngIf="!dumm.isEdit"
+                (click)="editMode(i)"
+              ></i>
+              <!-- <span >Edit</span> -->
+            </button>
+
+            <input
+              *ngIf="dumm.isEdit"
+              [(ngModel)]="inputValue"
+              type="text"
+              class="form-control"
+              (blur)="resetEditMode(i, inputValue)"
+              #inputfields
+              autofocus="true"
+            />
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="contact-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#contact"
+              type="button"
+              role="tab"
+              aria-controls="contact"
+              aria-selected="false"
+            >
+              Excipients/Chemicals
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="attachments-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#attachments"
+              type="button"
+              role="tab"
+              aria-controls="attachments"
+              aria-selected="false"
+            >
+              Attachments
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="attachments-tab"
+              type="button"
+              (click)="addNew()"
+            >
+              Add New
+            </button>
+          </li>
+          <!-- <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="profile-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#profile"
+              type="button"
+              role="tab"
+              aria-controls="profile"
+              aria-selected="false"
+            >
+              Profile
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="contact-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#contact"
+              type="button"
+              role="tab"
+              aria-controls="contact"
+              aria-selected="false"
+            >
+              Contact
+            </button>
+          </li> -->
+        </ul>
+        <div class="tab-content pt-2" id="myTabContent">
+          <div
+            class="tab-pane fade show active"
+            id="summary"
+            role="tabpanel"
+            aria-labelledby="summary-tab"
+          >
+            <div>
+              <!-- <h4 class="pt-2">Details of the experiment</h4> -->
+              <div class="row pt-3">
+                <div class="col-lg-12">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">Details of the experiment</h5>
+                      <div class="row mb-3 pt-2">
+                        <label for="inputEmail3" class="col-sm-3 col-form-label"
+                          >Project Name</label
+                        >
+                        <div class="col-sm-9 pt-1">Random Name</div>
+                      </div>
+                      <div class="row mb-3">
+                        <label for="inputEmail3" class="col-sm-3 col-form-label"
+                          >Product Name</label
+                        >
+                        <div class="col-sm-9 pt-1">Random Name</div>
+                      </div>
+                      <div class="row mb-3">
+                        <label for="inputEmail3" class="col-sm-3 col-form-label"
+                          >Product Code</label
+                        >
+                        <div class="col-sm-9 pt-1">Random Name</div>
+                      </div>
+                      <!-- <div class="row mb-3">
+                        <label for="inputEmail3" class="col-sm-3 col-form-label"
+                          >Dosage Name</label
+                        >
+                        <div class="col-sm-9 pt-1">Random Name</div>
+                      </div>
+                      <div class="row mb-3">
+                        <label for="inputEmail3" class="col-sm-3 col-form-label"
+                          >Formulation Type</label
+                        >
+                        <div class="col-sm-9 pt-1">Random Name</div>
+                      </div>
+                      <div class="row mb-3">
+                        <label for="inputEmail3" class="col-sm-3 col-form-label"
+                          >Strength</label
+                        >
+                        <div class="col-sm-9 pt-1">Random Name</div>
+                      </div>
+                      <div class="row mb-3">
+                        <label for="inputEmail3" class="col-sm-3 col-form-label"
+                          >Formulation Department</label
+                        >
+                        <div class="col-sm-9 pt-1">Random Name</div>
+                      </div> -->
+                      <!-- <div class="text-center">
+                        <button type="submit" class="btn btn-primary">
+                          Submit
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                          Reset
+                        </button>
+                      </div> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <section > -->
+          <div
+            *ngFor="let dumm of dummyTabs; index as i"
+            class="tab-pane fade"
+            id="{{ dumm.value }}"
+            role="tabpanel"
+            [attr.aria-labelledby]="dumm + '-tab'"
+          >
+            <ckeditor data="<p>Hello, world!</p>"></ckeditor>
+          </div>
+          <!-- </section> -->
+          <div
+            class="tab-pane fade"
+            id="contact"
+            role="tabpanel"
+            aria-labelledby="contact-tab"
+          >
+            Saepe animi et soluta ad odit soluta sunt. Nihil quos omnis animi
+            debitis cumque. Accusantium quibusdam perspiciatis qui qui omnis
+            magnam. Officiis accusamus impedit molestias nostrum veniam. Qui
+            amet ipsum iure. Dignissimos fuga tempore dolor.
+          </div>
+          <div
+            class="tab-pane fade"
+            id="attachments"
+            role="tabpanel"
+            aria-labelledby="attachments-tab"
+          >
+            <div class="row mb-3">
+              <label for="inputNumber" class="col-sm-2 col-form-label">
+                Upload</label
+              >
+              <div class="col-sm-10">
+                <input class="form-control" type="file" id="formFile" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

@@ -37,6 +37,8 @@ export const elnEndpointsConfig: EndpointConfig = {
     getProjectsTeamsId:
       'formulation/get-projects-by-dosage-or-team-id?teamId=5',
     getMarkets: 'market/get-markets',
+    getExperiments: 'experiment/get-experiments',
+    getExperimentsById: 'formulation/get-experiments-by-user-id?userId=3',
   },
 };
 

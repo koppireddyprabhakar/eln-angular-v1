@@ -1,4 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
@@ -11,9 +13,12 @@ import { takeWhile } from 'rxjs';
 })
 export class FormulationsComponent implements OnInit {
   projects: any = [];
+  experiments: any = [];
+  myExperiments: any = [];
   myProjects: any = [];
   subscribeFlag = true;
-  columns: any;
+  allProjColumns: any;
+  myProjColumns: any;
   expColumns: any;
   options: any = {};
 
@@ -22,12 +27,34 @@ export class FormulationsComponent implements OnInit {
   constructor(
     private readonly globalService: GlobalService,
     private readonly projectService: ProjectService,
-    private readonly formulationService: FormulationsService
+    private readonly formulationService: FormulationsService,
+    private readonly experimentService: ExperimentService,
+    private route: Router
   ) {}
 
   ngOnInit(): void {
     this.getProjects();
-    this.columns = [
+    this.getExperiments();
+    this.myProjColumns = [
+      { key: 'projectName', title: 'Project Name' },
+      { key: 'productName', title: 'Product Name' },
+      { key: 'productCode', title: 'Product Code' },
+      // { key: 'projectId', title: 'Project ID' },
+      { key: 'dosageName', title: 'Dosage Name' },
+      { key: 'formulationName', title: 'Formulation Type' },
+      { key: 'strength', title: 'Strength' },
+      // { key: 'formulationName', title: 'Formulation Department' },
+      { key: 'status', title: 'Status' },
+      {
+        key: 'options',
+        title: '<div class="blue">Options</div>',
+        align: { head: 'center', body: 'center' },
+        sorting: false,
+        width: 120,
+        cellTemplate: this.actionTpl,
+      },
+    ];
+    this.allProjColumns = [
       { key: 'projectName', title: 'Project Name' },
       { key: 'productName', title: 'Product Name' },
       { key: 'productCode', title: 'Product Code' },
@@ -37,17 +64,9 @@ export class FormulationsComponent implements OnInit {
       { key: 'strength', title: 'Strength' },
       { key: 'formulationName', title: 'Formulation Department' },
       { key: 'status', title: 'Status' },
-      // {
-      //   key: 'options',
-      //   title: '<div class="blue">Options</div>',
-      //   align: { head: 'center', body: 'center' },
-      //   sorting: false,
-      //   width: 150,
-      //   cellTemplate: this.actionTpl,
-      // },
     ];
     this.expColumns = [
-      { key: 'projectName', title: 'Project Name' },
+      { key: 'experimentName', title: 'Experiment Name' },
       { key: 'productName', title: 'Product Name' },
       { key: 'productCode', title: 'Product Code' },
       { key: 'projectId', title: 'Project ID' },
@@ -76,6 +95,17 @@ export class FormulationsComponent implements OnInit {
       });
   }
 
+  getExperiments() {
+    this.globalService.showLoader();
+    this.experimentService
+      .getExperiments()
+      .pipe(takeWhile(() => this.subscribeFlag))
+      .subscribe((experiments) => {
+        this.experiments = experiments;
+        this.globalService.hideLoader();
+      });
+  }
+
   getMyProjects() {
     this.globalService.showLoader();
     this.formulationService
@@ -85,5 +115,19 @@ export class FormulationsComponent implements OnInit {
         this.myProjects = myProjects;
         this.globalService.hideLoader();
       });
+  }
+  getMyExperiments() {
+    this.globalService.showLoader();
+    this.formulationService
+      .getExperimentsByUserId()
+      .pipe(takeWhile(() => this.subscribeFlag))
+      .subscribe((myExperiments) => {
+        this.myExperiments = myExperiments;
+        this.globalService.hideLoader();
+      });
+  }
+
+  createFormulation() {
+    this.route.navigate(['/create-forms']);
   }
 }

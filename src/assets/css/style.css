@@ -1146,3 +1146,8 @@ h6 {
 .footer {
   margin-top: auto;
 }
+
+.main {
+  height: calc(100vh - 125px) !important;
+  overflow-y: scroll;
+}
