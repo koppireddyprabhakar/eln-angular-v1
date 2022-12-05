@@ -30,6 +30,7 @@
               *ngIf="!dumm.isEdit"
               class="nav-link"
               id="{{ dumm.value }}-tab"
+              [disabled]="!isCreatedExperiment"
               data-bs-toggle="tab"
               [attr.data-bs-target]="'#' + dumm.value"
               type="button"
@@ -40,7 +41,7 @@
               {{ dumm.label }}
               <i
                 class="bi bi-pencil-square"
-                *ngIf="!dumm.isEdit"
+                *ngIf="isCreatedExperiment"
                 (click)="editMode(i)"
               ></i>
               <!-- <span >Edit</span> -->
@@ -51,7 +52,7 @@
               [(ngModel)]="inputValue"
               type="text"
               class="form-control"
-              (blur)="resetEditMode(i, inputValue)"
+              (blur)="resetEditMode(i, dumm.label)"
               #inputfields
               autofocus="true"
             />
@@ -60,6 +61,7 @@
             <button
               class="nav-link"
               id="contact-tab"
+              [disabled]="!isCreatedExperiment"
               data-bs-toggle="tab"
               data-bs-target="#contact"
               type="button"
@@ -74,6 +76,7 @@
             <button
               class="nav-link"
               id="attachments-tab"
+              [disabled]="!isCreatedExperiment"
               data-bs-toggle="tab"
               data-bs-target="#attachments"
               type="button"
@@ -88,6 +91,7 @@
             <button
               class="nav-link"
               id="attachments-tab"
+              [disabled]="!isCreatedExperiment"
               type="button"
               (click)="addNew()"
             >
@@ -137,24 +141,117 @@
                   <div class="card">
                     <div class="card-body">
                       <h5 class="card-title">Details of the experiment</h5>
-                      <div class="row mb-3 pt-2">
-                        <label for="inputEmail3" class="col-sm-3 col-form-label"
-                          >Project Name</label
-                        >
-                        <div class="col-sm-9 pt-1">Random Name</div>
-                      </div>
-                      <div class="row mb-3">
+                      <form class="row g-3" [formGroup]="summaryForm">
+                        <div class="row mb-3 pt-2">
+                          <label
+                            for="inputEmail3"
+                            class="col-sm-3 col-form-label"
+                            >Project Name</label
+                          >
+                          <div class="col-sm-9 pt-1">
+                            {{ project.projectName }}
+                          </div>
+                        </div>
+                        <div class="row mb-3 pt-2">
+                          <label
+                            for="inputEmail3"
+                            class="col-sm-3 col-form-label"
+                            >Product Name</label
+                          >
+                          <div class="col-sm-9 pt-1">
+                            {{ project.productName }}
+                          </div>
+                        </div>
+                        <div class="row mb-3 pt-2">
+                          <label
+                            for="inputEmail3"
+                            class="col-sm-3 col-form-label"
+                            >Product Code</label
+                          >
+                          <div class="col-sm-9 pt-1">
+                            {{ project.productCode }}
+                          </div>
+                        </div>
+                        <div class="row mb-3 pt-2">
+                          <label
+                            for="inputEmail3"
+                            class="col-sm-3 col-form-label"
+                            >Dosage Name</label
+                          >
+                          <div class="col-sm-9 pt-1">
+                            {{ project.dosageName }}
+                          </div>
+                        </div>
+                        <!-- <input class="form-control" type="text"  /> -->
+                        <div class="row mb-3">
+                          <label
+                            for="inputEmail3"
+                            class="col-sm-3 col-form-label"
+                            >Formulation Type</label
+                          >
+                          <div class="col-sm-9 pt-1">
+                            {{ project.formulationName }}
+                          </div>
+                        </div>
+                        <div class="row mb-3">
+                          <label
+                            for="inputEmail3"
+                            class="col-sm-3 col-form-label"
+                            >Batch Number</label
+                          >
+                          <div class="col-sm-9 pt-1">{{ batchNumber }}</div>
+                        </div>
+                        <div class="row mb-3">
+                          <label
+                            for="experimentName"
+                            class="col-sm-3 col-form-label"
+                            >Experiment Name</label
+                          >
+                          <div class="col-sm-9">
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="experimentName"
+                              formControlName="experimentName"
+                            />
+                          </div>
+                        </div>
+                        <!-- <div class="row mb-3">
                         <label for="inputEmail3" class="col-sm-3 col-form-label"
                           >Product Name</label
                         >
                         <div class="col-sm-9 pt-1">Random Name</div>
+                      </div> -->
+                        <div class="row mb-3">
+                          <label for="batchSize" class="col-sm-3 col-form-label"
+                            >Batch Size</label
+                          >
+                          <div class="col-sm-9">
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="batchSize"
+                              formControlName="batchSize"
+                            />
+                          </div>
+                        </div>
+                      </form>
+                      <div class="text-center">
+                        <button
+                          type="submit"
+                          class="btn btn-primary"
+                          (click)="saveSummary()"
+                        >
+                          Submit
+                        </button>
                       </div>
-                      <div class="row mb-3">
+
+                      <!-- <div class="row mb-3">
                         <label for="inputEmail3" class="col-sm-3 col-form-label"
                           >Product Code</label
                         >
                         <div class="col-sm-9 pt-1">Random Name</div>
-                      </div>
+                      </div> -->
                       <!-- <div class="row mb-3">
                         <label for="inputEmail3" class="col-sm-3 col-form-label"
                           >Dosage Name</label
@@ -201,8 +298,24 @@
             role="tabpanel"
             [attr.aria-labelledby]="dumm + '-tab'"
           >
-            <ckeditor data="<p>Hello, world!</p>"></ckeditor>
+            <ckeditor
+              required
+              [(ngModel)]="article.text"
+              data=""
+              name="text"
+            ></ckeditor>
+            <!-- <ckeditor data="<p>Hello, world!</p>"></ckeditor> -->
+            <div class="text-center pt-3">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                (click)="saveTab(i, dumm.label)"
+              >
+                Submit
+              </button>
+            </div>
           </div>
+
           <!-- </section> -->
           <div
             class="tab-pane fade"
@@ -210,10 +323,14 @@
             role="tabpanel"
             aria-labelledby="contact-tab"
           >
-            Saepe animi et soluta ad odit soluta sunt. Nihil quos omnis animi
-            debitis cumque. Accusantium quibusdam perspiciatis qui qui omnis
-            magnam. Officiis accusamus impedit molestias nostrum veniam. Qui
-            amet ipsum iure. Dignissimos fuga tempore dolor.
+            <ng-multiselect-dropdown
+              [settings]="dropdownSettings"
+              [data]="[]"
+              [(ngModel)]="selectedItems"
+              (onSelect)="onItemSelect($event)"
+              (onSelectAll)="onSelectAll($event)"
+            >
+            </ng-multiselect-dropdown>
           </div>
           <div
             class="tab-pane fade"
@@ -226,7 +343,12 @@
                 Upload</label
               >
               <div class="col-sm-10">
-                <input class="form-control" type="file" id="formFile" />
+                <input
+                  class="form-control"
+                  type="file"
+                  id="formFile"
+                  (change)="onChange($event)"
+                />
               </div>
             </div>
           </div>

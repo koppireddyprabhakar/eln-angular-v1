@@ -12,7 +12,8 @@
       "/project",
       "/market",
       "/formulation",
-      "/experiment"
+      "/experiment",
+      "/formulation-dashboard"
     ],
     "target": "http://localhost:8080/",
     "secure": false,

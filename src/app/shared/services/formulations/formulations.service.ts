@@ -14,7 +14,14 @@ export class FormulationsService {
   ) {}
 
   getProjectsTeamsId() {
-    const url = elnEndpointsConfig.endpoints['getProjectsTeamsId'];
+    const url = elnEndpointsConfig.endpoints['getFormulationProjectsTeamsId'];
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
+  getFormulationBatchNumber() {
+    const url = elnEndpointsConfig.endpoints['getFormulationBatchNumber'];
     return this.http
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
