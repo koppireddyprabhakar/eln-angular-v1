@@ -7,31 +7,43 @@ import { ClientService } from '../client/client.service';
 @Injectable({
   providedIn: 'root',
 })
-export class FormulationsService {
+export class ExperimentService {
   constructor(
     private readonly http: HttpClient,
     private readonly clientService: ClientService
   ) {}
 
-  getProjectsTeamsId() {
-    const url = elnEndpointsConfig.endpoints['getFormulationProjectsTeamsId'];
+  getExperiments() {
+    const url = elnEndpointsConfig.endpoints['getExperiments'];
     return this.http
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
-  getFormulationBatchNumber() {
-    const url = elnEndpointsConfig.endpoints['getFormulationBatchNumber'];
+  getExperimentById(id) {
+    const url = `${elnEndpointsConfig.endpoints['getCreatedExperimentsById']}?experimentId=${id}`;
     return this.http
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
-  getExperimentsByUserId() {
-    const url = elnEndpointsConfig.endpoints['getExperimentsById'];
-    return this.http
-      .get<any>(url)
-      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  saveExperiment(experiment) {
+    const url = elnEndpointsConfig.endpoints['createExperiment'];
+    console.log(url);
+    console.log(experiment);
+    return this.http.post<string>(url, experiment);
+  }
+  saveExperimentTabs(experiment) {
+    const url = elnEndpointsConfig.endpoints['saveExperimentDetails'];
+    console.log(url);
+    console.log(experiment);
+    return this.http.post<string>(url, experiment);
+  }
+  saveExperimentAttachment(experiment) {
+    const url = elnEndpointsConfig.endpoints['saveExperimentAttachment'];
+    console.log(url);
+    console.log(experiment);
+    return this.http.post<string>(url, experiment);
   }
 
   handleError(error: HttpErrorResponse) {

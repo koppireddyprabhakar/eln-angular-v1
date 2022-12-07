@@ -36,7 +36,23 @@ export const elnEndpointsConfig: EndpointConfig = {
     getProjectsTeams: 'project/get-formulations-teams',
     getProjectsTeamsId:
       'formulation/get-projects-by-dosage-or-team-id?teamId=5',
+    createFormulationProject: 'formulation-dashboard/create-project',
+    updateFormulationProject: 'formulation-dashboard/update-project',
+    deleteFormulationProject: 'formulation-dashboard/delete-project',
+    getFormulationProjects: 'formulation-dashboard/get-projects',
+    getFormulationBatchNumber: 'formulation-dashboard/get-batch-number',
+    getFormulationProjectById: 'formulation-dashboard/get-project-by-id',
+    getFormulationProjectsTeams: 'formulation-dashboard/get-formulations-teams',
+    getFormualtionDashboardExperiments: 'formulation-dashboard/get-experiments',
+    getFormulationProjectsTeamsId:
+      'formulation-dashboard/get-projects-by-dosage-or-team-id?teamId=5',
     getMarkets: 'market/get-markets',
+    getExperiments: 'experiment/get-experiments',
+    createExperiment: 'experiment/create-experiment',
+    saveExperimentDetails: 'experiment/save-experiment-details',
+    saveExperimentAttachment: 'experiment/create-experiment-atachment',
+    getExperimentsById: 'formulation/get-experiments-by-user-id?userId=3',
+    getCreatedExperimentsById: 'experiment/get-experiment-by-id',
   },
 };
 

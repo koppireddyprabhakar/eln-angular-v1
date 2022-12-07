@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -19,6 +19,9 @@ import { ToastrModule } from 'ngx-toastr';
 import { SharedModule } from './shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormulationsModule } from './formulations/formulations.module';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { CommonModule } from '@angular/common';
+import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 
 @NgModule({
   declarations: [
@@ -38,13 +41,16 @@ import { FormulationsModule } from './formulations/formulations.module';
     AppRoutingModule,
     HttpClientModule,
     DashboardModule,
+    CommonModule,
     BusinessAdminModule,
     FormulationsModule,
     FormsModule,
     SharedModule,
     ReactiveFormsModule,
     ToastrModule.forRoot(),
+    NgMultiSelectDropDownModule.forRoot(),
   ],
+  schemas: [NO_ERRORS_SCHEMA],
   providers: [],
   bootstrap: [AppComponent],
 })

@@ -8,7 +8,12 @@
       "/excipients",
       "/usersDetails",
       "/department",
-      "/userrole"
+      "/userrole",
+      "/project",
+      "/market",
+      "/formulation",
+      "/experiment",
+      "/formulation-dashboard"
     ],
     "target": "http://localhost:8080/",
     "secure": false,

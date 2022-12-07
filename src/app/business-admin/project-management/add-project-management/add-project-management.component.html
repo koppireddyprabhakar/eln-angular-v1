@@ -120,6 +120,7 @@
             formControlName="formulationType"
             (change)="formulationChange()"
           >
+            <option value="null">Select</option>
             <option
               *ngFor="let formulation of formulations"
               [ngValue]="formulation.formulationId"

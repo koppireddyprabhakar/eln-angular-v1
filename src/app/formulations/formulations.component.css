@@ -38,3 +38,12 @@
 .formultion-row {
   display: flex;
 }
+
+.inner-card {
+  padding: 20px 16px;
+}
+
+.outer-tab-border {
+  border: 1px solid #dee2e6;
+  border-top: none;
+}
