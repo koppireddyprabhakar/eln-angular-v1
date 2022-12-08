@@ -11,6 +11,7 @@ import { PagesRegisterComponent } from './pages/pages-register/pages-register.co
 import { UsersProfileComponent } from './pages/users-profile/users-profile.component';
 import { FormulationsComponent } from './formulations/formulations.component';
 import { CreateFormulationComponent } from './formulations/create-formulation/create-formulation.component';
+import { CreateTrfComponent } from './test-request-form/create-trf/create-trf.component';
 
 // const routes: Routes = [
 //   { path: '', component: DashboardComponent },
@@ -54,10 +55,14 @@ const routes: Routes = [
     path: 'create-forms',
     component: CreateFormulationComponent,
   },
+  {
+    path: 'test-request-form',
+    component: CreateTrfComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

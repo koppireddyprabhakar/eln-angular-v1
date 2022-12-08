@@ -35,7 +35,7 @@ export const elnEndpointsConfig: EndpointConfig = {
     getProjectById: 'project/get-project-by-id',
     getProjectsTeams: 'project/get-formulations-teams',
     getProjectsTeamsId:
-      'formulation/get-projects-by-dosage-or-team-id?teamId=5',
+      'formulation-dashboard/get-projects-by-dosage-or-team-id?teamId=5',
     createFormulationProject: 'formulation-dashboard/create-project',
     updateFormulationProject: 'formulation-dashboard/update-project',
     deleteFormulationProject: 'formulation-dashboard/delete-project',
@@ -54,7 +54,8 @@ export const elnEndpointsConfig: EndpointConfig = {
     saveExperimentDetails: 'experiment/save-experiment-details',
     saveExperimentAttachment: 'experiment/create-experiment-atachment',
     getExperimentsById: 'formulation/get-experiments-by-user-id?userId=3',
-    getCreatedExperimentsById: 'experiment/get-experiment-by-id',
+    createTestRequestForm: 'test-request-form/create-test-request-form',
+    updateTestRequestForm: 'test-request-form/update-test-request-form'
   },
 };
 
