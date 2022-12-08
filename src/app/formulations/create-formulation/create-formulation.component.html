@@ -300,7 +300,7 @@
           >
             <ckeditor
               required
-              [(ngModel)]="article.text"
+              [(ngModel)]="article[i].text"
               data=""
               name="text"
             ></ckeditor>
@@ -323,14 +323,35 @@
             role="tabpanel"
             aria-labelledby="contact-tab"
           >
-            <ng-multiselect-dropdown
-              [settings]="dropdownSettings"
-              [data]="[]"
-              [(ngModel)]="selectedItems"
-              (onSelect)="onItemSelect($event)"
-              (onSelectAll)="onSelectAll($event)"
-            >
-            </ng-multiselect-dropdown>
+            <div class="pt-3 pb-3">
+              <ng-multiselect-dropdown
+                [settings]="dropdownSettings"
+                [data]="inwards"
+                [(ngModel)]="selectedItems"
+                (onSelect)="onItemSelect($event)"
+                (onSelectAll)="onSelectAll($event)"
+              >
+              </ng-multiselect-dropdown>
+            </div>
+
+            <div class="tableNgx">
+              <ngx-datatable
+                tableClass="table table-striped table-bordered table-hover tableNgx"
+                [data]="tableData"
+                [options]="options"
+                [columns]="columns"
+              >
+              </ngx-datatable>
+            </div>
+            <div class="text-center pt-3">
+              <button
+                type="submit"
+                class="btn btn-primary mt-3"
+                (click)="saveExcipients()"
+              >
+                Submit
+              </button>
+            </div>
           </div>
           <div
             class="tab-pane fade"
@@ -347,7 +368,7 @@
                   class="form-control"
                   type="file"
                   id="formFile"
-                  (change)="onChange($event)"
+                  (change)="processFile($event)"
                 />
               </div>
             </div>

@@ -33,6 +33,13 @@ export class ExperimentService {
     console.log(experiment);
     return this.http.post<string>(url, experiment);
   }
+  saveExcipient(excipient) {
+    console.log(excipient);
+    const url = elnEndpointsConfig.endpoints['saveExcipient'];
+    console.log(url);
+    console.log(excipient);
+    return this.http.post<string>(url, excipient);
+  }
   saveExperimentTabs(experiment) {
     const url = elnEndpointsConfig.endpoints['saveExperimentDetails'];
     console.log(url);

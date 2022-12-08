@@ -49,6 +49,8 @@ export const elnEndpointsConfig: EndpointConfig = {
     getMarkets: 'market/get-markets',
     getExperiments: 'experiment/get-experiments',
     createExperiment: 'experiment/create-experiment',
+    // createExperiment: 'experiment/create-experiment-attachment',
+    saveExcipient: 'experiment/save-excipient',
     saveExperimentDetails: 'experiment/save-experiment-details',
     saveExperimentAttachment: 'experiment/create-experiment-atachment',
     getExperimentsById: 'formulation/get-experiments-by-user-id?userId=3',

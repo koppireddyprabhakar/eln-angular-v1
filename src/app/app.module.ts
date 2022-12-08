@@ -48,9 +48,7 @@ import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
     SharedModule,
     ReactiveFormsModule,
     ToastrModule.forRoot(),
-    NgMultiSelectDropDownModule.forRoot(),
   ],
-  schemas: [NO_ERRORS_SCHEMA],
   providers: [],
   bootstrap: [AppComponent],
 })

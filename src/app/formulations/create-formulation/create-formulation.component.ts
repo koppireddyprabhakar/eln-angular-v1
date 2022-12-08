@@ -9,13 +9,14 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
+import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { takeWhile } from 'rxjs';
 
 @Component({
   selector: 'app-create-formulation',
   templateUrl: './create-formulation.component.html',
-  styleUrls: ['./create-formulation.component.css'],
+  styleUrls: ['./create-formulation.component.scss'],
 })
 export class CreateFormulationComponent implements OnInit {
   @ViewChild('inputfields') inputfields!: ElementRef;
@@ -24,10 +25,20 @@ export class CreateFormulationComponent implements OnInit {
   projectId: number;
   project: any;
   batchNumber: any;
-  article = {
-    title: '',
-    text: '',
-  };
+  article = [
+    {
+      title: '',
+      text: '',
+    },
+    {
+      title: '',
+      text: '',
+    },
+  ];
+  columns: any;
+  options: any = {};
+  inwards: any = [];
+  tableData: any = [];
   experimentId: string;
   experimentDetails: any;
   file: File;
@@ -45,7 +56,9 @@ export class CreateFormulationComponent implements OnInit {
   constructor(
     private readonly projectService: ProjectService,
     private readonly experimentService: ExperimentService,
+    private readonly inwardService: InwardManagementService,
     private readonly formulationService: FormulationsService,
+
     private renderer2: Renderer2,
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -54,21 +67,22 @@ export class CreateFormulationComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('inngonoit');
-    this.dropdownList = [
-      { item_id: 1, item_text: 'Mumbai' },
-      { item_id: 2, item_text: 'Bangaluru' },
-      { item_id: 3, item_text: 'Pune' },
-      { item_id: 4, item_text: 'Navsari' },
-      { item_id: 5, item_text: 'New Delhi' },
+    this.getExcipients();
+    this.columns = [
+      { key: 'excipientsName', title: 'Inward Name' },
+      { key: 'materialName', title: 'Material Name' },
+      { key: 'materialType', title: 'Material Type' },
+      { key: 'batchNo', title: 'Batch Number' },
+      { key: 'sourceName', title: 'Source Name' },
+      { key: 'potency', title: 'Potency' },
+      { key: 'grade', title: 'Grade' },
     ];
-    this.selectedItems = [
-      { item_id: 3, item_text: 'Pune' },
-      { item_id: 4, item_text: 'Navsari' },
-    ];
+
+    this.selectedItems = [];
     this.dropdownSettings = {
       singleSelection: false,
-      idField: 'item_id',
-      textField: 'item_text',
+      idField: 'excipientId',
+      textField: 'excipientsName',
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',
       itemsShowLimit: 3,
@@ -92,6 +106,12 @@ export class CreateFormulationComponent implements OnInit {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
       console.log(project);
       this.project = project;
+    });
+  }
+
+  getExcipients() {
+    this.inwardService.getInwards().subscribe((inwards) => {
+      this.inwards = inwards;
     });
   }
 
@@ -162,6 +182,10 @@ export class CreateFormulationComponent implements OnInit {
 
   addNew() {
     const length = this.dummyTabs.length;
+    this.article.push({
+      title: '',
+      text: '',
+    });
     this.dummyTabs.push({
       label: `Add On - ${length + 1}`,
       isEdit: false,
@@ -197,19 +221,26 @@ export class CreateFormulationComponent implements OnInit {
 
   onItemSelect(item: any) {
     console.log(item);
+    this.tableData = this.inwards.filter(({ excipientId: id1 }) =>
+      this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
+    );
+    console.log(this.tableData);
   }
   onSelectAll(items: any) {
     console.log(items);
+    this.tableData = this.inwards;
   }
 
   saveTab(index, label) {
-    const sss = JSON.stringify(this.article.text);
+    const sss = JSON.stringify(this.article[index].text);
+    console.log(index);
+    console.log(label);
     console.log(sss);
     const tabValue = {
       status: 'string',
-      experimentId: 13,
-      name: 'string',
-      fileContent: this.article.text,
+      experimentId: this.experimentId,
+      name: label,
+      fileContent: this.article[index].text,
     };
     console.log(this.article);
     this.experimentService.saveExperimentTabs(tabValue).subscribe((data) => {
@@ -223,37 +254,15 @@ export class CreateFormulationComponent implements OnInit {
     this.file = event.target.files[0];
   }
 
-  // processFile(imageInput: any) {
-  //   const file: File = imageInput.files[0];
-  //   const reader = new FileReader();
+  processFile(event) {
+    const selectedFile = event.target.files[0];
+    console.log(selectedFile);
+  }
 
-  //   reader.addEventListener('load', (event: any) => {
-
-  //    const a = new File(event.target.result, this.file);
-
-  //     this.imageService.uploadImage(this.selectedFile.file).subscribe(
-  //       (res) => {
-
-  //       },
-  //       (err) => {
-
-  //       })
-  //   });
-
-  //   reader.readAsDataURL(file);
-  // }
-
-  // upload(file): Observable<any> {
-  //   // Create form data
-  //   const formData = new FormData();
-
-  //   // Store form name as "file" with file data
-  //   formData.append('file', file, file.name);
-
-  //   // Make http post request over api
-  //   // with formData as req
-  //   return this.http.post(this.baseApiUrl, formData);
-  // }
-
-  // // }
+  saveExcipients() {
+    console.log(this.tableData);
+    this.experimentService.saveExcipient(this.tableData).subscribe((data) => {
+      console.log(data);
+    });
+  }
 }
