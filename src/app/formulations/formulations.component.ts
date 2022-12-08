@@ -21,9 +21,11 @@ export class FormulationsComponent implements OnInit {
   allProjColumns: any;
   myProjColumns: any;
   expColumns: any;
+  myExpColumns: any;
   options: any = {};
 
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
+  @ViewChild('expActionTpl', { static: true }) expActionTpl: TemplateRef<any>;
 
   constructor(
     private readonly globalService: GlobalService,
@@ -68,8 +70,8 @@ export class FormulationsComponent implements OnInit {
     ];
     this.expColumns = [
       { key: 'experimentName', title: 'Experiment Name' },
-      { key: 'productName', title: 'Product Name' },
-      { key: 'productCode', title: 'Product Code' },
+      { key: 'batchNumber', title: 'Batch No.' },
+      { key: 'batchSize', title: 'Batch Size' },
       { key: 'projectId', title: 'Project ID' },
       { key: 'formulationName', title: 'Formulation Type' },
       { key: 'strength', title: 'Strength' },
@@ -82,6 +84,23 @@ export class FormulationsComponent implements OnInit {
       //   width: 150,
       //   cellTemplate: this.actionTpl,
       // },
+    ];
+    this.myExpColumns = [
+      { key: 'experimentName', title: 'Experiment Name' },
+      { key: 'batchNumber', title: 'Batch No.' },
+      { key: 'batchSize', title: 'Batch Size' },
+      { key: 'projectId', title: 'Project ID' },
+      { key: 'formulationName', title: 'Formulation Type' },
+      { key: 'strength', title: 'Strength' },
+      { key: 'status', title: 'Status' },
+      {
+        key: 'options',
+        title: '<div class="blue">Options</div>',
+        align: { head: 'center', body: 'center' },
+        sorting: false,
+        width: 120,
+        cellTemplate: this.expActionTpl,
+      },
     ];
   }
 

@@ -12,6 +12,7 @@ import { UsersProfileComponent } from './pages/users-profile/users-profile.compo
 import { FormulationsComponent } from './formulations/formulations.component';
 import { CreateFormulationComponent } from './formulations/create-formulation/create-formulation.component';
 import { CreateTrfComponent } from './test-request-form/create-trf/create-trf.component';
+import { TrfDashboardComponent } from './trf-dashboard/trf-dashboard.component';
 
 // const routes: Routes = [
 //   { path: '', component: DashboardComponent },
@@ -48,6 +49,14 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'test-request-form',
+    component: TrfDashboardComponent,
+    loadChildren: () =>
+      import('@app/trf-dashboard/trf-dashboard.module').then(
+        (route) => route.TrfDashboardModule
+      ),
+  },
+  {
     path: 'forms-page',
     component: FormulationsComponent,
   },
@@ -55,14 +64,14 @@ const routes: Routes = [
     path: 'create-forms',
     component: CreateFormulationComponent,
   },
-  {
-    path: 'test-request-form',
-    component: CreateTrfComponent,
-  },
+  // {
+  //   path: 'test-request-form',
+  //   component: CreateTrfComponent,
+  // },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

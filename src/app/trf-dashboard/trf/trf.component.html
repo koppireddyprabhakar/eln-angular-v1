@@ -324,7 +324,62 @@
             Please enter Expiry Date
           </span>
         </div>
+        <div class="col-12">
+          <section formArrayName="testRequestRow">
+            <div
+              *ngFor="let testRow of testRequestRow?.controls; let i = index"
+              [formGroupName]="i"
+              class="formultion-row row"
+            >
+              <div
+                [ngClass]="{
+                  'col-4': testRequestRow.value.length === 1,
+                  'col-3': testRequestRow.value.length > 1
+                }"
+              >
+                <label class="col-sm-2 col-form-label">Id</label>
 
+                <input
+                  type="text"
+                  class="form-control"
+                  id="testId"
+                  formControlName="testId"
+                  readonly
+                />
+              </div>
+              <div class="col-4">
+                <label class="col-sm-2 col-form-label">Test</label>
+
+                <input
+                  type="text"
+                  class="form-control"
+                  id="test"
+                  formControlName="test"
+                />
+              </div>
+              <div class="col-4">
+                <label class="col-sm-2 col-form-label">Results</label>
+
+                <input
+                  type="text"
+                  class="form-control"
+                  id="results"
+                  formControlName="results"
+                />
+              </div>
+              <div *ngIf="testRequestRow.value.length > 1" class="col-1 pt-3">
+                <div for="description" class="form-label">&nbsp;</div>
+                <div class="delete-formulation">
+                  <i class="bi bi-trash-fill pointer delete-icon"></i>
+                </div>
+              </div>
+            </div>
+          </section>
+          <div class="add-formulation pt-4">
+            <i class="bi bi-plus-circle pointer"></i
+            ><span class="pointer" (click)="addNewTest()">Add Test</span>
+          </div>
+        </div>
         <div class="text-center pt-4">
           <button
             type="button"
@@ -343,57 +398,6 @@
             Save
           </button>
         </div>
-
-        <!-- <div *ngIF="testRequestForm && testRequestForm.testRequestRow"
-          formArrayName="testRequestForm && testRequestForm.testRequestRow">
-          <div class="row gx-3 pb-4" *ngFor="let formula of testRequestForm.testRequestRow?.controls; let i = index"
-            [formGroupName]="i">
-            <div class="col-4">
-              <label for="testName" class="form-label">Test Name</label>
-              <input type="text" class="form-control" id="testName" formControlName="testName" />
-              <span *ngIf="testRequestForm && testRequestForm.testRequestRow &&
-            testRequestForm.testRequestRow.at(i).get('testName')?.invalid &&
-                          (testRequestForm.testRequestRow.at(i).get('testName')?.dirty ||
-                          testRequestForm.testRequestRow.at(i).get('testName')?.touched) &&
-                          testRequestForm.testRequestRow.at(i).get('testName')?.errors &&
-                          testRequestForm.testRequestRow.at(i).get('testName')?.hasError('required')
-                        " class="text-danger pt-3">
-                Please enter Test Name
-              </span>
-            </div>
-
-            <div class="col-4">
-              <label for="description" class="form-label">Test Description</label>
-              <input type="text" class="form-control" id="description" formControlName="description" />
-            </div>
-            <div [ngClass]="{
-                        'col-4': testRequestForm && testRequestForm.testRequestRow.value.length === 1,
-                        'col-3': testRequestForm && testRequestForm.testRequestRow.value.length > 1
-                      }">
-              <label class="form-label">Dosage</label>
-              <div class="col-12">
-                <select class="form-select" aria-label="Default select example" formControlName="dosageId">
-                  <option value="null">Select</option>
-                  <option *ngFor="let dosage of dosagesList" [ngValue]="dosage.dosageId">
-                    {{ dosage.dosageName | titlecase }}
-                  </option>
-                </select>
-              </div>
-            </div> -->
-        <!-- <div
-              *ngIf="testRequestForm && testRequestForm.testRequestRow && testRequestForm.testRequestRow.value.length > 1"
-              class="col-1">
-              <div for="description" class="form-label">&nbsp;</div> -->
-        <!-- <div class="delete-test">
-              <i class="bi bi-trash-fill pointer" (click)="deleteTest(i)"></i>
-            </div> -->
-        <!-- </div> -->
-        <!--</div>
-  </div> -->
-
-        <!-- <div *ngIf="!editForm" class="add-formulation">
-        <i class="bi bi-plus-circle pointer"></i> &nbsp;<span class="pointer" (click)="addNewTest()">Add Test</span>
-      </div> -->
       </form>
     </div>
   </div>
