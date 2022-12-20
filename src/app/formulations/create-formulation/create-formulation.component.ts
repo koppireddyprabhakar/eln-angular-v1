@@ -47,6 +47,7 @@ export class CreateFormulationComponent implements OnInit {
   dropdownList: any = [];
   selectedItems: any = [];
   dropdownSettings: any = {};
+  public files: any = [];
 
   summaryForm = this.formBuilder.group({
     experimentName: ['', [Validators.required]],
@@ -63,7 +64,7 @@ export class CreateFormulationComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private route: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     console.log('inngonoit');
@@ -248,7 +249,7 @@ export class CreateFormulationComponent implements OnInit {
     });
   }
 
-  saveAttachment() {}
+  saveAttachment() { }
 
   onChange(event) {
     this.file = event.target.files[0];
@@ -256,7 +257,26 @@ export class CreateFormulationComponent implements OnInit {
 
   processFile(event) {
     const selectedFile = event.target.files[0];
-    console.log(selectedFile);
+    this.experimentService.saveExperimentAttachment(selectedFile, this.experimentId, this.projectId).subscribe(response => {
+      console.log(response);
+      this.files = response;
+    });
+  }
+
+  getFileContent(fileName: string, experimentId: number) {
+    // this.loading = !this.loading;
+
+    this.experimentService.getExperimentAttachmentContent(fileName, experimentId).subscribe(response => {
+      console.log(response);
+    }
+
+    )
+    // this.fileUploadService.getFileContent(fileName).subscribe(
+    //   (response: any) => {
+    //     this.loading = false;
+    //     // this.fileNames = response;
+    //   }
+    // );
   }
 
   saveExcipients() {

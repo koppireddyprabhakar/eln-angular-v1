@@ -52,11 +52,12 @@ export const elnEndpointsConfig: EndpointConfig = {
     // createExperiment: 'experiment/create-experiment-attachment',
     saveExcipient: 'experiment/save-excipient',
     saveExperimentDetails: 'experiment/save-experiment-details',
-    saveExperimentAttachment: 'experiment/create-experiment-atachment',
+    saveExperimentAttachment: 'experiment/save-experiment-attachment',
     getExperimentsById:
       'formulation-dashboard/get-experiments-by-user-id?userId=3',
     createTestRequestForm: 'test-request-form/create-test-request-form',
     updateTestRequestForm: 'test-request-form/update-test-request-form',
+    getExperimentAttachmentContent: 'experiment/get-experiment-attachment-content'
   },
 };
 

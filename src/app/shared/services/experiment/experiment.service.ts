@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { elnEndpointsConfig } from '@config/endpoints/eln.endpoints.config';
-import { catchError, throwError } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { ClientService } from '../client/client.service';
 
 @Injectable({
@@ -11,7 +11,7 @@ export class ExperimentService {
   constructor(
     private readonly http: HttpClient,
     private readonly clientService: ClientService
-  ) {}
+  ) { }
 
   getExperiments() {
     const url = elnEndpointsConfig.endpoints['getExperiments'];
@@ -40,17 +40,32 @@ export class ExperimentService {
     console.log(excipient);
     return this.http.post<string>(url, excipient);
   }
+
   saveExperimentTabs(experiment) {
     const url = elnEndpointsConfig.endpoints['saveExperimentDetails'];
     console.log(url);
     console.log(experiment);
     return this.http.post<string>(url, experiment);
   }
-  saveExperimentAttachment(experiment) {
+
+  saveExperimentAttachment(file, experimentId, projectId): Observable<any> {
     const url = elnEndpointsConfig.endpoints['saveExperimentAttachment'];
-    console.log(url);
-    console.log(experiment);
-    return this.http.post<string>(url, experiment);
+
+    const formData = new FormData();
+    formData.append("experimentId", experimentId);
+    formData.append("projectId", projectId);
+    formData.append("status", "ACTIVE");
+    formData.append("file", file, file.name);
+
+    return this.http.post<string>(url, formData);
+  }
+
+  getExperimentAttachmentContent(fileName, experimentId): Observable<any> {
+    const url = elnEndpointsConfig.endpoints['getExperimentAttachmentContent'] + "?fileName=" + fileName + "&experimentId=" + experimentId;
+
+    return this.http
+      .get(url, { responseType: 'blob' })
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
   handleError(error: HttpErrorResponse) {
