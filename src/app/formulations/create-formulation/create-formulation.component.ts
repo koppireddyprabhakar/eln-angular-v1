@@ -49,6 +49,8 @@ export class CreateFormulationComponent implements OnInit {
   dropdownSettings: any = {};
   public files: any = [];
 
+  activeTab = 'summary';
+
   summaryForm = this.formBuilder.group({
     experimentName: ['', [Validators.required]],
     batchSize: ['' as any, [Validators.required]],
@@ -64,7 +66,7 @@ export class CreateFormulationComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private route: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     console.log('inngonoit');
@@ -108,6 +110,28 @@ export class CreateFormulationComponent implements OnInit {
       console.log(project);
       this.project = project;
     });
+  }
+
+  search(activeTab) {
+    this.activeTab = activeTab;
+    if (activeTab === 'attachments') {
+      this.getAttachments();
+    }
+  }
+
+  getAttachments() {
+    this.experimentService
+      .getAttachmentsById(this.experimentId)
+      .subscribe((attachments) => {
+        this.files = attachments;
+      });
+  }
+
+  removeAttachment(file) {
+    const fileData = { ...file, projectId: this.projectId };
+    this.experimentService
+      .deleteExperimentAttachment(file)
+      .subscribe((experimentDetails) => {});
   }
 
   getExcipients() {
@@ -216,6 +240,7 @@ export class CreateFormulationComponent implements OnInit {
       .subscribe((experiment: any) => {
         // console.log(data);
         this.getExperimentDetails(experiment.data);
+        this.activeTab = this.dummyTabs[0].value;
       });
     console.log(this.summaryForm.value);
   }
@@ -249,7 +274,7 @@ export class CreateFormulationComponent implements OnInit {
     });
   }
 
-  saveAttachment() { }
+  saveAttachment() {}
 
   onChange(event) {
     this.file = event.target.files[0];
@@ -257,26 +282,18 @@ export class CreateFormulationComponent implements OnInit {
 
   processFile(event) {
     const selectedFile = event.target.files[0];
-    this.experimentService.saveExperimentAttachment(selectedFile, this.experimentId, this.projectId).subscribe(response => {
-      console.log(response);
-      this.files = response;
-    });
+    this.experimentService
+      .saveExperimentAttachment(selectedFile, this.experimentId, this.projectId)
+      .subscribe((response) => {
+        console.log(response);
+        this.files = response;
+      });
   }
 
   getFileContent(fileName: string, experimentId: number) {
-    // this.loading = !this.loading;
-
-    this.experimentService.getExperimentAttachmentContent(fileName, experimentId).subscribe(response => {
-      console.log(response);
-    }
-
-    )
-    // this.fileUploadService.getFileContent(fileName).subscribe(
-    //   (response: any) => {
-    //     this.loading = false;
-    //     // this.fileNames = response;
-    //   }
-    // );
+    window.location.assign(
+      `http://localhost:4201/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`
+    );
   }
 
   saveExcipients() {

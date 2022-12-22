@@ -11,9 +11,16 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { BusinessAdminModule } from '@app/business-admin/business-admin.module';
 import { TrfDashboardModule } from '@app/trf-dashboard/trf-dashboard.module';
 import { AddTrfComponent } from './add-trf/add-trf.component';
+import { FormsPageComponent } from './forms-page/forms-page.component';
+import { FormulationsRoutingModule } from './formulations-routing.module';
 
 @NgModule({
-  declarations: [FormulationsComponent, CreateFormulationComponent, AddTrfComponent],
+  declarations: [
+    FormulationsComponent,
+    CreateFormulationComponent,
+    AddTrfComponent,
+    FormsPageComponent,
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -21,8 +28,8 @@ import { AddTrfComponent } from './add-trf/add-trf.component';
     NgxDatatableModule,
     BusinessAdminModule,
     CKEditorModule,
-    BrowserModule,
     TrfDashboardModule,
+    FormulationsRoutingModule,
     NgMultiSelectDropDownModule.forRoot(),
   ],
 })

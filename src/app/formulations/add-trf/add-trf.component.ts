@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { TrfService } from '@app/shared/services/test-request-form/trf.service';
 import { finalize, takeWhile } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { Dosages } from '@app/business-admin/dosage/dosage.interface';
+import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 
 @Component({
   selector: 'app-add-trf',
@@ -16,6 +17,9 @@ export class AddTrfComponent implements OnInit {
   public testRequest: any = {};
   private subscribeFlag: boolean = true;
   public dosagesList: Dosages[] = [];
+
+  expId: number;
+  experiment: any;
 
   testRequestForm = this.formBuilder.group({
     testRequestId: ['', [Validators.required]],
@@ -37,6 +41,7 @@ export class AddTrfComponent implements OnInit {
   });
 
   testRequestRow = this.testRequestForm.get('testRequestRow') as FormArray;
+  testId = 0;
 
   // public testRequestRow: FormArray;
 
@@ -45,11 +50,28 @@ export class AddTrfComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: Router,
     private trfService: TrfService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private readonly experimentService: ExperimentService,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    this.expId = this.activatedRoute.snapshot.queryParams['expId'];
     console.log(this.testRequestForm);
+    this.getExperimentDetails();
+  }
+
+  getExperimentDetails() {
+    this.experimentService
+      .getIndvExperimentById(this.expId)
+      .pipe(takeWhile(() => this.subscribeFlag))
+      .subscribe((experiment) => {
+        this.experiment = experiment;
+        this.testRequestForm.patchValue({
+          batchNumber: this.experiment.batchNumber,
+        });
+        this.globalService.hideLoader();
+      });
   }
 
   redirectToUsers() {
@@ -61,24 +83,27 @@ export class AddTrfComponent implements OnInit {
     const expiryDate = this.testRequestForm.get('expiryDate')?.value || '';
 
     const newTestRequest = {
-      testRequestId: this.testRequestForm.get('testRequestId')?.value,
-      department: this.testRequestForm.get('department')?.value,
-      dosageForm: this.testRequestForm.get('dosageForm')?.value,
-      projectName: this.testRequestForm.get('projectName')?.value,
-      projectCode: this.testRequestForm.get('projectCode')?.value,
-      strength: this.testRequestForm.get('strength')?.value,
-      batchNumber: this.testRequestForm.get('batchNumber')?.value,
-      stage: this.testRequestForm.get('stage')?.value,
-      packaging: this.testRequestForm.get('packaging')?.value,
-      batchSize: this.testRequestForm.get('batchSize')?.value,
-      quantity: this.testRequestForm.get('quantity')?.value,
-      labelClaim: this.testRequestForm.get('labelClaim')?.value,
-      manufacturingDate:
-        (manDate && new Date(manDate)?.toISOString().split('T')[0]) || '',
-      expiryDate:
-        (expiryDate && new Date(expiryDate)?.toISOString().split('T')[0]) || '',
+      status: 'string',
+      expId: Number(this.expId),
+      testRequestFormStatus: 'string',
+      condition: this.testRequestForm.get('condition')?.value || '',
+      stage: this.testRequestForm.get('stage')?.value || '',
+      packaging: this.testRequestForm.get('packaging')?.value || '',
+      labelClaim: this.testRequestForm.get('labelClaim')?.value || '',
+      quantity: this.testRequestForm.get('quantity')?.value || 0,
+      manufacturingDate: manDate,
+      expireDate: expiryDate,
+      testId: this.testRequestForm.get('testRequestId')?.value || '',
+      testName: '',
+      testNumber: '',
+      testResult: '',
+      testStatus: 'string',
+      trfTestResults: this.testRequestRow.value,
     };
+    console.log(newTestRequest);
+    console.log(this.testRequestForm);
     if (!this.testRequestForm.invalid) {
+      console.log(newTestRequest);
       this.globalService.showLoader();
       if (Object.keys(this.testRequest).length === 0) {
         this.trfService
@@ -91,7 +116,7 @@ export class AddTrfComponent implements OnInit {
           )
           .subscribe(() => {
             this.toastr.success('Test has been added succesfully', 'Success');
-            this.route.navigate(['/business-admin/users/']);
+            this.route.navigate(['/forms-page/new-formulation']);
           });
       } else {
         // this.testRequest = [
@@ -138,14 +163,20 @@ export class AddTrfComponent implements OnInit {
   }
 
   addNewTest() {
+    console.log(this.testId);
+    this.testId = this.testId === 0 ? this.testId + 1 : this.testId;
     this.testRequestRow.push(this.addTests());
   }
 
   addTests(): FormGroup {
+    this.testId = this.testId ? this.testId + 1 : 1;
+    console.log(this.testId);
     return this.formBuilder.group({
-      testId: ['', [Validators.required]],
-      test: [''],
-      results: [null],
+      testId: [this.testId, [Validators.required]],
+      testNumber: ['string'],
+      testStatus: ['string'],
+      testName: [''],
+      testResult: [null],
     });
   }
 }

@@ -4,7 +4,6 @@ import { ExperimentService } from '@app/shared/services/experiment/experiment.se
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
-import { timingSafeEqual } from 'crypto';
 import { takeWhile } from 'rxjs';
 
 @Component({
@@ -136,6 +135,7 @@ export class FormulationsComponent implements OnInit {
         this.globalService.hideLoader();
       });
   }
+
   getMyExperiments() {
     this.globalService.showLoader();
     this.formulationService
@@ -150,5 +150,14 @@ export class FormulationsComponent implements OnInit {
   createFormulation(id) {
     console.log(id);
     this.route.navigateByUrl(`/create-forms?projectId=${id}`);
+  }
+
+  addTrf(row) {
+    console.log(row);
+    this.route.navigateByUrl(`/forms-page/add-trf?expId=${row.expId}`);
+    // var someTabTriggerEl = document.querySelector('#projects');
+    // var tab = new bootstrap.Tab(someTabTriggerEl)
+    // console.log(someTabTriggerEl);
+    // someTabTriggerEl.show()
   }
 }

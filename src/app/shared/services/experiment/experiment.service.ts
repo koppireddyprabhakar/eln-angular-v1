@@ -11,7 +11,7 @@ export class ExperimentService {
   constructor(
     private readonly http: HttpClient,
     private readonly clientService: ClientService
-  ) { }
+  ) {}
 
   getExperiments() {
     const url = elnEndpointsConfig.endpoints['getExperiments'];
@@ -24,6 +24,24 @@ export class ExperimentService {
     const url = `${elnEndpointsConfig.endpoints['getCreatedExperimentsById']}?experimentId=${id}`;
     return this.http
       .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+  getIndvExperimentById(id) {
+    const url = `${elnEndpointsConfig.endpoints['getExperimentById']}?experimentId=${id}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+  getAttachmentsById(id) {
+    const url = `${elnEndpointsConfig.endpoints['getExperimentAttachmentById']}?experimentId=${id}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+  deleteExperimentAttachment(file) {
+    const url = `${elnEndpointsConfig.endpoints['deleteExperimentAttachment']}`;
+    return this.http
+      .delete<any>(url, { body: file })
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
@@ -52,20 +70,36 @@ export class ExperimentService {
     const url = elnEndpointsConfig.endpoints['saveExperimentAttachment'];
 
     const formData = new FormData();
-    formData.append("experimentId", experimentId);
-    formData.append("projectId", projectId);
-    formData.append("status", "ACTIVE");
-    formData.append("file", file, file.name);
+    formData.append('experimentId', experimentId);
+    formData.append('projectId', projectId);
+    formData.append('status', 'ACTIVE');
+    formData.append('file', file, file.name);
 
     return this.http.post<string>(url, formData);
   }
 
-  getExperimentAttachmentContent(fileName, experimentId): Observable<any> {
-    const url = elnEndpointsConfig.endpoints['getExperimentAttachmentContent'] + "?fileName=" + fileName + "&experimentId=" + experimentId;
+  getExperimentAttachmentContent(
+    fileName,
+    experimentId,
+    projectId
+  ): Observable<any> {
+    const url =
+      elnEndpointsConfig.endpoints['getExperimentAttachmentContent'] +
+      '/' +
+      fileName +
+      '/' +
+      experimentId +
+      '/' +
+      projectId;
 
     return this.http
       .get(url, { responseType: 'blob' })
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
+  createTrf(data) {
+    const url = elnEndpointsConfig.endpoints['saveTrf'];
+    return this.http.post<string>(url, data);
   }
 
   handleError(error: HttpErrorResponse) {

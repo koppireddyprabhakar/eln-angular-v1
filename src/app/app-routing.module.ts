@@ -13,6 +13,7 @@ import { FormulationsComponent } from './formulations/formulations.component';
 import { CreateFormulationComponent } from './formulations/create-formulation/create-formulation.component';
 import { CreateTrfComponent } from './test-request-form/create-trf/create-trf.component';
 import { TrfDashboardComponent } from './trf-dashboard/trf-dashboard.component';
+import { FormsPageComponent } from './formulations/forms-page/forms-page.component';
 
 // const routes: Routes = [
 //   { path: '', component: DashboardComponent },
@@ -54,6 +55,14 @@ const routes: Routes = [
     loadChildren: () =>
       import('@app/trf-dashboard/trf-dashboard.module').then(
         (route) => route.TrfDashboardModule
+      ),
+  },
+  {
+    path: 'forms-page',
+    component: FormsPageComponent,
+    loadChildren: () =>
+      import('@app/formulations/formulations.module').then(
+        (route) => route.FormulationsModule
       ),
   },
   {
