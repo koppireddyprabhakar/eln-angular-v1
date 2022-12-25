@@ -7,36 +7,29 @@ import { ProjectService } from '@app/shared/services/project/project.service';
 import { takeWhile } from 'rxjs';
 
 @Component({
-  selector: 'app-formulations',
-  templateUrl: './formulations.component.html',
-  styleUrls: ['./formulations.component.css'],
+  selector: 'app-analysis-projects',
+  templateUrl: './analysis-projects.component.html',
+  styleUrls: ['./analysis-projects.component.scss'],
 })
-export class FormulationsComponent implements OnInit {
+export class AnalysisProjectsComponent implements OnInit {
   projects: any = [];
-  experiments: any = [];
-  myExperiments: any = [];
   myProjects: any = [];
   subscribeFlag = true;
   allProjColumns: any;
   myProjColumns: any;
-  expColumns: any;
-  myExpColumns: any;
-  options: any = { rowClickEvent: true };
-
-  @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
-  @ViewChild('expActionTpl', { static: true }) expActionTpl: TemplateRef<any>;
-
+  options: any = {};
   constructor(
     private readonly globalService: GlobalService,
     private readonly projectService: ProjectService,
     private readonly formulationService: FormulationsService,
     private readonly experimentService: ExperimentService,
-    private route: Router
+    private readonly route: Router
   ) {}
+
+  @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
   ngOnInit(): void {
     this.getProjects();
-    this.getExperiments();
     this.myProjColumns = [
       { key: 'projectName', title: 'Project Name' },
       { key: 'productName', title: 'Product Name' },
@@ -67,40 +60,6 @@ export class FormulationsComponent implements OnInit {
       { key: 'formulationName', title: 'Formulation Department' },
       { key: 'status', title: 'Status' },
     ];
-    this.expColumns = [
-      { key: 'experimentName', title: 'Experiment Name' },
-      { key: 'batchNumber', title: 'Batch No.' },
-      { key: 'batchSize', title: 'Batch Size' },
-      { key: 'projectId', title: 'Project ID' },
-      { key: 'formulationName', title: 'Formulation Type' },
-      { key: 'strength', title: 'Strength' },
-      { key: 'status', title: 'Status' },
-      // {
-      //   key: 'options',
-      //   title: '<div class="blue">Options</div>',
-      //   align: { head: 'center', body: 'center' },
-      //   sorting: false,
-      //   width: 150,
-      //   cellTemplate: this.actionTpl,
-      // },
-    ];
-    this.myExpColumns = [
-      { key: 'experimentName', title: 'Experiment Name' },
-      { key: 'batchNumber', title: 'Batch No.' },
-      { key: 'batchSize', title: 'Batch Size' },
-      { key: 'projectId', title: 'Project ID' },
-      { key: 'formulationName', title: 'Formulation Type' },
-      { key: 'strength', title: 'Strength' },
-      { key: 'status', title: 'Status' },
-      {
-        key: 'options',
-        title: '<div class="blue">Options</div>',
-        align: { head: 'center', body: 'center' },
-        sorting: false,
-        width: 120,
-        cellTemplate: this.expActionTpl,
-      },
-    ];
   }
 
   getProjects() {
@@ -110,17 +69,6 @@ export class FormulationsComponent implements OnInit {
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((projects) => {
         this.projects = projects;
-        this.globalService.hideLoader();
-      });
-  }
-
-  getExperiments() {
-    this.globalService.showLoader();
-    this.experimentService
-      .getExperiments()
-      .pipe(takeWhile(() => this.subscribeFlag))
-      .subscribe((experiments) => {
-        this.experiments = experiments;
         this.globalService.hideLoader();
       });
   }
@@ -136,35 +84,8 @@ export class FormulationsComponent implements OnInit {
       });
   }
 
-  getMyExperiments() {
-    this.globalService.showLoader();
-    this.formulationService
-      .getExperimentsByUserId()
-      .pipe(takeWhile(() => this.subscribeFlag))
-      .subscribe((myExperiments) => {
-        this.myExperiments = myExperiments;
-        this.globalService.hideLoader();
-      });
-  }
-
   createFormulation(id) {
     console.log(id);
     this.route.navigateByUrl(`/create-forms?projectId=${id}`);
-  }
-
-  onRowClick(event) {
-    console.log(event);
-    this.route.navigateByUrl(
-      `/create-forms?projectId=${event.projectId}&experimentId=${event.expId}`
-    );
-  }
-
-  addTrf(row) {
-    console.log(row);
-    this.route.navigateByUrl(`/forms-page/add-trf?expId=${row.expId}`);
-    // var someTabTriggerEl = document.querySelector('#projects');
-    // var tab = new bootstrap.Tab(someTabTriggerEl)
-    // console.log(someTabTriggerEl);
-    // someTabTriggerEl.show()
   }
 }

@@ -14,6 +14,7 @@ import { CreateFormulationComponent } from './formulations/create-formulation/cr
 import { CreateTrfComponent } from './test-request-form/create-trf/create-trf.component';
 import { TrfDashboardComponent } from './trf-dashboard/trf-dashboard.component';
 import { FormsPageComponent } from './formulations/forms-page/forms-page.component';
+import { AnalysisComponent } from './analysis/analysis.component';
 
 // const routes: Routes = [
 //   { path: '', component: DashboardComponent },
@@ -66,9 +67,17 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'forms-page',
-    component: FormulationsComponent,
+    path: 'analysis-dashboard',
+    component: AnalysisComponent,
+    loadChildren: () =>
+      import('@app/analysis/analysis.module').then(
+        (route) => route.AnalysisModule
+      ),
   },
+  // {
+  //   path: 'forms-page',
+  //   component: FormulationsComponent,
+  // },
   {
     path: 'create-forms',
     component: CreateFormulationComponent,

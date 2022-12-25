@@ -43,11 +43,7 @@
               aria-selected="true"
             >
               {{ dumm.label }}
-              <i
-                class="bi bi-pencil-square"
-                *ngIf="isCreatedExperiment"
-                (click)="editMode(i)"
-              ></i>
+              <i class="bi bi-pencil-square" (click)="editMode(i)"></i>
               <!-- <span >Edit</span> -->
             </button>
 
@@ -76,6 +72,23 @@
               aria-selected="false"
             >
               Excipients/Chemicals
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="results-tab"
+              [disabled]="!isCreatedExperiment"
+              data-bs-toggle="tab"
+              data-bs-target="#results"
+              (click)="search('results')"
+              [ngClass]="{ active: activeTab === 'results' }"
+              type="button"
+              role="tab"
+              aria-controls="results"
+              aria-selected="false"
+            >
+              Results
             </button>
           </li>
           <li class="nav-item" role="presentation">
@@ -376,6 +389,61 @@
               </button>
             </div>
           </div>
+
+          <div
+            class="tab-pane fade"
+            [ngClass]="{
+              active: activeTab === 'results',
+              show: activeTab === 'results'
+            }"
+            id="results"
+            role="tabpanel"
+            aria-labelledby="results-tab"
+          >
+            <div class="row pt-4 px-4">
+              <div class="col-lg-4">
+                <div class="col-lg-6">Test Id</div>
+              </div>
+              <div class="col-lg-4">
+                <div class="col-lg-6">Test Name</div>
+              </div>
+              <div class="col-lg-4">
+                <div class="col-lg-6">Results</div>
+              </div>
+            </div>
+            <div class="row pt-4 px-4">
+              <div class="col-lg-4">
+                <div class="col-lg-6">TRF123-A1</div>
+              </div>
+              <div class="col-lg-4">
+                <div class="col-lg-6">Newr</div>
+              </div>
+              <div class="col-lg-4">
+                <div class="col-lg-6"><input type="text" /></div>
+              </div>
+            </div>
+            <div class="row pt-4 px-4">
+              <div class="col-lg-4">
+                <div class="col-lg-6">TRF123-A2</div>
+              </div>
+              <div class="col-lg-4">
+                <div class="col-lg-6">Trico</div>
+              </div>
+              <div class="col-lg-4">
+                <div class="col-lg-6"><input type="text" /></div>
+              </div>
+            </div>
+            <div class="text-center pt-3">
+              <button
+                type="submit"
+                class="btn btn-primary mt-3"
+                (click)="saveExcipients()"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+
           <div
             class="tab-pane fade"
             [ngClass]="{

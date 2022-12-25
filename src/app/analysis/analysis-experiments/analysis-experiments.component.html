@@ -1,0 +1,83 @@
+<main id="main" class="main body-height">
+  <div class="card pt-4">
+    <div class="card-body">
+      <ul class="nav nav-tabs" id="myTab1" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="allExperiments-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#allExperiments"
+            type="button"
+            role="tab"
+            aria-controls="allExperiments"
+            aria-selected="true"
+            (click)="getExperiments()"
+          >
+            All Experiments
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="myExperiments-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#myExperiments"
+            type="button"
+            role="tab"
+            aria-controls="myExperiments"
+            aria-selected="false"
+            (click)="getMyExperiments()"
+          >
+            My Experiments
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content inner-card" id="myTab1Content">
+        <div
+          class="tab-pane fade show active"
+          id="allExperiments"
+          role="tabpanel"
+          aria-labelledby="allExperiments-tab"
+        >
+          <div class="tableNgx">
+            <ngx-datatable
+              tableClass="table table-striped table-bordered table-hover tableNgx"
+              [data]="experiments"
+              [options]="options"
+              [columns]="expColumns"
+            >
+            </ngx-datatable>
+          </div>
+        </div>
+        <div
+          class="tab-pane fade"
+          id="myExperiments"
+          role="tabpanel"
+          aria-labelledby="myExperiments-tab"
+        >
+          <div class="tableNgx">
+            <ngx-datatable
+              tableClass="table table-striped table-bordered table-hover tableNgx"
+              [data]="myExperiments"
+              [options]="options"
+              [columns]="myExpColumns"
+            >
+              <ng-template
+                #expActionTpl
+                let-row
+                let-rowIndex="rowIndex"
+                let-columnValue="columnValue"
+              >
+                &nbsp;&nbsp;
+                <button type="button" class="btn btn-outline-primary">
+                  Add TRF
+                </button>
+              </ng-template>
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

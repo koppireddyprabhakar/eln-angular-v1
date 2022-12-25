@@ -4,14 +4,14 @@ import { elnEndpointsConfig } from '@config/endpoints/eln.endpoints.config';
 import { catchError, throwError } from 'rxjs';
 import { ClientService } from '../client/client.service';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TrfService {
-
-  constructor(private readonly http: HttpClient,
-    private readonly clientService: ClientService) { }
+  constructor(
+    private readonly http: HttpClient,
+    private readonly clientService: ClientService
+  ) {}
 
   createTestRequestForm(requestBody) {
     const url = elnEndpointsConfig.endpoints['createTestRequestForm'];
@@ -23,4 +23,8 @@ export class TrfService {
     return this.http.post<string>(url, requestBody);
   }
 
+  getTestRequestForms() {
+    const url = elnEndpointsConfig.endpoints['getTestRequestForm'];
+    return this.http.get(url);
+  }
 }

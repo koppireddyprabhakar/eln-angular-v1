@@ -56,8 +56,10 @@ export const elnEndpointsConfig: EndpointConfig = {
     getExperimentsById:
       'formulation-dashboard/get-experiments-by-user-id?userId=3',
     getExperimentById: 'experiment/get-experiment-by-id',
+    getFormulationsExperimentById: 'formulation-dashboard/get-experiment-by-id',
     createTestRequestForm: 'test-request-form/create-test-request-form',
     updateTestRequestForm: 'test-request-form/update-test-request-form',
+    getTestRequestForm: 'test-request-form/get-test-request-forms',
     getExperimentAttachmentContent:
       'experiment/get-experiment-attachment-content',
     getExperimentAttachmentById: 'experiment/search-experiment-attachments',

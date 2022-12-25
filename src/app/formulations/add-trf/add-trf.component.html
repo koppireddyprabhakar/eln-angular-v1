@@ -6,10 +6,11 @@
         <div class="col-4">
           <label for="testRequestId" class="form-label">Test Request ID</label>
           <input
-            type="number"
+            type="text"
             class="form-control"
             id="testRequestId"
             formControlName="testRequestId"
+            readonly
           />
           <span
             *ngIf="
@@ -32,6 +33,7 @@
             class="form-control"
             id="department"
             formControlName="department"
+            readonly
           />
           <span
             *ngIf="
@@ -53,6 +55,7 @@
             class="form-control"
             id="dosageForm"
             formControlName="dosageForm"
+            readonly
           />
           <span
             *ngIf="
@@ -74,6 +77,7 @@
             class="form-control"
             id="projectName"
             formControlName="projectName"
+            readonly
           />
           <span
             *ngIf="
@@ -95,6 +99,7 @@
             class="form-control"
             id="projectCode"
             formControlName="projectCode"
+            readonly
           />
           <span
             *ngIf="
@@ -116,6 +121,7 @@
             class="form-control"
             id="strength"
             formControlName="strength"
+            readonly
           />
           <span
             *ngIf="
@@ -137,6 +143,7 @@
             class="form-control"
             id="batchNumber"
             formControlName="batchNumber"
+            readonly
           />
           <span
             *ngIf="
@@ -221,6 +228,7 @@
             class="form-control"
             id="batchSize"
             formControlName="batchSize"
+            readonly
           />
           <span
             *ngIf="
@@ -324,7 +332,7 @@
             Please enter Expiry Date
           </span>
         </div>
-        <div class="col-12">
+        <!-- <div class="col-12">
           <section formArrayName="testRequestRow">
             <div
               *ngFor="let testRow of testRequestRow?.controls; let i = index"
@@ -379,6 +387,27 @@
             <i class="bi bi-plus-circle pointer"></i
             ><span class="pointer" (click)="addNewTest()">Add Test</span>
           </div>
+        </div> -->
+        <div class="pt-3 pb-3">
+          <ng-multiselect-dropdown
+            [settings]="dropdownSettings"
+            [data]="tests"
+            [(ngModel)]="selectedItems"
+            (onSelect)="onItemSelect($event)"
+            (onSelectAll)="onSelectAll($event)"
+            (onDeSelect)="deselect($event)"
+          >
+          </ng-multiselect-dropdown>
+        </div>
+
+        <div class="tableNgx">
+          <ngx-datatable
+            tableClass="table table-striped table-bordered table-hover tableNgx"
+            [data]="tableData"
+            [options]="options"
+            [columns]="columns"
+          >
+          </ngx-datatable>
         </div>
         <div class="text-center pt-4">
           <button

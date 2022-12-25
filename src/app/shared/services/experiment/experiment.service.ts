@@ -56,14 +56,14 @@ export class ExperimentService {
     const url = elnEndpointsConfig.endpoints['saveExcipient'];
     console.log(url);
     console.log(excipient);
-    return this.http.post<string>(url, excipient);
+    return this.http.post<any>(url, excipient);
   }
 
   saveExperimentTabs(experiment) {
     const url = elnEndpointsConfig.endpoints['saveExperimentDetails'];
     console.log(url);
     console.log(experiment);
-    return this.http.post<string>(url, experiment);
+    return this.http.post<any>(url, experiment);
   }
 
   saveExperimentAttachment(file, experimentId, projectId): Observable<any> {

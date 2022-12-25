@@ -199,6 +199,7 @@
                         [data]="myExperiments"
                         [options]="options"
                         [columns]="myExpColumns"
+                        (rowClick)="onRowClick($event)"
                       >
                         <ng-template
                           #expActionTpl
