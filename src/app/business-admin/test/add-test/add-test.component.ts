@@ -77,6 +77,14 @@ export class AddTestComponent implements OnInit, OnDestroy {
     });
   }
 
+  addNewTests(): FormGroup {
+    return this.formBuilder.group({
+      testName: ['', [Validators.required]],
+      description: [''],
+      dosageId: [null],
+    });
+  }
+
   addNewTest() {
     this.testRow.push(this.addTests());
   }

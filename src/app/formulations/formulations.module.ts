@@ -7,17 +7,30 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CreateFormulationComponent } from './create-formulation/create-formulation.component';
 import { CKEditorModule } from 'ckeditor4-angular';
 import { BrowserModule } from '@angular/platform-browser';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { BusinessAdminModule } from '@app/business-admin/business-admin.module';
+import { TrfDashboardModule } from '@app/trf-dashboard/trf-dashboard.module';
+import { AddTrfComponent } from './add-trf/add-trf.component';
+import { FormsPageComponent } from './forms-page/forms-page.component';
+import { FormulationsRoutingModule } from './formulations-routing.module';
 
 @NgModule({
-  declarations: [FormulationsComponent, CreateFormulationComponent],
+  declarations: [
+    FormulationsComponent,
+    CreateFormulationComponent,
+    AddTrfComponent,
+    FormsPageComponent,
+  ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
+    BusinessAdminModule,
     CKEditorModule,
-    BrowserModule,
+    TrfDashboardModule,
+    FormulationsRoutingModule,
+    NgMultiSelectDropDownModule.forRoot(),
   ],
-  schemas: [NO_ERRORS_SCHEMA],
 })
 export class FormulationsModule {}

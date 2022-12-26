@@ -1,0 +1,32 @@
+.align-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.align-button {
+  text-align: end;
+  align-self: center;
+}
+
+.add-formulation {
+  padding: 1rem 0;
+}
+
+.tableNgx ::ng-deep label {
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+
+.tableNgx ::ng-deep .text-right {
+  text-align: right;
+}
+
+.text-end {
+  text-align: end;
+}
+
+.margin-up {
+  margin-top: 1rem;
+}

@@ -70,9 +70,73 @@
       </a>
     </li> -->
     <li class="nav-item">
-      <a class="nav-link" routerLink="/forms-page" routerLinkActive="active">
+      <a
+        class="nav-link"
+        routerLink="/forms-page/new-formulation"
+        routerLinkActive="active"
+      >
         <i class="bi bi-grid"></i> <span>Formulations Dashboard</span>
       </a>
     </li>
+
+    <li class="nav-item">
+      <a
+        class="nav-link collapsed"
+        data-bs-target="#components-analysis"
+        data-bs-toggle="collapse"
+        aria-expanded="true"
+      >
+        <i class="bi bi-menu-button-wide"></i><span>Analysis Dashboard</span
+        ><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <!--  [ngClass]="{ show: toggleBusinessAdmin }" -->
+      <ul
+        id="components-analysis"
+        class="nav-content collapse"
+        data-bs-parent="#sidebar-nav"
+      >
+        <li>
+          <a routerLink="/analysis-dashboard/list" routerLinkActive="active">
+            <i class="bi bi-circle"></i><span>Test Request Forms</span>
+          </a>
+        </li>
+        <li>
+          <a
+            routerLink="/analysis-dashboard/analysis-experiments"
+            routerLinkActive="active"
+          >
+            <i class="bi bi-circle"></i><span>Analysis Experiments</span>
+          </a>
+        </li>
+        <li>
+          <a
+            routerLink="/analysis-dashboard/projects"
+            routerLinkActive="active"
+          >
+            <i class="bi bi-circle"></i><span>Projects</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <!-- <li class="nav-item">
+      <a
+        class="nav-link"
+        routerLink="/analysis-dashboard/list"
+        routerLinkActive="active"
+      >
+        <i class="bi bi-grid"></i> <span>Analysis Dashboard</span>
+      </a>
+    </li> -->
+
+    <!-- <li class="nav-item">
+      <a
+        class="nav-link"
+        routerLink="/test-request-form/trf"
+        routerLinkActive="active"
+      >
+        <i class="bi bi-grid"></i> <span>Test Request Form</span>
+      </a>
+    </li> -->
   </ul>
 </aside>

@@ -2,26 +2,28 @@ import {
   Component,
   ElementRef,
   OnInit,
-  ViewChild,
   Renderer2,
+  ViewChild,
 } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Route, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { ToastrService } from 'ngx-toastr';
-import { takeWhile } from 'rxjs';
 
 @Component({
-  selector: 'app-create-formulation',
-  templateUrl: './create-formulation.component.html',
-  styleUrls: ['./create-formulation.component.scss'],
+  selector: 'app-analysis-dashbaord',
+  templateUrl: './analysis-dashbaord.component.html',
+  styleUrls: ['./analysis-dashbaord.component.scss'],
 })
-export class CreateFormulationComponent implements OnInit {
+export class AnalysisDashbaordComponent implements OnInit {
   @ViewChild('inputfields') inputfields!: ElementRef;
-  dummyTabs: any = [];
+  dummyTabs: any = [
+    { label: 'Purpose and Conclusion', isEdit: false, value: 'primary' },
+    { label: 'Formulation', isEdit: false, value: 'secondary' },
+  ];
   inputValue: string;
   projectId: number;
   project: any;
@@ -100,10 +102,6 @@ export class CreateFormulationComponent implements OnInit {
     this.getBatchNumber();
     this.getExperimentDetails(this.experimentId);
     this.getProjectDetails();
-    this.dummyTabs = [
-      { label: 'Purpose and Conclusion', isEdit: false, value: 'primary' },
-      { label: 'Formulation', isEdit: false, value: 'secondary' },
-    ];
   }
 
   getProjectDetails() {
@@ -155,7 +153,7 @@ export class CreateFormulationComponent implements OnInit {
     this.isCreatedExperiment = this.experimentId ? true : false;
     if (this.experimentId) {
       this.route.navigateByUrl(
-        `/create-forms?projectId=${this.projectId}&experimentId=${this.experimentId}`
+        `/analysis-dashboard/dashboard?projectId=${33}&experimentId=${94}`
       );
       this.experimentService
         .getIndvExperimentById(this.experimentId)

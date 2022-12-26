@@ -35,7 +35,7 @@ export const elnEndpointsConfig: EndpointConfig = {
     getProjectById: 'project/get-project-by-id',
     getProjectsTeams: 'project/get-formulations-teams',
     getProjectsTeamsId:
-      'formulation/get-projects-by-dosage-or-team-id?teamId=5',
+      'formulation-dashboard/get-projects-by-dosage-or-team-id?teamId=5',
     createFormulationProject: 'formulation-dashboard/create-project',
     updateFormulationProject: 'formulation-dashboard/update-project',
     deleteFormulationProject: 'formulation-dashboard/delete-project',
@@ -49,10 +49,22 @@ export const elnEndpointsConfig: EndpointConfig = {
     getMarkets: 'market/get-markets',
     getExperiments: 'experiment/get-experiments',
     createExperiment: 'experiment/create-experiment',
+    // createExperiment: 'experiment/create-experiment-attachment',
+    saveExcipient: 'experiment/save-excipient',
     saveExperimentDetails: 'experiment/save-experiment-details',
-    saveExperimentAttachment: 'experiment/create-experiment-atachment',
-    getExperimentsById: 'formulation/get-experiments-by-user-id?userId=3',
-    getCreatedExperimentsById: 'experiment/get-experiment-by-id',
+    saveExperimentAttachment: 'experiment/save-experiment-attachment',
+    getExperimentsById:
+      'formulation-dashboard/get-experiments-by-user-id?userId=3',
+    getExperimentById: 'experiment/get-experiment-by-id',
+    getFormulationsExperimentById: 'formulation-dashboard/get-experiment-by-id',
+    createTestRequestForm: 'test-request-form/create-test-request-form',
+    updateTestRequestForm: 'test-request-form/update-test-request-form',
+    getTestRequestForm: 'test-request-form/get-test-request-forms',
+    getExperimentAttachmentContent:
+      'experiment/get-experiment-attachment-content',
+    getExperimentAttachmentById: 'experiment/search-experiment-attachments',
+    deleteExperimentAttachment: 'experiment/delete-experiment-attachment',
+    saveTrf: 'test-request-form/create-test-request-form',
   },
 };
 

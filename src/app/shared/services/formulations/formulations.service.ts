@@ -34,6 +34,13 @@ export class FormulationsService {
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
+  getExperimentsById(id) {
+    const url = `${elnEndpointsConfig.endpoints['getFormulationsExperimentById']}?experimentId=${id}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
   handleError(error: HttpErrorResponse) {
     const errorDetail = ClientService.formatError(error);
     if (errorDetail && (errorDetail.title || errorDetail.errorMessage)) {
