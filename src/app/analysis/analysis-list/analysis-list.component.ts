@@ -72,7 +72,7 @@ export class AnalysisListComponent implements OnInit {
 
   createExperiment() {
     this.route.navigateByUrl(
-      `/analysis-dashboard/dashboard?projectId=${33}&experimentId=${94}`
+      `/exp-analysis/dashboard?projectId=${33}&experimentId=${94}`
     );
   }
 }

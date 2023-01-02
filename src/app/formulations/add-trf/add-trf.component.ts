@@ -83,7 +83,7 @@ export class AddTrfComponent implements OnInit {
       allowSearchFilter: true,
     };
     this.columns = [
-      { key: 'testRequestId', title: 'Test Id' },
+      { key: 'trfTestId', title: 'Test Id' },
       { key: 'testName', title: 'Test Name' },
     ];
     console.log(this.testRequestForm);
@@ -118,6 +118,8 @@ export class AddTrfComponent implements OnInit {
           strength: this.experiment.strength,
           batchSize: this.experiment.batchSize,
           testRequestId: this.staticTrfId,
+          department: 'string',
+          projectCode: 'string',
         });
         // this.globalService.hideLoader();
       });
@@ -152,7 +154,9 @@ export class AddTrfComponent implements OnInit {
     tableData.push(newItem);
     this.tableData = this.tableData.map((test, index) => ({
       ...test,
-      testRequestId: `${this.staticTrfId}-A${index}`,
+      testStatus: 'string',
+      testNumber: `${this.staticTrfId}-A${index}`,
+      testResult: 'string',
     }));
 
     console.log(this.tableData);
@@ -165,12 +169,19 @@ export class AddTrfComponent implements OnInit {
     console.log(this.tableData);
     this.tableData = this.tableData.map((test, index) => ({
       ...test,
-      testRequestId: `${this.staticTrfId}-A${index}`,
+      testStatus: 'string',
+      testNumber: `${this.staticTrfId}-A${index}`,
+      testResult: 'string',
     }));
   }
   onSelectAll(items: any) {
     console.log(items);
-    this.tableData = this.tests;
+    this.tableData = this.tests.map((test, index) => ({
+      ...test,
+      testStatus: 'string',
+      testNumber: `${this.staticTrfId}-A${index}`,
+      testResult: 'string',
+    }));
   }
 
   saveTestRequestForm() {
@@ -180,7 +191,7 @@ export class AddTrfComponent implements OnInit {
     const newTestRequest = {
       status: 'string',
       expId: Number(this.expId),
-      testRequestFormStatus: 'string',
+      testRequestFormStatus: 'active',
       condition: this.testRequestForm.get('condition')?.value || '',
       stage: this.testRequestForm.get('stage')?.value || '',
       packaging: this.testRequestForm.get('packaging')?.value || '',
@@ -188,70 +199,44 @@ export class AddTrfComponent implements OnInit {
       quantity: this.testRequestForm.get('quantity')?.value || 0,
       manufacturingDate: manDate,
       expireDate: expiryDate,
-      testId: this.testRequestForm.get('testRequestId')?.value || '',
-      testName: '',
-      testNumber: '',
-      testResult: '',
-      testStatus: 'string',
-      trfTestResults: this.testRequestRow.value,
+      trfTestResults: this.tableData,
     };
     console.log(newTestRequest);
     console.log(this.testRequestForm);
     console.log(this.tableData);
-    // if (!this.testRequestForm.invalid) {
-    //   console.log(newTestRequest);
-    //   this.globalService.showLoader();
-    //   if (Object.keys(this.testRequest).length === 0) {
-    //     this.trfService
-    //       .createTestRequestForm(newTestRequest)
-    //       .pipe(
-    //         takeWhile(() => this.subscribeFlag),
-    //         finalize(() => {
-    //           this.globalService.hideLoader();
-    //         })
-    //       )
-    //       .subscribe(() => {
-    //         this.toastr.success('Test has been added succesfully', 'Success');
-    //         this.route.navigate(['/forms-page/new-formulation']);
-    //       });
-    //   } else {
-    //     // this.testRequest = [
-    //     //   {
-    //     //     ...this.testRequest,
-    //     //     ...newTestRequest,
-    //     //   },
-    //     // ];
-    //     // this.trfService
-    //     //   .updateTestRequestForm(this.testRequest[0])
-    //     //   .pipe(
-    //     //     takeWhile(() => this.subscribeFlag),
-    //     //     finalize(() => {
-    //     //       this.globalService.hideLoader();
-    //     //     })
-    //     //   )
-    //     //   .subscribe(() => {
-    //     //     this.route.navigate(['/business-admin/users/']);
-    //     //     this.toastr.success('Test has been updated succesfully', 'Success');
-    //     //     // this.editForm = false;
-    //     //   });
-    //   }
-    // } else {
-    //   this.testRequestForm.get('testRequestId')?.markAsDirty();
-    //   this.testRequestForm.get('department')?.markAsDirty();
-    //   this.testRequestForm.get('dosageForm')?.markAsDirty();
-    //   this.testRequestForm.get('expiryDate')?.markAsDirty();
-    //   this.testRequestForm.get('manufacturingDate')?.markAsDirty();
-    //   this.testRequestForm.get('labelClaim')?.markAsDirty();
-    //   this.testRequestForm.get('quantity')?.markAsDirty();
-    //   this.testRequestForm.get('batchSize')?.markAsDirty();
-    //   this.testRequestForm.get('packaging')?.markAsDirty();
-    //   this.testRequestForm.get('stage')?.markAsDirty();
-    //   this.testRequestForm.get('batchNumber')?.markAsDirty();
-    //   this.testRequestForm.get('projectName')?.markAsDirty();
-    //   this.testRequestForm.get('strength')?.markAsDirty();
-    //   this.testRequestForm.get('projectCode')?.markAsDirty();
-    //   this.testRequestForm.get('condition')?.markAsDirty();
-    // }
+    if (!this.testRequestForm.invalid) {
+      console.log(newTestRequest);
+      this.globalService.showLoader();
+
+      this.trfService
+        .createTestRequestForm(newTestRequest)
+        .pipe(
+          takeWhile(() => this.subscribeFlag),
+          finalize(() => {
+            this.globalService.hideLoader();
+          })
+        )
+        .subscribe(() => {
+          this.toastr.success('Test has been added succesfully', 'Success');
+          this.route.navigate(['/forms-page/new-formulation']);
+        });
+    } else {
+      this.testRequestForm.get('testRequestId')?.markAsDirty();
+      this.testRequestForm.get('department')?.markAsDirty();
+      this.testRequestForm.get('dosageForm')?.markAsDirty();
+      this.testRequestForm.get('expiryDate')?.markAsDirty();
+      this.testRequestForm.get('manufacturingDate')?.markAsDirty();
+      this.testRequestForm.get('labelClaim')?.markAsDirty();
+      this.testRequestForm.get('quantity')?.markAsDirty();
+      this.testRequestForm.get('batchSize')?.markAsDirty();
+      this.testRequestForm.get('packaging')?.markAsDirty();
+      this.testRequestForm.get('stage')?.markAsDirty();
+      this.testRequestForm.get('batchNumber')?.markAsDirty();
+      this.testRequestForm.get('projectName')?.markAsDirty();
+      this.testRequestForm.get('strength')?.markAsDirty();
+      this.testRequestForm.get('projectCode')?.markAsDirty();
+      this.testRequestForm.get('condition')?.markAsDirty();
+    }
   }
 
   ngOnDestroy(): void {

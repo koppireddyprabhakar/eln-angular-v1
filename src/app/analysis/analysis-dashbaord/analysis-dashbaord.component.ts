@@ -153,7 +153,7 @@ export class AnalysisDashbaordComponent implements OnInit {
     this.isCreatedExperiment = this.experimentId ? true : false;
     if (this.experimentId) {
       this.route.navigateByUrl(
-        `/analysis-dashboard/dashboard?projectId=${33}&experimentId=${94}`
+        `/exp-analysis/dashboard?projectId=${33}&experimentId=${94}`
       );
       this.experimentService
         .getIndvExperimentById(this.experimentId)

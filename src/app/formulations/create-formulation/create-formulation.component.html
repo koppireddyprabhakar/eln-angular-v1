@@ -14,7 +14,7 @@
               id="summary-tab"
               data-bs-toggle="tab"
               data-bs-target="#summary"
-              (click)="search('summary')"
+              (click)="search('summary', -1)"
               type="button"
               role="tab"
               aria-controls="summary"
@@ -37,7 +37,7 @@
               [attr.data-bs-target]="'#' + dumm.value"
               type="button"
               role="tab"
-              (click)="search(dumm.value)"
+              (click)="search(dumm.value, i)"
               [ngClass]="{ active: activeTab === dumm.value }"
               [attr.aria-controls]="dumm.value"
               aria-selected="true"
@@ -68,7 +68,7 @@
               [disabled]="!isCreatedExperiment"
               data-bs-toggle="tab"
               data-bs-target="#contact"
-              (click)="search('contact')"
+              (click)="search('contact', -1)"
               [ngClass]="{ active: activeTab === 'contact' }"
               type="button"
               role="tab"
@@ -85,7 +85,7 @@
               [disabled]="!isCreatedExperiment"
               data-bs-toggle="tab"
               data-bs-target="#attachments"
-              (click)="search('attachments')"
+              (click)="search('attachments', -1)"
               [ngClass]="{ active: activeTab === 'attachments' }"
               type="button"
               role="tab"
@@ -327,7 +327,7 @@
               <button
                 type="submit"
                 class="btn btn-primary"
-                (click)="saveTab(i, dumm.label)"
+                (click)="saveTab(i, dumm)"
               >
                 Submit
               </button>

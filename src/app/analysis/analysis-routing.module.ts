@@ -18,6 +18,10 @@ const routes: Routes = [
         component: AnalysisDashbaordComponent,
       },
       {
+        path: 'exp-dashboard',
+        component: AnalysisDashbaordComponent,
+      },
+      {
         path: 'analysis-experiments',
         component: AnalysisExperimentsComponent,
       },

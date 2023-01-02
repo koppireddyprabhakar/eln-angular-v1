@@ -7,21 +7,30 @@ import { ClientService } from '../client/client.service';
 @Injectable({
   providedIn: 'root',
 })
-export class ExperimentService {
+export class AnalysisService {
   constructor(
     private readonly http: HttpClient,
     private readonly clientService: ClientService
   ) {}
 
-  getExperiments() {
-    const url = elnEndpointsConfig.endpoints['getExperiments'];
+  getALlAnalysisExperiments() {
+    const url = elnEndpointsConfig.endpoints['getAnalysisList'];
     return this.http
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
-  getExperimentById(id) {
-    const url = `${elnEndpointsConfig.endpoints['getCreatedExperimentsById']}?experimentId=${id}`;
+  getAnalysisExperimentById(id) {
+    const url = `${
+      elnEndpointsConfig.endpoints['getAnalysisListByTeamId']
+    }?teamId=${16}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
+  getAnalysisById(id) {
+    const url = `${elnEndpointsConfig.endpoints['getAnalysisById']}?analysisId=${id}`;
     return this.http
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
@@ -64,13 +73,6 @@ export class ExperimentService {
     console.log(url);
     console.log(excipient);
     return this.http.post<any>(url, excipient);
-  }
-
-  updateExcipient(excipient) {
-    const url = elnEndpointsConfig.endpoints['updateExcipient'];
-    console.log(url);
-    console.log(excipient);
-    return this.http.put<any>(url, excipient);
   }
 
   saveExperimentTabs(experiment) {

@@ -10,6 +10,7 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AnalysisExperimentsComponent } from './analysis-experiments/analysis-experiments.component';
 import { AnalysisProjectsComponent } from './analysis-projects/analysis-projects.component';
+import { AnalysisExperimentDashboardComponent } from './analysis-experiment-dashboard/analysis-experiment-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { AnalysisProjectsComponent } from './analysis-projects/analysis-projects
     AnalysisDashbaordComponent,
     AnalysisExperimentsComponent,
     AnalysisProjectsComponent,
+    AnalysisExperimentDashboardComponent,
   ],
   imports: [
     CommonModule,

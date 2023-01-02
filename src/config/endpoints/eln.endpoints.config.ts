@@ -52,10 +52,12 @@ export const elnEndpointsConfig: EndpointConfig = {
     // createExperiment: 'experiment/create-experiment-attachment',
     saveExcipient: 'experiment/save-excipient',
     saveExperimentDetails: 'experiment/save-experiment-details',
+    updateExperimentDetails: 'experiment/update-experiment-details',
     saveExperimentAttachment: 'experiment/save-experiment-attachment',
     getExperimentsById:
       'formulation-dashboard/get-experiments-by-user-id?userId=3',
     getExperimentById: 'experiment/get-experiment-by-id',
+    getExperimentDetailsById: 'experiment/get-experiment-details-by-id',
     getFormulationsExperimentById: 'formulation-dashboard/get-experiment-by-id',
     createTestRequestForm: 'test-request-form/create-test-request-form',
     updateTestRequestForm: 'test-request-form/update-test-request-form',
@@ -65,6 +67,9 @@ export const elnEndpointsConfig: EndpointConfig = {
     getExperimentAttachmentById: 'experiment/search-experiment-attachments',
     deleteExperimentAttachment: 'experiment/delete-experiment-attachment',
     saveTrf: 'test-request-form/create-test-request-form',
+    getAnalysisList: 'analysis/get-analysis-list',
+    getAnalysisListByTeamId: 'analysis/get-analysis-by-team-id',
+    getAnalysisById: 'analysis/get-analysis-by-id',
   },
 };
 

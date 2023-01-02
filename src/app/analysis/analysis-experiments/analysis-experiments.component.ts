@@ -1,4 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
@@ -21,19 +23,17 @@ export class AnalysisExperimentsComponent implements OnInit {
 
   constructor(
     private readonly globalService: GlobalService,
-    private readonly experimentService: ExperimentService,
-    private readonly formulationService: FormulationsService
+    private readonly analysisService: AnalysisService,
+    private readonly formulationService: FormulationsService,
+    private route: Router
   ) {}
 
   ngOnInit(): void {
     this.getExperiments();
     this.expColumns = [
-      { key: 'experimentName', title: 'Experiment Name' },
-      { key: 'batchNumber', title: 'Batch No.' },
-      { key: 'batchSize', title: 'Batch Size' },
-      { key: 'projectId', title: 'Project ID' },
-      { key: 'formulationName', title: 'Formulation Type' },
-      { key: 'strength', title: 'Strength' },
+      { key: 'analysisName', title: 'Analysis Name' },
+      { key: 'projectId', title: 'Project Id' },
+
       { key: 'status', title: 'Status' },
       // {
       //   key: 'options',
@@ -57,8 +57,8 @@ export class AnalysisExperimentsComponent implements OnInit {
 
   getExperiments() {
     this.globalService.showLoader();
-    this.experimentService
-      .getExperiments()
+    this.analysisService
+      .getALlAnalysisExperiments()
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((experiments) => {
         this.experiments = experiments;
@@ -67,13 +67,23 @@ export class AnalysisExperimentsComponent implements OnInit {
   }
 
   getMyExperiments() {
-    this.globalService.showLoader();
-    this.formulationService
-      .getExperimentsByUserId()
+    // this.globalService.showLoader();
+    this.analysisService
+      .getAnalysisExperimentById(5)
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((myExperiments) => {
         this.myExperiments = myExperiments;
         this.globalService.hideLoader();
       });
+  }
+
+  onRowClick(event) {
+    console.log(event);
+    // this.route.navigateByUrl(
+    //   `/create-forms?projectId=${event.projectId}&experimentId=${event.expId}&edit=true`
+    // );
+    this.route.navigateByUrl(
+      `/exp-analysis/exp-dashboard?analysisId=${6}&edit=true`
+    );
   }
 }
