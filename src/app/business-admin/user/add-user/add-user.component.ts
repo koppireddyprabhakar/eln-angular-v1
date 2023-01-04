@@ -3,7 +3,6 @@ import { Validators, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DepartmentService } from '@app/shared/services/department/department.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
-import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { TeamService } from '@app/shared/services/team/team.service';
 import { UserRoleService } from '@app/shared/services/user-role/user-role.service';
 import { UserService } from '@app/shared/services/user/user.service';
@@ -54,7 +53,7 @@ export class AddUserComponent implements OnInit {
     private route: Router,
     private activatedRoute: ActivatedRoute,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.userId = this.activatedRoute.snapshot.queryParams['userId'];
@@ -85,7 +84,6 @@ export class AddUserComponent implements OnInit {
       zipCode: this.userForm.get('zipCode')?.value,
       userTeamRequests: [{ teamId: this.userForm.get('teamId')?.value }],
     };
-    console.log(this.selectedUser);
     if (!this.userForm.invalid) {
       this.globalService.showLoader();
       if (Object.keys(this.selectedUser).length === 0) {
@@ -186,4 +184,5 @@ export class AddUserComponent implements OnInit {
   ngOnDestroy(): void {
     this.subscribeFlag = false;
   }
+
 }
