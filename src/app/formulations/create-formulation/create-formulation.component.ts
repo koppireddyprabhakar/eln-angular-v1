@@ -141,7 +141,7 @@ export class CreateFormulationComponent implements OnInit {
       .getExperimentDetailsById(expDetailsId)
       .subscribe((details) => {
         console.log(details);
-        this.article[this.activeTabIndex].text = details.fileContent;
+        this.article[this.activeTabIndex].text = details?.fileContent;
       });
   }
   getAttachments() {
@@ -201,8 +201,8 @@ export class CreateFormulationComponent implements OnInit {
             this.tableData = experimentDetails.experimentExcipients;
           }
           this.summaryForm.patchValue({
-            experimentName: experimentDetails.experimentName,
-            batchSize: experimentDetails.batchSize,
+            experimentName: experimentDetails?.experimentName,
+            batchSize: experimentDetails?.batchSize,
           });
           console.log(this.dummyTabs);
         });
@@ -320,22 +320,42 @@ export class CreateFormulationComponent implements OnInit {
       name: data.label,
       fileContent: this.article[index].text,
     };
+
     console.log(this.article);
     if (!this.editExperiment) {
+      if (this.dummyTabs[index].id) {
+        tabValue = {
+          ...tabValue,
+          experimentDetailId: this.dummyTabs[index].id,
+        };
+      }
       this.experimentService.saveExperimentTabs(tabValue).subscribe((data) => {
+        console.log(this.dummyTabs[index].id);
+
+        console.log(this.dummyTabs);
         console.log(data);
-        this.toastr.success(data.data, 'Success');
+        this.toastr.success(
+          `Experiment detail ${
+            this.dummyTabs[index].id ? 'updated' : 'created'
+          } successfully`,
+          'Success'
+        );
+        this.dummyTabs[index]['id'] = data.data;
       });
     } else {
       console.log(data);
       const id = Number(data.value.slice(-1));
-      tabValue = { ...tabValue, experimentDetailId: id };
-      this.experimentService
-        .updateExperimentTabs(tabValue)
-        .subscribe((data) => {
-          console.log(data);
-          this.toastr.success(data.data, 'Success');
-        });
+      tabValue = {
+        ...tabValue,
+        experimentDetailId: id,
+      };
+      this.experimentService.saveExperimentTabs(tabValue).subscribe((data) => {
+        console.log(data);
+        this.toastr.success(
+          'Experiment detail updated successfully',
+          'Success'
+        );
+      });
     }
   }
 
@@ -372,19 +392,8 @@ export class CreateFormulationComponent implements OnInit {
         console.log(data);
       });
     } else {
-      const tableData = {
-        status: this.tableData[0].status,
-        excipientId: this.tableData[0].status,
-        experimentId: this.tableData[0].experimentId,
-        excipientsName: this.tableData[0].excipientsName,
-        materialType: this.tableData[0].materialType,
-        materialName: this.tableData[0].materialName,
-        batchNo: this.tableData[0].batchNo,
-        sourceName: this.tableData[0].sourceName,
-        potency: this.tableData[0].potency,
-        grade: this.tableData[0].grade,
-      };
-      this.experimentService.updateExcipient(tableData).subscribe((data) => {
+      console.log(this.tableData);
+      this.experimentService.saveExcipient(this.tableData).subscribe((data) => {
         this.toastr.success(data.data, 'Success');
         console.log(data);
       });

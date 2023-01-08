@@ -87,7 +87,10 @@ export class AddTrfComponent implements OnInit {
       { key: 'testName', title: 'Test Name' },
     ];
     console.log(this.testRequestForm);
-    this.getExperimentDetails();
+    if (this.expId) {
+      this.getExperimentDetails();
+    }
+
     this.getTests();
   }
 

@@ -4,6 +4,7 @@ import { AnalysisListComponent } from './analysis-list/analysis-list.component';
 import { AnalysisDashbaordComponent } from './analysis-dashbaord/analysis-dashbaord.component';
 import { AnalysisExperimentsComponent } from './analysis-experiments/analysis-experiments.component';
 import { AnalysisProjectsComponent } from './analysis-projects/analysis-projects.component';
+import { AnalysisExperimentDashboardComponent } from './analysis-experiment-dashboard/analysis-experiment-dashboard.component';
 
 const routes: Routes = [
   {
@@ -19,7 +20,7 @@ const routes: Routes = [
       },
       {
         path: 'exp-dashboard',
-        component: AnalysisDashbaordComponent,
+        component: AnalysisExperimentDashboardComponent,
       },
       {
         path: 'analysis-experiments',

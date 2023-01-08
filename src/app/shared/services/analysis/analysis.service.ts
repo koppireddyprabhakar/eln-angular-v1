@@ -23,7 +23,7 @@ export class AnalysisService {
   getAnalysisExperimentById(id) {
     const url = `${
       elnEndpointsConfig.endpoints['getAnalysisListByTeamId']
-    }?teamId=${16}`;
+    }?teamId=${5}`;
     return this.http
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
@@ -34,6 +34,40 @@ export class AnalysisService {
     return this.http
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
+  saveAnalysisDetails(experiment) {
+    const url = elnEndpointsConfig.endpoints['saveAnalysisDetails'];
+    console.log(url);
+    console.log(experiment);
+    return this.http.post<any>(url, experiment);
+  }
+
+  saveAnalysisExcipient(excipient) {
+    console.log(excipient);
+    const url = elnEndpointsConfig.endpoints['saveAnalysisExcipient'];
+    console.log(url);
+    console.log(excipient);
+    return this.http.post<any>(url, excipient);
+  }
+
+  getAttachmentsById(id) {
+    const url = `${elnEndpointsConfig.endpoints['searchAnalysisAttachments']}?experimentId=${id}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
+  saveAnalysisAttachment(file, experimentId, projectId): Observable<any> {
+    const url = elnEndpointsConfig.endpoints['saveAnalysisAttachments'];
+
+    const formData = new FormData();
+    formData.append('experimentId', experimentId);
+    formData.append('projectId', projectId);
+    formData.append('status', 'ACTIVE');
+    formData.append('file', file, file.name);
+
+    return this.http.post<string>(url, formData);
   }
 
   getExperimentDetailsById(id) {
@@ -48,12 +82,7 @@ export class AnalysisService {
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
-  getAttachmentsById(id) {
-    const url = `${elnEndpointsConfig.endpoints['getExperimentAttachmentById']}?experimentId=${id}`;
-    return this.http
-      .get<any>(url)
-      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
-  }
+
   deleteExperimentAttachment(file) {
     const url = `${elnEndpointsConfig.endpoints['deleteExperimentAttachment']}`;
     return this.http
@@ -66,13 +95,6 @@ export class AnalysisService {
     console.log(url);
     console.log(experiment);
     return this.http.post<string>(url, experiment);
-  }
-  saveExcipient(excipient) {
-    console.log(excipient);
-    const url = elnEndpointsConfig.endpoints['saveExcipient'];
-    console.log(url);
-    console.log(excipient);
-    return this.http.post<any>(url, excipient);
   }
 
   saveExperimentTabs(experiment) {
@@ -87,18 +109,6 @@ export class AnalysisService {
     console.log(url);
     console.log(experiment);
     return this.http.put<any>(url, experiment);
-  }
-
-  saveExperimentAttachment(file, experimentId, projectId): Observable<any> {
-    const url = elnEndpointsConfig.endpoints['saveExperimentAttachment'];
-
-    const formData = new FormData();
-    formData.append('experimentId', experimentId);
-    formData.append('projectId', projectId);
-    formData.append('status', 'ACTIVE');
-    formData.append('file', file, file.name);
-
-    return this.http.post<string>(url, formData);
   }
 
   getExperimentAttachmentContent(

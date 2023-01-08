@@ -80,6 +80,7 @@ export class AnalysisProjectsComponent implements OnInit {
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((myProjects) => {
         this.myProjects = myProjects;
+        console.log(myProjects);
         this.globalService.hideLoader();
       });
   }
