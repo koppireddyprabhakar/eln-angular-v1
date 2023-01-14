@@ -266,7 +266,7 @@ export class CreateFormulationComponent implements OnInit {
       status: 'string',
       projectId: this.project.projectId,
       teamId: this.project.teamId,
-      userId: this.project.userId,
+      userId: 3,
       experimentName: this.summaryForm.get('experimentName')?.value,
       experimentStatus: 'string',
       summary: 'string',
@@ -289,11 +289,14 @@ export class CreateFormulationComponent implements OnInit {
 
   onItemSelect(item: any) {
     console.log(item);
-    this.tableData = this.inwards.filter(({ excipientId: id1 }) =>
-      this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
-    );
+    this.tableData = this.inwards
+      .filter(({ excipientId: id1 }) =>
+        this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
+      )
+      .map((data) => ({ ...data, experimentId: Number(this.experimentId) }));
     console.log(this.tableData);
   }
+
   deselect(item: any) {
     console.log(item);
     // this.tableData = this.inwards.filter(({ excipientId: id1 }) =>

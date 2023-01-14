@@ -7,11 +7,13 @@ import {
 } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { ToastrService } from 'ngx-toastr';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-analysis-dashbaord',
@@ -21,7 +23,7 @@ import { ToastrService } from 'ngx-toastr';
 export class AnalysisDashbaordComponent implements OnInit {
   @ViewChild('inputfields') inputfields!: ElementRef;
   dummyTabs: any = [
-    { label: 'Purpose and Conclusion', isEdit: false, value: 'primary' },
+    { label: 'Purpose and Conclusions', isEdit: false, value: 'primary' },
     { label: 'Formulation', isEdit: false, value: 'secondary' },
   ];
   inputValue: string;
@@ -46,7 +48,7 @@ export class AnalysisDashbaordComponent implements OnInit {
   experimentDetails: any;
   file: File;
   isCreatedExperiment = false;
-
+  selectedTrfs$ = this.analysisService.selectedTrfs$;
   dropdownList: any = [];
   selectedItems: any = [];
   dropdownSettings: any = {};
@@ -62,6 +64,7 @@ export class AnalysisDashbaordComponent implements OnInit {
   constructor(
     private readonly projectService: ProjectService,
     private readonly experimentService: ExperimentService,
+    private readonly analysisService: AnalysisService,
     private readonly inwardService: InwardManagementService,
     private readonly formulationService: FormulationsService,
     private toastr: ToastrService,
@@ -73,6 +76,9 @@ export class AnalysisDashbaordComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('inngonoit');
+    this.selectedTrfs$.subscribe((trfs) => {
+      console.log(trfs);
+    });
     this.getExcipients();
     this.columns = [
       { key: 'excipientsName', title: 'Inward Name' },
@@ -153,16 +159,17 @@ export class AnalysisDashbaordComponent implements OnInit {
     this.isCreatedExperiment = this.experimentId ? true : false;
     if (this.experimentId) {
       this.route.navigateByUrl(
-        `/exp-analysis/dashboard?projectId=${33}&experimentId=${94}`
+        `/exp-analysis/dashboard?projectId=${this.projectId}&experimentId=${id}`
       );
       this.experimentService
         .getIndvExperimentById(this.experimentId)
         .subscribe((experimentDetails) => {
           this.experimentDetails = experimentDetails;
-          this.summaryForm.patchValue({
-            experimentName: experimentDetails.experimentName,
-            batchSize: experimentDetails.batchSize,
-          });
+          // Commented becaise of no resonse
+          // this.summaryForm.patchValue({
+          //   experimentName: experimentDetails.experimentName,
+          //   batchSize: experimentDetails.batchSize,
+          // });
         });
     }
   }
@@ -247,9 +254,11 @@ export class AnalysisDashbaordComponent implements OnInit {
 
   onItemSelect(item: any) {
     console.log(item);
-    this.tableData = this.inwards.filter(({ excipientId: id1 }) =>
-      this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
-    );
+    this.tableData = this.inwards
+      .filter(({ excipientId: id1 }) =>
+        this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
+      )
+      .map((table) => ({ ...table, experimentId: Number(this.experimentId) }));
     console.log(this.tableData);
   }
   deselect(item: any) {
@@ -267,21 +276,37 @@ export class AnalysisDashbaordComponent implements OnInit {
     this.tableData = this.inwards;
   }
 
-  saveTab(index, label) {
+  saveTab(index, data) {
     const sss = JSON.stringify(this.article[index].text);
     console.log(index);
-    console.log(label);
+    console.log(data.label);
     console.log(sss);
-    const tabValue = {
+    let tabValue: any = {
       status: 'string',
       experimentId: this.experimentId,
-      name: label,
+      name: data.label,
       fileContent: this.article[index].text,
     };
+
     console.log(this.article);
+    if (this.dummyTabs[index].id) {
+      tabValue = {
+        ...tabValue,
+        experimentDetailId: this.dummyTabs[index].id,
+      };
+    }
     this.experimentService.saveExperimentTabs(tabValue).subscribe((data) => {
+      console.log(this.dummyTabs[index].id);
+
+      console.log(this.dummyTabs);
       console.log(data);
-      this.toastr.success(data.data, 'Success');
+      this.toastr.success(
+        `Experiment detail ${
+          this.dummyTabs[index].id ? 'updated' : 'created'
+        } successfully`,
+        'Success'
+      );
+      this.dummyTabs[index]['id'] = data.data;
     });
   }
 

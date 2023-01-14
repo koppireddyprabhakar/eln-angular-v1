@@ -87,6 +87,9 @@ export class AddProjectManagementComponent implements OnInit {
       teamName: this.teamName,
       marketId: this.projectForm.get('market')?.value,
       markertName: this.marketName,
+      projectTeam: {
+        teamId: this.projectForm.get('team')?.value,
+      },
     };
 
     if (!this.projectForm.invalid) {

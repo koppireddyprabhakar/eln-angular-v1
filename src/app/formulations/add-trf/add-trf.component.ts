@@ -83,7 +83,7 @@ export class AddTrfComponent implements OnInit {
       allowSearchFilter: true,
     };
     this.columns = [
-      { key: 'trfTestId', title: 'Test Id' },
+      { key: 'testNumber', title: 'Test Id' },
       { key: 'testName', title: 'Test Name' },
     ];
     console.log(this.testRequestForm);
@@ -112,6 +112,7 @@ export class AddTrfComponent implements OnInit {
       .getExperimentsById(this.expId)
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((experiment) => {
+        console.log(experiment);
         this.experiment = experiment.map((trf) => flatten(trf))[0];
         console.log(this.experiment);
         this.testRequestForm.patchValue({

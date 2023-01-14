@@ -1,13 +1,21 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { elnEndpointsConfig } from '@config/endpoints/eln.endpoints.config';
-import { catchError, Observable, throwError } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  Observable,
+  Subject,
+  throwError,
+} from 'rxjs';
 import { ClientService } from '../client/client.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AnalysisService {
+  private selectedTrfsSubject = new BehaviorSubject<any>([]);
+  selectedTrfs$ = this.selectedTrfsSubject.asObservable();
   constructor(
     private readonly http: HttpClient,
     private readonly clientService: ClientService
@@ -23,10 +31,15 @@ export class AnalysisService {
   getAnalysisExperimentById(id) {
     const url = `${
       elnEndpointsConfig.endpoints['getAnalysisListByTeamId']
-    }?teamId=${5}`;
+    }?teamId=${10}`;
     return this.http
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
+  syncTrf(trfs) {
+    console.log(trfs);
+    this.selectedTrfsSubject.next(trfs);
   }
 
   getAnalysisById(id) {
@@ -60,10 +73,10 @@ export class AnalysisService {
 
   saveAnalysisAttachment(file, experimentId, projectId): Observable<any> {
     const url = elnEndpointsConfig.endpoints['saveAnalysisAttachments'];
-
+    console.log(typeof experimentId);
     const formData = new FormData();
-    formData.append('experimentId', experimentId);
-    formData.append('projectId', projectId);
+    formData.append('experimentId', experimentId.toString());
+    formData.append('projectId', projectId.toString());
     formData.append('status', 'ACTIVE');
     formData.append('file', file, file.name);
 

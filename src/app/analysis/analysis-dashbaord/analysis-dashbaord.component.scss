@@ -3,17 +3,18 @@
   grid-template-columns: 1fr 1fr;
 }
 
-.file-container {
+.file-container{
   padding: 0.5rem 0;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
 }
-.align-right {
+.align-right{
   text-align: end;
   color: red;
 }
 
-.file-list {
+.file-list{
+
   color: #0d6efd;
   cursor: pointer;
 }

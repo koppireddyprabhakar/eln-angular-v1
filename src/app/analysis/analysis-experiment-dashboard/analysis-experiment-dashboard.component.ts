@@ -49,6 +49,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   analysisExperimentDetails: any;
   dropdownList: any = [];
   selectedItems: any = [];
+  savedSelectedItems: any = [];
   dropdownSettings: any = {};
   public files: any = [];
   analysisID: any;
@@ -86,6 +87,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     ];
 
     this.selectedItems = [];
+    this.savedSelectedItems = [];
     this.dropdownSettings = {
       singleSelection: false,
       idField: 'excipientId',
@@ -168,6 +170,8 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
           );
           this.resultsData = analysisExperimentDetails.testRequestForms;
           this.selectedItems = analysisExperimentDetails.analysisExcipients;
+          this.savedSelectedItems =
+            analysisExperimentDetails.analysisExcipients;
           this.tableData = analysisExperimentDetails.analysisExcipients;
           // console.log(this.article);
           // this.experimentDetails = experimentDetails;
@@ -259,10 +263,21 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
 
   onItemSelect(item: any) {
     console.log(item);
-    this.tableData = this.inwards.filter(({ excipientId: id1 }) =>
-      this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
-    );
     console.log(this.tableData);
+    console.log(this.inwards);
+    console.log(this.savedSelectedItems);
+    const findIfExists = this.savedSelectedItems.some(
+      (sel) => sel.excipientId === item.excipientId
+    );
+    console.log(findIfExists);
+    if (!findIfExists) {
+      const a = this.inwards.filter(
+        (inw) => inw.excipientId === item.excipientId
+      );
+      this.tableData.push(a);
+    }
+
+    // console.log(a);
   }
   deselect(item: any) {
     console.log(item);
@@ -311,8 +326,8 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     this.analysisService
       .saveAnalysisAttachment(
         selectedFile,
-        this.analysisID,
-        this.analysisExperimentDetails.projectId
+        this.analysisID.toString(),
+        this.analysisExperimentDetails.projectId.toString()
       )
       .subscribe((response) => {
         console.log(response);

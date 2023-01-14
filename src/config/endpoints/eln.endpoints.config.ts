@@ -35,7 +35,7 @@ export const elnEndpointsConfig: EndpointConfig = {
     getProjectById: 'project/get-project-by-id',
     getProjectsTeams: 'project/get-formulations-teams',
     getProjectsTeamsId:
-      'formulation-dashboard/get-projects-by-dosage-or-team-id?teamId=5',
+      'formulation-dashboard/get-projects-by-dosage-or-team-id?teamId=10',
     createFormulationProject: 'formulation-dashboard/create-project',
     updateFormulationProject: 'formulation-dashboard/update-project',
     deleteFormulationProject: 'formulation-dashboard/delete-project',
@@ -45,7 +45,7 @@ export const elnEndpointsConfig: EndpointConfig = {
     getFormulationProjectsTeams: 'formulation-dashboard/get-formulations-teams',
     getFormualtionDashboardExperiments: 'formulation-dashboard/get-experiments',
     getFormulationProjectsTeamsId:
-      'formulation-dashboard/get-projects-by-dosage-or-team-id?teamId=5',
+      'formulation-dashboard/get-projects-by-dosage-or-team-id?teamId=10',
     getMarkets: 'market/get-markets',
     getExperiments: 'experiment/get-experiments',
     createExperiment: 'experiment/create-experiment',

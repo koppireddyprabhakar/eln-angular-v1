@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
 import { TrfService } from '@app/shared/services/test-request-form/trf.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-analysis-list',
@@ -13,11 +15,14 @@ export class AnalysisListComponent implements OnInit {
   subscribeFlag = true;
   columns: any;
   options: any = { checkboxes: true };
+  isDuplicate = false;
   showAddForm = false;
-  selectedRows = [];
+  selectedRows: any = [];
   constructor(
     private readonly testRequestService: TrfService,
-    private route: Router
+    private toastr: ToastrService,
+    private route: Router,
+    private analysisService: AnalysisService
   ) {}
 
   ngOnInit(): void {
@@ -67,12 +72,23 @@ export class AnalysisListComponent implements OnInit {
   onCheckboxClick(selectCheckBoxArr) {
     console.log(selectCheckBoxArr);
     this.selectedRows = selectCheckBoxArr;
+    console.log(this.selectedRows);
+    var valueArr = this.selectedRows.map((item) => item.projectName);
+    console.log(valueArr);
+    this.isDuplicate = valueArr.every((arr) => valueArr[0] === arr);
+    this.analysisService.syncTrf(this.selectedRows);
+    console.log(this.isDuplicate);
+    this.analysisService.selectedTrfs$.subscribe((trfs) => {
+      console.log(trfs);
+    });
     // alert(JSON.stringify(selectCheckBoxArr));
   }
 
   createExperiment() {
-    this.route.navigateByUrl(
-      `/exp-analysis/dashboard?projectId=${33}&experimentId=${94}`
-    );
+    if (this.isDuplicate) {
+      this.route.navigateByUrl(`/exp-analysis/dashboard?projectId=${38}`);
+    } else {
+      this.toastr.warning('Please Select TRFs of same projects', 'Warning');
+    }
   }
 }
