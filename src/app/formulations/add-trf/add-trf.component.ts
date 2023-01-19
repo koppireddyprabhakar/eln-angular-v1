@@ -86,7 +86,6 @@ export class AddTrfComponent implements OnInit {
       { key: 'testNumber', title: 'Test Id' },
       { key: 'testName', title: 'Test Name' },
     ];
-    console.log(this.testRequestForm);
     if (this.expId) {
       this.getExperimentDetails();
     }
@@ -112,9 +111,7 @@ export class AddTrfComponent implements OnInit {
       .getExperimentsById(this.expId)
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((experiment) => {
-        console.log(experiment);
         this.experiment = experiment.map((trf) => flatten(trf))[0];
-        console.log(this.experiment);
         this.testRequestForm.patchValue({
           batchNumber: this.experiment.batchNumber,
           dosageForm: this.experiment.dosageName,
@@ -145,14 +142,10 @@ export class AddTrfComponent implements OnInit {
   }
 
   resultValue(event, index) {
-    console.log(event);
-    console.log(index);
     this.tableData[index]['result'] = event.target.value;
-    console.log(this.tableData);
   }
 
   onItemSelect(item: any) {
-    console.log(item);
     const tableData = this.tableData;
     const newItem = this.tests.filter((test) => test.testId === item.testId)[0];
     tableData.push(newItem);
@@ -162,15 +155,11 @@ export class AddTrfComponent implements OnInit {
       testNumber: `${this.staticTrfId}-A${index}`,
       testResult: 'string',
     }));
-
-    console.log(this.tableData);
   }
   deselect(item: any) {
-    console.log(item);
     this.tableData = this.tableData.filter(
       (data) => data.testId !== item.testId
     );
-    console.log(this.tableData);
     this.tableData = this.tableData.map((test, index) => ({
       ...test,
       testStatus: 'string',
@@ -179,7 +168,6 @@ export class AddTrfComponent implements OnInit {
     }));
   }
   onSelectAll(items: any) {
-    console.log(items);
     this.tableData = this.tests.map((test, index) => ({
       ...test,
       testStatus: 'string',
@@ -205,13 +193,8 @@ export class AddTrfComponent implements OnInit {
       expireDate: expiryDate,
       trfTestResults: this.tableData,
     };
-    console.log(newTestRequest);
-    console.log(this.testRequestForm);
-    console.log(this.tableData);
     if (!this.testRequestForm.invalid) {
-      console.log(newTestRequest);
       this.globalService.showLoader();
-
       this.trfService
         .createTestRequestForm(newTestRequest)
         .pipe(
@@ -248,14 +231,12 @@ export class AddTrfComponent implements OnInit {
   }
 
   addNewTest() {
-    console.log(this.testId);
     this.testId = this.testId === 0 ? this.testId + 1 : this.testId;
     this.testRequestRow.push(this.addTests());
   }
 
   addTests(): FormGroup {
     this.testId = this.testId ? this.testId + 1 : 1;
-    console.log(this.testId);
     return this.formBuilder.group({
       testId: [this.testId, [Validators.required]],
       testNumber: ['string'],

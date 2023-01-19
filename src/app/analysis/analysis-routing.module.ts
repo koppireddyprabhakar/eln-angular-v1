@@ -5,6 +5,7 @@ import { AnalysisDashbaordComponent } from './analysis-dashbaord/analysis-dashba
 import { AnalysisExperimentsComponent } from './analysis-experiments/analysis-experiments.component';
 import { AnalysisProjectsComponent } from './analysis-projects/analysis-projects.component';
 import { AnalysisExperimentDashboardComponent } from './analysis-experiment-dashboard/analysis-experiment-dashboard.component';
+import { AnalysisNewExperimentComponent } from './analysis-new-experiment/analysis-new-experiment.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,10 @@ const routes: Routes = [
       {
         path: 'exp-dashboard',
         component: AnalysisExperimentDashboardComponent,
+      },
+      {
+        path: 'analysis-exp',
+        component: AnalysisNewExperimentComponent,
       },
       {
         path: 'analysis-experiments',

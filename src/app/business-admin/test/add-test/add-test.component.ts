@@ -98,11 +98,8 @@ export class AddTestComponent implements OnInit, OnDestroy {
     const isInvalidForm = this.testForm.value.testRow?.some(
       (row) => !row.testName
     );
-    console.log(this.testForm.value.testRow);
-    console.log(isInvalidForm);
     if (!isInvalidForm) {
       if (!this.editForm) {
-        console.log('create');
         this.testService
           .saveTest(newDosage)
           .pipe(takeWhile(() => this.subscribeFlag))

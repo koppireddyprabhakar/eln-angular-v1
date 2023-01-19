@@ -148,23 +148,19 @@ export class FormulationsComponent implements OnInit {
   }
 
   createFormulation(id) {
-    console.log(id);
     this.route.navigateByUrl(`/create-forms?projectId=${id}`);
   }
 
   onRowClick(event) {
-    console.log(event);
     this.route.navigateByUrl(
       `/create-forms?projectId=${event.projectId}&experimentId=${event.expId}&edit=true`
     );
   }
 
   addTrf(row) {
-    console.log(row);
     this.route.navigateByUrl(`/forms-page/add-trf?expId=${row.expId}`);
     // var someTabTriggerEl = document.querySelector('#projects');
     // var tab = new bootstrap.Tab(someTabTriggerEl)
-    // console.log(someTabTriggerEl);
     // someTabTriggerEl.show()
   }
 }

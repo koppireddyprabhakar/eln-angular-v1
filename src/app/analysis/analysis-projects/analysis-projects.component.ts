@@ -80,13 +80,13 @@ export class AnalysisProjectsComponent implements OnInit {
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((myProjects) => {
         this.myProjects = myProjects;
-        console.log(myProjects);
         this.globalService.hideLoader();
       });
   }
 
   createFormulation(id) {
-    console.log(id);
-    this.route.navigateByUrl(`/create-forms?projectId=${id}`);
+    this.route.navigateByUrl(
+      `/exp-analysis/analysis-exp?projectId=${id}`
+    );
   }
 }

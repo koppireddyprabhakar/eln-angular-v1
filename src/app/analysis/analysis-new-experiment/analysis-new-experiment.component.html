@@ -400,43 +400,7 @@
             role="tabpanel"
             aria-labelledby="results-tab"
           >
-            <div class="row pt-4 px-4">
-              <div class="col-lg-4">
-                <div class="col-lg-6">Test Id</div>
-              </div>
-              <div class="col-lg-4">
-                <div class="col-lg-6">Test Name</div>
-              </div>
-              <div class="col-lg-4">
-                <div class="col-lg-6">Results</div>
-              </div>
-            </div>
-            <div
-              class="row pt-4 px-4"
-              *ngFor="let trf of selectedTrfs; let i = index"
-            >
-              <div class="col-lg-4">
-                <div class="col-lg-6">{{ trf.testId }}</div>
-              </div>
-              <div class="col-lg-4">
-                <div class="col-lg-6">{{ trf.testName }}</div>
-              </div>
-              <div class="col-lg-4">
-                <div class="col-lg-6">
-                  <input type="text" ngModel="{{ trf.testResult }}" />
-                </div>
-              </div>
-            </div>
-
-            <div class="text-center pt-3">
-              <button
-                type="submit"
-                class="btn btn-primary mt-3"
-                (click)="saveExcipients()"
-              >
-                Submit
-              </button>
-            </div>
+            Working
           </div>
 
           <div

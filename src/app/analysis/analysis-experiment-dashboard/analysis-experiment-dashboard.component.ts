@@ -20,10 +20,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class AnalysisExperimentDashboardComponent implements OnInit {
   @ViewChild('inputfields') inputfields!: ElementRef;
-  dummyTabs: any = [
-    { label: 'Purpose and Conclusion', isEdit: false, value: 'primary' },
-    { label: 'Formulation', isEdit: false, value: 'secondary' },
-  ];
+  dummyTabs: any = [];
   inputValue: string;
   projectId: number;
   project: any;
@@ -74,7 +71,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('inngonoit');
     this.getExcipients();
     this.columns = [
       { key: 'excipientsName', title: 'Inward Name' },
@@ -97,12 +93,19 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       itemsShowLimit: 3,
       allowSearchFilter: true,
     };
-    this.analysisID = this.activatedRoute.snapshot.queryParams['analysisId'];
+    // this.analysisID = this.activatedRoute.snapshot.queryParams['analysisId'];
+    this.analysisID = 6;
     this.projectId = this.activatedRoute.snapshot.queryParams['projectId'];
     // this.isCreatedExperiment = this.experimentId ? true : false;
-    console.log('this.isCreatedExperiment', this.isCreatedExperiment);
     this.getBatchNumber();
     this.getAnalysisExperimentDetails(this.analysisID);
+    this.getProjectDetails();
+  }
+
+  getProjectDetails() {
+    this.projectService.getProjectById(this.projectId).subscribe((project) => {
+      this.project = project;
+    });
   }
 
   search(activeTab) {
@@ -110,10 +113,23 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     if (activeTab === 'attachments') {
       this.getAttachments();
     }
+    if (activeTab.substring(0, 3) === 'tab') {
+      this.getAnalysisDetailsById(activeTab);
+    }
+  }
+
+  getAnalysisDetailsById(tabValue) {
+    this.analysisService
+      .getAnalysisDeatilsById(tabValue.substring(3))
+      .subscribe((details) => {
+        const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
+        console.log(index);
+        this.article[index].text = details.fileContent;
+        console.log(details);
+      });
   }
 
   getAttachments() {
-    console.log('here');
     this.analysisService
       .getAttachmentsById(this.analysisID)
       .subscribe((attachments) => {
@@ -134,7 +150,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
         ...inward,
         analysisId: Number(this.analysisID),
       }));
-      console.log(this.inwards);
     });
   }
 
@@ -142,7 +157,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     this.formulationService
       .getFormulationBatchNumber()
       .subscribe((batchNumber) => {
-        console.log(batchNumber.data);
         this.batchNumber = batchNumber.data;
       });
   }
@@ -153,7 +167,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       this.analysisService
         .getAnalysisById(this.analysisID)
         .subscribe((analysisExperimentDetails) => {
-          console.log(analysisExperimentDetails);
           this.analysisExperimentDetails = analysisExperimentDetails;
           this.article = analysisExperimentDetails.analysisDetails.map(
             (exp) => ({
@@ -173,7 +186,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
           this.savedSelectedItems =
             analysisExperimentDetails.analysisExcipients;
           this.tableData = analysisExperimentDetails.analysisExcipients;
-          // console.log(this.article);
           // this.experimentDetails = experimentDetails;
           // this.summaryForm.patchValue({
           //   experimentName: experimentDetails.experimentName,
@@ -184,7 +196,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   }
 
   editMode(index) {
-    console.log(index);
     this.inputValue = '';
     const d = this.dummyTabs.map((tab, i) => {
       if (i === index) {
@@ -197,12 +208,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   }
 
   resetEditMode(index, value) {
-    console.log(index);
-    console.log('input value', this.inputValue);
     const d = this.dummyTabs.map((tab, i) => {
-      console.log(tab);
-      console.log(tab.label);
-      console.log(value);
       return {
         ...tab,
         label: i === index ? this.inputValue || value : tab.label,
@@ -210,14 +216,10 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       };
     });
     this.dummyTabs = d;
-    console.log(this.dummyTabs);
-
     let elemetClass = document.getElementById('summary-tab');
     this.renderer2.addClass(document.getElementById('summary-tab'), 'active');
     this.renderer2.addClass(document.getElementById('summary'), 'active');
     this.renderer2.addClass(document.getElementById('summary'), 'show');
-    console.log(document.getElementById('summary-tab'));
-    console.log(document.getElementById('summary'));
   }
 
   addNew() {
@@ -231,7 +233,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       isEdit: false,
       value: `newTab-${(length + 1).toString()}`,
     });
-    console.log(this.dummyTabs);
   }
 
   saveSummary() {
@@ -253,52 +254,33 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     this.experimentService
       .saveExperiment(summary)
       .subscribe((experiment: any) => {
-        // console.log(data);
         this.getAnalysisExperimentDetails(experiment.data);
         this.activeTab = this.dummyTabs[0].value;
         this.toastr.success('Experiment Started Successfully', 'Success');
       });
-    console.log(this.summaryForm.value);
   }
 
   onItemSelect(item: any) {
-    console.log(item);
-    console.log(this.tableData);
-    console.log(this.inwards);
-    console.log(this.savedSelectedItems);
-    const findIfExists = this.savedSelectedItems.some(
-      (sel) => sel.excipientId === item.excipientId
-    );
-    console.log(findIfExists);
-    if (!findIfExists) {
-      const a = this.inwards.filter(
-        (inw) => inw.excipientId === item.excipientId
-      );
-      this.tableData.push(a);
-    }
-
-    // console.log(a);
+    this.tableData = this.inwards
+      .filter(({ excipientId: id1 }) =>
+        this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
+      )
+      .map((table) => ({ ...table, analysisId: Number(this.analysisID) }));
   }
   deselect(item: any) {
-    console.log(item);
     // this.tableData = this.inwards.filter(({ excipientId: id1 }) =>
     //   this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
     // );
     this.tableData = this.tableData.filter(
       (data) => data.excipientId !== item.excipientId
     );
-    console.log(this.tableData);
   }
   onSelectAll(items: any) {
-    console.log(items);
     this.tableData = this.inwards;
   }
 
   saveTab(index, label) {
     const sss = JSON.stringify(this.article[index].text);
-    console.log(index);
-    console.log(label);
-    console.log(sss);
     let tabValue: any = {
       status: 'ACTIVE',
       analysisId: Number(this.analysisID),
@@ -307,9 +289,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       name: label,
       fileContent: this.article[index].text,
     };
-    console.log(this.article);
     this.analysisService.saveAnalysisDetails(tabValue).subscribe((data) => {
-      console.log(data);
       this.toastr.success(`Experiment detail updated successfully`, 'Success');
       this.getAnalysisExperimentDetails(this.analysisID);
     });
@@ -330,7 +310,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
         this.analysisExperimentDetails.projectId.toString()
       )
       .subscribe((response) => {
-        console.log(response);
         this.files = response;
         this.toastr.success('File Uploaded Successfully', 'Success');
       });
@@ -343,12 +322,10 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   }
 
   saveExcipients() {
-    console.log(this.tableData);
     this.analysisService
       .saveAnalysisExcipient(this.tableData)
       .subscribe((data) => {
         this.toastr.success(data.data, 'Success');
-        console.log(data);
       });
   }
 }

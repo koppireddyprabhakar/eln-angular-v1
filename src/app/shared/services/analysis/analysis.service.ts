@@ -38,7 +38,6 @@ export class AnalysisService {
   }
 
   syncTrf(trfs) {
-    console.log(trfs);
     this.selectedTrfsSubject.next(trfs);
   }
 
@@ -49,18 +48,20 @@ export class AnalysisService {
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
+  getAnalysisDeatilsById(id) {
+    const url = `${elnEndpointsConfig.endpoints['getAnalysisDetailsById']}?analysisDetailsId=${id}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
   saveAnalysisDetails(experiment) {
     const url = elnEndpointsConfig.endpoints['saveAnalysisDetails'];
-    console.log(url);
-    console.log(experiment);
     return this.http.post<any>(url, experiment);
   }
 
   saveAnalysisExcipient(excipient) {
-    console.log(excipient);
     const url = elnEndpointsConfig.endpoints['saveAnalysisExcipient'];
-    console.log(url);
-    console.log(excipient);
     return this.http.post<any>(url, excipient);
   }
 
@@ -73,7 +74,6 @@ export class AnalysisService {
 
   saveAnalysisAttachment(file, experimentId, projectId): Observable<any> {
     const url = elnEndpointsConfig.endpoints['saveAnalysisAttachments'];
-    console.log(typeof experimentId);
     const formData = new FormData();
     formData.append('experimentId', experimentId.toString());
     formData.append('projectId', projectId.toString());
@@ -105,22 +105,21 @@ export class AnalysisService {
 
   saveExperiment(experiment) {
     const url = elnEndpointsConfig.endpoints['createExperiment'];
-    console.log(url);
-    console.log(experiment);
+    return this.http.post<string>(url, experiment);
+  }
+
+  saveAnalysis(experiment) {
+    const url = elnEndpointsConfig.endpoints['createAnalysis'];
     return this.http.post<string>(url, experiment);
   }
 
   saveExperimentTabs(experiment) {
     const url = elnEndpointsConfig.endpoints['saveExperimentDetails'];
-    console.log(url);
-    console.log(experiment);
     return this.http.post<any>(url, experiment);
   }
 
   updateExperimentTabs(experiment) {
     const url = elnEndpointsConfig.endpoints['updateExperimentDetails'];
-    console.log(url);
-    console.log(experiment);
     return this.http.put<any>(url, experiment);
   }
 

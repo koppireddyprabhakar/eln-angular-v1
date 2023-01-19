@@ -70,10 +70,12 @@ export const elnEndpointsConfig: EndpointConfig = {
     getAnalysisList: 'analysis/get-analysis-list',
     getAnalysisListByTeamId: 'analysis/get-analysis-by-team-id',
     getAnalysisById: 'analysis/get-analysis-by-id',
+    getAnalysisDetailsById: 'analysis/get-analysis-details-by-id',
     saveAnalysisDetails: 'analysis/save-analysis-details',
     saveAnalysisExcipient: 'analysis/save-analysis-excipient',
     searchAnalysisAttachments: 'analysis/search-analysis-attachments',
     saveAnalysisAttachments: 'analysis/save-analysis-attachment',
+    createAnalysis: 'analysis/create-analysis',
   },
 };
 

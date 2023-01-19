@@ -22,8 +22,6 @@ export class InwardManagementService {
 
   saveInward(inward) {
     const url = elnEndpointsConfig.endpoints['createExcipient'];
-    console.log(url);
-    console.log(inward);
     return this.http.post<string>(url, inward);
   }
 

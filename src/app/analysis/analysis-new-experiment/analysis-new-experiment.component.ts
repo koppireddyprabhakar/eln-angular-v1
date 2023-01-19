@@ -13,14 +13,13 @@ import { FormulationsService } from '@app/shared/services/formulations/formulati
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { ToastrService } from 'ngx-toastr';
-import { tap } from 'rxjs';
 
 @Component({
-  selector: 'app-analysis-dashbaord',
-  templateUrl: './analysis-dashbaord.component.html',
-  styleUrls: ['./analysis-dashbaord.component.scss'],
+  selector: 'app-analysis-new-experiment',
+  templateUrl: './analysis-new-experiment.component.html',
+  styleUrls: ['./analysis-new-experiment.component.scss'],
 })
-export class AnalysisDashbaordComponent implements OnInit {
+export class AnalysisNewExperimentComponent implements OnInit {
   @ViewChild('inputfields') inputfields!: ElementRef;
   dummyTabs: any = [];
   inputValue: string;
@@ -168,7 +167,7 @@ export class AnalysisDashbaordComponent implements OnInit {
     this.isCreatedExperiment = this.experimentId ? true : false;
     if (this.experimentId) {
       this.route.navigateByUrl(
-        `/exp-analysis/dashboard?projectId=${this.projectId}&analysis=${id}`
+        `/exp-analysis/analysis-exp?projectId=${this.projectId}&analysis=${id}`
       );
       this.analysisService
         .getAnalysisById(this.experimentId)

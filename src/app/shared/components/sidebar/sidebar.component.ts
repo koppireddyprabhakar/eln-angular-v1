@@ -15,7 +15,6 @@ export class SidebarComponent implements OnInit {
     this.router.events
       .pipe(filter((event: any) => event instanceof NavigationEnd))
       .subscribe((data) => {
-        console.log(data);
         this.toggleBusinessAdmin = data.url.includes('business-admin');
       });
   }

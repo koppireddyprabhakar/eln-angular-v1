@@ -53,12 +53,11 @@ export class AddUserComponent implements OnInit {
     private route: Router,
     private activatedRoute: ActivatedRoute,
     private toastr: ToastrService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.userId = this.activatedRoute.snapshot.queryParams['userId'];
     if (this.userId) {
-      console.log('here');
       this.getUserById();
       this.editForm = true;
     }
@@ -121,7 +120,6 @@ export class AddUserComponent implements OnInit {
           });
       }
     } else {
-      console.log('her');
       this.userForm.get('firstName')?.markAsDirty();
       this.userForm.get('dateOfBirth')?.markAsDirty();
       this.userForm.get('gender')?.markAsDirty();
@@ -161,7 +159,6 @@ export class AddUserComponent implements OnInit {
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((selectedUser) => {
         this.globalService.hideLoader();
-        console.log(selectedUser);
         this.selectedUser = selectedUser;
         this.userForm.patchValue({
           firstName: selectedUser.firstName,
@@ -184,5 +181,4 @@ export class AddUserComponent implements OnInit {
   ngOnDestroy(): void {
     this.subscribeFlag = false;
   }
-
 }

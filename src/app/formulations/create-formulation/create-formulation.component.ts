@@ -71,7 +71,6 @@ export class CreateFormulationComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('inngonoit');
     this.getExcipients();
     this.columns = [
       { key: 'excipientsName', title: 'Inward Name' },
@@ -99,20 +98,14 @@ export class CreateFormulationComponent implements OnInit {
       this.activatedRoute.snapshot.queryParams['edit'] || false;
     this.projectId = this.activatedRoute.snapshot.queryParams['projectId'];
     this.isCreatedExperiment = this.experimentId ? true : false;
-    console.log('this.isCreatedExperiment', this.isCreatedExperiment);
     this.getBatchNumber();
     this.getExperimentDetails(this.experimentId);
     this.getProjectDetails();
-    this.dummyTabs = [
-      { label: 'Purpose and Conclusion', isEdit: false, value: 'primary' },
-      { label: 'Formulation', isEdit: false, value: 'secondary' },
-    ];
-    console.log(this.editExperiment);
+    this.dummyTabs = [];
   }
 
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
-      console.log(project);
       this.project = project;
     });
   }
@@ -122,26 +115,29 @@ export class CreateFormulationComponent implements OnInit {
     this.activeTabIndex = index;
 
     if (activeTab === 'attachments') {
-      console.log('sds');
       this.getAttachments();
-    } else if (activeTab === 'contact') {
-    } else if (index !== -1) {
-      if (this.editExperiment) {
-        this.getExperimentDetailsById(activeTab);
-      }
+    }
+    if (activeTab.substring(0, 3) === 'tab') {
+      this.getExperimentDetailsById(activeTab);
     }
   }
 
-  getExperimentDetailsById(id) {
-    console.log(id);
+  getExperimentDetailsById(tabValue) {
+    // console.log(id);
+    // const expDetailsId = Number(id.slice(-1));
+    // this.experimentService
+    //   .getExperimentDetailsById(expDetailsId)
+    //   .subscribe((details) => {
+    //     this.article[this.activeTabIndex].text = details?.fileContent;
+    //   });
 
-    const expDetailsId = Number(id.slice(-1));
-    console.log(expDetailsId);
     this.experimentService
-      .getExperimentDetailsById(expDetailsId)
+      .getExperimentDetailsById(tabValue.substring(3))
       .subscribe((details) => {
+        const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
+        console.log(index);
+        this.article[index].text = details.fileContent;
         console.log(details);
-        this.article[this.activeTabIndex].text = details?.fileContent;
       });
   }
   getAttachments() {
@@ -169,7 +165,6 @@ export class CreateFormulationComponent implements OnInit {
     this.formulationService
       .getFormulationBatchNumber()
       .subscribe((batchNumber) => {
-        console.log(batchNumber.data);
         this.batchNumber = batchNumber.data;
       });
   }
@@ -187,30 +182,28 @@ export class CreateFormulationComponent implements OnInit {
         .getIndvExperimentById(this.experimentId)
         .subscribe((experimentDetails) => {
           this.experimentDetails = experimentDetails;
-          if (this.editExperiment) {
-            this.article = experimentDetails.experimentDetails.map((exp) => ({
-              title: '',
-              text: '',
-            }));
-            this.dummyTabs = experimentDetails.experimentDetails.map((exp) => ({
-              label: exp.name,
-              isEdit: false,
-              value: 'tab' + exp.experimentDetailId,
-            }));
-            this.inwards = experimentDetails.experimentExcipients;
-            this.tableData = experimentDetails.experimentExcipients;
-          }
+          // if (this.editExperiment) {
+          this.article = experimentDetails.experimentDetails.map((exp) => ({
+            title: '',
+            text: '',
+          }));
+          this.dummyTabs = experimentDetails.experimentDetails.map((exp) => ({
+            label: exp.name,
+            isEdit: false,
+            value: 'tab' + exp.experimentDetailId,
+          }));
+
+          this.tableData = experimentDetails.experimentExcipients;
+          // }
           this.summaryForm.patchValue({
             experimentName: experimentDetails?.experimentName,
             batchSize: experimentDetails?.batchSize,
           });
-          console.log(this.dummyTabs);
         });
     }
   }
 
   editMode(index) {
-    console.log(index);
     this.inputValue = '';
     const d = this.dummyTabs.map((tab, i) => {
       if (i === index) {
@@ -223,12 +216,7 @@ export class CreateFormulationComponent implements OnInit {
   }
 
   resetEditMode(index, value) {
-    console.log(index);
-    console.log('input value', this.inputValue);
     const d = this.dummyTabs.map((tab, i) => {
-      console.log(tab);
-      console.log(tab.label);
-      console.log(value);
       return {
         ...tab,
         label: i === index ? this.inputValue || value : tab.label,
@@ -236,14 +224,10 @@ export class CreateFormulationComponent implements OnInit {
       };
     });
     this.dummyTabs = d;
-    console.log(this.dummyTabs);
-
     let elemetClass = document.getElementById('summary-tab');
     this.renderer2.addClass(document.getElementById('summary-tab'), 'active');
     this.renderer2.addClass(document.getElementById('summary'), 'active');
     this.renderer2.addClass(document.getElementById('summary'), 'show');
-    console.log(document.getElementById('summary-tab'));
-    console.log(document.getElementById('summary'));
   }
 
   addNew() {
@@ -257,7 +241,6 @@ export class CreateFormulationComponent implements OnInit {
       isEdit: false,
       value: `newTab-${(length + 1).toString()}`,
     });
-    console.log(this.dummyTabs);
   }
 
   saveSummary() {
@@ -279,87 +262,88 @@ export class CreateFormulationComponent implements OnInit {
     this.experimentService
       .saveExperiment(summary)
       .subscribe((experiment: any) => {
-        // console.log(data);
         this.getExperimentDetails(experiment.data);
         this.activeTab = this.dummyTabs[0].value;
         this.toastr.success('Experiment Started Successfully', 'Success');
       });
-    console.log(this.summaryForm.value);
   }
 
   onItemSelect(item: any) {
-    console.log(item);
     this.tableData = this.inwards
       .filter(({ excipientId: id1 }) =>
         this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
       )
       .map((data) => ({ ...data, experimentId: Number(this.experimentId) }));
-    console.log(this.tableData);
   }
 
   deselect(item: any) {
-    console.log(item);
     // this.tableData = this.inwards.filter(({ excipientId: id1 }) =>
     //   this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
     // );
     this.tableData = this.tableData.filter(
       (data) => data.excipientId !== item.excipientId
     );
-    console.log(this.tableData);
   }
   onSelectAll(items: any) {
-    console.log(items);
     this.tableData = this.inwards;
   }
 
   saveTab(index, data) {
     const sss = JSON.stringify(this.article[index].text);
-    console.log(index);
-    console.log(data.label);
-    console.log(sss);
     let tabValue: any = {
       status: 'string',
       experimentId: this.experimentId,
       name: data.label,
       fileContent: this.article[index].text,
     };
+    // if (!this.editExperiment) {
+    //   if (this.dummyTabs[index].id) {
+    //     tabValue = {
+    //       ...tabValue,
+    //       experimentDetailId: this.dummyTabs[index].id,
+    //     };
+    //   }
+    //   this.experimentService.saveExperimentTabs(tabValue).subscribe((data) => {
+    //     this.toastr.success(
+    //       `Experiment detail ${
+    //         this.dummyTabs[index].id ? 'updated' : 'created'
+    //       } successfully`,
+    //       'Success'
+    //     );
+    //     this.dummyTabs[index]['id'] = data.data;
+    //     this.getExperimentDetails(this.experimentId);
+    //   });
+    // } else {
+    //   const id = Number(data.value.slice(-1));
+    //   tabValue = {
+    //     ...tabValue,
+    //     experimentDetailId: id,
+    //   };
+    //   this.experimentService.saveExperimentTabs(tabValue).subscribe((data) => {
+    //     this.toastr.success(
+    //       'Experiment detail updated successfully',
+    //       'Success'
+    //     );
+    //     this.getExperimentDetails(this.experimentId);
+    //   });
+    // }
+    console.log(this.dummyTabs[index]);
 
-    console.log(this.article);
-    if (!this.editExperiment) {
-      if (this.dummyTabs[index].id) {
-        tabValue = {
-          ...tabValue,
-          experimentDetailId: this.dummyTabs[index].id,
-        };
-      }
-      this.experimentService.saveExperimentTabs(tabValue).subscribe((data) => {
-        console.log(this.dummyTabs[index].id);
+    tabValue = {
+      ...tabValue,
+      experimentDetailId: this.dummyTabs[index].value.substring(3),
+    };
 
-        console.log(this.dummyTabs);
-        console.log(data);
-        this.toastr.success(
-          `Experiment detail ${
-            this.dummyTabs[index].id ? 'updated' : 'created'
-          } successfully`,
-          'Success'
-        );
-        this.dummyTabs[index]['id'] = data.data;
-      });
-    } else {
-      console.log(data);
-      const id = Number(data.value.slice(-1));
-      tabValue = {
-        ...tabValue,
-        experimentDetailId: id,
-      };
-      this.experimentService.saveExperimentTabs(tabValue).subscribe((data) => {
-        console.log(data);
-        this.toastr.success(
-          'Experiment detail updated successfully',
-          'Success'
-        );
-      });
-    }
+    this.experimentService.saveExperimentTabs(tabValue).subscribe((data) => {
+      this.toastr.success(
+        `Experiment detail ${
+          this.dummyTabs[index].id ? 'updated' : 'created'
+        } successfully`,
+        'Success'
+      );
+      this.dummyTabs[index]['id'] = data.data;
+      this.getExperimentDetails(this.experimentId);
+    });
   }
 
   saveAttachment() {}
@@ -373,7 +357,6 @@ export class CreateFormulationComponent implements OnInit {
     this.experimentService
       .saveExperimentAttachment(selectedFile, this.experimentId, this.projectId)
       .subscribe((response) => {
-        console.log(response);
         this.files = response;
         this.toastr.success('File Uploaded Successfully', 'Success');
       });
@@ -386,19 +369,14 @@ export class CreateFormulationComponent implements OnInit {
   }
 
   saveExcipients() {
-    console.log(this.tableData);
     const isUpdate = this.tableData.some((data) => data.experimentId);
-    console.log(isUpdate);
     if (!isUpdate) {
       this.experimentService.saveExcipient(this.tableData).subscribe((data) => {
         this.toastr.success(data.data, 'Success');
-        console.log(data);
       });
     } else {
-      console.log(this.tableData);
       this.experimentService.saveExcipient(this.tableData).subscribe((data) => {
         this.toastr.success(data.data, 'Success');
-        console.log(data);
       });
     }
   }

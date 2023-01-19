@@ -167,7 +167,6 @@ export class TeamComponent implements OnInit {
 
   selectTeam(team) {
     this.selectedTeam = team;
-    console.log(this.selectedTeam);
     this.teamForm.patchValue({
       teamName: team.teamName,
       deptId: team.deptId,

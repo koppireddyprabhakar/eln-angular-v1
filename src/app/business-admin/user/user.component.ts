@@ -83,7 +83,6 @@ export class UserComponent implements OnInit {
           status: 'str',
         }));
         this.users = usersList;
-        console.log(this.users);
         this.globalService.hideLoader();
       });
   }

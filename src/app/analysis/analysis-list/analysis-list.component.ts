@@ -65,22 +65,15 @@ export class AnalysisListComponent implements OnInit {
     this.testRequestService.getTestRequestForms().subscribe((data) => {
       this.trfList = data;
       this.trfList = this.trfList.map((trf) => flatten(trf));
-      console.log(this.trfList);
     });
   }
 
   onCheckboxClick(selectCheckBoxArr) {
-    console.log(selectCheckBoxArr);
     this.selectedRows = selectCheckBoxArr;
-    console.log(this.selectedRows);
     var valueArr = this.selectedRows.map((item) => item.projectName);
-    console.log(valueArr);
     this.isDuplicate = valueArr.every((arr) => valueArr[0] === arr);
     this.analysisService.syncTrf(this.selectedRows);
-    console.log(this.isDuplicate);
-    this.analysisService.selectedTrfs$.subscribe((trfs) => {
-      console.log(trfs);
-    });
+    this.analysisService.selectedTrfs$.subscribe((trfs) => {});
     // alert(JSON.stringify(selectCheckBoxArr));
   }
 

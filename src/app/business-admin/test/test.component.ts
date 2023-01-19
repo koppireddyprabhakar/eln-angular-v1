@@ -82,7 +82,6 @@ export class TestComponent implements OnInit {
           status: 'str',
         }));
         this.tests = testList;
-        console.log(this.tests);
         this.globalService.hideLoader();
       });
   }

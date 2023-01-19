@@ -92,7 +92,6 @@ export class ProjectManagementComponent implements OnInit {
   }
 
   editProject(project) {
-    console.log(project);
     this.route.navigateByUrl(
       `/business-admin/project-management/add-project?projectId=${project.projectId}`
     );

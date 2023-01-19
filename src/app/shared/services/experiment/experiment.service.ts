@@ -54,36 +54,25 @@ export class ExperimentService {
 
   saveExperiment(experiment) {
     const url = elnEndpointsConfig.endpoints['createExperiment'];
-    console.log(url);
-    console.log(experiment);
     return this.http.post<string>(url, experiment);
   }
   saveExcipient(excipient) {
-    console.log(excipient);
     const url = elnEndpointsConfig.endpoints['saveExcipient'];
-    console.log(url);
-    console.log(excipient);
     return this.http.post<any>(url, excipient);
   }
 
   updateExcipient(excipient) {
     const url = elnEndpointsConfig.endpoints['updateExcipient'];
-    console.log(url);
-    console.log(excipient);
     return this.http.put<any>(url, excipient);
   }
 
   saveExperimentTabs(experiment) {
     const url = elnEndpointsConfig.endpoints['saveExperimentDetails'];
-    console.log(url);
-    console.log(experiment);
     return this.http.post<any>(url, experiment);
   }
 
   updateExperimentTabs(experiment) {
     const url = elnEndpointsConfig.endpoints['updateExperimentDetails'];
-    console.log(url);
-    console.log(experiment);
     return this.http.put<any>(url, experiment);
   }
 
