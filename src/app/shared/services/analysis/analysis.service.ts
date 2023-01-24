@@ -55,9 +55,28 @@ export class AnalysisService {
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
+  getExcipientDetailsById(id) {
+    const url = `${elnEndpointsConfig.endpoints['getExcipientAnalysisDetailsById']}?analysisId=${id}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
+  getTrfDetailsById(id) {
+    const url = `${elnEndpointsConfig.endpoints['getTrfResultsById']}?analysisId=${id}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
   saveAnalysisDetails(experiment) {
     const url = elnEndpointsConfig.endpoints['saveAnalysisDetails'];
     return this.http.post<any>(url, experiment);
+  }
+
+  saveTrfResults(experiment) {
+    const url = elnEndpointsConfig.endpoints['updateTrfResult'];
+    return this.http.put<any>(url, experiment);
   }
 
   saveAnalysisExcipient(excipient) {

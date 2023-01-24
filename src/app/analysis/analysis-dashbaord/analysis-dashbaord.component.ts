@@ -22,7 +22,10 @@ import { tap } from 'rxjs';
 })
 export class AnalysisDashbaordComponent implements OnInit {
   @ViewChild('inputfields') inputfields!: ElementRef;
-  dummyTabs: any = [];
+  dummyTabs: any = [
+    { label: 'Purpose and Conclusions', isEdit: false, value: 'primary' },
+    { label: 'Formulation', isEdit: false, value: 'secondary' },
+  ];
   inputValue: string;
   projectId: number;
   project: any;
@@ -118,9 +121,37 @@ export class AnalysisDashbaordComponent implements OnInit {
       this.getAttachments();
     }
     console.log(activeTab.substring(3));
+    if (activeTab === 'excipients') {
+      this.getExcipientDetails();
+    }
+    if (activeTab === 'results') {
+      this.getTrfDetailsById();
+    }
     if (activeTab.substring(0, 3) === 'tab') {
       this.getAnalysisDetailsById(activeTab);
     }
+  }
+
+  getExcipientDetails() {
+    this.analysisService
+      .getExcipientDetailsById(this.experimentId)
+      .subscribe((data) => {
+        console.log(data);
+        if (data.length > 0) {
+          this.tableData = data;
+          this.selectedItems = data;
+        }
+      });
+  }
+  getTrfDetailsById() {
+    this.analysisService
+      .getTrfDetailsById(this.experimentId)
+      .subscribe((data) => {
+        console.log(data);
+        if (data.length > 0) {
+          this.selectedTrfs = data;
+        }
+      });
   }
 
   getAnalysisDetailsById(tabValue) {
@@ -163,7 +194,7 @@ export class AnalysisDashbaordComponent implements OnInit {
       });
   }
 
-  getAnalysisById(id) {
+  getAnalysisById(id, firstLoad?: any) {
     this.experimentId = id;
     this.isCreatedExperiment = this.experimentId ? true : false;
     if (this.experimentId) {
@@ -183,6 +214,9 @@ export class AnalysisDashbaordComponent implements OnInit {
             isEdit: false,
             value: 'tab' + exp.analysisDetailId,
           }));
+          if (firstLoad === 'firstLoad') {
+            this.activeTab = this.dummyTabs[0].value;
+          }
           // Commented becaise of no resonse
           // this.summaryForm.patchValue({
           //   experimentName: experimentDetails.experimentName,
@@ -226,7 +260,7 @@ export class AnalysisDashbaordComponent implements OnInit {
       text: '',
     });
     this.dummyTabs.push({
-      label: `Add On - ${length + 1}`,
+      label: `New Tab - ${length + 1}`,
       isEdit: false,
       value: `newTab-${(length + 1).toString()}`,
     });
@@ -234,24 +268,27 @@ export class AnalysisDashbaordComponent implements OnInit {
 
   saveSummary() {
     // if () {
+    console.log(this.selectedTrfs);
     const summary = {
       status: 'string',
       projectId: this.project.projectId,
       teamId: this.project.teamId,
       userId: this.project.userId,
-      experimentName: this.summaryForm.get('experimentName')?.value,
+      analysisName: this.summaryForm.get('experimentName')?.value,
       experimentStatus: 'string',
       summary: 'string',
       batchSize: this.summaryForm.get('batchSize')?.value,
       batchNumber: this.batchNumber,
       experimentDetailsList: [],
       excipients: [],
+      testRequestFormList: this.selectedTrfs,
     };
 
     this.analysisService.saveAnalysis(summary).subscribe((experiment: any) => {
       // change here
-      this.getAnalysisById(6);
-      this.activeTab = this.dummyTabs[0].value;
+      // console.log(experiment)
+      this.getAnalysisById(experiment.data, 'firstLoad');
+      // this.activeTab = this.dummyTabs[0].value;
       this.toastr.success('Experiment Started Successfully', 'Success');
     });
   }
@@ -279,14 +316,17 @@ export class AnalysisDashbaordComponent implements OnInit {
     const sss = JSON.stringify(this.article[index].text);
     let tabValue: any = {
       status: 'string',
-      experimentId: this.experimentId,
+      analysisId: this.experimentId,
       name: data.label,
       fileContent: this.article[index].text,
     };
-
+    console.log(this.dummyTabs[index].value.substring(0, 3));
     tabValue = {
       ...tabValue,
-      experimentDetailId: this.dummyTabs[index].value.substring(3),
+      analysisDetailId:
+        this.dummyTabs[index].value.substring(0, 3) === 'new'
+          ? null
+          : this.dummyTabs[index].value.substring(3),
     };
     this.analysisService.saveAnalysisDetails(tabValue).subscribe((data) => {
       this.toastr.success(
@@ -295,7 +335,11 @@ export class AnalysisDashbaordComponent implements OnInit {
         } successfully`,
         'Success'
       );
-      this.dummyTabs[index]['id'] = data.data;
+      if (this.dummyTabs[index].value.substring(0, 3) === 'new') {
+        this.activeTab = 'summary';
+        console.log(this.experimentId);
+        this.getAnalysisById(this.experimentId);
+      }
     });
   }
 
@@ -327,5 +371,19 @@ export class AnalysisDashbaordComponent implements OnInit {
       .subscribe((data) => {
         this.toastr.success(data.data, 'Success');
       });
+  }
+
+  trfResultChange(result, index) {
+    console.log(this.selectedTrfs);
+    console.log(result.value, index);
+    this.selectedTrfs[index].testResult = result.value;
+
+    console.log(this.selectedTrfs);
+  }
+
+  saveResults() {
+    this.analysisService.saveTrfResults(this.selectedTrfs).subscribe((data) => {
+      this.toastr.success(data.data, 'Success');
+    });
   }
 }

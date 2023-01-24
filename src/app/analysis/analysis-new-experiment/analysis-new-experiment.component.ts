@@ -249,6 +249,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
 
     this.analysisService.saveAnalysis(summary).subscribe((experiment: any) => {
       // change here
+      console.log(experiment.data);
       this.getAnalysisById(6);
       this.activeTab = this.dummyTabs[0].value;
       this.toastr.success('Experiment Started Successfully', 'Success');

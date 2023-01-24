@@ -93,8 +93,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       itemsShowLimit: 3,
       allowSearchFilter: true,
     };
-    // this.analysisID = this.activatedRoute.snapshot.queryParams['analysisId'];
-    this.analysisID = 6;
+    this.analysisID = this.activatedRoute.snapshot.queryParams['analysisId'];
     this.projectId = this.activatedRoute.snapshot.queryParams['projectId'];
     // this.isCreatedExperiment = this.experimentId ? true : false;
     this.getBatchNumber();

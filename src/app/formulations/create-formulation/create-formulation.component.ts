@@ -21,7 +21,10 @@ import { takeWhile } from 'rxjs';
 })
 export class CreateFormulationComponent implements OnInit {
   @ViewChild('inputfields') inputfields!: ElementRef;
-  dummyTabs: any = [];
+  dummyTabs: any = [
+    { label: 'Purpose and Conclusions', isEdit: false, value: 'primary' },
+    { label: 'Formulation', isEdit: false, value: 'secondary' },
+  ];
   inputValue: string;
   projectId: number;
   project: any;
@@ -101,7 +104,6 @@ export class CreateFormulationComponent implements OnInit {
     this.getBatchNumber();
     this.getExperimentDetails(this.experimentId);
     this.getProjectDetails();
-    this.dummyTabs = [];
   }
 
   getProjectDetails() {
@@ -117,9 +119,24 @@ export class CreateFormulationComponent implements OnInit {
     if (activeTab === 'attachments') {
       this.getAttachments();
     }
+    if (activeTab === 'excipients') {
+      this.getExcipientDetails();
+    }
     if (activeTab.substring(0, 3) === 'tab') {
       this.getExperimentDetailsById(activeTab);
     }
+  }
+
+  getExcipientDetails() {
+    this.experimentService
+      .getExcipientDetailsById(this.experimentId)
+      .subscribe((data) => {
+        console.log(data);
+        if (data.length > 0) {
+          this.tableData = data;
+          this.selectedItems = data;
+        }
+      });
   }
 
   getExperimentDetailsById(tabValue) {
@@ -169,7 +186,7 @@ export class CreateFormulationComponent implements OnInit {
       });
   }
 
-  getExperimentDetails(id) {
+  getExperimentDetails(id, firstLoad?: any) {
     this.experimentId = id;
     this.isCreatedExperiment = this.experimentId ? true : false;
     if (this.experimentId) {
@@ -183,6 +200,7 @@ export class CreateFormulationComponent implements OnInit {
         .subscribe((experimentDetails) => {
           this.experimentDetails = experimentDetails;
           // if (this.editExperiment) {
+
           this.article = experimentDetails.experimentDetails.map((exp) => ({
             title: '',
             text: '',
@@ -192,6 +210,9 @@ export class CreateFormulationComponent implements OnInit {
             isEdit: false,
             value: 'tab' + exp.experimentDetailId,
           }));
+          if (firstLoad === 'firstLoad') {
+            this.activeTab = this.dummyTabs[0].value;
+          }
 
           this.tableData = experimentDetails.experimentExcipients;
           // }
@@ -237,7 +258,7 @@ export class CreateFormulationComponent implements OnInit {
       text: '',
     });
     this.dummyTabs.push({
-      label: `Add On - ${length + 1}`,
+      label: `New Tab - ${length + 1}`,
       isEdit: false,
       value: `newTab-${(length + 1).toString()}`,
     });
@@ -262,8 +283,9 @@ export class CreateFormulationComponent implements OnInit {
     this.experimentService
       .saveExperiment(summary)
       .subscribe((experiment: any) => {
-        this.getExperimentDetails(experiment.data);
-        this.activeTab = this.dummyTabs[0].value;
+        this.getExperimentDetails(experiment.data, 'firstLoad');
+        // redirect to 2
+
         this.toastr.success('Experiment Started Successfully', 'Success');
       });
   }
@@ -327,11 +349,14 @@ export class CreateFormulationComponent implements OnInit {
     //     this.getExperimentDetails(this.experimentId);
     //   });
     // }
-    console.log(this.dummyTabs[index]);
-
+    console.log(this.dummyTabs[index].value);
+    console.log(this.dummyTabs[index].value.substring(0, 3));
     tabValue = {
       ...tabValue,
-      experimentDetailId: this.dummyTabs[index].value.substring(3),
+      experimentDetailId:
+        this.dummyTabs[index].value.substring(0, 3) === 'new'
+          ? null
+          : this.dummyTabs[index].value.substring(3),
     };
 
     this.experimentService.saveExperimentTabs(tabValue).subscribe((data) => {
@@ -341,8 +366,14 @@ export class CreateFormulationComponent implements OnInit {
         } successfully`,
         'Success'
       );
-      this.dummyTabs[index]['id'] = data.data;
-      this.getExperimentDetails(this.experimentId);
+      // this.dummyTabs[index]['id'] = data.data;
+      //
+      if (this.dummyTabs[index].value.substring(0, 3) === 'new') {
+        console.log('to summar');
+        this.activeTab = 'summary';
+        this.getExperimentDetails(this.experimentId);
+      }
+      // this.getExperimentDetails(this.experimentId, 'noTabLoad');
     });
   }
 

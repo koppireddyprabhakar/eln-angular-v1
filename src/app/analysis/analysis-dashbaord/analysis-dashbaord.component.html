@@ -64,7 +64,7 @@
               [disabled]="!isCreatedExperiment"
               data-bs-toggle="tab"
               data-bs-target="#contact"
-              (click)="search('contact')"
+              (click)="search('excipients')"
               [ngClass]="{ active: activeTab === 'contact' }"
               type="button"
               role="tab"
@@ -391,7 +391,7 @@
           </div>
 
           <div
-            class="tab-pane fade"
+            class="tab-pane fade mt-3"
             [ngClass]="{
               active: activeTab === 'results',
               show: activeTab === 'results'
@@ -400,19 +400,19 @@
             role="tabpanel"
             aria-labelledby="results-tab"
           >
-            <div class="row pt-4 px-4">
+            <div class="row pt-4 px-4 result-tab pb-3">
               <div class="col-lg-4">
-                <div class="col-lg-6">Test Id</div>
+                <div class="col-lg-6 field-label">Test Id</div>
               </div>
               <div class="col-lg-4">
-                <div class="col-lg-6">Test Name</div>
+                <div class="col-lg-6 field-label">Test Name</div>
               </div>
               <div class="col-lg-4">
-                <div class="col-lg-6">Results</div>
+                <div class="col-lg-6 field-label">Results</div>
               </div>
             </div>
             <div
-              class="row pt-4 px-4"
+              class="row pt-4 px-4 result-tab pb-3"
               *ngFor="let trf of selectedTrfs; let i = index"
             >
               <div class="col-lg-4">
@@ -423,7 +423,15 @@
               </div>
               <div class="col-lg-4">
                 <div class="col-lg-6">
-                  <input type="text" ngModel="{{ trf.testResult }}" />
+                  <!-- <input type="text" ngModel="{{ trf.testResult }}" /> -->
+                  <!-- <textarea ngModel="{{ trf.testResult }}"></textarea>
+                  <label for="inputPassword" class="col-sm-2 col-form-label">Textarea</label> -->
+                  <textarea
+                    class="form-control"
+                    style="height: 50px"
+                    ngModel="{{ trf.testResult }}"
+                    (change)="trfResultChange($event.target, i)"
+                  ></textarea>
                 </div>
               </div>
             </div>
@@ -432,7 +440,7 @@
               <button
                 type="submit"
                 class="btn btn-primary mt-3"
-                (click)="saveExcipients()"
+                (click)="saveResults()"
               >
                 Submit
               </button>

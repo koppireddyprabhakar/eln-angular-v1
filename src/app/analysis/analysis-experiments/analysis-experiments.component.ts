@@ -45,7 +45,7 @@ export class AnalysisExperimentsComponent implements OnInit {
       // },
     ];
     this.myExpColumns = [
-      { key: 'experimentName', title: 'Experiment Name' },
+      { key: 'analysisName', title: 'Experiment Name' },
       { key: 'batchNumber', title: 'Batch No.' },
       { key: 'batchSize', title: 'Batch Size' },
       { key: 'projectId', title: 'Project ID' },
