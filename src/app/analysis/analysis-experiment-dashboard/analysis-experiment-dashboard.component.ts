@@ -20,7 +20,10 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class AnalysisExperimentDashboardComponent implements OnInit {
   @ViewChild('inputfields') inputfields!: ElementRef;
-  dummyTabs: any = [];
+  dummyTabs: any = [
+    { label: 'Purpose and Conclusions', isEdit: false, value: 'primary' },
+    { label: 'Formulation', isEdit: false, value: 'secondary' },
+  ];
   inputValue: string;
   projectId: number;
   project: any;
@@ -51,7 +54,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   public files: any = [];
   analysisID: any;
   activeTab = 'summary';
-
+  selectedTrfs = [];
   summaryForm = this.formBuilder.group({
     experimentName: ['', [Validators.required]],
     batchSize: ['' as any, [Validators.required]],
@@ -96,7 +99,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     this.analysisID = this.activatedRoute.snapshot.queryParams['analysisId'];
     this.projectId = this.activatedRoute.snapshot.queryParams['projectId'];
     // this.isCreatedExperiment = this.experimentId ? true : false;
-    this.getBatchNumber();
     this.getAnalysisExperimentDetails(this.analysisID);
     this.getProjectDetails();
   }
@@ -112,9 +114,38 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     if (activeTab === 'attachments') {
       this.getAttachments();
     }
+    if (activeTab === 'excipients') {
+      this.getExcipientDetails();
+    }
     if (activeTab.substring(0, 3) === 'tab') {
       this.getAnalysisDetailsById(activeTab);
     }
+    if (activeTab === 'results') {
+      this.getTrfDetailsById();
+    }
+  }
+
+  getTrfDetailsById() {
+    this.analysisService
+      .getTrfDetailsById(this.analysisID)
+      .subscribe((data) => {
+        console.log(data);
+        if (data.length > 0) {
+          this.selectedTrfs = data;
+        }
+      });
+  }
+
+  getExcipientDetails() {
+    this.analysisService
+      .getExcipientDetailsById(this.analysisID)
+      .subscribe((data) => {
+        console.log(data);
+        if (data.length > 0) {
+          this.tableData = data;
+          this.selectedItems = data;
+        }
+      });
   }
 
   getAnalysisDetailsById(tabValue) {
@@ -152,14 +183,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     });
   }
 
-  getBatchNumber() {
-    this.formulationService
-      .getFormulationBatchNumber()
-      .subscribe((batchNumber) => {
-        this.batchNumber = batchNumber.data;
-      });
-  }
-
   getAnalysisExperimentDetails(id) {
     this.analysisID = id;
     if (this.analysisID) {
@@ -180,16 +203,24 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
               value: 'tab' + exp.analysisDetailId,
             })
           );
-          this.resultsData = analysisExperimentDetails.testRequestForms;
+          this.resultsData = analysisExperimentDetails.testRequestForms.map(
+            (result) => ({
+              ...result,
+              testRequestFormStatus: 'active',
+              analysisId: Number(this.analysisID),
+            })
+          );
+          console.log(' this.resultsData', this.resultsData);
           this.selectedItems = analysisExperimentDetails.analysisExcipients;
           this.savedSelectedItems =
             analysisExperimentDetails.analysisExcipients;
           this.tableData = analysisExperimentDetails.analysisExcipients;
           // this.experimentDetails = experimentDetails;
-          // this.summaryForm.patchValue({
-          //   experimentName: experimentDetails.experimentName,
-          //   batchSize: experimentDetails.batchSize,
-          // });
+          this.batchNumber = analysisExperimentDetails.batchNumber;
+          this.summaryForm.patchValue({
+            experimentName: analysisExperimentDetails.analysisName,
+            batchSize: analysisExperimentDetails.batchSize,
+          });
         });
     }
   }
@@ -288,6 +319,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       name: label,
       fileContent: this.article[index].text,
     };
+
     this.analysisService.saveAnalysisDetails(tabValue).subscribe((data) => {
       this.toastr.success(`Experiment detail updated successfully`, 'Success');
       this.getAnalysisExperimentDetails(this.analysisID);
@@ -320,11 +352,22 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     );
   }
 
+  trfResultChange(result, index) {
+    this.resultsData[index].testResult = result.value;
+
+    console.log(this.resultsData);
+  }
+
   saveExcipients() {
     this.analysisService
       .saveAnalysisExcipient(this.tableData)
       .subscribe((data) => {
         this.toastr.success(data.data, 'Success');
       });
+  }
+  saveResults() {
+    this.analysisService.saveTrfResults(this.resultsData).subscribe((data) => {
+      this.toastr.success(data.data, 'Success');
+    });
   }
 }

@@ -62,7 +62,7 @@
               id="contact-tab"
               data-bs-toggle="tab"
               data-bs-target="#contact"
-              (click)="search('contact')"
+              (click)="search('excipients')"
               [ngClass]="{ active: activeTab === 'contact' }"
               type="button"
               role="tab"
@@ -226,7 +226,7 @@
                           <label
                             for="experimentName"
                             class="col-sm-3 col-form-label"
-                            >Experiment Name</label
+                            >Analysis Name</label
                           >
                           <div class="col-sm-9">
                             <input
@@ -397,7 +397,7 @@
             role="tabpanel"
             aria-labelledby="results-tab"
           >
-            <div class="row pt-4 px-4">
+            <div class="row pt-4 px-4 result-tab pb-3">
               <div class="col-lg-4">
                 <div class="col-lg-6">Test Id</div>
               </div>
@@ -408,7 +408,10 @@
                 <div class="col-lg-6">Results</div>
               </div>
             </div>
-            <div class="row pt-4 px-4" *ngFor="let result of resultsData">
+            <div
+              class="row pt-4 px-4 result-tab pb-3"
+              *ngFor="let result of resultsData; let i = index"
+            >
               <div class="col-lg-4">
                 <div class="col-lg-6">{{ result.testRequestFormId }}</div>
               </div>
@@ -417,7 +420,13 @@
               </div>
               <div class="col-lg-4">
                 <div class="col-lg-6">
-                  <input type="text" [(ngModel)]="result.testResult" />
+                  <textarea
+                    class="form-control"
+                    style="height: 50px"
+                    ngModel="{{ result.testResult }}"
+                    (change)="trfResultChange($event.target, i)"
+                  ></textarea>
+                  <!-- <input type="text" [(ngModel)]="result.testResult" /> -->
                 </div>
               </div>
             </div>
@@ -438,7 +447,7 @@
               <button
                 type="submit"
                 class="btn btn-primary mt-3"
-                (click)="saveExcipients()"
+                (click)="saveResults()"
               >
                 Submit
               </button>

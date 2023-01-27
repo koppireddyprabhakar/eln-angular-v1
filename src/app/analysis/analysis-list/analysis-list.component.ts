@@ -11,7 +11,9 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class AnalysisListComponent implements OnInit {
   trfList: any = [];
+  unchangedTrfList: any = [];
   selectedUser: any = {};
+  projectId: number;
   subscribeFlag = true;
   columns: any;
   options: any = { checkboxes: true };
@@ -63,6 +65,7 @@ export class AnalysisListComponent implements OnInit {
       return value;
     };
     this.testRequestService.getTestRequestForms().subscribe((data) => {
+      this.unchangedTrfList = data;
       this.trfList = data;
       this.trfList = this.trfList.map((trf) => flatten(trf));
     });
@@ -71,6 +74,12 @@ export class AnalysisListComponent implements OnInit {
   onCheckboxClick(selectCheckBoxArr) {
     this.selectedRows = selectCheckBoxArr;
     var valueArr = this.selectedRows.map((item) => item.projectName);
+    console.log(valueArr[0]);
+    const selectedTrfList = this.unchangedTrfList.filter(
+      (list) => list.project.projectName === valueArr[0]
+    );
+    console.log(selectedTrfList[0].project.projectId);
+    this.projectId = selectedTrfList[0].project.projectId;
     this.isDuplicate = valueArr.every((arr) => valueArr[0] === arr);
     this.analysisService.syncTrf(this.selectedRows);
     this.analysisService.selectedTrfs$.subscribe((trfs) => {});
@@ -79,7 +88,9 @@ export class AnalysisListComponent implements OnInit {
 
   createExperiment() {
     if (this.isDuplicate) {
-      this.route.navigateByUrl(`/exp-analysis/dashboard?projectId=${38}`);
+      this.route.navigateByUrl(
+        `/exp-analysis/dashboard?projectId=${this.projectId}`
+      );
     } else {
       this.toastr.warning('Please Select TRFs of same projects', 'Warning');
     }
