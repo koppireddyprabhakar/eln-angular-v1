@@ -6,7 +6,7 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
@@ -15,14 +15,13 @@ import { InwardManagementService } from '@app/shared/services/inward-management/
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { TestService } from '@app/shared/services/test/test.service';
 import { ToastrService } from 'ngx-toastr';
-import { takeWhile } from 'rxjs';
 
 @Component({
-  selector: 'app-analysis-new-experiment',
-  templateUrl: './analysis-new-experiment.component.html',
-  styleUrls: ['./analysis-new-experiment.component.scss'],
+  selector: 'app-review-experiments',
+  templateUrl: './review-experiments.component.html',
+  styleUrls: ['./review-experiments.component.scss'],
 })
-export class AnalysisNewExperimentComponent implements OnInit {
+export class ReviewExperimentsComponent implements OnInit {
   @ViewChild('inputfields') inputfields!: ElementRef;
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
   dummyTabs: any = [
@@ -153,7 +152,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
         cellTemplate: this.actionTpl,
       },
     ];
-    this.experimentId = this.activatedRoute.snapshot.queryParams['analysis'];
+    this.experimentId = this.activatedRoute.snapshot.queryParams['analysisId'];
     this.projectId = this.activatedRoute.snapshot.queryParams['projectId'];
     this.isCreatedExperiment = this.experimentId ? true : false;
     this.getBatchNumber();
@@ -388,10 +387,8 @@ export class AnalysisNewExperimentComponent implements OnInit {
   getAnalysisById(id, is?: any) {
     this.experimentId = id;
     this.isCreatedExperiment = this.experimentId ? true : false;
+    console.log(this.experimentId);
     if (this.experimentId) {
-      this.route.navigateByUrl(
-        `/exp-analysis/analysis-exp?projectId=${this.projectId}&analysis=${id}`
-      );
       this.analysisService
         .getAnalysisById(this.experimentId)
         .subscribe((experimentDetails) => {

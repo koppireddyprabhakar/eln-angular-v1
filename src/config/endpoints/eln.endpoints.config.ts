@@ -76,7 +76,7 @@ export const elnEndpointsConfig: EndpointConfig = {
     getTrfResultsById: 'analysis/get-test-requests-by-analysi-id',
     getResultsDTById: 'analysis/get-test-requests-by-analysisId',
     createAnalysisTestRequestForm: 'analysis/create-test-request-form',
-    updateAnalysisTestRequestForm: 'analysis/updae-test-request-form-results',
+    updateAnalysisTestRequestForm: 'analysis/update-test-request-form',
     getAnalysisTestRequestForms: 'analysis/get-trf-by-analysisId',
     saveAnalysisDetails: 'analysis/save-analysis-details',
     saveAnalysisExcipient: 'analysis/save-analysis-excipient',

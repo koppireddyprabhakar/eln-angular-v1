@@ -153,7 +153,7 @@ export class AddTrfComponent implements OnInit {
       ...test,
       testStatus: 'string',
       testNumber: `${this.staticTrfId}-A${index}`,
-      testResult: 'string',
+      testResult: '',
     }));
   }
   deselect(item: any) {
@@ -164,7 +164,7 @@ export class AddTrfComponent implements OnInit {
       ...test,
       testStatus: 'string',
       testNumber: `${this.staticTrfId}-A${index}`,
-      testResult: 'string',
+      testResult: '',
     }));
   }
   onSelectAll(items: any) {
@@ -172,7 +172,7 @@ export class AddTrfComponent implements OnInit {
       ...test,
       testStatus: 'string',
       testNumber: `${this.staticTrfId}-A${index}`,
-      testResult: 'string',
+      testResult: '',
     }));
   }
 

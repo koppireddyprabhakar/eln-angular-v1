@@ -111,12 +111,17 @@
           <li class="nav-item" role="presentation">
             <button
               class="nav-link"
-              id="attachments-tab"
-              [disabled]="!isCreatedExperiment"
+              id="review-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#review"
+              (click)="search('review')"
+              [ngClass]="{ active: activeTab === 'review' }"
               type="button"
-              (click)="addNew()"
+              role="tab"
+              aria-controls="review"
+              aria-selected="false"
             >
-              Add New
+              Review
             </button>
           </li>
           <!-- <li class="nav-item" role="presentation">
@@ -263,15 +268,6 @@
                           </div>
                         </div>
                       </form>
-                      <div class="text-center" *ngIf="!experimentId">
-                        <button
-                          type="submit"
-                          class="btn btn-primary"
-                          (click)="saveSummary()"
-                        >
-                          Start Experiment
-                        </button>
-                      </div>
 
                       <!-- <div class="row mb-3">
                         <label for="inputEmail3" class="col-sm-3 col-form-label"
@@ -334,17 +330,9 @@
               [(ngModel)]="article[i].text"
               data=""
               name="text"
+              [readOnly]="true"
             ></ckeditor>
             <!-- <ckeditor data="<p>Hello, world!</p>"></ckeditor> -->
-            <div class="text-center pt-3">
-              <button
-                type="submit"
-                class="btn btn-primary"
-                (click)="saveTab(i, dumm)"
-              >
-                Submit
-              </button>
-            </div>
           </div>
 
           <!-- </section> -->
@@ -358,18 +346,6 @@
             role="tabpanel"
             aria-labelledby="contact-tab"
           >
-            <div class="pt-3 pb-3">
-              <ng-multiselect-dropdown
-                [settings]="dropdownSettings"
-                [data]="inwards"
-                [(ngModel)]="selectedItems"
-                (onSelect)="onItemSelect($event)"
-                (onSelectAll)="onSelectAll($event)"
-                (onDeSelect)="deselect($event)"
-              >
-              </ng-multiselect-dropdown>
-            </div>
-
             <div class="tableNgx">
               <ngx-datatable
                 tableClass="table table-striped table-bordered table-hover tableNgx"
@@ -565,6 +541,7 @@
                   class="form-control"
                   id="condition"
                   formControlName="condition"
+                  [readOnly]="true"
                 />
                 <span
                   *ngIf="
@@ -585,6 +562,7 @@
                   type="text"
                   class="form-control"
                   id="stage"
+                  [readOnly]="true"
                   formControlName="stage"
                 />
                 <span
@@ -606,6 +584,7 @@
                   type="text"
                   class="form-control"
                   id="packaging"
+                  [readOnly]="true"
                   formControlName="packaging"
                 />
                 <span
@@ -627,8 +606,8 @@
                   type="text"
                   class="form-control"
                   id="batchSize"
+                  [readOnly]="true"
                   formControlName="batchSize"
-                  readonly
                 />
                 <span
                   *ngIf="
@@ -649,6 +628,7 @@
                   type="number"
                   class="form-control"
                   id="quantity"
+                  readonly
                   formControlName="quantity"
                 />
 
@@ -671,6 +651,7 @@
                   type="text"
                   class="form-control"
                   id="labelClaim"
+                  readonly
                   formControlName="labelClaim"
                 />
 
@@ -695,6 +676,7 @@
                   type="date"
                   class="form-control"
                   id="manufacturingDate"
+                  readonly
                   formControlName="manufacturingDate"
                 />
                 <span
@@ -719,6 +701,7 @@
                   type="date"
                   class="form-control"
                   id="expiryDate"
+                  readonly
                   formControlName="expiryDate"
                 />
                 <span
@@ -736,18 +719,6 @@
               </div>
             </form>
             <h3 class="mt-4">Lab Tests</h3>
-
-            <div class="pb-3">
-              <ng-multiselect-dropdown
-                [settings]="dropdownTestSettings"
-                [data]="tests"
-                [(ngModel)]="selectedTestItems"
-                (onSelect)="onTestItemSelect($event)"
-                (onSelectAll)="onTestSelectAll($event)"
-                (onDeSelect)="testdeselect($event)"
-              >
-              </ng-multiselect-dropdown>
-            </div>
 
             <div class="tableNgx">
               <ngx-datatable
@@ -767,20 +738,10 @@
                     style="height: 50px"
                     [(ngModel)]="tableTestData[rowIndex].testResult"
                     (change)="resultChange($event.target, rowIndex)"
+                    [readOnly]="true"
                   ></textarea>
                 </ng-template>
               </ngx-datatable>
-            </div>
-            <div class="text-center pt-4">
-              &nbsp;&nbsp;&nbsp;
-              <button
-                type="button"
-                class="btn btn-primary mt-4"
-                (click)="saveTestRequestForm()"
-              >
-                <!--  (click)="saveTestRequestForm()" -->
-                Save
-              </button>
             </div>
           </div>
 
@@ -795,20 +756,7 @@
             aria-labelledby="attachments-tab"
           >
             <div class="row mb-3">
-              <label for="inputNumber" class="col-sm-2 col-form-label">
-                Upload</label
-              >
-              <div class="col-sm-10">
-                <input
-                  class="form-control"
-                  type="file"
-                  id="formFile"
-                  (change)="processFile($event)"
-                />
-              </div>
-            </div>
-            <div class="row mb-3">
-              <label *ngIf="files.length > 0">Uploaded Attachements</label>
+              <h4>Uploaded Attachements</h4>
               <span *ngFor="let file of files">
                 <div class="file-container">
                   <span
@@ -821,6 +769,34 @@
                   ></span>
                 </div>
               </span>
+            </div>
+          </div>
+          <div
+            class="tab-pane fade"
+            [ngClass]="{
+              active: activeTab === 'review',
+              show: activeTab === 'review'
+            }"
+            id="review"
+            role="tabpanel"
+            aria-labelledby="review-tab"
+          >
+            <div class="row mb-3">
+              <h4>Review</h4>
+              <span>
+                <div>
+                  <textarea
+                    class="form-control"
+                    style="height: 50px"
+                  ></textarea>
+                </div>
+              </span>
+            </div>
+            <div class="text-center pt-2">
+              <button type="button" class="btn btn-primary mt-4">
+                <!--  (click)="saveTestRequestForm()" -->
+                Save
+              </button>
             </div>
           </div>
         </div>

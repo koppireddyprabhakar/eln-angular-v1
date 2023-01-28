@@ -6,6 +6,8 @@ import { AnalysisExperimentsComponent } from './analysis-experiments/analysis-ex
 import { AnalysisProjectsComponent } from './analysis-projects/analysis-projects.component';
 import { AnalysisExperimentDashboardComponent } from './analysis-experiment-dashboard/analysis-experiment-dashboard.component';
 import { AnalysisNewExperimentComponent } from './analysis-new-experiment/analysis-new-experiment.component';
+import { ReviewExperimentsComponent } from './review-experiments/review-experiments.component';
+import { ReviewExperimentsListComponent } from './review-experiments-list/review-experiments-list.component';
 
 const routes: Routes = [
   {
@@ -34,6 +36,14 @@ const routes: Routes = [
       {
         path: 'projects',
         component: AnalysisProjectsComponent,
+      },
+      {
+        path: 'review-list',
+        component: ReviewExperimentsListComponent,
+      },
+      {
+        path: 'review',
+        component: ReviewExperimentsComponent,
       },
     ],
   },

@@ -13,6 +13,8 @@ import { AnalysisProjectsComponent } from './analysis-projects/analysis-projects
 import { AnalysisExperimentDashboardComponent } from './analysis-experiment-dashboard/analysis-experiment-dashboard.component';
 import { CKEditorModule } from 'ckeditor4-angular';
 import { AnalysisNewExperimentComponent } from './analysis-new-experiment/analysis-new-experiment.component';
+import { ReviewExperimentsComponent } from './review-experiments/review-experiments.component';
+import { ReviewExperimentsListComponent } from './review-experiments-list/review-experiments-list.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +25,8 @@ import { AnalysisNewExperimentComponent } from './analysis-new-experiment/analys
     AnalysisProjectsComponent,
     AnalysisExperimentDashboardComponent,
     AnalysisNewExperimentComponent,
+    ReviewExperimentsComponent,
+    ReviewExperimentsListComponent,
   ],
   imports: [
     CommonModule,
