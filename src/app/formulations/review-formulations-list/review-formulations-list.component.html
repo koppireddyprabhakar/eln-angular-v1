@@ -1,0 +1,39 @@
+<main id="main" class="main body-height">
+  <div class="pagetitle">
+    <h1>Review Experiments</h1>
+  </div>
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="align-header">
+              <h5 class="card-title">Experiments</h5>
+            </div>
+            <div class="tableNgx">
+              <ngx-datatable
+                tableClass="table table-striped table-bordered table-hover tableNgx"
+                [data]="myExperiments"
+                [options]="options"
+                [columns]="myExpColumns"
+                (rowClick)="onRowClick($event)"
+              >
+                <ng-template
+                  #expActionTpl
+                  let-row
+                  let-rowIndex="rowIndex"
+                  let-columnValue="columnValue"
+                >
+                  &nbsp;&nbsp;
+                  <button type="button" class="btn btn-outline-primary">
+                    Add TRF
+                  </button>
+                </ng-template>
+              </ngx-datatable>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

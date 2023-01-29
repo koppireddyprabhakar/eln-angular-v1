@@ -13,6 +13,8 @@ import { TrfDashboardModule } from '@app/trf-dashboard/trf-dashboard.module';
 import { AddTrfComponent } from './add-trf/add-trf.component';
 import { FormsPageComponent } from './forms-page/forms-page.component';
 import { FormulationsRoutingModule } from './formulations-routing.module';
+import { ReviewFormulationsComponent } from './review-formulations/review-formulations.component';
+import { ReviewFormulationsListComponent } from './review-formulations-list/review-formulations-list.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +22,8 @@ import { FormulationsRoutingModule } from './formulations-routing.module';
     CreateFormulationComponent,
     AddTrfComponent,
     FormsPageComponent,
+    ReviewFormulationsComponent,
+    ReviewFormulationsListComponent,
   ],
   imports: [
     CommonModule,

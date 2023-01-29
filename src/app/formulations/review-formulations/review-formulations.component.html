@@ -74,23 +74,7 @@
               Excipients/Chemicals
             </button>
           </li>
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="results-tab"
-              [disabled]="!isCreatedExperiment"
-              data-bs-toggle="tab"
-              data-bs-target="#results"
-              (click)="search('results')"
-              [ngClass]="{ active: activeTab === 'results' }"
-              type="button"
-              role="tab"
-              aria-controls="results"
-              aria-selected="false"
-            >
-              Results
-            </button>
-          </li>
+
           <li class="nav-item" role="presentation">
             <button
               class="nav-link"
@@ -111,12 +95,17 @@
           <li class="nav-item" role="presentation">
             <button
               class="nav-link"
-              id="attachments-tab"
-              [disabled]="!isCreatedExperiment"
+              id="review-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#review"
+              (click)="search('review')"
+              [ngClass]="{ active: activeTab === 'review' }"
               type="button"
-              (click)="addNew()"
+              role="tab"
+              aria-controls="review"
+              aria-selected="false"
             >
-              Add New
+              Review
             </button>
           </li>
           <!-- <li class="nav-item" role="presentation">
@@ -263,15 +252,6 @@
                           </div>
                         </div>
                       </form>
-                      <div class="text-center" *ngIf="!experimentId">
-                        <button
-                          type="submit"
-                          class="btn btn-primary"
-                          (click)="saveSummary()"
-                        >
-                          Start Experiment
-                        </button>
-                      </div>
 
                       <!-- <div class="row mb-3">
                         <label for="inputEmail3" class="col-sm-3 col-form-label"
@@ -334,17 +314,9 @@
               [(ngModel)]="article[i].text"
               data=""
               name="text"
+              [readOnly]="true"
             ></ckeditor>
             <!-- <ckeditor data="<p>Hello, world!</p>"></ckeditor> -->
-            <div class="text-center pt-3">
-              <button
-                type="submit"
-                class="btn btn-primary"
-                (click)="saveTab(i, dumm)"
-              >
-                Submit
-              </button>
-            </div>
           </div>
 
           <!-- </section> -->
@@ -358,18 +330,6 @@
             role="tabpanel"
             aria-labelledby="contact-tab"
           >
-            <div class="pt-3 pb-3">
-              <ng-multiselect-dropdown
-                [settings]="dropdownSettings"
-                [data]="inwards"
-                [(ngModel)]="selectedItems"
-                (onSelect)="onItemSelect($event)"
-                (onSelectAll)="onSelectAll($event)"
-                (onDeSelect)="deselect($event)"
-              >
-              </ng-multiselect-dropdown>
-            </div>
-
             <div class="tableNgx">
               <ngx-datatable
                 tableClass="table table-striped table-bordered table-hover tableNgx"
@@ -391,63 +351,6 @@
           </div>
 
           <div
-            class="tab-pane fade mt-3"
-            [ngClass]="{
-              active: activeTab === 'results',
-              show: activeTab === 'results'
-            }"
-            id="results"
-            role="tabpanel"
-            aria-labelledby="results-tab"
-          >
-            <div class="row pt-4 px-4 result-tab pb-3">
-              <div class="col-lg-4">
-                <div class="col-lg-6 field-label">Test Id</div>
-              </div>
-              <div class="col-lg-4">
-                <div class="col-lg-6 field-label">Test Name</div>
-              </div>
-              <div class="col-lg-4">
-                <div class="col-lg-6 field-label">Results</div>
-              </div>
-            </div>
-            <div
-              class="row pt-4 px-4 result-tab pb-3"
-              *ngFor="let trf of selectedTrfs; let i = index"
-            >
-              <div class="col-lg-4">
-                <div class="col-lg-6">{{ trf.testId }}</div>
-              </div>
-              <div class="col-lg-4">
-                <div class="col-lg-6">{{ trf.testName }}</div>
-              </div>
-              <div class="col-lg-4">
-                <div class="col-lg-6">
-                  <!-- <input type="text" ngModel="{{ trf.testResult }}" /> -->
-                  <!-- <textarea ngModel="{{ trf.testResult }}"></textarea>
-                  <label for="inputPassword" class="col-sm-2 col-form-label">Textarea</label> -->
-                  <textarea
-                    class="form-control"
-                    style="height: 50px"
-                    ngModel="{{ trf.testResult }}"
-                    (change)="trfResultChange($event.target, i)"
-                  ></textarea>
-                </div>
-              </div>
-            </div>
-
-            <div class="text-center pt-3">
-              <button
-                type="submit"
-                class="btn btn-primary mt-3"
-                (click)="saveResults()"
-              >
-                Submit
-              </button>
-            </div>
-          </div>
-
-          <div
             class="tab-pane fade"
             [ngClass]="{
               active: activeTab === 'attachments',
@@ -458,20 +361,7 @@
             aria-labelledby="attachments-tab"
           >
             <div class="row mb-3">
-              <label for="inputNumber" class="col-sm-2 col-form-label">
-                Upload</label
-              >
-              <div class="col-sm-10">
-                <input
-                  class="form-control"
-                  type="file"
-                  id="formFile"
-                  (change)="processFile($event)"
-                />
-              </div>
-            </div>
-            <div class="row mb-3">
-              <label *ngIf="files.length > 0">Uploaded Attachments</label>
+              <h4 class="mt-3">Uploaded Attachments</h4>
               <span *ngFor="let file of files">
                 <div class="file-container">
                   <span
@@ -484,6 +374,34 @@
                   ></span>
                 </div>
               </span>
+            </div>
+          </div>
+          <div
+            class="tab-pane fade"
+            [ngClass]="{
+              active: activeTab === 'review',
+              show: activeTab === 'review'
+            }"
+            id="review"
+            role="tabpanel"
+            aria-labelledby="review-tab"
+          >
+            <div class="row mb-3">
+              <h4>Review</h4>
+              <span>
+                <div>
+                  <textarea
+                    class="form-control"
+                    style="height: 50px"
+                  ></textarea>
+                </div>
+              </span>
+            </div>
+            <div class="text-center pt-2">
+              <button type="button" class="btn btn-primary mt-4">
+                <!--  (click)="saveTestRequestForm()" -->
+                Save
+              </button>
             </div>
           </div>
         </div>
