@@ -73,7 +73,7 @@ export class AnalysisDashbaordComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private route: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.selectedTrfs$.subscribe((trfs) => {
@@ -177,7 +177,7 @@ export class AnalysisDashbaordComponent implements OnInit {
     const fileData = { ...file, projectId: this.projectId };
     this.experimentService
       .deleteExperimentAttachment(file)
-      .subscribe((experimentDetails) => {});
+      .subscribe((experimentDetails) => { });
   }
 
   getExcipients() {
@@ -330,8 +330,7 @@ export class AnalysisDashbaordComponent implements OnInit {
     };
     this.analysisService.saveAnalysisDetails(tabValue).subscribe((data) => {
       this.toastr.success(
-        `Experiment detail ${
-          this.dummyTabs[index].id ? 'updated' : 'created'
+        `Experiment detail ${this.dummyTabs[index].id ? 'updated' : 'created'
         } successfully`,
         'Success'
       );
@@ -343,7 +342,7 @@ export class AnalysisDashbaordComponent implements OnInit {
     });
   }
 
-  saveAttachment() {}
+  saveAttachment() { }
 
   onChange(event) {
     this.file = event.target.files[0];
@@ -386,4 +385,12 @@ export class AnalysisDashbaordComponent implements OnInit {
       this.toastr.success(data.data, 'Success');
     });
   }
+
+  updateAnalysisStatus() {
+    this.analysisService.updateAnalysisStatus(this.experimentId, 'Complete').subscribe((data) => {
+      this.toastr.success(data['data'], 'Success');
+      this.route.navigateByUrl(`/exp-analysis/list`);
+    });
+  }
+
 }

@@ -19,7 +19,7 @@ export class AnalysisService {
   constructor(
     private readonly http: HttpClient,
     private readonly clientService: ClientService
-  ) {}
+  ) { }
 
   getALlAnalysisExperiments() {
     const url = elnEndpointsConfig.endpoints['getAnalysisList'];
@@ -29,9 +29,8 @@ export class AnalysisService {
   }
 
   getAnalysisExperimentById(id) {
-    const url = `${
-      elnEndpointsConfig.endpoints['getAnalysisListByTeamId']
-    }?teamId=${10}`;
+    const url = `${elnEndpointsConfig.endpoints['getAnalysisListByTeamId']
+      }?teamId=${10}`;
     return this.http
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
@@ -186,6 +185,11 @@ export class AnalysisService {
   createTrf(data) {
     const url = elnEndpointsConfig.endpoints['saveTrf'];
     return this.http.post<string>(url, data);
+  }
+
+  updateAnalysisStatus(analysisId, status) {
+    const url = elnEndpointsConfig.endpoints['updateAnalysisStatus'];
+    return this.http.put<string>(url, {}, { params: { analysisId: analysisId, status: status } });
   }
 
   handleError(error: HttpErrorResponse) {

@@ -11,7 +11,7 @@ export class ExperimentService {
   constructor(
     private readonly http: HttpClient,
     private readonly clientService: ClientService
-  ) {}
+  ) { }
 
   getExperiments() {
     const url = elnEndpointsConfig.endpoints['getExperiments'];
@@ -118,6 +118,11 @@ export class ExperimentService {
   createTrf(data) {
     const url = elnEndpointsConfig.endpoints['saveTrf'];
     return this.http.post<string>(url, data);
+  }
+
+  updateExperimentStatus(experimentId, status) {
+    const url = elnEndpointsConfig.endpoints['updateExperimentStatus'];
+    return this.http.put<string>(url, {}, { params: { experimentId: experimentId, status: status } });
   }
 
   handleError(error: HttpErrorResponse) {

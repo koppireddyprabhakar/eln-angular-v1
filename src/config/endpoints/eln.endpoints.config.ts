@@ -83,6 +83,8 @@ export const elnEndpointsConfig: EndpointConfig = {
     searchAnalysisAttachments: 'analysis/search-analysis-attachments',
     saveAnalysisAttachments: 'analysis/save-analysis-attachment',
     createAnalysis: 'analysis/create-analysis',
+    updateExperimentStatus: 'experiment/update-experiment-status',
+    updateAnalysisStatus: 'analysis/update-analysis-status'
   },
 };
 

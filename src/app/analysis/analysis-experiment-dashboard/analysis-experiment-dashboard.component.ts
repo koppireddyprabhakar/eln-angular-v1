@@ -71,7 +71,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private route: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getExcipients();
@@ -131,7 +131,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       .subscribe((data) => {
         console.log(data);
         if (data.length > 0) {
-          this.selectedTrfs = data;
+          this.resultsData = data;
         }
       });
   }
@@ -171,7 +171,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     const fileData = { ...file, projectId: this.projectId };
     this.experimentService
       .deleteExperimentAttachment(file)
-      .subscribe((experimentDetails) => {});
+      .subscribe((experimentDetails) => { });
   }
 
   getExcipients() {
@@ -203,14 +203,14 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
               value: 'tab' + exp.analysisDetailId,
             })
           );
-          this.resultsData = analysisExperimentDetails.testRequestForms.map(
-            (result) => ({
-              ...result,
-              testRequestFormStatus: 'active',
-              analysisId: Number(this.analysisID),
-            })
-          );
-          console.log(' this.resultsData', this.resultsData);
+          // this.resultsData = analysisExperimentDetails.testRequestForms.map(
+          //   (result) => ({
+          //     ...result,
+          //     testRequestFormStatus: 'active',
+          //     analysisId: Number(this.analysisID),
+          //   })
+          // );
+          // console.log(' this.resultsData', this.resultsData);
           this.selectedItems = analysisExperimentDetails.analysisExcipients;
           this.savedSelectedItems =
             analysisExperimentDetails.analysisExcipients;
@@ -326,7 +326,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     });
   }
 
-  saveAttachment() {}
+  saveAttachment() { }
 
   onChange(event) {
     this.file = event.target.files[0];
@@ -368,6 +368,16 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   saveResults() {
     this.analysisService.saveTrfResults(this.resultsData).subscribe((data) => {
       this.toastr.success(data.data, 'Success');
+    });
+  }
+
+  updateAnalysisStatus() {
+    this.analysisService.updateAnalysisStatus(this.analysisID, 'Complete').subscribe((data) => {
+      this.toastr.success(data['data'], 'Success');
+      this.route.navigateByUrl(
+        `/exp-analysis/analysis-experiments`
+      );
+
     });
   }
 }

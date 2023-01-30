@@ -2,120 +2,52 @@
   <div class="col-lg-12">
     <div class="card">
       <div class="card-body">
-        <ul
-          class="nav nav-tabs outer-tab-border pt-4"
-          id="myTab"
-          role="tablist"
-        >
+        <ul class="nav nav-tabs outer-tab-border pt-4" id="myTab" role="tablist">
           <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              [ngClass]="{ active: activeTab === 'summary' }"
-              id="summary-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#summary"
-              (click)="search('summary')"
-              type="button"
-              role="tab"
-              aria-controls="summary"
-              aria-selected="false"
-            >
+            <button class="nav-link" [ngClass]="{ active: activeTab === 'summary' }" id="summary-tab"
+              data-bs-toggle="tab" data-bs-target="#summary" (click)="search('summary')" type="button" role="tab"
+              aria-controls="summary" aria-selected="false">
               Summary
             </button>
           </li>
-          <li
-            class="nav-item"
-            role="presentation"
-            *ngFor="let dumm of dummyTabs; index as i"
-          >
-            <button
-              *ngIf="!dumm.isEdit"
-              class="nav-link"
-              id="{{ dumm.value }}-tab"
-              [disabled]="!isCreatedExperiment"
-              data-bs-toggle="tab"
-              [attr.data-bs-target]="'#' + dumm.value"
-              type="button"
-              role="tab"
-              (click)="search(dumm.value)"
-              [ngClass]="{ active: activeTab === dumm.value }"
-              [attr.aria-controls]="dumm.value"
-              aria-selected="true"
-            >
+          <li class="nav-item" role="presentation" *ngFor="let dumm of dummyTabs; index as i">
+            <button *ngIf="!dumm.isEdit" class="nav-link" id="{{ dumm.value }}-tab" [disabled]="!isCreatedExperiment"
+              data-bs-toggle="tab" [attr.data-bs-target]="'#' + dumm.value" type="button" role="tab"
+              (click)="search(dumm.value)" [ngClass]="{ active: activeTab === dumm.value }"
+              [attr.aria-controls]="dumm.value" aria-selected="true">
               {{ dumm.label }}
               <i class="bi bi-pencil-square" (click)="editMode(i)"></i>
               <!-- <span >Edit</span> -->
             </button>
 
-            <input
-              *ngIf="dumm.isEdit"
-              [(ngModel)]="inputValue"
-              type="text"
-              class="form-control"
-              (blur)="resetEditMode(i, dumm.label)"
-              #inputfields
-              autofocus="true"
-            />
+            <input *ngIf="dumm.isEdit" [(ngModel)]="inputValue" type="text" class="form-control"
+              (blur)="resetEditMode(i, dumm.label)" #inputfields autofocus="true" />
           </li>
           <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="contact-tab"
-              [disabled]="!isCreatedExperiment"
-              data-bs-toggle="tab"
-              data-bs-target="#contact"
-              (click)="search('excipients')"
-              [ngClass]="{ active: activeTab === 'contact' }"
-              type="button"
-              role="tab"
-              aria-controls="contact"
-              aria-selected="false"
-            >
+            <button class="nav-link" id="contact-tab" [disabled]="!isCreatedExperiment" data-bs-toggle="tab"
+              data-bs-target="#contact" (click)="search('excipients')" [ngClass]="{ active: activeTab === 'contact' }"
+              type="button" role="tab" aria-controls="contact" aria-selected="false">
               Excipients/Chemicals
             </button>
           </li>
           <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="results-tab"
-              [disabled]="!isCreatedExperiment"
-              data-bs-toggle="tab"
-              data-bs-target="#results"
-              (click)="search('results')"
-              [ngClass]="{ active: activeTab === 'results' }"
-              type="button"
-              role="tab"
-              aria-controls="results"
-              aria-selected="false"
-            >
+            <button class="nav-link" id="results-tab" [disabled]="!isCreatedExperiment" data-bs-toggle="tab"
+              data-bs-target="#results" (click)="search('results')" [ngClass]="{ active: activeTab === 'results' }"
+              type="button" role="tab" aria-controls="results" aria-selected="false">
               Results
             </button>
           </li>
           <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="attachments-tab"
-              [disabled]="!isCreatedExperiment"
-              data-bs-toggle="tab"
-              data-bs-target="#attachments"
-              (click)="search('attachments')"
-              [ngClass]="{ active: activeTab === 'attachments' }"
-              type="button"
-              role="tab"
-              aria-controls="attachments"
-              aria-selected="false"
-            >
+            <button class="nav-link" id="attachments-tab" [disabled]="!isCreatedExperiment" data-bs-toggle="tab"
+              data-bs-target="#attachments" (click)="search('attachments')"
+              [ngClass]="{ active: activeTab === 'attachments' }" type="button" role="tab" aria-controls="attachments"
+              aria-selected="false">
               Attachments
             </button>
           </li>
           <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="attachments-tab"
-              [disabled]="!isCreatedExperiment"
-              type="button"
-              (click)="addNew()"
-            >
+            <button class="nav-link" id="attachments-tab" [disabled]="!isCreatedExperiment" type="button"
+              (click)="addNew()">
               Add New
             </button>
           </li>
@@ -149,16 +81,10 @@
           </li> -->
         </ul>
         <div class="tab-content pt-2" id="myTabContent">
-          <div
-            class="tab-pane fade show"
-            [ngClass]="{
+          <div class="tab-pane fade show" [ngClass]="{
               active: activeTab === 'summary',
               show: activeTab === 'summary'
-            }"
-            id="summary"
-            role="tabpanel"
-            aria-labelledby="summary-tab"
-          >
+            }" id="summary" role="tabpanel" aria-labelledby="summary-tab">
             <div>
               <!-- <h4 class="pt-2">Details of the experiment</h4> -->
               <div class="row pt-3">
@@ -168,78 +94,45 @@
                       <h5 class="card-title">Details of the experiment</h5>
                       <form class="row g-3" [formGroup]="summaryForm">
                         <div class="row mb-3 pt-2">
-                          <label
-                            for="inputEmail3"
-                            class="col-sm-3 col-form-label"
-                            >Project Name</label
-                          >
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Project Name</label>
                           <div class="col-sm-9 pt-1">
                             {{ project.projectName }}
                           </div>
                         </div>
                         <div class="row mb-3 pt-2">
-                          <label
-                            for="inputEmail3"
-                            class="col-sm-3 col-form-label"
-                            >Product Name</label
-                          >
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Product Name</label>
                           <div class="col-sm-9 pt-1">
                             {{ project.productName }}
                           </div>
                         </div>
                         <div class="row mb-3 pt-2">
-                          <label
-                            for="inputEmail3"
-                            class="col-sm-3 col-form-label"
-                            >Product Code</label
-                          >
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Product Code</label>
                           <div class="col-sm-9 pt-1">
                             {{ project.productCode }}
                           </div>
                         </div>
                         <div class="row mb-3 pt-2">
-                          <label
-                            for="inputEmail3"
-                            class="col-sm-3 col-form-label"
-                            >Dosage Name</label
-                          >
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Dosage Name</label>
                           <div class="col-sm-9 pt-1">
                             {{ project.dosageName }}
                           </div>
                         </div>
                         <!-- <input class="form-control" type="text"  /> -->
                         <div class="row mb-3">
-                          <label
-                            for="inputEmail3"
-                            class="col-sm-3 col-form-label"
-                            >Formulation Type</label
-                          >
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Formulation Type</label>
                           <div class="col-sm-9 pt-1">
                             {{ project.formulationName }}
                           </div>
                         </div>
                         <div class="row mb-3">
-                          <label
-                            for="inputEmail3"
-                            class="col-sm-3 col-form-label"
-                            >Batch Number</label
-                          >
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Batch Number</label>
                           <div class="col-sm-9 pt-1">{{ batchNumber }}</div>
                         </div>
                         <div class="row mb-3">
-                          <label
-                            for="experimentName"
-                            class="col-sm-3 col-form-label"
-                            >Experiment Name</label
-                          >
+                          <label for="experimentName" class="col-sm-3 col-form-label">Experiment Name</label>
                           <div class="col-sm-9">
-                            <input
-                              type="text"
-                              class="form-control"
-                              id="experimentName"
-                              formControlName="experimentName"
-                              [readonly]="experimentId"
-                            />
+                            <input type="text" class="form-control" id="experimentName" formControlName="experimentName"
+                              [readonly]="experimentId" />
                           </div>
                         </div>
                         <!-- <div class="row mb-3">
@@ -249,26 +142,15 @@
                         <div class="col-sm-9 pt-1">Random Name</div>
                       </div> -->
                         <div class="row mb-3">
-                          <label for="batchSize" class="col-sm-3 col-form-label"
-                            >Batch Size</label
-                          >
+                          <label for="batchSize" class="col-sm-3 col-form-label">Batch Size</label>
                           <div class="col-sm-9">
-                            <input
-                              type="text"
-                              class="form-control"
-                              id="batchSize"
-                              formControlName="batchSize"
-                              [readonly]="experimentId"
-                            />
+                            <input type="text" class="form-control" id="batchSize" formControlName="batchSize"
+                              [readonly]="experimentId" />
                           </div>
                         </div>
                       </form>
                       <div class="text-center" *ngIf="!experimentId">
-                        <button
-                          type="submit"
-                          class="btn btn-primary"
-                          (click)="saveSummary()"
-                        >
+                        <button type="submit" class="btn btn-primary" (click)="saveSummary()">
                           Start Experiment
                         </button>
                       </div>
@@ -318,88 +200,46 @@
             </div>
           </div>
           <!-- <section > -->
-          <div
-            *ngFor="let dumm of dummyTabs; index as i"
-            class="tab-pane fade"
-            [ngClass]="{
+          <div *ngFor="let dumm of dummyTabs; index as i" class="tab-pane fade" [ngClass]="{
               active: activeTab === dumm.value,
               show: activeTab === dumm.value
-            }"
-            id="{{ dumm.value }}"
-            role="tabpanel"
-            [attr.aria-labelledby]="dumm + '-tab'"
-          >
-            <ckeditor
-              required
-              [(ngModel)]="article[i].text"
-              data=""
-              name="text"
-            ></ckeditor>
+            }" id="{{ dumm.value }}" role="tabpanel" [attr.aria-labelledby]="dumm + '-tab'">
+            <ckeditor required [(ngModel)]="article[i].text" data="" name="text"></ckeditor>
             <!-- <ckeditor data="<p>Hello, world!</p>"></ckeditor> -->
-            <div class="text-center pt-3">
-              <button
-                type="submit"
-                class="btn btn-primary"
-                (click)="saveTab(i, dumm)"
-              >
+            <div class="text-center pt-3" *ngIf="experimentDetails && experimentDetails.status != 'Complete'">
+              <button type="submit" class="btn btn-primary" (click)="saveTab(i, dumm)">
                 Submit
               </button>
             </div>
           </div>
 
           <!-- </section> -->
-          <div
-            class="tab-pane fade"
-            [ngClass]="{
+          <div class="tab-pane fade" [ngClass]="{
               active: activeTab === 'contact',
               show: activeTab === 'contact'
-            }"
-            id="contact"
-            role="tabpanel"
-            aria-labelledby="contact-tab"
-          >
+            }" id="contact" role="tabpanel" aria-labelledby="contact-tab">
             <div class="pt-3 pb-3">
-              <ng-multiselect-dropdown
-                [settings]="dropdownSettings"
-                [data]="inwards"
-                [(ngModel)]="selectedItems"
-                (onSelect)="onItemSelect($event)"
-                (onSelectAll)="onSelectAll($event)"
-                (onDeSelect)="deselect($event)"
-              >
+              <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="inwards" [(ngModel)]="selectedItems"
+                (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)">
               </ng-multiselect-dropdown>
             </div>
 
             <div class="tableNgx">
-              <ngx-datatable
-                tableClass="table table-striped table-bordered table-hover tableNgx"
-                [data]="tableData"
-                [options]="options"
-                [columns]="columns"
-              >
+              <ngx-datatable tableClass="table table-striped table-bordered table-hover tableNgx" [data]="tableData"
+                [options]="options" [columns]="columns">
               </ngx-datatable>
             </div>
-            <div class="text-center pt-3">
-              <button
-                type="submit"
-                class="btn btn-primary mt-3"
-                (click)="saveExcipients()"
-              >
+            <div class="text-center pt-3" *ngIf="experimentDetails &&  experimentDetails.status != 'Complete'">
+              <button type="submit" class="btn btn-primary mt-3" (click)="saveExcipients()">
                 Submit
               </button>
             </div>
           </div>
 
-          <div
-            class="tab-pane fade mt-3"
-            [ngClass]="{
+          <div class="tab-pane fade mt-3" [ngClass]="{
               active: activeTab === 'results',
               show: activeTab === 'results'
-            }"
-            id="results"
-            role="tabpanel"
-            aria-labelledby="results-tab"
-          >
+            }" id="results" role="tabpanel" aria-labelledby="results-tab">
             <div class="row pt-4 px-4 result-tab pb-3">
               <div class="col-lg-4">
                 <div class="col-lg-6 field-label">Test Id</div>
@@ -411,10 +251,7 @@
                 <div class="col-lg-6 field-label">Results</div>
               </div>
             </div>
-            <div
-              class="row pt-4 px-4 result-tab pb-3"
-              *ngFor="let trf of selectedTrfs; let i = index"
-            >
+            <div class="row pt-4 px-4 result-tab pb-3" *ngFor="let trf of selectedTrfs; let i = index">
               <div class="col-lg-4">
                 <div class="col-lg-6">{{ trf.testId }}</div>
               </div>
@@ -426,65 +263,49 @@
                   <!-- <input type="text" ngModel="{{ trf.testResult }}" /> -->
                   <!-- <textarea ngModel="{{ trf.testResult }}"></textarea>
                   <label for="inputPassword" class="col-sm-2 col-form-label">Textarea</label> -->
-                  <textarea
-                    class="form-control"
-                    style="height: 50px"
-                    ngModel="{{ trf.testResult }}"
-                    (change)="trfResultChange($event.target, i)"
-                  ></textarea>
+                  <textarea class="form-control" style="height: 50px" ngModel="{{ trf.testResult }}"
+                    (change)="trfResultChange($event.target, i)"></textarea>
                 </div>
               </div>
             </div>
 
-            <div class="text-center pt-3">
-              <button
-                type="submit"
-                class="btn btn-primary mt-3"
-                (click)="saveResults()"
-              >
+            <div class="text-center pt-3" *ngIf="experimentDetails && experimentDetails.status != 'Complete'">
+              <button type="submit" class="btn btn-primary mt-3" (click)="saveResults()">
                 Submit
               </button>
             </div>
           </div>
 
-          <div
-            class="tab-pane fade"
-            [ngClass]="{
+          <div class="tab-pane fade" [ngClass]="{
               active: activeTab === 'attachments',
               show: activeTab === 'attachments'
-            }"
-            id="attachments"
-            role="tabpanel"
-            aria-labelledby="attachments-tab"
-          >
+            }" id="attachments" role="tabpanel" aria-labelledby="attachments-tab">
             <div class="row mb-3">
               <label for="inputNumber" class="col-sm-2 col-form-label">
-                Upload</label
-              >
+                Upload</label>
               <div class="col-sm-10">
-                <input
-                  class="form-control"
-                  type="file"
-                  id="formFile"
-                  (change)="processFile($event)"
-                />
+                <input class="form-control" type="file" id="formFile" (change)="processFile($event)" />
               </div>
             </div>
             <div class="row mb-3">
               <label *ngIf="files.length > 0">Uploaded Attachments</label>
               <span *ngFor="let file of files">
                 <div class="file-container">
-                  <span
-                    class="file-list"
-                    (click)="getFileContent(file.name, file.experimentId)"
-                    >{{ file.name | titlecase }}</span
-                  >
-                  <span class="align-right" (click)="removeAttachment(file)"
-                    >Remove <i class="bi bi-trash-fill pointer"></i
-                  ></span>
+                  <span class="file-list" (click)="getFileContent(file.name, file.experimentId)">{{ file.name |
+                    titlecase }}</span>
+                  <span class="align-right" (click)="removeAttachment(file)">Remove <i
+                      class="bi bi-trash-fill pointer"></i></span>
                 </div>
               </span>
             </div>
+
+
+            <div class="text-center pt-3" *ngIf="experimentDetails && experimentDetails.status != 'Complete'">
+              <button type="submit" class="btn btn-primary mt-3" (click)="updateAnalysisStatus()">
+                Complete Analysis Experiment
+              </button>
+            </div>
+
           </div>
         </div>
       </div>
