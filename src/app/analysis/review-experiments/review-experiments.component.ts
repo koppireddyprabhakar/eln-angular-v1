@@ -102,7 +102,7 @@ export class ReviewExperimentsComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private route: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.selectedTrfs$.subscribe((trfs) => {
@@ -305,54 +305,11 @@ export class ReviewExperimentsComponent implements OnInit {
     this.tableTestData[index]['result'] = event.target.value;
   }
 
-  saveTestRequestForm() {
-    const manDate = this.testRequestForm.get('manufacturingDate')?.value || '';
-    const expiryDate = this.testRequestForm.get('expiryDate')?.value || '';
-
-    let newTestRequest = {
-      status: 'string',
-      testRequestFormStatus: 'active',
-      condition: this.testRequestForm.get('condition')?.value || '',
-      stage: this.testRequestForm.get('stage')?.value || '',
-      packaging: this.testRequestForm.get('packaging')?.value || '',
-      labelClaim: this.testRequestForm.get('labelClaim')?.value || '',
-      quantity: this.testRequestForm.get('quantity')?.value || 0,
-      manufacturingDate: manDate,
-      expireDate: expiryDate,
-      trfTestResults: this.tableTestData,
-      analysisId: this.experimentId,
-    };
-
-    console.log(this.testRequestForm.get('expiryDate')?.value);
-    if (!this.testRequestForm.invalid) {
-      if (this.resultData.analysisId) {
-        this.analysisService.updateTestForm(newTestRequest).subscribe(() => {
-          this.toastr.success('Test has been added succesfully', 'Success');
-          this.getResultsDetailsById();
-        });
-      } else {
-        this.analysisService.createTestForm(newTestRequest).subscribe(() => {
-          this.toastr.success('Test has been added succesfully', 'Success');
-          this.getResultsDetailsById();
-        });
-      }
-    } else {
-      this.testRequestForm.get('testRequestId')?.markAsDirty();
-      this.testRequestForm.get('department')?.markAsDirty();
-      this.testRequestForm.get('dosageForm')?.markAsDirty();
-      this.testRequestForm.get('expiryDate')?.markAsDirty();
-      this.testRequestForm.get('manufacturingDate')?.markAsDirty();
-      this.testRequestForm.get('labelClaim')?.markAsDirty();
-      this.testRequestForm.get('quantity')?.markAsDirty();
-      this.testRequestForm.get('batchSize')?.markAsDirty();
-      this.testRequestForm.get('packaging')?.markAsDirty();
-      this.testRequestForm.get('stage')?.markAsDirty();
-      this.testRequestForm.get('batchNumber')?.markAsDirty();
-      this.testRequestForm.get('projectName')?.markAsDirty();
-      this.testRequestForm.get('strength')?.markAsDirty();
-      this.testRequestForm.get('projectCode')?.markAsDirty();
-      this.testRequestForm.get('condition')?.markAsDirty();
-    }
+  updateAnalysisStatus() {
+    this.analysisService.updateAnalysisStatus(this.experimentId, 'Complete').subscribe((data) => {
+      this.toastr.success(data['data'], 'Success');
+      this.route.navigateByUrl(`/exp-analysis/list`);
+    });
   }
 
   getAttachments() {
@@ -367,7 +324,7 @@ export class ReviewExperimentsComponent implements OnInit {
     const fileData = { ...file, projectId: this.projectId };
     this.experimentService
       .deleteExperimentAttachment(file)
-      .subscribe((experimentDetails) => {});
+      .subscribe((experimentDetails) => { });
   }
 
   getExcipients() {
@@ -513,8 +470,7 @@ export class ReviewExperimentsComponent implements OnInit {
     };
     this.analysisService.saveAnalysisDetails(tabValue).subscribe((data) => {
       this.toastr.success(
-        `Experiment detail ${
-          this.dummyTabs[index].id ? 'updated' : 'created'
+        `Experiment detail ${this.dummyTabs[index].id ? 'updated' : 'created'
         } successfully`,
         'Success'
       );
@@ -526,7 +482,7 @@ export class ReviewExperimentsComponent implements OnInit {
     });
   }
 
-  saveAttachment() {}
+  saveAttachment() { }
 
   onChange(event) {
     this.file = event.target.files[0];

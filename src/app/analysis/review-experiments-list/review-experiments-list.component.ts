@@ -30,7 +30,7 @@ export class ReviewExperimentsListComponent implements OnInit, OnDestroy {
     private readonly analysisService: AnalysisService,
     private readonly formulationService: FormulationsService,
     private route: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getMyExperiments();
@@ -48,7 +48,7 @@ export class ReviewExperimentsListComponent implements OnInit, OnDestroy {
   getMyExperiments() {
     // this.globalService.showLoader();
     this.analysisService
-      .getAnalysisExperimentById(5)
+      .getAnalysisByStatus("Inreview")
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((myExperiments) => {
         this.myExperiments = myExperiments;

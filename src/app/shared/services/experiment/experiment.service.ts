@@ -125,6 +125,13 @@ export class ExperimentService {
     return this.http.put<string>(url, {}, { params: { experimentId: experimentId, status: status } });
   }
 
+  getExperimentsByStatus(status: string) {
+    const url = `${elnEndpointsConfig.endpoints['getExperimentsByStatus']}?status=${status}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
   handleError(error: HttpErrorResponse) {
     const errorDetail = ClientService.formatError(error);
     if (errorDetail && (errorDetail.title || errorDetail.errorMessage)) {

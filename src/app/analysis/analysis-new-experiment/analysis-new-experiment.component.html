@@ -492,6 +492,13 @@
                 </div>
               </span>
             </div>
+
+            <div class="text-center pt-3" *ngIf="experimentDetails && experimentDetails.status != 'Complete'">
+              <button type="submit" class="btn btn-primary mt-3" (click)="updateAnalysisStatus()">
+                Complete Analysis Experiment
+              </button>
+            </div>
+
           </div>
         </div>
       </div>

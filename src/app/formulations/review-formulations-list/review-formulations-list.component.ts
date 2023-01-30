@@ -1,6 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
+import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { takeWhile } from 'rxjs';
@@ -23,8 +24,9 @@ export class ReviewFormulationsListComponent implements OnInit {
     private readonly globalService: GlobalService,
     private readonly analysisService: AnalysisService,
     private readonly formulationService: FormulationsService,
+    private readonly experimentService: ExperimentService,
     private route: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getMyExperiments();
@@ -42,8 +44,8 @@ export class ReviewFormulationsListComponent implements OnInit {
   getMyExperiments() {
     // this.globalService.showLoader();
 
-    this.formulationService
-      .getExperimentsByUserId()
+    this.experimentService
+      .getExperimentsByStatus("Inreview")
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((myExperiments) => {
         this.myExperiments = myExperiments;

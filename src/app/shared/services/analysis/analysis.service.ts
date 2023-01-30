@@ -36,6 +36,14 @@ export class AnalysisService {
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
+  getAnalysisByStatus(status: String) {
+    const url = `${elnEndpointsConfig.endpoints['getAnalysisByStatus']
+      }?status=${status}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
   syncTrf(trfs) {
     this.selectedTrfsSubject.next(trfs);
   }
