@@ -204,7 +204,7 @@
             }" id="{{ dumm.value }}" role="tabpanel" [attr.aria-labelledby]="dumm + '-tab'">
             <ckeditor required ngDefaultControl [(ngModel)]="article[i].text" data="" name="text"></ckeditor>
             <!-- <ckeditor data="<p>Hello, world!</p>"></ckeditor> -->
-            <div class="text-center pt-3" *ngIf="analysisExperimentDetails.status != 'Complete'">
+            <div class="text-center pt-3" *ngIf="analysisExperimentDetails.status === 'Inprogress'">
               <button type="submit" class="btn btn-primary" (click)="saveTab(i, dumm.label)">
                 Submit
               </button>
@@ -227,7 +227,7 @@
                 [options]="options" [columns]="columns">
               </ngx-datatable>
             </div>
-            <div class="text-center pt-3" *ngIf="analysisExperimentDetails.status != 'Complete'">
+            <div class="text-center pt-3" *ngIf="analysisExperimentDetails.status === 'Inprogress'">
               <button type="submit" class="btn btn-primary mt-3" (click)="saveExcipients()">
                 Submit
               </button>
@@ -277,7 +277,7 @@
               </div>
             </div> -->
 
-            <div class="text-center pt-3" *ngIf="analysisExperimentDetails.status != 'Complete'">
+            <div class="text-center pt-3" *ngIf="analysisExperimentDetails.status === 'Inprogress'">
               <button type="submit" class="btn btn-primary mt-3" (click)="saveResults()">
                 Submit
               </button>
@@ -307,9 +307,15 @@
               </span>
             </div>
 
-            <div class="text-center pt-3" *ngIf="analysisExperimentDetails.status != 'Complete'">
-              <button type="submit" class="btn btn-primary mt-3" (click)="updateAnalysisStatus()">
+            <div class="text-center pt-3" *ngIf="analysisExperimentDetails.status === 'Inprogress'">
+              <button type="submit" class="btn btn-primary mt-3" (click)="updateAnalysisStatus('Complete')">
                 Complete Analysis Experiment
+              </button>
+            </div>
+
+            <div class="text-center pt-3" *ngIf="analysisExperimentDetails.status === 'Review Completed'">
+              <button type="submit" class="btn btn-primary mt-3" (click)="updateAnalysisStatus('Analysis Submitted')">
+                Submit Analysis
               </button>
             </div>
 

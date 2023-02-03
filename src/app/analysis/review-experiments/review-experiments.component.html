@@ -466,12 +466,12 @@
               <h4>Review</h4>
               <span>
                 <div>
-                  <textarea class="form-control" style="height: 50px"></textarea>
+                  <textarea class="form-control" style="height: 50px" [(ngModel)]="summary"></textarea>
                 </div>
               </span>
             </div>
             <div class="text-center pt-2">
-              <button type="button" class="btn btn-primary mt-4" (click)="updateAnalysisStatus()">
+              <button type="button" class="btn btn-primary mt-4" (click)="updateAnalysisStatus('Review Completed')">
                 Save...
               </button>
             </div>

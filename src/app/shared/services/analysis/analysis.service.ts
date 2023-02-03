@@ -195,9 +195,10 @@ export class AnalysisService {
     return this.http.post<string>(url, data);
   }
 
-  updateAnalysisStatus(analysisId, status) {
+  updateAnalysisStatus(analysisReqeust: any) {
     const url = elnEndpointsConfig.endpoints['updateAnalysisStatus'];
-    return this.http.put<string>(url, {}, { params: { analysisId: analysisId, status: status } });
+    // return this.http.put<string>(url, {}, { params: { analysisId: analysisId, status: status } });
+    return this.http.put<string>(url, analysisReqeust);
   }
 
   handleError(error: HttpErrorResponse) {

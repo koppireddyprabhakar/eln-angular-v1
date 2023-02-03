@@ -89,6 +89,7 @@ export class ReviewExperimentsComponent implements OnInit {
     experimentName: ['', [Validators.required]],
     batchSize: ['' as any, [Validators.required]],
   });
+  summary: string;
 
   constructor(
     private readonly projectService: ProjectService,
@@ -305,8 +306,13 @@ export class ReviewExperimentsComponent implements OnInit {
     this.tableTestData[index]['result'] = event.target.value;
   }
 
-  updateAnalysisStatus() {
-    this.analysisService.updateAnalysisStatus(this.experimentId, 'Complete').subscribe((data) => {
+  updateAnalysisStatus(status: string) {
+    let analysisRequest = {
+      analysisId: this.experimentId,
+      status: status,
+      summary: this.summary ? this.summary : status
+    }
+    this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
       this.toastr.success(data['data'], 'Success');
       this.route.navigateByUrl(`/exp-analysis/list`);
     });
