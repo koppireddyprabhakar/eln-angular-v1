@@ -6,7 +6,6 @@ import { UserComponent } from '@app/business-admin/user/user.component';
 import { ProductComponent } from '@app/business-admin/product/product.component';
 import { DosageComponent } from '@app/business-admin/dosage/dosage.component';
 import { SharedModule } from '@app/shared/shared.module';
-import { NgxDatatableModule } from '@tusharghoshbd/ngx-datatable';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TestComponent } from './test/test.component';
 import { TeamComponent } from './team/team.component';
@@ -36,7 +35,6 @@ import { DataTablesModule } from 'angular-datatables';
     BusinessAdminRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    NgxDatatableModule,
     DataTablesModule,
   ],
 })

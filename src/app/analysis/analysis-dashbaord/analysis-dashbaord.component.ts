@@ -12,8 +12,9 @@ import { ExperimentService } from '@app/shared/services/experiment/experiment.se
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
+import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
-import { tap } from 'rxjs';
+import { Subject, tap } from 'rxjs';
 
 @Component({
   selector: 'app-analysis-dashbaord',
@@ -21,6 +22,8 @@ import { tap } from 'rxjs';
   styleUrls: ['./analysis-dashbaord.component.scss'],
 })
 export class AnalysisDashbaordComponent implements OnInit {
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
   @ViewChild('inputfields') inputfields!: ElementRef;
   dummyTabs: any = [
     { label: 'Purpose and Conclusions', isEdit: false, value: 'primary' },
@@ -54,7 +57,10 @@ export class AnalysisDashbaordComponent implements OnInit {
   selectedItems: any = [];
   dropdownSettings: any = {};
   public files: any = [];
-
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions = {
+    pagingType: 'full_numbers',
+  };
   activeTab = 'summary';
 
   summaryForm = this.formBuilder.group({
@@ -73,7 +79,7 @@ export class AnalysisDashbaordComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private route: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.selectedTrfs$.subscribe((trfs) => {
@@ -109,6 +115,10 @@ export class AnalysisDashbaordComponent implements OnInit {
     this.getProjectDetails();
   }
 
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(null);
+  }
+
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
       this.project = project;
@@ -140,6 +150,12 @@ export class AnalysisDashbaordComponent implements OnInit {
         if (data.length > 0) {
           this.tableData = data;
           this.selectedItems = data;
+          this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+            // Destroy the table first
+            dtInstance.destroy();
+            // Call the dtTrigger to rerender again
+            this.dtTrigger.next(this.tableData);
+          });
         }
       });
   }
@@ -177,7 +193,7 @@ export class AnalysisDashbaordComponent implements OnInit {
     const fileData = { ...file, projectId: this.projectId };
     this.experimentService
       .deleteExperimentAttachment(file)
-      .subscribe((experimentDetails) => { });
+      .subscribe((experimentDetails) => {});
   }
 
   getExcipients() {
@@ -299,6 +315,12 @@ export class AnalysisDashbaordComponent implements OnInit {
         this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
       )
       .map((table) => ({ ...table, analysisId: Number(this.experimentId) }));
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next(this.tableData);
+    });
   }
   deselect(item: any) {
     // this.tableData = this.inwards.filter(({ excipientId: id1 }) =>
@@ -307,9 +329,21 @@ export class AnalysisDashbaordComponent implements OnInit {
     this.tableData = this.tableData.filter(
       (data) => data.excipientId !== item.excipientId
     );
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next(this.tableData);
+    });
   }
   onSelectAll(items: any) {
     this.tableData = this.inwards;
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next(this.tableData);
+    });
   }
 
   saveTab(index, data) {
@@ -330,7 +364,8 @@ export class AnalysisDashbaordComponent implements OnInit {
     };
     this.analysisService.saveAnalysisDetails(tabValue).subscribe((data) => {
       this.toastr.success(
-        `Experiment detail ${this.dummyTabs[index].id ? 'updated' : 'created'
+        `Experiment detail ${
+          this.dummyTabs[index].id ? 'updated' : 'created'
         } successfully`,
         'Success'
       );
@@ -342,7 +377,7 @@ export class AnalysisDashbaordComponent implements OnInit {
     });
   }
 
-  saveAttachment() { }
+  saveAttachment() {}
 
   onChange(event) {
     this.file = event.target.files[0];
@@ -387,18 +422,17 @@ export class AnalysisDashbaordComponent implements OnInit {
   }
 
   updateAnalysisStatus(status: string, summary?: string) {
-
     let analysisRequest = {
       analysisId: this.experimentId,
       status: status,
-      summary: summary ? summary : status
-    }
+      summary: summary ? summary : status,
+    };
 
-    this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
-      this.toastr.success(data['data'], 'Success');
-      this.route.navigateByUrl(`/exp-analysis/list`);
-    });
-
+    this.analysisService
+      .updateAnalysisStatus(analysisRequest)
+      .subscribe((data) => {
+        this.toastr.success(data['data'], 'Success');
+        this.route.navigateByUrl(`/exp-analysis/list`);
+      });
   }
-
 }

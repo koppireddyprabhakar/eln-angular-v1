@@ -332,62 +332,6 @@
             Please enter Expiry Date
           </span>
         </div>
-        <!-- <div class="col-12">
-          <section formArrayName="testRequestRow">
-            <div
-              *ngFor="let testRow of testRequestRow?.controls; let i = index"
-              [formGroupName]="i"
-              class="formultion-row row"
-            >
-              <div
-                [ngClass]="{
-                  'col-4': testRequestRow.value.length === 1,
-                  'col-3': testRequestRow.value.length > 1
-                }"
-              >
-                <label class="col-sm-2 col-form-label">Id</label>
-
-                <input
-                  type="text"
-                  class="form-control"
-                  id="testId"
-                  formControlName="testId"
-                  readonly
-                />
-              </div>
-              <div class="col-4">
-                <label class="col-sm-2 col-form-label">Test</label>
-
-                <input
-                  type="text"
-                  class="form-control"
-                  id="testName"
-                  formControlName="testName"
-                />
-              </div>
-              <div class="col-4">
-                <label class="col-sm-2 col-form-label">Results</label>
-
-                <input
-                  type="text"
-                  class="form-control"
-                  id="testResult"
-                  formControlName="testResult"
-                />
-              </div>
-              <div *ngIf="testRequestRow.value.length > 1" class="col-1 pt-3">
-                <div for="description" class="form-label">&nbsp;</div>
-                <div class="delete-formulation">
-                  <i class="bi bi-trash-fill pointer delete-icon"></i>
-                </div>
-              </div>
-            </div>
-          </section>
-          <div class="add-formulation pt-4">
-            <i class="bi bi-plus-circle pointer"></i
-            ><span class="pointer" (click)="addNewTest()">Add Test</span>
-          </div>
-        </div> -->
 
         <h3>Lab Tests</h3>
 
@@ -402,16 +346,6 @@
           >
           </ng-multiselect-dropdown>
         </div>
-        <!--
-        <div class="tableNgx">
-          <ngx-datatable
-            tableClass="table table-striped table-bordered table-hover tableNgx"
-            [data]="tableData"
-            [options]="options"
-            [columns]="columns"
-          >
-          </ngx-datatable>
-        </div> -->
         <table
           datatable
           [dtOptions]="dtOptions"

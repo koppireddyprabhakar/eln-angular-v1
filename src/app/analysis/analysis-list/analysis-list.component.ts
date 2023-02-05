@@ -74,7 +74,19 @@ export class AnalysisListComponent implements OnInit {
   }
 
   onCheckboxClick(selectCheckBoxArr) {
-    this.selectedRows = selectCheckBoxArr;
+    if (
+      !this.selectedRows.some(
+        (e) => e.testRequestFormId === selectCheckBoxArr.testRequestFormId
+      )
+    ) {
+      this.selectedRows.push(selectCheckBoxArr);
+      /* same result as above, but a different function return type */
+    } else {
+      this.selectedRows = this.selectedRows.filter(
+        (e) => e.testRequestFormId !== selectCheckBoxArr.testRequestFormId
+      );
+    }
+    console.log(this.selectedRows);
     var valueArr = this.selectedRows.map((item) => item.projectName);
     console.log(valueArr[0]);
     const selectedTrfList = this.unchangedTrfList.filter(
@@ -84,8 +96,6 @@ export class AnalysisListComponent implements OnInit {
     this.projectId = selectedTrfList[0].project.projectId;
     this.isDuplicate = valueArr.every((arr) => valueArr[0] === arr);
     this.analysisService.syncTrf(this.selectedRows);
-    this.analysisService.selectedTrfs$.subscribe((trfs) => {});
-    // alert(JSON.stringify(selectCheckBoxArr));
   }
 
   createExperiment() {

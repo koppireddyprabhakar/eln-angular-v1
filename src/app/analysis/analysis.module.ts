@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { AnalysisRoutingModule } from './analysis-routing.module';
 import { AnalysisComponent } from './analysis.component';
 import { AnalysisListComponent } from './analysis-list/analysis-list.component';
-import { NgxDatatableModule } from '@tusharghoshbd/ngx-datatable';
 import { AnalysisDashbaordComponent } from './analysis-dashbaord/analysis-dashbaord.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -35,7 +34,6 @@ import { DataTablesModule } from 'angular-datatables';
     ReactiveFormsModule,
     AnalysisRoutingModule,
     CKEditorModule,
-    NgxDatatableModule,
     DataTablesModule,
     NgMultiSelectDropDownModule.forRoot(),
   ],

@@ -2,52 +2,120 @@
   <div class="col-lg-12">
     <div class="card">
       <div class="card-body">
-        <ul class="nav nav-tabs outer-tab-border pt-4" id="myTab" role="tablist">
+        <ul
+          class="nav nav-tabs outer-tab-border pt-4"
+          id="myTab"
+          role="tablist"
+        >
           <li class="nav-item" role="presentation">
-            <button class="nav-link" [ngClass]="{ active: activeTab === 'summary' }" id="summary-tab"
-              data-bs-toggle="tab" data-bs-target="#summary" (click)="search('summary')" type="button" role="tab"
-              aria-controls="summary" aria-selected="false">
+            <button
+              class="nav-link"
+              [ngClass]="{ active: activeTab === 'summary' }"
+              id="summary-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#summary"
+              (click)="search('summary')"
+              type="button"
+              role="tab"
+              aria-controls="summary"
+              aria-selected="false"
+            >
               Summary
             </button>
           </li>
-          <li class="nav-item" role="presentation" *ngFor="let dumm of dummyTabs; index as i">
-            <button *ngIf="!dumm.isEdit" class="nav-link" id="{{ dumm.value }}-tab" [disabled]="!isCreatedExperiment"
-              data-bs-toggle="tab" [attr.data-bs-target]="'#' + dumm.value" type="button" role="tab"
-              (click)="search(dumm.value)" [ngClass]="{ active: activeTab === dumm.value }"
-              [attr.aria-controls]="dumm.value" aria-selected="true">
+          <li
+            class="nav-item"
+            role="presentation"
+            *ngFor="let dumm of dummyTabs; index as i"
+          >
+            <button
+              *ngIf="!dumm.isEdit"
+              class="nav-link"
+              id="{{ dumm.value }}-tab"
+              [disabled]="!isCreatedExperiment"
+              data-bs-toggle="tab"
+              [attr.data-bs-target]="'#' + dumm.value"
+              type="button"
+              role="tab"
+              (click)="search(dumm.value)"
+              [ngClass]="{ active: activeTab === dumm.value }"
+              [attr.aria-controls]="dumm.value"
+              aria-selected="true"
+            >
               {{ dumm.label }}
               <i class="bi bi-pencil-square" (click)="editMode(i)"></i>
               <!-- <span >Edit</span> -->
             </button>
 
-            <input *ngIf="dumm.isEdit" [(ngModel)]="inputValue" type="text" class="form-control"
-              (blur)="resetEditMode(i, dumm.label)" #inputfields autofocus="true" />
+            <input
+              *ngIf="dumm.isEdit"
+              [(ngModel)]="inputValue"
+              type="text"
+              class="form-control"
+              (blur)="resetEditMode(i, dumm.label)"
+              #inputfields
+              autofocus="true"
+            />
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="contact-tab" [disabled]="!isCreatedExperiment" data-bs-toggle="tab"
-              data-bs-target="#contact" (click)="search('excipients')" [ngClass]="{ active: activeTab === 'contact' }"
-              type="button" role="tab" aria-controls="contact" aria-selected="false">
+            <button
+              class="nav-link"
+              id="contact-tab"
+              [disabled]="!isCreatedExperiment"
+              data-bs-toggle="tab"
+              data-bs-target="#contact"
+              (click)="search('excipients')"
+              [ngClass]="{ active: activeTab === 'contact' }"
+              type="button"
+              role="tab"
+              aria-controls="contact"
+              aria-selected="false"
+            >
               Excipients/Chemicals
             </button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="results-tab" [disabled]="!isCreatedExperiment" data-bs-toggle="tab"
-              data-bs-target="#results" (click)="search('results')" [ngClass]="{ active: activeTab === 'results' }"
-              type="button" role="tab" aria-controls="results" aria-selected="false">
+            <button
+              class="nav-link"
+              id="results-tab"
+              [disabled]="!isCreatedExperiment"
+              data-bs-toggle="tab"
+              data-bs-target="#results"
+              (click)="search('results')"
+              [ngClass]="{ active: activeTab === 'results' }"
+              type="button"
+              role="tab"
+              aria-controls="results"
+              aria-selected="false"
+            >
               Results
             </button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="attachments-tab" [disabled]="!isCreatedExperiment" data-bs-toggle="tab"
-              data-bs-target="#attachments" (click)="search('attachments')"
-              [ngClass]="{ active: activeTab === 'attachments' }" type="button" role="tab" aria-controls="attachments"
-              aria-selected="false">
+            <button
+              class="nav-link"
+              id="attachments-tab"
+              [disabled]="!isCreatedExperiment"
+              data-bs-toggle="tab"
+              data-bs-target="#attachments"
+              (click)="search('attachments')"
+              [ngClass]="{ active: activeTab === 'attachments' }"
+              type="button"
+              role="tab"
+              aria-controls="attachments"
+              aria-selected="false"
+            >
               Attachments
             </button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="attachments-tab" [disabled]="!isCreatedExperiment" type="button"
-              (click)="addNew()">
+            <button
+              class="nav-link"
+              id="attachments-tab"
+              [disabled]="!isCreatedExperiment"
+              type="button"
+              (click)="addNew()"
+            >
               Add New
             </button>
           </li>
@@ -81,10 +149,16 @@
           </li> -->
         </ul>
         <div class="tab-content pt-2" id="myTabContent">
-          <div class="tab-pane fade show" [ngClass]="{
+          <div
+            class="tab-pane fade show"
+            [ngClass]="{
               active: activeTab === 'summary',
               show: activeTab === 'summary'
-            }" id="summary" role="tabpanel" aria-labelledby="summary-tab">
+            }"
+            id="summary"
+            role="tabpanel"
+            aria-labelledby="summary-tab"
+          >
             <div>
               <!-- <h4 class="pt-2">Details of the experiment</h4> -->
               <div class="row pt-3">
@@ -94,45 +168,78 @@
                       <h5 class="card-title">Details of the experiment</h5>
                       <form class="row g-3" [formGroup]="summaryForm">
                         <div class="row mb-3 pt-2">
-                          <label for="inputEmail3" class="col-sm-3 col-form-label">Project Name</label>
+                          <label
+                            for="inputEmail3"
+                            class="col-sm-3 col-form-label"
+                            >Project Name</label
+                          >
                           <div class="col-sm-9 pt-1">
                             {{ project.projectName }}
                           </div>
                         </div>
                         <div class="row mb-3 pt-2">
-                          <label for="inputEmail3" class="col-sm-3 col-form-label">Product Name</label>
+                          <label
+                            for="inputEmail3"
+                            class="col-sm-3 col-form-label"
+                            >Product Name</label
+                          >
                           <div class="col-sm-9 pt-1">
                             {{ project.productName }}
                           </div>
                         </div>
                         <div class="row mb-3 pt-2">
-                          <label for="inputEmail3" class="col-sm-3 col-form-label">Product Code</label>
+                          <label
+                            for="inputEmail3"
+                            class="col-sm-3 col-form-label"
+                            >Product Code</label
+                          >
                           <div class="col-sm-9 pt-1">
                             {{ project.productCode }}
                           </div>
                         </div>
                         <div class="row mb-3 pt-2">
-                          <label for="inputEmail3" class="col-sm-3 col-form-label">Dosage Name</label>
+                          <label
+                            for="inputEmail3"
+                            class="col-sm-3 col-form-label"
+                            >Dosage Name</label
+                          >
                           <div class="col-sm-9 pt-1">
                             {{ project.dosageName }}
                           </div>
                         </div>
                         <!-- <input class="form-control" type="text"  /> -->
                         <div class="row mb-3">
-                          <label for="inputEmail3" class="col-sm-3 col-form-label">Formulation Type</label>
+                          <label
+                            for="inputEmail3"
+                            class="col-sm-3 col-form-label"
+                            >Formulation Type</label
+                          >
                           <div class="col-sm-9 pt-1">
                             {{ project.formulationName }}
                           </div>
                         </div>
                         <div class="row mb-3">
-                          <label for="inputEmail3" class="col-sm-3 col-form-label">Batch Number</label>
+                          <label
+                            for="inputEmail3"
+                            class="col-sm-3 col-form-label"
+                            >Batch Number</label
+                          >
                           <div class="col-sm-9 pt-1">{{ batchNumber }}</div>
                         </div>
                         <div class="row mb-3">
-                          <label for="experimentName" class="col-sm-3 col-form-label">Experiment Name</label>
+                          <label
+                            for="experimentName"
+                            class="col-sm-3 col-form-label"
+                            >Experiment Name</label
+                          >
                           <div class="col-sm-9">
-                            <input type="text" class="form-control" id="experimentName" formControlName="experimentName"
-                              [readonly]="experimentId" />
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="experimentName"
+                              formControlName="experimentName"
+                              [readonly]="experimentId"
+                            />
                           </div>
                         </div>
                         <!-- <div class="row mb-3">
@@ -142,15 +249,26 @@
                         <div class="col-sm-9 pt-1">Random Name</div>
                       </div> -->
                         <div class="row mb-3">
-                          <label for="batchSize" class="col-sm-3 col-form-label">Batch Size</label>
+                          <label for="batchSize" class="col-sm-3 col-form-label"
+                            >Batch Size</label
+                          >
                           <div class="col-sm-9">
-                            <input type="text" class="form-control" id="batchSize" formControlName="batchSize"
-                              [readonly]="experimentId" />
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="batchSize"
+                              formControlName="batchSize"
+                              [readonly]="experimentId"
+                            />
                           </div>
                         </div>
                       </form>
                       <div class="text-center" *ngIf="!experimentId">
-                        <button type="submit" class="btn btn-primary" (click)="saveSummary()">
+                        <button
+                          type="submit"
+                          class="btn btn-primary"
+                          (click)="saveSummary()"
+                        >
                           Start Experiment
                         </button>
                       </div>
@@ -200,223 +318,407 @@
             </div>
           </div>
           <!-- <section > -->
-          <div *ngFor="let dumm of dummyTabs; index as i" class="tab-pane fade" [ngClass]="{
+          <div
+            *ngFor="let dumm of dummyTabs; index as i"
+            class="tab-pane fade"
+            [ngClass]="{
               active: activeTab === dumm.value,
               show: activeTab === dumm.value
-            }" id="{{ dumm.value }}" role="tabpanel" [attr.aria-labelledby]="dumm + '-tab'">
-            <ckeditor required [(ngModel)]="article[i].text" data="" name="text"></ckeditor>
+            }"
+            id="{{ dumm.value }}"
+            role="tabpanel"
+            [attr.aria-labelledby]="dumm + '-tab'"
+          >
+            <ckeditor
+              required
+              [(ngModel)]="article[i].text"
+              data=""
+              name="text"
+            ></ckeditor>
             <!-- <ckeditor data="<p>Hello, world!</p>"></ckeditor> -->
             <div class="text-center pt-3">
-              <button type="submit" class="btn btn-primary" (click)="saveTab(i, dumm)">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                (click)="saveTab(i, dumm)"
+              >
                 Submit
               </button>
             </div>
           </div>
 
           <!-- </section> -->
-          <div class="tab-pane fade" [ngClass]="{
+          <div
+            class="tab-pane fade"
+            [ngClass]="{
               active: activeTab === 'contact',
               show: activeTab === 'contact'
-            }" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+            }"
+            id="contact"
+            role="tabpanel"
+            aria-labelledby="contact-tab"
+          >
             <div class="pt-3 pb-3">
-              <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="inwards" [(ngModel)]="selectedItems"
-                (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)">
+              <ng-multiselect-dropdown
+                [settings]="dropdownSettings"
+                [data]="inwards"
+                [(ngModel)]="selectedItems"
+                (onSelect)="onItemSelect($event)"
+                (onSelectAll)="onSelectAll($event)"
+                (onDeSelect)="deselect($event)"
+              >
               </ng-multiselect-dropdown>
             </div>
-
-            <div class="tableNgx">
-              <ngx-datatable tableClass="table table-striped table-bordered table-hover tableNgx" [data]="tableData"
-                [options]="options" [columns]="columns">
-              </ngx-datatable>
-            </div>
+            <table
+              id="first-table"
+              datatable
+              [dtOptions]="dtOptions"
+              [dtTrigger]="dtTrigger"
+              class="row-border hover"
+            >
+              <thead>
+                <tr>
+                  <th>Inward Name</th>
+                  <th>Material Name</th>
+                  <th>Material Type</th>
+                  <th>Batch Number</th>
+                  <th>Source Name</th>
+                  <th>Potency</th>
+                  <th>Grade</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of tableData">
+                  <td>{{ user.excipientsName }}</td>
+                  <td>{{ user.materialName }}</td>
+                  <td>{{ user.materialType }}</td>
+                  <td>{{ user.batchNo }}</td>
+                  <td>{{ user.sourceName }}</td>
+                  <td>{{ user.potency }}</td>
+                  <td>{{ user.grade }}</td>
+                </tr>
+              </tbody>
+            </table>
             <div class="text-center pt-3">
-              <button type="submit" class="btn btn-primary mt-3" (click)="saveExcipients()">
+              <button
+                type="submit"
+                class="btn btn-primary mt-3"
+                (click)="saveExcipients()"
+              >
                 Submit
               </button>
             </div>
           </div>
 
-          <div class="tab-pane fade" [ngClass]="{
+          <div
+            class="tab-pane fade"
+            [ngClass]="{
               active: activeTab === 'results',
               show: activeTab === 'results'
-            }" id="results" role="tabpanel" aria-labelledby="results-tab">
+            }"
+            id="results"
+            role="tabpanel"
+            aria-labelledby="results-tab"
+          >
             <form class="row g-3" [formGroup]="testRequestForm">
               <div class="col-4">
-                <label for="testRequestId" class="form-label">Test Request ID</label>
-                <input type="text" class="form-control" id="testRequestId" formControlName="testRequestId" readonly />
-                <span *ngIf="
+                <label for="testRequestId" class="form-label"
+                  >Test Request ID</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="testRequestId"
+                  formControlName="testRequestId"
+                  readonly
+                />
+                <span
+                  *ngIf="
                     testRequestForm.controls['testRequestId'].invalid &&
                     (testRequestForm.controls['testRequestId'].dirty ||
                       testRequestForm.controls['testRequestId'].touched) &&
                     testRequestForm.get('testRequestId')?.errors &&
                     testRequestForm.get('testRequestId')?.hasError('required')
-                  " class="text-danger">
+                  "
+                  class="text-danger"
+                >
                   Please enter Test Request ID
                 </span>
               </div>
 
               <div class="col-4">
                 <label for="department" class="form-label">Department</label>
-                <input type="text" class="form-control" id="department" formControlName="department" readonly />
-                <span *ngIf="
+                <input
+                  type="text"
+                  class="form-control"
+                  id="department"
+                  formControlName="department"
+                  readonly
+                />
+                <span
+                  *ngIf="
                     testRequestForm.controls['department'].invalid &&
                     (testRequestForm.controls['department'].dirty ||
                       testRequestForm.controls['department'].touched) &&
                     testRequestForm.get('department')?.errors &&
                     testRequestForm.get('department')?.hasError('required')
-                  " class="text-danger">
+                  "
+                  class="text-danger"
+                >
                   Please enter Department
                 </span>
               </div>
               <div class="col-4">
                 <label for="dosageForm" class="form-label">Dosage Form</label>
-                <input type="text" class="form-control" id="dosageForm" formControlName="dosageForm" readonly />
-                <span *ngIf="
+                <input
+                  type="text"
+                  class="form-control"
+                  id="dosageForm"
+                  formControlName="dosageForm"
+                  readonly
+                />
+                <span
+                  *ngIf="
                     testRequestForm.controls['dosageForm'].invalid &&
                     (testRequestForm.controls['dosageForm'].dirty ||
                       testRequestForm.controls['dosageForm'].touched) &&
                     testRequestForm.get('dosageForm')?.errors &&
                     testRequestForm.get('dosageForm')?.hasError('required')
-                  " class="text-danger">
+                  "
+                  class="text-danger"
+                >
                   Please enter dosage form
                 </span>
               </div>
               <div class="col-4">
                 <label for="projectName" class="form-label">Project Name</label>
-                <input type="text" class="form-control" id="projectName" formControlName="projectName" readonly />
-                <span *ngIf="
+                <input
+                  type="text"
+                  class="form-control"
+                  id="projectName"
+                  formControlName="projectName"
+                  readonly
+                />
+                <span
+                  *ngIf="
                     testRequestForm.controls['projectName'].invalid &&
                     (testRequestForm.controls['projectName'].dirty ||
                       testRequestForm.controls['projectName'].touched) &&
                     testRequestForm.get('projectName')?.errors &&
                     testRequestForm.get('projectName')?.hasError('required')
-                  " class="text-danger">
+                  "
+                  class="text-danger"
+                >
                   Please enter Project Name
                 </span>
               </div>
               <div class="col-4">
                 <label for="projectCode" class="form-label">Project Code</label>
-                <input type="text" class="form-control" id="projectCode" formControlName="projectCode" readonly />
-                <span *ngIf="
+                <input
+                  type="text"
+                  class="form-control"
+                  id="projectCode"
+                  formControlName="projectCode"
+                  readonly
+                />
+                <span
+                  *ngIf="
                     testRequestForm.controls['projectCode'].invalid &&
                     (testRequestForm.controls['projectCode'].dirty ||
                       testRequestForm.controls['projectCode'].touched) &&
                     testRequestForm.get('projectCode')?.errors &&
                     testRequestForm.get('projectCode')?.hasError('required')
-                  " class="text-danger">
+                  "
+                  class="text-danger"
+                >
                   Please enter Project Code
                 </span>
               </div>
               <div class="col-4">
                 <label for="strength" class="form-label">Strength</label>
-                <input type="text" class="form-control" id="strength" formControlName="strength" readonly />
-                <span *ngIf="
+                <input
+                  type="text"
+                  class="form-control"
+                  id="strength"
+                  formControlName="strength"
+                  readonly
+                />
+                <span
+                  *ngIf="
                     testRequestForm.controls['strength'].invalid &&
                     (testRequestForm.controls['strength'].dirty ||
                       testRequestForm.controls['strength'].touched) &&
                     testRequestForm.get('strength')?.errors &&
                     testRequestForm.get('strength')?.hasError('required')
-                  " class="text-danger">
+                  "
+                  class="text-danger"
+                >
                   Please enter Strength
                 </span>
               </div>
               <div class="col-4">
                 <label for="batchNumber" class="form-label">Batch Number</label>
-                <input type="text" class="form-control" id="batchNumber" formControlName="batchNumber" readonly />
-                <span *ngIf="
+                <input
+                  type="text"
+                  class="form-control"
+                  id="batchNumber"
+                  formControlName="batchNumber"
+                  readonly
+                />
+                <span
+                  *ngIf="
                     testRequestForm.controls['batchNumber'].invalid &&
                     (testRequestForm.controls['batchNumber'].dirty ||
                       testRequestForm.controls['batchNumber'].touched) &&
                     testRequestForm.get('batchNumber')?.errors &&
                     testRequestForm.get('batchNumber')?.hasError('required')
-                  " class="text-danger">
+                  "
+                  class="text-danger"
+                >
                   Please enter Batch Number
                 </span>
               </div>
               <div class="col-4">
                 <label for="condition" class="form-label">Condition</label>
-                <input type="text" class="form-control" id="condition" formControlName="condition" />
-                <span *ngIf="
+                <input
+                  type="text"
+                  class="form-control"
+                  id="condition"
+                  formControlName="condition"
+                />
+                <span
+                  *ngIf="
                     testRequestForm.controls['condition'].invalid &&
                     (testRequestForm.controls['condition'].dirty ||
                       testRequestForm.controls['condition'].touched) &&
                     testRequestForm.get('condition')?.errors &&
                     testRequestForm.get('condition')?.hasError('required')
-                  " class="text-danger">
+                  "
+                  class="text-danger"
+                >
                   Please enter Condition
                 </span>
               </div>
               <div class="col-4">
                 <label for="stage" class="form-label">Stage</label>
-                <input type="text" class="form-control" id="stage" formControlName="stage" />
-                <span *ngIf="
+                <input
+                  type="text"
+                  class="form-control"
+                  id="stage"
+                  formControlName="stage"
+                />
+                <span
+                  *ngIf="
                     testRequestForm.controls['stage'].invalid &&
                     (testRequestForm.controls['stage'].dirty ||
                       testRequestForm.controls['stage'].touched) &&
                     testRequestForm.get('stage')?.errors &&
                     testRequestForm.get('stage')?.hasError('required')
-                  " class="text-danger">
+                  "
+                  class="text-danger"
+                >
                   Please enter Stage
                 </span>
               </div>
               <div class="col-4">
                 <label for="packaging" class="form-label">Packaging</label>
-                <input type="text" class="form-control" id="packaging" formControlName="packaging" />
-                <span *ngIf="
+                <input
+                  type="text"
+                  class="form-control"
+                  id="packaging"
+                  formControlName="packaging"
+                />
+                <span
+                  *ngIf="
                     testRequestForm.controls['packaging'].invalid &&
                     (testRequestForm.controls['packaging'].dirty ||
                       testRequestForm.controls['packaging'].touched) &&
                     testRequestForm.get('packaging')?.errors &&
                     testRequestForm.get('packaging')?.hasError('required')
-                  " class="text-danger">
+                  "
+                  class="text-danger"
+                >
                   Please enter Packaging
                 </span>
               </div>
               <div class="col-4">
                 <label for="batchSize" class="form-label">Batch size</label>
-                <input type="text" class="form-control" id="batchSize" formControlName="batchSize" readonly />
-                <span *ngIf="
+                <input
+                  type="text"
+                  class="form-control"
+                  id="batchSize"
+                  formControlName="batchSize"
+                  readonly
+                />
+                <span
+                  *ngIf="
                     testRequestForm.controls['batchSize'].invalid &&
                     (testRequestForm.controls['batchSize'].dirty ||
                       testRequestForm.controls['batchSize'].touched) &&
                     testRequestForm.get('batchSize')?.errors &&
                     testRequestForm.get('batchSize')?.hasError('required')
-                  " class="text-danger">
+                  "
+                  class="text-danger"
+                >
                   Please enter Batch Size
                 </span>
               </div>
               <div class="col-4">
                 <label for="quantity" class="form-label">Quantity</label>
-                <input type="number" class="form-control" id="quantity" formControlName="quantity" />
+                <input
+                  type="number"
+                  class="form-control"
+                  id="quantity"
+                  formControlName="quantity"
+                />
 
-                <span *ngIf="
+                <span
+                  *ngIf="
                     testRequestForm.controls['quantity'].invalid &&
                     (testRequestForm.controls['quantity'].dirty ||
                       testRequestForm.controls['quantity'].touched) &&
                     testRequestForm.get('quantity')?.errors &&
                     testRequestForm.get('quantity')?.hasError('required')
-                  " class="text-danger">
+                  "
+                  class="text-danger"
+                >
                   Please enter Quantity
                 </span>
               </div>
               <div class="col-4">
                 <label for="labelClaim" class="form-label">Label Claim</label>
-                <input type="text" class="form-control" id="labelClaim" formControlName="labelClaim" />
+                <input
+                  type="text"
+                  class="form-control"
+                  id="labelClaim"
+                  formControlName="labelClaim"
+                />
 
-                <span *ngIf="
+                <span
+                  *ngIf="
                     testRequestForm.controls['labelClaim'].invalid &&
                     (testRequestForm.controls['labelClaim'].dirty ||
                       testRequestForm.controls['labelClaim'].touched) &&
                     testRequestForm.get('labelClaim')?.errors &&
                     testRequestForm.get('labelClaim')?.hasError('required')
-                  " class="text-danger">
+                  "
+                  class="text-danger"
+                >
                   Please enter Label Claim
                 </span>
               </div>
               <div class="col-4">
-                <label for="manufacturingDate" class="form-label">Manufacturing Date</label>
-                <input type="date" class="form-control" id="manufacturingDate" formControlName="manufacturingDate" />
-                <span *ngIf="
+                <label for="manufacturingDate" class="form-label"
+                  >Manufacturing Date</label
+                >
+                <input
+                  type="date"
+                  class="form-control"
+                  id="manufacturingDate"
+                  formControlName="manufacturingDate"
+                />
+                <span
+                  *ngIf="
                     testRequestForm.controls['manufacturingDate'].invalid &&
                     (testRequestForm.controls['manufacturingDate'].dirty ||
                       testRequestForm.controls['manufacturingDate'].touched) &&
@@ -424,21 +726,31 @@
                     testRequestForm
                       .get('manufacturingDate')
                       ?.hasError('required')
-                  " class="text-danger">
+                  "
+                  class="text-danger"
+                >
                   Please enter Manufacturing Date
                 </span>
               </div>
 
               <div class="col-4">
                 <label for="expiryDate" class="form-label">Expiry Date</label>
-                <input type="date" class="form-control" id="expiryDate" formControlName="expiryDate" />
-                <span *ngIf="
+                <input
+                  type="date"
+                  class="form-control"
+                  id="expiryDate"
+                  formControlName="expiryDate"
+                />
+                <span
+                  *ngIf="
                     testRequestForm.controls['expiryDate'].invalid &&
                     (testRequestForm.controls['expiryDate'].dirty ||
                       testRequestForm.controls['expiryDate'].touched) &&
                     testRequestForm.get('expiryDate')?.errors &&
                     testRequestForm.get('expiryDate')?.hasError('required')
-                  " class="text-danger">
+                  "
+                  class="text-danger"
+                >
                   Please enter Expiry Date
                 </span>
               </div>
@@ -446,59 +758,112 @@
             <h3 class="mt-4">Lab Tests</h3>
 
             <div class="pb-3">
-              <ng-multiselect-dropdown [settings]="dropdownTestSettings" [data]="tests" [(ngModel)]="selectedTestItems"
-                (onSelect)="onTestItemSelect($event)" (onSelectAll)="onTestSelectAll($event)"
-                (onDeSelect)="testdeselect($event)">
+              <ng-multiselect-dropdown
+                [settings]="dropdownTestSettings"
+                [data]="tests"
+                [(ngModel)]="selectedTestItems"
+                (onSelect)="onTestItemSelect($event)"
+                (onSelectAll)="onTestSelectAll($event)"
+                (onDeSelect)="testdeselect($event)"
+              >
               </ng-multiselect-dropdown>
             </div>
+            <table
+              id="second-table"
+              datatable
+              [dtOptions]="dtMyProjectsOptions"
+              [dtTrigger]="dtMyProjectsTrigger"
+              class="row-border hover"
+            >
+              <thead>
+                <tr>
+                  <th>Test Id</th>
+                  <th>Test Name</th>
+                  <th>Results</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of tableTestData; let rowIndex = index">
+                  <td>{{ user.testNumber }}</td>
+                  <td>{{ user.testName }}</td>
 
-            <div class="tableNgx">
-              <ngx-datatable tableClass="table table-striped table-bordered table-hover tableNgx" [data]="tableTestData"
-                [options]="options" [columns]="testColumns">
-                <ng-template #actionTpl let-row let-rowIndex="rowIndex" let-columnValue="columnValue">
-                  <textarea class="form-control" style="height: 50px" [(ngModel)]="tableTestData[rowIndex].testResult"
-                    (change)="resultChange($event.target, rowIndex)"></textarea>
-                </ng-template>
-              </ngx-datatable>
-            </div>
+                  <td class="options-width">
+                    <textarea
+                      class="form-control"
+                      style="height: 50px"
+                      [(ngModel)]="tableTestData[rowIndex].testResult"
+                      (change)="resultChange($event.target, rowIndex)"
+                    ></textarea>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
             <div class="text-center pt-4">
               &nbsp;&nbsp;&nbsp;
-              <button type="button" class="btn btn-primary mt-4" (click)="saveTestRequestForm()">
+              <button
+                type="button"
+                class="btn btn-primary mt-4"
+                (click)="saveTestRequestForm()"
+              >
                 <!--  (click)="saveTestRequestForm()" -->
                 Save
               </button>
             </div>
           </div>
 
-          <div class="tab-pane fade" [ngClass]="{
+          <div
+            class="tab-pane fade"
+            [ngClass]="{
               active: activeTab === 'attachments',
               show: activeTab === 'attachments'
-            }" id="attachments" role="tabpanel" aria-labelledby="attachments-tab">
+            }"
+            id="attachments"
+            role="tabpanel"
+            aria-labelledby="attachments-tab"
+          >
             <div class="row mb-3">
               <label for="inputNumber" class="col-sm-2 col-form-label">
-                Upload</label>
+                Upload</label
+              >
               <div class="col-sm-10">
-                <input class="form-control" type="file" id="formFile" (change)="processFile($event)" />
+                <input
+                  class="form-control"
+                  type="file"
+                  id="formFile"
+                  (change)="processFile($event)"
+                />
               </div>
             </div>
             <div class="row mb-3">
               <label *ngIf="files.length > 0">Uploaded Attachments</label>
               <span *ngFor="let file of files">
                 <div class="file-container">
-                  <span class="file-list" (click)="getFileContent(file.name, file.experimentId)">{{ file.name |
-                    titlecase }}</span>
-                  <span class="align-right" (click)="removeAttachment(file)">Remove <i
-                      class="bi bi-trash-fill pointer"></i></span>
+                  <span
+                    class="file-list"
+                    (click)="getFileContent(file.name, file.experimentId)"
+                    >{{ file.name | titlecase }}</span
+                  >
+                  <span class="align-right" (click)="removeAttachment(file)"
+                    >Remove <i class="bi bi-trash-fill pointer"></i
+                  ></span>
                 </div>
               </span>
             </div>
 
-            <div class="text-center pt-3" *ngIf="experimentDetails && experimentDetails.status === 'Inprogress'">
-              <button type="submit" class="btn btn-primary mt-3" (click)="updateAnalysisStatus('Complete')">
+            <div
+              class="text-center pt-3"
+              *ngIf="
+                experimentDetails && experimentDetails.status === 'Inprogress'
+              "
+            >
+              <button
+                type="submit"
+                class="btn btn-primary mt-3"
+                (click)="updateAnalysisStatus('Complete')"
+              >
                 Complete Analysis Experiment
               </button>
             </div>
-
           </div>
         </div>
       </div>

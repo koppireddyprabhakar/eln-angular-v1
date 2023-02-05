@@ -11,8 +11,9 @@ import { ExperimentService } from '@app/shared/services/experiment/experiment.se
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
+import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
-import { takeWhile } from 'rxjs';
+import { Subject, takeWhile } from 'rxjs';
 
 @Component({
   selector: 'app-create-formulation',
@@ -20,6 +21,8 @@ import { takeWhile } from 'rxjs';
   styleUrls: ['./create-formulation.component.scss'],
 })
 export class CreateFormulationComponent implements OnInit {
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
   @ViewChild('inputfields') inputfields!: ElementRef;
   dummyTabs: any = [
     { label: 'Purpose and Conclusions', isEdit: false, value: 'primary' },
@@ -60,6 +63,10 @@ export class CreateFormulationComponent implements OnInit {
     experimentName: ['', [Validators.required]],
     batchSize: ['' as any, [Validators.required]],
   });
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions = {
+    pagingType: 'full_numbers',
+  };
 
   constructor(
     private readonly projectService: ProjectService,
@@ -71,7 +78,7 @@ export class CreateFormulationComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private route: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.getExcipients();
@@ -106,6 +113,10 @@ export class CreateFormulationComponent implements OnInit {
     this.getProjectDetails();
   }
 
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(null);
+  }
+
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
       this.project = project;
@@ -135,19 +146,17 @@ export class CreateFormulationComponent implements OnInit {
         if (data.length > 0) {
           this.tableData = data;
           this.selectedItems = data;
+          this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+            // Destroy the table first
+            dtInstance.destroy();
+            // Call the dtTrigger to rerender again
+            this.dtTrigger.next(this.tableData);
+          });
         }
       });
   }
 
   getExperimentDetailsById(tabValue) {
-    // console.log(id);
-    // const expDetailsId = Number(id.slice(-1));
-    // this.experimentService
-    //   .getExperimentDetailsById(expDetailsId)
-    //   .subscribe((details) => {
-    //     this.article[this.activeTabIndex].text = details?.fileContent;
-    //   });
-
     this.experimentService
       .getExperimentDetailsById(tabValue.substring(3))
       .subscribe((details) => {
@@ -169,7 +178,7 @@ export class CreateFormulationComponent implements OnInit {
     const fileData = { ...file, projectId: this.projectId };
     this.experimentService
       .deleteExperimentAttachment(file)
-      .subscribe((experimentDetails) => { });
+      .subscribe((experimentDetails) => {});
   }
 
   getExcipients() {
@@ -215,6 +224,7 @@ export class CreateFormulationComponent implements OnInit {
           }
 
           this.tableData = experimentDetails.experimentExcipients;
+
           // }
           this.summaryForm.patchValue({
             experimentName: experimentDetails?.experimentName,
@@ -296,6 +306,12 @@ export class CreateFormulationComponent implements OnInit {
         this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
       )
       .map((data) => ({ ...data, experimentId: Number(this.experimentId) }));
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next(this.tableData);
+    });
   }
 
   deselect(item: any) {
@@ -305,9 +321,21 @@ export class CreateFormulationComponent implements OnInit {
     this.tableData = this.tableData.filter(
       (data) => data.excipientId !== item.excipientId
     );
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next(this.tableData);
+    });
   }
   onSelectAll(items: any) {
     this.tableData = this.inwards;
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next(this.tableData);
+    });
   }
 
   saveTab(index, data) {
@@ -318,39 +346,7 @@ export class CreateFormulationComponent implements OnInit {
       name: data.label,
       fileContent: this.article[index].text,
     };
-    // if (!this.editExperiment) {
-    //   if (this.dummyTabs[index].id) {
-    //     tabValue = {
-    //       ...tabValue,
-    //       experimentDetailId: this.dummyTabs[index].id,
-    //     };
-    //   }
-    //   this.experimentService.saveExperimentTabs(tabValue).subscribe((data) => {
-    //     this.toastr.success(
-    //       `Experiment detail ${
-    //         this.dummyTabs[index].id ? 'updated' : 'created'
-    //       } successfully`,
-    //       'Success'
-    //     );
-    //     this.dummyTabs[index]['id'] = data.data;
-    //     this.getExperimentDetails(this.experimentId);
-    //   });
-    // } else {
-    //   const id = Number(data.value.slice(-1));
-    //   tabValue = {
-    //     ...tabValue,
-    //     experimentDetailId: id,
-    //   };
-    //   this.experimentService.saveExperimentTabs(tabValue).subscribe((data) => {
-    //     this.toastr.success(
-    //       'Experiment detail updated successfully',
-    //       'Success'
-    //     );
-    //     this.getExperimentDetails(this.experimentId);
-    //   });
-    // }
-    console.log(this.dummyTabs[index].value);
-    console.log(this.dummyTabs[index].value.substring(0, 3));
+
     tabValue = {
       ...tabValue,
       experimentDetailId:
@@ -361,7 +357,8 @@ export class CreateFormulationComponent implements OnInit {
 
     this.experimentService.saveExperimentTabs(tabValue).subscribe((data) => {
       this.toastr.success(
-        `Experiment detail ${this.dummyTabs[index].id ? 'updated' : 'created'
+        `Experiment detail ${
+          this.dummyTabs[index].id ? 'updated' : 'created'
         } successfully`,
         'Success'
       );
@@ -376,7 +373,7 @@ export class CreateFormulationComponent implements OnInit {
     });
   }
 
-  saveAttachment() { }
+  saveAttachment() {}
 
   onChange(event) {
     this.file = event.target.files[0];
@@ -412,9 +409,10 @@ export class CreateFormulationComponent implements OnInit {
   }
 
   updateExperimentStatus() {
-    this.experimentService.updateExperimentStatus(this.experimentId, 'Complete').subscribe((data) => {
-      this.toastr.success(data['data'], 'Success');
-    });
+    this.experimentService
+      .updateExperimentStatus(this.experimentId, 'Complete')
+      .subscribe((data) => {
+        this.toastr.success(data['data'], 'Success');
+      });
   }
-
 }
