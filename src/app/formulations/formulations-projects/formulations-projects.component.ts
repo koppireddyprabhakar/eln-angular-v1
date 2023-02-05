@@ -15,11 +15,11 @@ import { DataTableDirective } from 'angular-datatables';
 import { Subject, takeWhile } from 'rxjs';
 
 @Component({
-  selector: 'app-analysis-projects',
-  templateUrl: './analysis-projects.component.html',
-  styleUrls: ['./analysis-projects.component.scss'],
+  selector: 'app-formulations-projects',
+  templateUrl: './formulations-projects.component.html',
+  styleUrls: ['./formulations-projects.component.css'],
 })
-export class AnalysisProjectsComponent implements OnInit {
+export class FormulationsProjectsComponent implements OnInit {
   @ViewChildren(DataTableDirective)
   dtElements: QueryList<DataTableDirective>;
   projects: any = [];
@@ -27,7 +27,8 @@ export class AnalysisProjectsComponent implements OnInit {
   subscribeFlag = true;
   allProjColumns: any;
   myProjColumns: any;
-  options: any = {};
+  options: any = { rowClickEvent: true };
+
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions = {
     pagingType: 'full_numbers',
@@ -37,18 +38,36 @@ export class AnalysisProjectsComponent implements OnInit {
     pagingType: 'full_numbers',
   };
 
+  @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
+
   constructor(
     private readonly globalService: GlobalService,
     private readonly projectService: ProjectService,
     private readonly formulationService: FormulationsService,
     private readonly experimentService: ExperimentService,
-    private readonly route: Router
+    private route: Router
   ) {}
-
-  @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
   ngOnInit(): void {
     this.getProjects();
+    this.getMyProjects();
+    this.myProjColumns = [
+      { key: 'projectName', title: 'Project Name' },
+      { key: 'productName', title: 'Product Name' },
+      { key: 'productCode', title: 'Product Code' },
+      { key: 'dosageName', title: 'Dosage Name' },
+      { key: 'formulationName', title: 'Formulation Type' },
+      { key: 'strength', title: 'Strength' },
+      { key: 'status', title: 'Status' },
+      {
+        key: 'options',
+        title: '<div class="blue">Options</div>',
+        align: { head: 'center', body: 'center' },
+        sorting: false,
+        width: 120,
+        cellTemplate: this.actionTpl,
+      },
+    ];
   }
 
   ngAfterViewInit(): void {
@@ -88,6 +107,11 @@ export class AnalysisProjectsComponent implements OnInit {
           (dtElement: DataTableDirective, index: number) => {
             dtElement.dtInstance.then((dtInstance: any) => {
               if (dtInstance.table().node().id === 'second-table') {
+                console.log(
+                  `The DataTable ${index} instance ID is: ${
+                    dtInstance.table().node().id
+                  }`
+                );
                 dtInstance.destroy();
                 console.log(this.myProjects);
                 this.dtMyProjectsTrigger.next(this.myProjects);
@@ -100,6 +124,24 @@ export class AnalysisProjectsComponent implements OnInit {
   }
 
   createFormulation(id) {
-    this.route.navigateByUrl(`/exp-analysis/analysis-exp?projectId=${id}`);
+    this.route.navigateByUrl(`/create-forms?projectId=${id}`);
   }
+
+  onRowClick(event) {
+    this.route.navigateByUrl(
+      `/create-forms?projectId=${event.projectId}&experimentId=${event.expId}&edit=true`
+    );
+  }
+
+  addTrf(row) {
+    this.route.navigateByUrl(`/forms-page/add-trf?expId=${row.expId}`);
+    // var someTabTriggerEl = document.querySelector('#projects');
+    // var tab = new bootstrap.Tab(someTabTriggerEl)
+    // someTabTriggerEl.show()
+  }
+
+  // ngOnDestroy(): void {
+  //   // Do not forget to unsubscribe the event
+  //   this.dtTrigger.unsubscribe();
+  // }
 }

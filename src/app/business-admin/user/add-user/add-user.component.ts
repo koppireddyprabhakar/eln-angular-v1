@@ -9,6 +9,7 @@ import { UserService } from '@app/shared/services/user/user.service';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, takeWhile } from 'rxjs';
 import { Departments, Teams, UserRoles } from '../user.interface';
+import { DosageService } from '@app/shared/services/dosage/dosage.service';
 
 @Component({
   selector: 'app-add-user',
@@ -24,6 +25,7 @@ export class AddUserComponent implements OnInit {
   userRoles: UserRoles[] = [];
   selectedUser: any = {};
   subscribeFlag = true;
+  dosages: any = [];
   teams: Teams[] = [];
   userId: number;
   editForm = false;
@@ -52,7 +54,8 @@ export class AddUserComponent implements OnInit {
     private readonly globalService: GlobalService,
     private route: Router,
     private activatedRoute: ActivatedRoute,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private dosageService: DosageService
   ) {}
 
   ngOnInit(): void {
@@ -64,6 +67,7 @@ export class AddUserComponent implements OnInit {
     this.getDepartments();
     this.getUserRoles();
     this.getTeams();
+    this.getDosages();
   }
 
   saveUser() {
@@ -81,7 +85,7 @@ export class AddUserComponent implements OnInit {
       addressLine2: this.userForm.get('addressLine2')?.value,
       city: this.userForm.get('city')?.value,
       zipCode: this.userForm.get('zipCode')?.value,
-      userTeamRequests: [{ teamId: this.userForm.get('teamId')?.value }],
+      userTeams: [{ teamId: this.userForm.get('teamId')?.value }],
     };
     if (!this.userForm.invalid) {
       this.globalService.showLoader();
@@ -132,6 +136,12 @@ export class AddUserComponent implements OnInit {
 
   redirectToUsers() {
     this.route.navigate(['/business-admin/users/']);
+  }
+
+  getDosages() {
+    this.dosageService.getDosages().subscribe((dosages) => {
+      this.dosages = dosages;
+    });
   }
 
   getDepartments() {

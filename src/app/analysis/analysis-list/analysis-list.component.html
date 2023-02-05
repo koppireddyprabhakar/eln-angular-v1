@@ -11,14 +11,41 @@
               <h5 class="card-title">Analysis List</h5>
             </div>
             <div class="tableNgx">
-              <ngx-datatable
-                tableClass="table table-striped table-bordered table-hover tableNgx"
-                [data]="trfList"
-                [options]="options"
-                [columns]="columns"
-                (checkboxClick)="onCheckboxClick($event)"
+              <table
+                datatable
+                [dtOptions]="dtOptions"
+                [dtTrigger]="dtTrigger"
+                class="row-border hover"
               >
-              </ngx-datatable>
+                <thead>
+                  <tr>
+                    <th>Project Name</th>
+                    <th>Trf Request Id</th>
+                    <th>Product Name</th>
+                    <th>Batch Number</th>
+                    <th>Date Created</th>
+                    <th>Condition</th>
+                    <th>Test Required</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let trf of trfList">
+                    <td>
+                      {{ trf.projectName | titlecase }}
+                    </td>
+                    <td>
+                      {{ trf.testRequestFormId }}
+                    </td>
+                    <td>{{ trf.productName }}</td>
+                    <td>{{ trf.batchNumber }}</td>
+                    <td>{{ trf.contactNo }}</td>
+                    <td>{{ trf.condition }}</td>
+                    <td>{{ trf.testRequestFormStatus }}</td>
+                    <td>{{ trf.status }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
             <div class="text-end">
               <button

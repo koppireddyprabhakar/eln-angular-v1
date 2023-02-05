@@ -17,39 +17,48 @@
                 </a>
               </div>
             </div>
-            <div class="tableNgx">
-              <ngx-datatable
-                tableClass="table table-striped table-bordered table-hover tableNgx"
-                [data]="tests"
-                [options]="options"
-                [columns]="columns"
-              >
-                <ng-template
-                  #actionTpl
-                  let-row
-                  let-rowIndex="rowIndex"
-                  let-columnValue="columnValue"
-                >
-                  <button
-                    type="button"
-                    (click)="selectTest(row)"
-                    class="btn btn-outline-primary"
-                  >
-                    Edit
-                  </button>
-                  &nbsp;&nbsp;
-                  <button
-                    type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#deleteForm"
-                    (click)="confirmTesttDeletetion(row)"
-                    class="btn btn-outline-danger"
-                  >
-                    Delete
-                  </button>
-                </ng-template>
-              </ngx-datatable>
-            </div>
+
+            <table
+              datatable
+              [dtOptions]="dtOptions"
+              [dtTrigger]="dtTrigger"
+              class="row-border hover"
+            >
+              <thead>
+                <tr>
+                  <th>Test Name</th>
+                  <th>Dosages</th>
+                  <th>Status</th>
+                  <th>Options</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let test of tests">
+                  <td>{{ test.testName }}</td>
+                  <td>{{ test.testTypes }}</td>
+                  <td>{{ test.status }}</td>
+                  <td class="options-width">
+                    <button
+                      type="button"
+                      (click)="selectTest(test)"
+                      class="btn btn-outline-primary"
+                    >
+                      Edit
+                    </button>
+                    &nbsp;&nbsp;
+                    <button
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteForm"
+                      (click)="confirmTesttDeletetion(test)"
+                      class="btn btn-outline-danger"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

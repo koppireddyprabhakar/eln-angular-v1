@@ -17,50 +17,59 @@
                 </a>
               </div>
             </div>
-            <div class="tableNgx">
-              <ngx-datatable
-                tableClass="table table-striped table-bordered table-hover tableNgx"
-                [data]="users"
-                [options]="options"
-                [columns]="columns"
-              >
-                <ng-template
-                  #nameTpl
-                  let-row
-                  let-rowIndex="rowIndex"
-                  let-columnValue="columnValue"
-                >
-                  <span
-                    >{{ row.firstName | titlecase }} &nbsp;
-                    {{ row.lastName | titlecase }}</span
-                  >
-                </ng-template>
-                <ng-template
-                  #actionTpl
-                  let-row
-                  let-rowIndex="rowIndex"
-                  let-columnValue="columnValue"
-                >
-                  <button
-                    type="button"
-                    (click)="selectUser(row)"
-                    class="btn btn-outline-primary"
-                  >
-                    Edit
-                  </button>
-                  &nbsp;&nbsp;
-                  <button
-                    type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#deleteForm"
-                    (click)="confirmUserDeletetion(row)"
-                    class="btn btn-outline-danger"
-                  >
-                    Delete
-                  </button>
-                </ng-template>
-              </ngx-datatable>
-            </div>
+
+            <table
+              datatable
+              [dtOptions]="dtOptions"
+              [dtTrigger]="dtTrigger"
+              class="row-border hover"
+            >
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>DOB</th>
+                  <th>Gender</th>
+                  <th>Role Name</th>
+                  <th>Department Name</th>
+                  <th>Contact Number</th>
+                  <th>Mail Id</th>
+                  <th>Options</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of users">
+                  <td>
+                    {{ user.firstName | titlecase }} &nbsp;
+                    {{ user.lastName | titlecase }}
+                  </td>
+                  <td>{{ user.dateOfBirth }}</td>
+                  <td>{{ user.gender }}</td>
+                  <td>{{ user.roleName }}</td>
+                  <td>{{ user.departmentName }}</td>
+                  <td>{{ user.contactNo }}</td>
+                  <td>{{ user.mailId }}</td>
+                  <td class="options-width">
+                    <button
+                      type="button"
+                      (click)="selectUser(user)"
+                      class="btn btn-outline-primary"
+                    >
+                      Edit
+                    </button>
+                    &nbsp;&nbsp;
+                    <button
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteForm"
+                      (click)="confirmUserDeletetion(user)"
+                      class="btn btn-outline-danger"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

@@ -17,40 +17,61 @@
                 </a>
               </div>
             </div>
-            <div class="tableNgx">
-              <ngx-datatable
-                tableClass="table table-striped table-bordered table-hover tableNgx"
-                [data]="projects"
-                [options]="options"
-                [columns]="columns"
-              >
-                <ng-template
-                  #actionTpl
-                  let-row
-                  let-rowIndex="rowIndex"
-                  let-columnValue="columnValue"
-                >
-                  <button
-                    type="button"
-                    class="btn btn-outline-primary"
-                    (click)="editProject(row)"
-                  >
-                    Edit
-                  </button>
 
-                  &nbsp;&nbsp;
-                  <button
-                    type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#deleteForm"
-                    class="btn btn-outline-danger"
-                    (click)="confirmInwardDeletetion(row)"
-                  >
-                    Delete
-                  </button>
-                </ng-template>
-              </ngx-datatable>
-            </div>
+            <table
+              datatable
+              [dtOptions]="dtOptions"
+              [dtTrigger]="dtTrigger"
+              class="row-border hover"
+            >
+              <thead>
+                <tr>
+                  <th>Project Name</th>
+                  <th>Product Name</th>
+                  <th>Product Code</th>
+                  <th>Project ID</th>
+                  <th>Dosage Name</th>
+                  <th>Formulation Type</th>
+                  <th>Strength</th>
+                  <th>Formulation Department</th>
+                  <th>Status</th>
+                  <th>Options</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let project of projects">
+                  <td>{{ project.projectName }}</td>
+                  <td>{{ project.productName }}</td>
+                  <td>{{ project.productCode }}</td>
+                  <td>{{ project.projectId }}</td>
+                  <td>{{ project.dosageName }}</td>
+                  <td>{{ project.formulationName }}</td>
+                  <td>{{ project.strength }}</td>
+                  <td>{{ project.formulationName }}</td>
+                  <td>{{ project.status }}</td>
+                  <td class="options-width">
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary"
+                      (click)="editProject(project)"
+                    >
+                      Edit
+                    </button>
+
+                    &nbsp;&nbsp;
+                    <button
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteForm"
+                      class="btn btn-outline-danger"
+                      (click)="confirmInwardDeletetion(project)"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

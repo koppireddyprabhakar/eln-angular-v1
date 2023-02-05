@@ -13,6 +13,7 @@ import { TestService } from '@app/shared/services/test/test.service';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, Subject, takeWhile } from 'rxjs';
 import { Dosages } from '../dosage/dosage.interface';
+import { DataTableDirective } from 'angular-datatables';
 
 @Component({
   selector: 'app-test',
@@ -20,16 +21,19 @@ import { Dosages } from '../dosage/dosage.interface';
   styleUrls: ['./test.component.css'],
 })
 export class TestComponent implements OnInit {
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
   tests: any = [];
   selectedTest: any = {};
   subscribeFlag = true;
-  columns: any;
-  options: any = {};
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions = {
+    pagingType: 'full_numbers',
+  };
   showAddForm = false;
 
   @ViewChild('closeButton') closeButton: ElementRef;
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
-  @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
   constructor(
     private readonly testService: TestService,
@@ -42,20 +46,10 @@ export class TestComponent implements OnInit {
 
   ngOnInit(): void {
     this.getTests();
+  }
 
-    this.columns = [
-      { key: 'testName', title: 'Test Name' },
-      { key: 'testTypes', title: 'Dosages' },
-      { key: 'status', title: 'Status' },
-      {
-        key: 'options',
-        title: '<div class="blue">Options</div>',
-        align: { head: 'center', body: 'center' },
-        sorting: false,
-        width: 150,
-        cellTemplate: this.actionTpl,
-      },
-    ];
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(null);
   }
 
   addTests(): FormGroup {
@@ -82,6 +76,12 @@ export class TestComponent implements OnInit {
           status: 'str',
         }));
         this.tests = testList;
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          // Destroy the table first
+          dtInstance.destroy();
+          // Call the dtTrigger to rerender again
+          this.dtTrigger.next(this.tests);
+        });
         this.globalService.hideLoader();
       });
   }

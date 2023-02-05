@@ -21,41 +21,49 @@
                 </button>
               </div>
             </div>
-            <div class="tableNgx">
-              <ngx-datatable
-                tableClass="table table-striped table-bordered table-hover tableNgx"
-                [data]="products"
-                [options]="options"
-                [columns]="columns"
-              >
-                <ng-template
-                  #actionTpl
-                  let-row
-                  let-rowIndex="rowIndex"
-                  let-columnValue="columnValue"
-                >
-                  <button
-                    type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#productForms"
-                    (click)="selectProduct(row)"
-                    class="btn btn-outline-primary"
-                  >
-                    Edit
-                  </button>
-                  &nbsp;&nbsp;
-                  <button
-                    type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#deleteForm"
-                    (click)="confirmProductDeletetion(row)"
-                    class="btn btn-outline-danger"
-                  >
-                    Delete
-                  </button>
-                </ng-template>
-              </ngx-datatable>
-            </div>
+            <table
+              datatable
+              [dtOptions]="dtOptions"
+              [dtTrigger]="dtTrigger"
+              class="row-border hover"
+            >
+              <thead>
+                <tr>
+                  <th>Product Name</th>
+                  <th>Product Code</th>
+                  <th>Status</th>
+                  <th>Options</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let product of products">
+                  <td>{{ product.productName }}</td>
+                  <td>{{ product.productCode }}</td>
+                  <td>{{ product.status }}</td>
+                  <td class="options-width">
+                    <button
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#productForms"
+                      (click)="selectProduct(product)"
+                      class="btn btn-outline-primary"
+                    >
+                      Edit
+                    </button>
+                    &nbsp;&nbsp;
+                    <button
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteForm"
+                      (click)="confirmProductDeletetion(product)"
+                      class="btn btn-outline-danger"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
 import { TrfService } from '@app/shared/services/test-request-form/trf.service';
+import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-analysis-list',
@@ -10,6 +12,8 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./analysis-list.component.css'],
 })
 export class AnalysisListComponent implements OnInit {
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
   trfList: any = [];
   unchangedTrfList: any = [];
   selectedUser: any = {};
@@ -20,6 +24,12 @@ export class AnalysisListComponent implements OnInit {
   isDuplicate = false;
   showAddForm = false;
   selectedRows: any = [];
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions: any = {
+    pagingType: 'full_numbers',
+    select: true,
+  };
+
   constructor(
     private readonly testRequestService: TrfService,
     private toastr: ToastrService,
@@ -29,25 +39,10 @@ export class AnalysisListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAnalysisList();
+  }
 
-    this.columns = [
-      { key: 'projectName', title: 'Project Name' },
-      { key: 'testRequestFormId', title: 'Trf Request Id' },
-      { key: 'productName', title: 'Product Name' },
-      { key: 'batchNumber', title: 'Batch Number' },
-      { key: 'contactNo', title: 'Date Created' },
-      { key: 'condition', title: 'Condition' },
-      { key: 'testRequestFormStatus', title: 'Test Required' },
-      { key: 'status', title: 'Status' },
-      // {
-      //   key: 'options',
-      //   title: '<div class="blue">Options</div>',
-      //   align: { head: 'center', body: 'center' },
-      //   sorting: false,
-      //   width: 150,
-      //   cellTemplate: this.actionTpl,
-      // },
-    ];
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(null);
   }
 
   getAnalysisList() {
@@ -68,6 +63,13 @@ export class AnalysisListComponent implements OnInit {
       this.unchangedTrfList = data;
       this.trfList = data;
       this.trfList = this.trfList.map((trf) => flatten(trf));
+      console.log(this.trfList);
+      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        // Destroy the table first
+        dtInstance.destroy();
+        // Call the dtTrigger to rerender again
+        this.dtTrigger.next(this.trfList);
+      });
     });
   }
 

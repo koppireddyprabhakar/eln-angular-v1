@@ -9,7 +9,8 @@ import { Router } from '@angular/router';
 import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
-import { takeWhile } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
+import { Subject, takeWhile } from 'rxjs';
 
 @Component({
   selector: 'app-review-experiments-list',
@@ -17,11 +18,17 @@ import { takeWhile } from 'rxjs';
   styleUrls: ['./review-experiments-list.component.scss'],
 })
 export class ReviewExperimentsListComponent implements OnInit, OnDestroy {
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
   experiments: any = [];
   myExpColumns: any;
   options: any = { rowClickEvent: true };
   myExperiments: any = [];
   subscribeFlag = true;
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions = {
+    pagingType: 'full_numbers',
+  };
 
   @ViewChild('expActionTpl', { static: true }) expActionTpl: TemplateRef<any>;
 
@@ -30,7 +37,7 @@ export class ReviewExperimentsListComponent implements OnInit, OnDestroy {
     private readonly analysisService: AnalysisService,
     private readonly formulationService: FormulationsService,
     private route: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.getMyExperiments();
@@ -45,13 +52,23 @@ export class ReviewExperimentsListComponent implements OnInit, OnDestroy {
     ];
   }
 
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(null);
+  }
+
   getMyExperiments() {
     // this.globalService.showLoader();
     this.analysisService
-      .getAnalysisByStatus("Inreview")
+      .getAnalysisByStatus('Inreview')
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((myExperiments) => {
         this.myExperiments = myExperiments;
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          // Destroy the table first
+          dtInstance.destroy();
+          // Call the dtTrigger to rerender again
+          this.dtTrigger.next(this.myExperiments);
+        });
         this.globalService.hideLoader();
       });
   }

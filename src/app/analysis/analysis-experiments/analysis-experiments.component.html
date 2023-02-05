@@ -35,48 +35,78 @@
       </ul>
       <div class="tab-content inner-card" id="myTab1Content">
         <div
-          class="tab-pane fade show active"
+          class="tab-pane fade show active pt-4"
           id="allExperiments"
           role="tabpanel"
           aria-labelledby="allExperiments-tab"
         >
-          <div class="tableNgx">
-            <ngx-datatable
-              tableClass="table table-striped table-bordered table-hover tableNgx"
-              [data]="experiments"
-              [options]="options"
-              [columns]="expColumns"
-            >
-            </ngx-datatable>
-          </div>
+          <table
+            id="first-table"
+            datatable
+            [dtOptions]="dtOptions"
+            [dtTrigger]="dtTrigger"
+            class="row-border hover"
+          >
+            <thead>
+              <tr>
+                <th>Experiment Name</th>
+                <th>Batch No.</th>
+                <th>Batch Size</th>
+                <th>Project ID</th>
+                <th>Formulation Type</th>
+                <th>Strength</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let experiment of experiments">
+                <td>{{ experiment.analysisName }}</td>
+                <td>{{ experiment.batchNumber }}</td>
+                <td>{{ experiment.batchSize }}</td>
+                <td>{{ experiment.projectId }}</td>
+                <td>{{ experiment.formulationName }}</td>
+                <td>{{ experiment.strength }}</td>
+                <td>{{ experiment.status }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
         <div
-          class="tab-pane fade"
+          class="tab-pane fade pt-4"
           id="myExperiments"
           role="tabpanel"
           aria-labelledby="myExperiments-tab"
         >
-          <div class="tableNgx">
-            <ngx-datatable
-              tableClass="table table-striped table-bordered table-hover tableNgx"
-              [data]="myExperiments"
-              [options]="options"
-              [columns]="myExpColumns"
-              (rowClick)="onRowClick($event)"
-            >
-              <ng-template
-                #expActionTpl
-                let-row
-                let-rowIndex="rowIndex"
-                let-columnValue="columnValue"
-              >
-                &nbsp;&nbsp;
-                <button type="button" class="btn btn-outline-primary">
-                  Add TRF
-                </button>
-              </ng-template>
-            </ngx-datatable>
-          </div>
+          <table
+            id="second-table"
+            datatable
+            [dtOptions]="dtMyProjectsOptions"
+            [dtTrigger]="dtMyProjectsTrigger"
+            class="row-border hover"
+          >
+            <thead>
+              <tr>
+                <th>Experiment Name</th>
+                <th>Batch No.</th>
+                <th>Batch Size</th>
+                <th>Project ID</th>
+                <th>Formulation Type</th>
+                <th>Strength</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let experiment of myExperiments">
+                <td>{{ experiment.analysisName }}</td>
+                <td>{{ experiment.batchNumber }}</td>
+                <td>{{ experiment.batchSize }}</td>
+                <td>{{ experiment.projectId }}</td>
+                <td>{{ experiment.formulationName }}</td>
+                <td>{{ experiment.strength }}</td>
+                <td>{{ experiment.status }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

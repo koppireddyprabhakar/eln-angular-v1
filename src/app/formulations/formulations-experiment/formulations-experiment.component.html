@@ -1,0 +1,148 @@
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1 class="pb-2">Formulations</h1>
+    <div class="card">
+      <div class="card-body pt-4">
+        <div class="tab-content inner-card outer-tab-border" id="myTabContent">
+          <div
+            class="tab-pane fade show active"
+            id="experiments"
+            role="tabpanel"
+            aria-labelledby="experiments-tab"
+          >
+            <div class="card pt-4">
+              <div class="card-body">
+                <ul class="nav nav-tabs" id="myTab1" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button
+                      class="nav-link active"
+                      id="allExperiments-tab"
+                      data-bs-toggle="tab"
+                      data-bs-target="#allExperiments"
+                      type="button"
+                      role="tab"
+                      aria-controls="allExperiments"
+                      aria-selected="true"
+                      (click)="getExperiments()"
+                    >
+                      All Experiments
+                    </button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button
+                      class="nav-link"
+                      id="myExperiments-tab"
+                      data-bs-toggle="tab"
+                      data-bs-target="#myExperiments"
+                      type="button"
+                      role="tab"
+                      aria-controls="myExperiments"
+                      aria-selected="false"
+                      (click)="getMyExperiments()"
+                    >
+                      My Experiments
+                    </button>
+                  </li>
+                </ul>
+                <div class="tab-content inner-card" id="myTab1Content">
+                  <div
+                    class="tab-pane fade show active pt-4"
+                    id="allExperiments"
+                    role="tabpanel"
+                    aria-labelledby="allExperiments-tab"
+                  >
+                    <table
+                      id="first-table"
+                      datatable
+                      [dtOptions]="dtOptions"
+                      [dtTrigger]="dtTrigger"
+                      class="row-border hover"
+                    >
+                      <thead>
+                        <tr>
+                          <th>Experiment Name</th>
+                          <th>Batch No.</th>
+                          <th>Batch Size</th>
+                          <th>Project ID</th>
+                          <th>Formulation Type</th>
+                          <th>Strength</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let experiment of experiments">
+                          <td>{{ experiment.experimentName }}</td>
+                          <td>{{ experiment.batchNumber }}</td>
+                          <td>{{ experiment.batchSize }}</td>
+                          <td>{{ experiment.projectId }}</td>
+                          <td>{{ experiment.formulationName }}</td>
+                          <td>{{ experiment.strength }}</td>
+                          <td>{{ experiment.status }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div
+                    class="tab-pane fade pt-4"
+                    id="myExperiments"
+                    role="tabpanel"
+                    aria-labelledby="myExperiments-tab"
+                  >
+                    <table
+                      id="second-table"
+                      datatable
+                      [dtOptions]="dtMyProjectsOptions"
+                      [dtTrigger]="dtMyProjectsTrigger"
+                      class="row-border hover"
+                    >
+                      <thead>
+                        <tr>
+                          <th>Experiment Name</th>
+                          <th>Batch No.</th>
+                          <th>Batch Size</th>
+                          <th>Project ID</th>
+                          <th>Formulation Type</th>
+                          <th>Strength</th>
+                          <th>Status</th>
+                          <th>Options</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let experiment of myExperiments">
+                          <td>{{ experiment.experimentName }}</td>
+                          <td>{{ experiment.batchNumber }}</td>
+                          <td>{{ experiment.batchSize }}</td>
+                          <td>{{ experiment.projectId }}</td>
+                          <td>{{ experiment.formulationName }}</td>
+                          <td>{{ experiment.strength }}</td>
+                          <td>{{ experiment.status }}</td>
+                          <td class="options-width">
+                            <button
+                              type="button"
+                              class="btn btn-outline-danger"
+                              (click)="onRowClick(experiment)"
+                            >
+                              Edit
+                            </button>
+                            &nbsp;&nbsp;
+                            <button
+                              type="button"
+                              class="btn btn-outline-primary"
+                              (click)="addTrf(experiment)"
+                            >
+                              Add TRF
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

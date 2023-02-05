@@ -8,8 +8,9 @@ import {
 import { FormBuilder, Validators } from '@angular/forms';
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
+import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
-import { finalize, takeWhile } from 'rxjs';
+import { Subject, finalize, takeWhile } from 'rxjs';
 
 @Component({
   selector: 'app-inward-management',
@@ -17,6 +18,8 @@ import { finalize, takeWhile } from 'rxjs';
   styleUrls: ['./inward-management.component.scss'],
 })
 export class InwardManagementComponent implements OnInit {
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
   inwards: any = [];
   selectedInward: any = {};
   subscribeFlag = true;
@@ -29,12 +32,13 @@ export class InwardManagementComponent implements OnInit {
     potency: [''],
     grade: [''],
   });
-  columns: any;
-  options: any = {};
 
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions = {
+    pagingType: 'full_numbers',
+  };
   @ViewChild('closeButton') closeButton: ElementRef;
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
-  @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
   constructor(
     private readonly inwardService: InwardManagementService,
@@ -45,23 +49,10 @@ export class InwardManagementComponent implements OnInit {
 
   ngOnInit(): void {
     this.getExcipients();
-    this.columns = [
-      { key: 'excipientsName', title: 'Inward Name' },
-      { key: 'materialName', title: 'Material Name' },
-      { key: 'materialType', title: 'Material Type' },
-      { key: 'batchNo', title: 'Batch Number' },
-      { key: 'sourceName', title: 'Source Name' },
-      { key: 'potency', title: 'Potency' },
-      { key: 'grade', title: 'Grade' },
-      {
-        key: 'options',
-        title: '<div class="blue">Options</div>',
-        align: { head: 'center', body: 'center' },
-        sorting: false,
-        width: 150,
-        cellTemplate: this.actionTpl,
-      },
-    ];
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(null);
   }
 
   addInward() {
@@ -79,7 +70,13 @@ export class InwardManagementComponent implements OnInit {
           ...inward,
           status: inward.status.toLowerCase() === 'act' ? 'Active' : 'InActive', // change later
         }));
-        this.inwards = newInwardsList;
+        this.inwards = [...newInwardsList];
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          // Destroy the table first
+          dtInstance.destroy();
+          // Call the dtTrigger to rerender again
+          this.dtTrigger.next(this.inwards);
+        });
         this.globalService.hideLoader();
       });
   }

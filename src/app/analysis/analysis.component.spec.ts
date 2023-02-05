@@ -16,7 +16,7 @@ describe('AnalysisComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should creates', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });
