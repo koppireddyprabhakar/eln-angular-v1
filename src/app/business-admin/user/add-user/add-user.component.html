@@ -151,7 +151,9 @@
             aria-label="Teams"
             formControlName="teamId"
           >
-            <option>Select</option>
+            <option *ngFor="let dosage of dosages" [ngValue]="dosage.dosageId">
+              {{ dosage.dosageName | titlecase }}
+            </option>
           </select>
         </div>
         <div class="col-4">

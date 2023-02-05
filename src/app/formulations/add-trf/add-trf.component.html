@@ -402,7 +402,7 @@
           >
           </ng-multiselect-dropdown>
         </div>
-
+        <!--
         <div class="tableNgx">
           <ngx-datatable
             tableClass="table table-striped table-bordered table-hover tableNgx"
@@ -411,7 +411,26 @@
             [columns]="columns"
           >
           </ngx-datatable>
-        </div>
+        </div> -->
+        <table
+          datatable
+          [dtOptions]="dtOptions"
+          [dtTrigger]="dtTrigger"
+          class="row-border hover pt-4"
+        >
+          <thead>
+            <tr>
+              <th>Test Id</th>
+              <th>Test Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of tableData" class="py-2">
+              <td>{{ user.testNumber }}</td>
+              <td>{{ user.testName }}</td>
+            </tr>
+          </tbody>
+        </table>
         <div class="text-center pt-4">
           <button
             type="button"

@@ -9,8 +9,9 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
+import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
-import { finalize, takeWhile } from 'rxjs';
+import { Subject, finalize, takeWhile } from 'rxjs';
 
 @Component({
   selector: 'app-project-management',
@@ -18,6 +19,8 @@ import { finalize, takeWhile } from 'rxjs';
   styleUrls: ['./project-management.component.css'],
 })
 export class ProjectManagementComponent implements OnInit {
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
   projects: any = [];
   selectedProject: any = {};
   subscribeFlag = true;
@@ -33,12 +36,13 @@ export class ProjectManagementComponent implements OnInit {
     formulationTeam: [''],
     market: [''],
   });
-  columns: any;
-  options: any = {};
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions = {
+    pagingType: 'full_numbers',
+  };
 
   @ViewChild('closeButton') closeButton: ElementRef;
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
-  @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
   constructor(
     private readonly projectService: ProjectService,
@@ -50,25 +54,10 @@ export class ProjectManagementComponent implements OnInit {
 
   ngOnInit(): void {
     this.getProjects();
-    this.columns = [
-      { key: 'projectName', title: 'Project Name' },
-      { key: 'productName', title: 'Product Name' },
-      { key: 'productCode', title: 'Product Code' },
-      { key: 'projectId', title: 'Project ID' },
-      { key: 'dosageName', title: 'Dosage Name' },
-      { key: 'formulationName', title: 'Formulation Type' },
-      { key: 'strength', title: 'Strength' },
-      { key: 'formulationName', title: 'Formulation Department' },
-      { key: 'status', title: 'Status' },
-      {
-        key: 'options',
-        title: '<div class="blue">Options</div>',
-        align: { head: 'center', body: 'center' },
-        sorting: false,
-        width: 150,
-        cellTemplate: this.actionTpl,
-      },
-    ];
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(null);
   }
 
   addProject() {
@@ -83,6 +72,12 @@ export class ProjectManagementComponent implements OnInit {
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((projects) => {
         this.projects = projects;
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          // Destroy the table first
+          dtInstance.destroy();
+          // Call the dtTrigger to rerender again
+          this.dtTrigger.next(this.projects);
+        });
         this.globalService.hideLoader();
       });
   }

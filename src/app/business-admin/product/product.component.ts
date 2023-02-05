@@ -17,6 +17,7 @@ import { ProductService } from '@app/shared/services/product/product.service';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, Subject, takeWhile } from 'rxjs';
 import { Products } from './product.interface';
+import { DataTableDirective } from 'angular-datatables';
 
 @Component({
   selector: 'app-product',
@@ -24,6 +25,8 @@ import { Products } from './product.interface';
   styleUrls: ['./product.component.css'],
 })
 export class ProductComponent implements OnInit {
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
   products: Products[] = [];
   selectedProduct: Products = {} as Products;
   subscribeFlag = true;
@@ -31,12 +34,13 @@ export class ProductComponent implements OnInit {
     productName: ['', [Validators.required]],
     productCode: [''],
   });
-  columns: any;
-  options: any = {};
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions = {
+    pagingType: 'full_numbers',
+  };
 
   @ViewChild('closeButton') closeButton: ElementRef;
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
-  @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
   constructor(
     private readonly productService: ProductService,
@@ -47,19 +51,10 @@ export class ProductComponent implements OnInit {
 
   ngOnInit(): void {
     this.getProducts();
-    this.columns = [
-      { key: 'productName', title: 'Product Name' },
-      { key: 'productCode', title: 'Product Code' },
-      { key: 'status', title: 'Status' },
-      {
-        key: 'options',
-        title: '<div class="blue">Options</div>',
-        align: { head: 'center', body: 'center' },
-        sorting: false,
-        width: 150,
-        cellTemplate: this.actionTpl,
-      },
-    ];
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(null);
   }
 
   addProduct() {
@@ -78,6 +73,12 @@ export class ProductComponent implements OnInit {
           status: 'Active',
         }));
         this.products = newProductsList;
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          // Destroy the table first
+          dtInstance.destroy();
+          // Call the dtTrigger to rerender again
+          this.dtTrigger.next(this.products);
+        });
         this.globalService.hideLoader();
       });
   }

@@ -15,8 +15,9 @@ import {
 import { DosageService } from '@app/shared/services/dosage/dosage.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { ToastrService } from 'ngx-toastr';
-import { finalize, takeWhile } from 'rxjs';
+import { Subject, finalize, takeWhile } from 'rxjs';
 import { Dosages } from './dosage.interface';
+import { DataTableDirective } from 'angular-datatables';
 
 @Component({
   selector: 'app-dosage',
@@ -24,6 +25,8 @@ import { Dosages } from './dosage.interface';
   styleUrls: ['./dosage.component.css'],
 })
 export class DosageComponent implements OnInit {
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
   dosages: Dosages[] = [];
   selectedDosage: Dosages = {} as Dosages;
   subscribeFlag = true;
@@ -32,14 +35,14 @@ export class DosageComponent implements OnInit {
     formulations: this.formBuilder.array([this.addFormulations()]),
   });
 
-  columns: any = [];
-  options: any = {};
-
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions = {
+    pagingType: 'full_numbers',
+  };
   formulations = this.dosageForm.get('formulations') as FormArray;
 
   @ViewChild('closeButton') closeButton: ElementRef;
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
-  @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
   constructor(
     private readonly dosageService: DosageService,
@@ -50,19 +53,10 @@ export class DosageComponent implements OnInit {
 
   ngOnInit(): void {
     this.getDosages();
-    this.columns = [
-      { key: 'dosageName', title: 'Dosage Name' },
-      { key: 'formulationsList', title: 'Formulations' },
-      { key: 'status', title: 'Status' },
-      {
-        key: 'options',
-        title: '<div class="blue">Options</div>',
-        align: { head: 'center', body: 'center' },
-        sorting: false,
-        width: 150,
-        cellTemplate: this.actionTpl,
-      },
-    ];
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(null);
   }
 
   addFormulations(): FormGroup {
@@ -96,7 +90,14 @@ export class DosageComponent implements OnInit {
           ),
           status: 'Active',
         }));
-        this.dosages = newDosagesList;
+        this.dosages = [...newDosagesList];
+        console.log(this.dtElement);
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          // Destroy the table first
+          dtInstance.destroy();
+          // Call the dtTrigger to rerender again
+          this.dtTrigger.next(this.dosages);
+        });
         this.globalService.hideLoader();
       });
   }
@@ -165,13 +166,13 @@ export class DosageComponent implements OnInit {
     });
   }
 
-  confirmProductDeletetion(product: Dosages) {
-    this.selectedDosage = product;
+  confirmProductDeletetion(dosage: Dosages) {
+    this.selectedDosage = dosage;
   }
 
   deleteDosage() {
     this.dosageService
-      .deleteDosage(this.selectedDosage.dosageId)
+      .deleteDosage(this.selectedDosage)
       .pipe(
         takeWhile(() => this.subscribeFlag),
         finalize(() => {

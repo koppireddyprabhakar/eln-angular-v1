@@ -15,6 +15,7 @@ import { AddTestComponent } from './test/add-test/add-test.component';
 import { AddUserComponent } from './user/add-user/add-user.component';
 import { ProjectManagementComponent } from './project-management/project-management.component';
 import { AddProjectManagementComponent } from './project-management/add-project-management/add-project-management.component';
+import { DataTablesModule } from 'angular-datatables';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { AddProjectManagementComponent } from './project-management/add-project-
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
+    DataTablesModule,
   ],
 })
 export class BusinessAdminModule {}

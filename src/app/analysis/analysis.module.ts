@@ -15,6 +15,7 @@ import { CKEditorModule } from 'ckeditor4-angular';
 import { AnalysisNewExperimentComponent } from './analysis-new-experiment/analysis-new-experiment.component';
 import { ReviewExperimentsComponent } from './review-experiments/review-experiments.component';
 import { ReviewExperimentsListComponent } from './review-experiments-list/review-experiments-list.component';
+import { DataTablesModule } from 'angular-datatables';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { ReviewExperimentsListComponent } from './review-experiments-list/review
     AnalysisRoutingModule,
     CKEditorModule,
     NgxDatatableModule,
+    DataTablesModule,
     NgMultiSelectDropDownModule.forRoot(),
   ],
 })

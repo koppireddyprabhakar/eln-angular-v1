@@ -1,0 +1,144 @@
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1 class="pb-2">Projects</h1>
+    <div class="card">
+      <div class="card-body pt-4">
+        <div class="tab-content inner-card outer-tab-border" id="myTabContent">
+          <div
+            class="tab-pane fade show active"
+            id="projects"
+            role="tabpanel"
+            aria-labelledby="projects-tab"
+          >
+            <div class="card pt-4">
+              <div class="card-body">
+                <ul class="nav nav-tabs" id="myTab1" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button
+                      class="nav-link active"
+                      id="allProjects-tab"
+                      data-bs-toggle="tab"
+                      data-bs-target="#allProjects"
+                      type="button"
+                      role="tab"
+                      aria-controls="allProjects"
+                      aria-selected="true"
+                      (click)="getProjects()"
+                    >
+                      All Projects
+                    </button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button
+                      class="nav-link"
+                      id="myProjects-tab"
+                      data-bs-toggle="tab"
+                      data-bs-target="#myProjects"
+                      type="button"
+                      role="tab"
+                      aria-controls="myProjects"
+                      aria-selected="false"
+                      (click)="getMyProjects()"
+                    >
+                      My Projects
+                    </button>
+                  </li>
+                </ul>
+                <div class="tab-content inner-card" id="myTab1Content">
+                  <div
+                    class="tab-pane fade show active pt-4"
+                    id="allProjects"
+                    role="tabpanel"
+                    aria-labelledby="allProjects-tab"
+                  >
+                    <table
+                      id="first-table"
+                      datatable
+                      [dtOptions]="dtOptions"
+                      [dtTrigger]="dtTrigger"
+                      class="row-border hover"
+                    >
+                      <thead>
+                        <tr>
+                          <th>Project Name</th>
+                          <th>Product Name</th>
+                          <th>Product Code</th>
+                          <th>Project ID</th>
+                          <th>Dosage Name</th>
+                          <th>Formulation Type</th>
+                          <th>Strength</th>
+                          <th>Formulation Department</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let project of projects">
+                          <td>{{ project.projectName }}</td>
+                          <td>{{ project.productName }}</td>
+                          <td>{{ project.productCode }}</td>
+                          <td>{{ project.projectId }}</td>
+                          <td>{{ project.dosageName }}</td>
+                          <td>{{ project.formulationName }}</td>
+                          <td>{{ project.strength }}</td>
+                          <td>{{ project.formulationName }}</td>
+                          <td>{{ project.status }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div
+                    class="tab-pane fade pt-4"
+                    id="myProjects"
+                    role="tabpanel"
+                    aria-labelledby="myProjects-tab"
+                  >
+                    <table
+                      id="second-table"
+                      datatable
+                      [dtOptions]="dtMyProjectsOptions"
+                      [dtTrigger]="dtMyProjectsTrigger"
+                      class="row-border hover"
+                    >
+                      <thead>
+                        <tr>
+                          <th>Project Name</th>
+                          <th>Product Name</th>
+                          <th>Product Code</th>
+                          <th>Dosage Name</th>
+                          <th>Formulation Type</th>
+                          <th>Strength</th>
+                          <th>Status</th>
+                          <th>Options</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let project of myProjects">
+                          <td>{{ project.projectName }}</td>
+                          <td>{{ project.productName }}</td>
+                          <td>{{ project.productCode }}</td>
+                          <td>{{ project.dosageName }}</td>
+                          <td>{{ project.formulationName }}</td>
+                          <td>{{ project.strength }}</td>
+                          <td>{{ project.status }}</td>
+                          <td>
+                            <button
+                              type="button"
+                              (click)="createFormulation(project.projectId)"
+                              class="btn btn-outline-primary"
+                            >
+                              Create Experiment
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

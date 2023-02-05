@@ -7,5 +7,6 @@ export interface Dosages {
   status: any;
   dosageName: string | null;
   formulations?: any;
+  formulationsList?: any;
   _autoId: any;
 }

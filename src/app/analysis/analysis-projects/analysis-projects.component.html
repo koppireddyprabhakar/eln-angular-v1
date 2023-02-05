@@ -35,79 +35,92 @@
       </ul>
       <div class="tab-content inner-card" id="myTab1Content">
         <div
-          class="tab-pane fade show active"
+          class="tab-pane fade show active pt-4"
           id="allProjects"
           role="tabpanel"
           aria-labelledby="allProjects-tab"
         >
-          <div class="tableNgx">
-            <ngx-datatable
-              tableClass="table table-striped table-bordered table-hover tableNgx"
-              [data]="projects"
-              [options]="options"
-              [columns]="allProjColumns"
-            >
-            </ngx-datatable>
-          </div>
+          <table
+            id="first-table"
+            datatable
+            [dtOptions]="dtOptions"
+            [dtTrigger]="dtTrigger"
+            class="row-border hover"
+          >
+            <thead>
+              <tr>
+                <th>Project Name</th>
+                <th>Product Name</th>
+                <th>Product Code</th>
+                <th>Project ID</th>
+                <th>Dosage Name</th>
+                <th>Formulation Type</th>
+                <th>Strength</th>
+                <th>Formulation Department</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let project of projects">
+                <td>{{ project.projectName }}</td>
+                <td>{{ project.productName }}</td>
+                <td>{{ project.productCode }}</td>
+                <td>{{ project.projectId }}</td>
+                <td>{{ project.dosageName }}</td>
+                <td>{{ project.formulationName }}</td>
+                <td>{{ project.strength }}</td>
+                <td>{{ project.formulationName }}</td>
+                <td>{{ project.status }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
         <div
-          class="tab-pane fade"
+          class="tab-pane fade pt-4"
           id="myProjects"
           role="tabpanel"
           aria-labelledby="myProjects-tab"
         >
-          <div class="tableNgx">
-            <ngx-datatable
-              tableClass="table table-striped table-bordered table-hover tableNgx"
-              [data]="myProjects"
-              [options]="options"
-              [columns]="myProjColumns"
-            >
-              <ng-template
-                #actionTpl
-                let-row
-                let-rowIndex="rowIndex"
-                let-columnValue="columnValue"
-              >
-                &nbsp;&nbsp;
-                <button
-                  type="button"
-                  (click)="createFormulation(row.projectId)"
-                  class="btn btn-outline-primary"
-                >
-                  Create Experiment
-                </button>
-              </ng-template>
-            </ngx-datatable>
-          </div>
-
-          <!-- <div
-          class="tab-pane fade"
-          [ngClass]="{
-            active: activeTab === 'rseults',
-            show: activeTab === 'rseults'
-          }"
-          id="rseults"
-          role="tabpanel"
-          aria-labelledby="rseults-tab"
-        >
-          <div class="row mb-3">Results Tab</div>
-          <div class="row mb-3">
-            <label *ngIf="files.length > 0">Uploaded Attachements</label>
-            <span *ngFor="let file of files">
-              <div class="file-container">
-                <span
-                  class="file-list"
-                  (click)="getFileContent(file.name, file.experimentId)"
-                  >{{ file.name | titlecase }}</span
-                >
-                <span class="align-right" (click)="removeAttachment(file)"
-                  >Remove <i class="bi bi-trash-fill pointer"></i
-                ></span>
-              </div>
-            </span>
-          </div>
-        </div> -->
+          <table
+            id="second-table"
+            datatable
+            [dtOptions]="dtMyProjectsOptions"
+            [dtTrigger]="dtMyProjectsTrigger"
+            class="row-border hover"
+          >
+            <thead>
+              <tr>
+                <th>Project Name</th>
+                <th>Product Name</th>
+                <th>Product Code</th>
+                <th>Dosage Name</th>
+                <th>Formulation Type</th>
+                <th>Strength</th>
+                <th>Status</th>
+                <th>Options</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let project of myProjects">
+                <td>{{ project.projectName }}</td>
+                <td>{{ project.productName }}</td>
+                <td>{{ project.productCode }}</td>
+                <td>{{ project.dosageName }}</td>
+                <td>{{ project.formulationName }}</td>
+                <td>{{ project.strength }}</td>
+                <td>{{ project.status }}</td>
+                <td>
+                  <button
+                    type="button"
+                    (click)="createFormulation(project.projectId)"
+                    class="btn btn-outline-primary"
+                  >
+                    Create Experiment
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

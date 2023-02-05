@@ -3,12 +3,13 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { TrfService } from '@app/shared/services/test-request-form/trf.service';
-import { finalize, takeWhile } from 'rxjs';
+import { Subject, finalize, takeWhile } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { Dosages } from '@app/business-admin/dosage/dosage.interface';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { TestService } from '@app/shared/services/test/test.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
+import { DataTableDirective } from 'angular-datatables';
 
 @Component({
   selector: 'app-add-trf',
@@ -16,9 +17,16 @@ import { FormulationsService } from '@app/shared/services/formulations/formulati
   styleUrls: ['./add-trf.component.scss'],
 })
 export class AddTrfComponent implements OnInit {
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
+
   public testRequest: any = {};
   private subscribeFlag: boolean = true;
   public dosagesList: Dosages[] = [];
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions = {
+    pagingType: 'full_numbers',
+  };
 
   expId: number;
   experiment: any;
@@ -155,6 +163,12 @@ export class AddTrfComponent implements OnInit {
       testNumber: `${this.staticTrfId}-A${index}`,
       testResult: '',
     }));
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next(this.tableData);
+    });
   }
   deselect(item: any) {
     this.tableData = this.tableData.filter(
@@ -166,6 +180,12 @@ export class AddTrfComponent implements OnInit {
       testNumber: `${this.staticTrfId}-A${index}`,
       testResult: '',
     }));
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next(this.tableData);
+    });
   }
   onSelectAll(items: any) {
     this.tableData = this.tests.map((test, index) => ({
@@ -174,6 +194,12 @@ export class AddTrfComponent implements OnInit {
       testNumber: `${this.staticTrfId}-A${index}`,
       testResult: '',
     }));
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next(this.tableData);
+    });
   }
 
   saveTestRequestForm() {

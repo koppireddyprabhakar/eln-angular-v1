@@ -15,6 +15,9 @@ import { FormsPageComponent } from './forms-page/forms-page.component';
 import { FormulationsRoutingModule } from './formulations-routing.module';
 import { ReviewFormulationsComponent } from './review-formulations/review-formulations.component';
 import { ReviewFormulationsListComponent } from './review-formulations-list/review-formulations-list.component';
+import { FormulationsProjectsComponent } from './formulations-projects/formulations-projects.component';
+import { DataTablesModule } from 'angular-datatables';
+import { FormulationsExperimentComponent } from './formulations-experiment/formulations-experiment.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +27,8 @@ import { ReviewFormulationsListComponent } from './review-formulations-list/revi
     FormsPageComponent,
     ReviewFormulationsComponent,
     ReviewFormulationsListComponent,
+    FormulationsProjectsComponent,
+    FormulationsExperimentComponent,
   ],
   imports: [
     CommonModule,
@@ -34,6 +39,7 @@ import { ReviewFormulationsListComponent } from './review-formulations-list/revi
     CKEditorModule,
     TrfDashboardModule,
     FormulationsRoutingModule,
+    DataTablesModule,
     NgMultiSelectDropDownModule.forRoot(),
   ],
 })
