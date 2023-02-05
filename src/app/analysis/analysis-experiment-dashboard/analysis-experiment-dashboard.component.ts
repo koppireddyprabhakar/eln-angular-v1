@@ -12,13 +12,17 @@ import { ExperimentService } from '@app/shared/services/experiment/experiment.se
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
+import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
+import { Subject } from 'rxjs';
 @Component({
   selector: 'app-analysis-experiment-dashboard',
   templateUrl: './analysis-experiment-dashboard.component.html',
   styleUrls: ['./analysis-experiment-dashboard.component.scss'],
 })
 export class AnalysisExperimentDashboardComponent implements OnInit {
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
   @ViewChild('inputfields') inputfields!: ElementRef;
   dummyTabs: any = [
     { label: 'Purpose and Conclusions', isEdit: false, value: 'primary' },
@@ -59,6 +63,10 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     experimentName: ['', [Validators.required]],
     batchSize: ['' as any, [Validators.required]],
   });
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions = {
+    pagingType: 'full_numbers',
+  };
 
   constructor(
     private readonly projectService: ProjectService,
@@ -71,7 +79,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private route: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.getExcipients();
@@ -101,6 +109,10 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     // this.isCreatedExperiment = this.experimentId ? true : false;
     this.getAnalysisExperimentDetails(this.analysisID);
     this.getProjectDetails();
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(null);
   }
 
   getProjectDetails() {
@@ -144,6 +156,12 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
         if (data.length > 0) {
           this.tableData = data;
           this.selectedItems = data;
+          this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+            // Destroy the table first
+            dtInstance.destroy();
+            // Call the dtTrigger to rerender again
+            this.dtTrigger.next(this.tableData);
+          });
         }
       });
   }
@@ -171,7 +189,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     const fileData = { ...file, projectId: this.projectId };
     this.experimentService
       .deleteExperimentAttachment(file)
-      .subscribe((experimentDetails) => { });
+      .subscribe((experimentDetails) => {});
   }
 
   getExcipients() {
@@ -215,6 +233,12 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
           this.savedSelectedItems =
             analysisExperimentDetails.analysisExcipients;
           this.tableData = analysisExperimentDetails.analysisExcipients;
+          this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+            // Destroy the table first
+            dtInstance.destroy();
+            // Call the dtTrigger to rerender again
+            this.dtTrigger.next(this.tableData);
+          });
           // this.experimentDetails = experimentDetails;
           this.batchNumber = analysisExperimentDetails.batchNumber;
           this.summaryForm.patchValue({
@@ -296,6 +320,12 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
         this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
       )
       .map((table) => ({ ...table, analysisId: Number(this.analysisID) }));
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next(this.tableData);
+    });
   }
   deselect(item: any) {
     // this.tableData = this.inwards.filter(({ excipientId: id1 }) =>
@@ -304,9 +334,21 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     this.tableData = this.tableData.filter(
       (data) => data.excipientId !== item.excipientId
     );
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next(this.tableData);
+    });
   }
   onSelectAll(items: any) {
     this.tableData = this.inwards;
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next(this.tableData);
+    });
   }
 
   saveTab(index, label) {
@@ -326,7 +368,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     });
   }
 
-  saveAttachment() { }
+  saveAttachment() {}
 
   onChange(event) {
     this.file = event.target.files[0];
@@ -372,18 +414,17 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   }
 
   updateAnalysisStatus(status: string, summary?: string) {
-
     let analysisRequest = {
       analysisId: this.analysisID,
       status: status,
-      summary: summary ? summary : status
-    }
+      summary: summary ? summary : status,
+    };
 
-    this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
-      this.toastr.success(data['data'], 'Success');
-      this.route.navigateByUrl(
-        `/exp-analysis/analysis-experiments`
-      );
-    });
+    this.analysisService
+      .updateAnalysisStatus(analysisRequest)
+      .subscribe((data) => {
+        this.toastr.success(data['data'], 'Success');
+        this.route.navigateByUrl(`/exp-analysis/analysis-experiments`);
+      });
   }
 }

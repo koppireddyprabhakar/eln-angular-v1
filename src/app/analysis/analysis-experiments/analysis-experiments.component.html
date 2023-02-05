@@ -93,6 +93,7 @@
                 <th>Formulation Type</th>
                 <th>Strength</th>
                 <th>Status</th>
+                <th>Options</th>
               </tr>
             </thead>
             <tbody>
@@ -104,6 +105,15 @@
                 <td>{{ experiment.formulationName }}</td>
                 <td>{{ experiment.strength }}</td>
                 <td>{{ experiment.status }}</td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary"
+                    (click)="onRowClick(experiment)"
+                  >
+                    Edit
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>

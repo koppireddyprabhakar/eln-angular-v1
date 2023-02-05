@@ -14,7 +14,9 @@ import { FormulationsService } from '@app/shared/services/formulations/formulati
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { TestService } from '@app/shared/services/test/test.service';
+import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-review-formulations',
@@ -22,6 +24,8 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./review-formulations.component.scss'],
 })
 export class ReviewFormulationsComponent implements OnInit {
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
   @ViewChild('inputfields') inputfields!: ElementRef;
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
   dummyTabs: any = [
@@ -47,6 +51,10 @@ export class ReviewFormulationsComponent implements OnInit {
     expiryDate: ['', [Validators.required]],
     testRequestRow: this.formBuilder.array([this.addTests()]),
   });
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions = {
+    pagingType: 'full_numbers',
+  };
 
   inputValue: string;
   projectId: number;
@@ -161,6 +169,10 @@ export class ReviewFormulationsComponent implements OnInit {
     this.getTests();
   }
 
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(null);
+  }
+
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
       console.log(project);
@@ -227,6 +239,12 @@ export class ReviewFormulationsComponent implements OnInit {
         if (data.length > 0) {
           this.tableData = data;
           this.selectedItems = data;
+          this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+            // Destroy the table first
+            dtInstance.destroy();
+            // Call the dtTrigger to rerender again
+            this.dtTrigger.next(this.tableData);
+          });
         }
       });
   }
@@ -397,6 +415,12 @@ export class ReviewFormulationsComponent implements OnInit {
         this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
       )
       .map((table) => ({ ...table, analysisId: Number(this.experimentId) }));
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next(this.tableData);
+    });
   }
   deselect(item: any) {
     // this.tableData = this.inwards.filter(({ excipientId: id1 }) =>
@@ -405,9 +429,21 @@ export class ReviewFormulationsComponent implements OnInit {
     this.tableData = this.tableData.filter(
       (data) => data.excipientId !== item.excipientId
     );
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next(this.tableData);
+    });
   }
   onSelectAll(items: any) {
     this.tableData = this.inwards;
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next(this.tableData);
+    });
   }
 
   saveAttachment() {}

@@ -101,6 +101,10 @@ export class AddTrfComponent implements OnInit {
     this.getTests();
   }
 
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(null);
+  }
+
   getExperimentDetails() {
     const flatten = (object) => {
       let value = {};
@@ -151,6 +155,12 @@ export class AddTrfComponent implements OnInit {
 
   resultValue(event, index) {
     this.tableData[index]['result'] = event.target.value;
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next(this.tableData);
+    });
   }
 
   onItemSelect(item: any) {
@@ -231,7 +241,7 @@ export class AddTrfComponent implements OnInit {
         )
         .subscribe(() => {
           this.toastr.success('Test has been added succesfully', 'Success');
-          this.route.navigate(['/forms-page/new-formulation']);
+          this.route.navigate(['/forms-page/experiments']);
         });
     } else {
       this.testRequestForm.get('testRequestId')?.markAsDirty();

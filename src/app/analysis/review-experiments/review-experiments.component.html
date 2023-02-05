@@ -124,34 +124,6 @@
               Review
             </button>
           </li>
-          <!-- <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="profile-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#profile"
-              type="button"
-              role="tab"
-              aria-controls="profile"
-              aria-selected="false"
-            >
-              Profile
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="contact-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#contact"
-              type="button"
-              role="tab"
-              aria-controls="contact"
-              aria-selected="false"
-            >
-              Contact
-            </button>
-          </li> -->
         </ul>
         <div class="tab-content pt-2" id="myTabContent">
           <div
@@ -268,45 +240,6 @@
                           </div>
                         </div>
                       </form>
-
-                      <!-- <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-3 col-form-label"
-                          >Product Code</label
-                        >
-                        <div class="col-sm-9 pt-1">Random Name</div>
-                      </div> -->
-                      <!-- <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-3 col-form-label"
-                          >Dosage Name</label
-                        >
-                        <div class="col-sm-9 pt-1">Random Name</div>
-                      </div>
-                      <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-3 col-form-label"
-                          >Formulation Type</label
-                        >
-                        <div class="col-sm-9 pt-1">Random Name</div>
-                      </div>
-                      <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-3 col-form-label"
-                          >Strength</label
-                        >
-                        <div class="col-sm-9 pt-1">Random Name</div>
-                      </div>
-                      <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-3 col-form-label"
-                          >Formulation Department</label
-                        >
-                        <div class="col-sm-9 pt-1">Random Name</div>
-                      </div> -->
-                      <!-- <div class="text-center">
-                        <button type="submit" class="btn btn-primary">
-                          Submit
-                        </button>
-                        <button type="reset" class="btn btn-secondary">
-                          Reset
-                        </button>
-                      </div> -->
                     </div>
                   </div>
                 </div>
@@ -337,7 +270,7 @@
 
           <!-- </section> -->
           <div
-            class="tab-pane fade"
+            class="tab-pane fade pt-4"
             [ngClass]="{
               active: activeTab === 'contact',
               show: activeTab === 'contact'
@@ -346,24 +279,36 @@
             role="tabpanel"
             aria-labelledby="contact-tab"
           >
-            <div class="tableNgx">
-              <ngx-datatable
-                tableClass="table table-striped table-bordered table-hover tableNgx"
-                [data]="tableData"
-                [options]="options"
-                [columns]="columns"
-              >
-              </ngx-datatable>
-            </div>
-            <div class="text-center pt-3">
-              <button
-                type="submit"
-                class="btn btn-primary mt-3"
-                (click)="saveExcipients()"
-              >
-                Submit
-              </button>
-            </div>
+            <table
+              id="first-table"
+              datatable
+              [dtOptions]="dtOptions"
+              [dtTrigger]="dtTrigger"
+              class="row-border hover"
+            >
+              <thead>
+                <tr>
+                  <th>Inward Name</th>
+                  <th>Material Name</th>
+                  <th>Material Type</th>
+                  <th>Batch Number</th>
+                  <th>Source Name</th>
+                  <th>Potency</th>
+                  <th>Grade</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of tableData">
+                  <td>{{ user.excipientsName }}</td>
+                  <td>{{ user.materialName }}</td>
+                  <td>{{ user.materialType }}</td>
+                  <td>{{ user.batchNo }}</td>
+                  <td>{{ user.sourceName }}</td>
+                  <td>{{ user.potency }}</td>
+                  <td>{{ user.grade }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <div
@@ -720,29 +665,37 @@
             </form>
             <h3 class="mt-4">Lab Tests</h3>
 
-            <div class="tableNgx">
-              <ngx-datatable
-                tableClass="table table-striped table-bordered table-hover tableNgx"
-                [data]="tableTestData"
-                [options]="options"
-                [columns]="testColumns"
-              >
-                <ng-template
-                  #actionTpl
-                  let-row
-                  let-rowIndex="rowIndex"
-                  let-columnValue="columnValue"
-                >
-                  <textarea
-                    class="form-control"
-                    style="height: 50px"
-                    [(ngModel)]="tableTestData[rowIndex].testResult"
-                    (change)="resultChange($event.target, rowIndex)"
-                    [readOnly]="true"
-                  ></textarea>
-                </ng-template>
-              </ngx-datatable>
-            </div>
+            <table
+              id="second-table"
+              datatable
+              [dtOptions]="dtMyProjectsOptions"
+              [dtTrigger]="dtMyProjectsTrigger"
+              class="row-border hover"
+            >
+              <thead>
+                <tr>
+                  <th>Test Id</th>
+                  <th>Test Name</th>
+                  <th>Results</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of tableTestData; let rowIndex = index">
+                  <td>{{ user.testNumber }}</td>
+                  <td>{{ user.testName }}</td>
+
+                  <td class="options-width">
+                    <textarea
+                      class="form-control"
+                      style="height: 50px"
+                      [(ngModel)]="tableTestData[rowIndex].testResult"
+                      (change)="resultChange($event.target, rowIndex)"
+                      [readOnly]="true"
+                    ></textarea>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <div

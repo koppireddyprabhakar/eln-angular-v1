@@ -2,9 +2,11 @@ import {
   Component,
   ElementRef,
   OnInit,
+  QueryList,
   Renderer2,
   TemplateRef,
   ViewChild,
+  ViewChildren,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,8 +16,9 @@ import { FormulationsService } from '@app/shared/services/formulations/formulati
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { TestService } from '@app/shared/services/test/test.service';
+import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
-import { takeWhile } from 'rxjs';
+import { Subject, takeWhile } from 'rxjs';
 
 @Component({
   selector: 'app-analysis-new-experiment',
@@ -23,6 +26,8 @@ import { takeWhile } from 'rxjs';
   styleUrls: ['./analysis-new-experiment.component.scss'],
 })
 export class AnalysisNewExperimentComponent implements OnInit {
+  @ViewChildren(DataTableDirective)
+  dtElements: QueryList<DataTableDirective>;
   @ViewChild('inputfields') inputfields!: ElementRef;
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
   dummyTabs: any = [
@@ -90,6 +95,14 @@ export class AnalysisNewExperimentComponent implements OnInit {
     experimentName: ['', [Validators.required]],
     batchSize: ['' as any, [Validators.required]],
   });
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions = {
+    pagingType: 'full_numbers',
+  };
+  dtMyProjectsTrigger: Subject<any> = new Subject<any>();
+  dtMyProjectsOptions: DataTables.Settings = {
+    pagingType: 'full_numbers',
+  };
 
   constructor(
     private readonly projectService: ProjectService,
@@ -103,7 +116,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private route: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.selectedTrfs$.subscribe((trfs) => {
@@ -160,6 +173,11 @@ export class AnalysisNewExperimentComponent implements OnInit {
     this.getAnalysisById(this.experimentId);
     this.getProjectDetails();
     this.getTests();
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(null);
+    this.dtMyProjectsTrigger.next(null);
   }
 
   getProjectDetails() {
@@ -227,11 +245,16 @@ export class AnalysisNewExperimentComponent implements OnInit {
         if (this.resultData.analysisId) {
           this.tableTestData = this.resultData.trfTestResults;
           this.selectedTestItems = this.resultData.trfTestResults;
-          console.log(this.tableTestData);
-          // this.tableTestData = this.resultData.trfTestResults.map((result) => ({
-          //   ...result,
-          //   testResult: result.testResult,
-          // }));
+          this.dtElements.forEach(
+            (dtElement: DataTableDirective, index: number) => {
+              dtElement.dtInstance.then((dtInstance: any) => {
+                if (dtInstance.table().node().id === 'second-table') {
+                  dtInstance.destroy();
+                  this.dtMyProjectsTrigger.next(this.tableTestData);
+                }
+              });
+            }
+          );
         }
       });
   }
@@ -244,6 +267,16 @@ export class AnalysisNewExperimentComponent implements OnInit {
         if (data.length > 0) {
           this.tableData = data;
           this.selectedItems = data;
+          this.dtElements.forEach(
+            (dtElement: DataTableDirective, index: number) => {
+              dtElement.dtInstance.then((dtInstance: any) => {
+                if (dtInstance.table().node().id === 'first-table') {
+                  dtInstance.destroy();
+                  this.dtTrigger.next(this.tableData);
+                }
+              });
+            }
+          );
         }
       });
   }
@@ -261,6 +294,14 @@ export class AnalysisNewExperimentComponent implements OnInit {
 
   resultChange(event, index) {
     this.tableTestData[index].testResult = event.value;
+    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'second-table') {
+          dtInstance.destroy();
+          this.dtMyProjectsTrigger.next(this.tableTestData);
+        }
+      });
+    });
   }
 
   getTests() {
@@ -279,6 +320,14 @@ export class AnalysisNewExperimentComponent implements OnInit {
       testStatus: 'string',
       testNumber: `${this.staticTrfId}-A${index}`,
     }));
+    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'second-table') {
+          dtInstance.destroy();
+          this.dtMyProjectsTrigger.next(this.tableTestData);
+        }
+      });
+    });
   }
   testdeselect(item: any) {
     console.log(item);
@@ -291,6 +340,14 @@ export class AnalysisNewExperimentComponent implements OnInit {
       testNumber: `${this.staticTrfId}-A${index}`,
       testResult: '',
     }));
+    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'second-table') {
+          dtInstance.destroy();
+          this.dtMyProjectsTrigger.next(this.tableTestData);
+        }
+      });
+    });
   }
   onTestSelectAll(items: any) {
     console.log(items);
@@ -300,10 +357,26 @@ export class AnalysisNewExperimentComponent implements OnInit {
       testNumber: `${this.staticTrfId}-A${index}`,
       testResult: '',
     }));
+    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'second-table') {
+          dtInstance.destroy();
+          this.dtMyProjectsTrigger.next(this.tableTestData);
+        }
+      });
+    });
   }
 
   resultValue(event, index) {
     this.tableTestData[index]['result'] = event.target.value;
+    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'second-table') {
+          dtInstance.destroy();
+          this.dtMyProjectsTrigger.next(this.tableTestData);
+        }
+      });
+    });
   }
 
   saveTestRequestForm() {
@@ -368,7 +441,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
     const fileData = { ...file, projectId: this.projectId };
     this.experimentService
       .deleteExperimentAttachment(file)
-      .subscribe((experimentDetails) => { });
+      .subscribe((experimentDetails) => {});
   }
 
   getExcipients() {
@@ -485,6 +558,14 @@ export class AnalysisNewExperimentComponent implements OnInit {
         this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
       )
       .map((table) => ({ ...table, analysisId: Number(this.experimentId) }));
+    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'first-table') {
+          dtInstance.destroy();
+          this.dtTrigger.next(this.tableData);
+        }
+      });
+    });
   }
   deselect(item: any) {
     // this.tableData = this.inwards.filter(({ excipientId: id1 }) =>
@@ -493,9 +574,25 @@ export class AnalysisNewExperimentComponent implements OnInit {
     this.tableData = this.tableData.filter(
       (data) => data.excipientId !== item.excipientId
     );
+    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'first-table') {
+          dtInstance.destroy();
+          this.dtTrigger.next(this.tableData);
+        }
+      });
+    });
   }
   onSelectAll(items: any) {
     this.tableData = this.inwards;
+    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'first-table') {
+          dtInstance.destroy();
+          this.dtTrigger.next(this.tableData);
+        }
+      });
+    });
   }
 
   saveTab(index, data) {
@@ -516,7 +613,8 @@ export class AnalysisNewExperimentComponent implements OnInit {
     };
     this.analysisService.saveAnalysisDetails(tabValue).subscribe((data) => {
       this.toastr.success(
-        `Experiment detail ${this.dummyTabs[index].id ? 'updated' : 'created'
+        `Experiment detail ${
+          this.dummyTabs[index].id ? 'updated' : 'created'
         } successfully`,
         'Success'
       );
@@ -528,7 +626,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
     });
   }
 
-  saveAttachment() { }
+  saveAttachment() {}
 
   onChange(event) {
     this.file = event.target.files[0];
@@ -562,12 +660,13 @@ export class AnalysisNewExperimentComponent implements OnInit {
     let analysisRequest = {
       analysisId: this.experimentId,
       status: status,
-      summary: summary ? summary : status
-    }
-    this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
-      this.toastr.success(data['data'], 'Success');
-      this.route.navigateByUrl(`/exp-analysis/list`);
-    });
+      summary: summary ? summary : status,
+    };
+    this.analysisService
+      .updateAnalysisStatus(analysisRequest)
+      .subscribe((data) => {
+        this.toastr.success(data['data'], 'Success');
+        this.route.navigateByUrl(`/exp-analysis/list`);
+      });
   }
-
 }
