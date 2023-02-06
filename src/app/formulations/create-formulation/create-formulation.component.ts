@@ -409,10 +409,13 @@ export class CreateFormulationComponent implements OnInit {
   }
 
   updateExperimentStatus() {
-    this.experimentService
-      .updateExperimentStatus(this.experimentId, 'Complete')
-      .subscribe((data) => {
-        this.toastr.success(data['data'], 'Success');
-      });
+    this.experimentService.updateExperimentStatus(this.experimentId, 'Complete').subscribe((data) => {
+      this.toastr.success(data['data'], 'Success');
+
+      this.route.navigateByUrl(
+        `/forms-page/new-formulation`
+      );
+    });
   }
+
 }

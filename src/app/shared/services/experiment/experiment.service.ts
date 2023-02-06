@@ -132,6 +132,24 @@ export class ExperimentService {
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
+  createExperimentReview(experimentReview: any) {
+    const url = `${elnEndpointsConfig.endpoints['createExperimentReview']}`
+    return this.http.post<string>(url, experimentReview);
+  }
+
+  updateExperimentReview(experimentReview: any) {
+    const url = `${elnEndpointsConfig.endpoints['updateExperimentReview']}`
+    return this.http.put<string>(url, experimentReview);
+  }
+
+  getExperimentReviewByExperimentId(experimentId) {
+    const url = `${elnEndpointsConfig.endpoints['getExperimentReviewByExperimentId']
+      }?experimentId=${experimentId}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
   handleError(error: HttpErrorResponse) {
     const errorDetail = ClientService.formatError(error);
     if (errorDetail && (errorDetail.title || errorDetail.errorMessage)) {

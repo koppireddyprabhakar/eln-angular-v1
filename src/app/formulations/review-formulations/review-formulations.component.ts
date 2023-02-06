@@ -97,6 +97,8 @@ export class ReviewFormulationsComponent implements OnInit {
     experimentName: ['', [Validators.required]],
     batchSize: ['' as any, [Validators.required]],
   });
+  reviewData: any = {};
+  comments: string;
 
   constructor(
     private readonly projectService: ProjectService,
@@ -197,6 +199,9 @@ export class ReviewFormulationsComponent implements OnInit {
     }
     if (activeTab === 'excipients') {
       this.getExcipientDetails();
+    }
+    if (activeTab === 'review') {
+      this.getExperimentReview()
     }
     console.log(activeTab.substring(3));
     if (activeTab.substring(0, 3) === 'tab') {
@@ -475,4 +480,28 @@ export class ReviewFormulationsComponent implements OnInit {
         this.toastr.success(data.data, 'Success');
       });
   }
+
+  getExperimentReview() {
+    this.experimentService
+      .getExperimentReviewByExperimentId(this.experimentId)
+      .subscribe((details) => {
+        this.reviewData = details;
+      });
+  }
+
+  updateExperimentReview() {
+
+    const reviewRequest = {
+      experimentReviewId: this.reviewData['experimentReviewId'],
+      reviewUserId: this.reviewData['reviewUserId'],
+      experimentId: this.reviewData['experimentId'],
+      comments: this.comments
+    };
+
+    this.experimentService.updateExperimentReview(reviewRequest).subscribe((data) => {
+      this.toastr.success(data['data'], 'Success');
+      this.route.navigateByUrl(`/forms-page/review-formulations`);
+    });
+  }
+
 }

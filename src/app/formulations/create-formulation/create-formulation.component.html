@@ -436,14 +436,13 @@
 
             <!-- COMPLETE BUTTON-->
             <div class="text-center pt-3">
-              <button
-                type="submit"
-                class="btn btn-primary mt-3"
-                (click)="updateExperimentStatus()"
-              >
+              <button type="submit"
+                *ngIf="experimentDetails && experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase()"
+                class="btn btn-primary mt-3" (click)="updateExperimentStatus()">
                 Complete Experiment
               </button>
             </div>
+
           </div>
         </div>
       </div>

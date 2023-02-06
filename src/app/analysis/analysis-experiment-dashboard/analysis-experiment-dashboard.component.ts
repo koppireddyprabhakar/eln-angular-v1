@@ -414,17 +414,18 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   }
 
   updateAnalysisStatus(status: string, summary?: string) {
+
     let analysisRequest = {
       analysisId: this.analysisID,
       status: status,
-      summary: summary ? summary : status,
-    };
+      summary: summary ? summary : status
+    }
 
-    this.analysisService
-      .updateAnalysisStatus(analysisRequest)
-      .subscribe((data) => {
-        this.toastr.success(data['data'], 'Success');
-        this.route.navigateByUrl(`/exp-analysis/analysis-experiments`);
-      });
+    this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
+      this.toastr.success(data['data'], 'Success');
+      this.route.navigateByUrl(
+        `/exp-analysis/analysis-experiments`
+      );
+    });
   }
 }

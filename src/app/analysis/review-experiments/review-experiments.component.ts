@@ -90,6 +90,7 @@ export class ReviewExperimentsComponent implements OnInit {
   selectedTrfs$ = this.analysisService.selectedTrfs$;
   selectedTrfs: any = [];
   resultData: any = {};
+  reviewData: any = {};
   dropdownList: any = [];
   selectedItems: any = [];
   dropdownSettings: any = {};
@@ -209,6 +210,9 @@ export class ReviewExperimentsComponent implements OnInit {
     if (activeTab === 'results') {
       this.getResultsDetailsById();
     }
+    if (activeTab === 'review') {
+      this.getAnalysisReview();
+    }
     console.log(activeTab.substring(3));
     if (activeTab.substring(0, 3) === 'tab') {
       this.getAnalysisDetailsById(activeTab);
@@ -301,6 +305,14 @@ export class ReviewExperimentsComponent implements OnInit {
       });
   }
 
+  getAnalysisReview() {
+    this.analysisService
+      .getAnalysisReview(this.experimentId)
+      .subscribe((details) => {
+        this.reviewData = details;
+      });
+  }
+
   resultChange(event, index) {
     this.tableTestData[index].testResult = event.value;
   }
@@ -349,17 +361,23 @@ export class ReviewExperimentsComponent implements OnInit {
   }
 
   updateAnalysisStatus(status: string) {
-    let analysisRequest = {
-      analysisId: this.experimentId,
-      status: status,
-      summary: this.summary ? this.summary : status,
+    // let analysisRequest = {
+    //   analysisId: this.experimentId,
+    //   status: status,
+    //   summary: this.summary ? this.summary : status
+    // }
+
+    const reviewRequest = {
+      analysisReviewId: this.reviewData['analysisReviewId'],
+      reviewUserId: this.reviewData['reviewUserId'],
+      analysisId: this.reviewData['analysisId'],
+      comments: this.summary
     };
-    this.analysisService
-      .updateAnalysisStatus(analysisRequest)
-      .subscribe((data) => {
-        this.toastr.success(data['data'], 'Success');
-        this.route.navigateByUrl(`/exp-analysis/list`);
-      });
+
+    this.analysisService.updateAnalysisReview(reviewRequest).subscribe((data) => {
+      this.toastr.success(data['data'], 'Success');
+      this.route.navigateByUrl(`/exp-analysis/list`);
+    });
   }
 
   getAttachments() {

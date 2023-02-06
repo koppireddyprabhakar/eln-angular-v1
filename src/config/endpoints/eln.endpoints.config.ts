@@ -86,7 +86,14 @@ export const elnEndpointsConfig: EndpointConfig = {
     updateExperimentStatus: 'experiment/update-experiment-status',
     updateAnalysisStatus: 'analysis/update-analysis-status',
     getExperimentsByStatus: 'experiment/get-experiments-by-status',
-    getAnalysisByStatus: 'analysis/get-analysis-by-status'
+    getAnalysisByStatus: 'analysis/get-analysis-by-status',
+    getUserDetailsByRoleId: 'analysis/get-user-details-by-role-id',
+    createAnalysisReview: 'analysis/create-analysis-review',
+    updateAnalysisReview: 'analysis/udpate-analysis-review',
+    getAnalysisReview: 'analysis/get-analysis-review-by-analysis-id',
+    getExperimentReviewByExperimentId: 'experiment/get-experiment-review-by-experiment-id',
+    updateExperimentReview: 'experiment/udpate-experiment-review',
+    createExperimentReview: 'experiment/create-experiment-review'
   },
 };
 

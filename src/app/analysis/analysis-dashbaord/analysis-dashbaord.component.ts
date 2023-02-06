@@ -422,17 +422,18 @@ export class AnalysisDashbaordComponent implements OnInit {
   }
 
   updateAnalysisStatus(status: string, summary?: string) {
+
     let analysisRequest = {
       analysisId: this.experimentId,
       status: status,
-      summary: summary ? summary : status,
-    };
+      summary: summary ? summary : status
+    }
 
-    this.analysisService
-      .updateAnalysisStatus(analysisRequest)
-      .subscribe((data) => {
-        this.toastr.success(data['data'], 'Success');
-        this.route.navigateByUrl(`/exp-analysis/list`);
-      });
+    this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
+      this.toastr.success(data['data'], 'Success');
+      this.route.navigateByUrl(`/exp-analysis/list`);
+    });
+
   }
+
 }

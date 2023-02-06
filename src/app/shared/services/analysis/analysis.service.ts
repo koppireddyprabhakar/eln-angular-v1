@@ -201,6 +201,24 @@ export class AnalysisService {
     return this.http.put<string>(url, analysisReqeust);
   }
 
+  createAnalysisReview(analysisReqeust: any) {
+    const url = `${elnEndpointsConfig.endpoints['createAnalysisReview']}`
+    return this.http.post<string>(url, analysisReqeust);
+  }
+
+  updateAnalysisReview(analysisReqeust: any) {
+    const url = `${elnEndpointsConfig.endpoints['updateAnalysisReview']}`
+    return this.http.put<string>(url, analysisReqeust);
+  }
+
+  getAnalysisReview(analysisId) {
+    const url = `${elnEndpointsConfig.endpoints['getAnalysisReview']
+      }?analysisId=${analysisId}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
   handleError(error: HttpErrorResponse) {
     const errorDetail = ClientService.formatError(error);
     if (errorDetail && (errorDetail.title || errorDetail.errorMessage)) {

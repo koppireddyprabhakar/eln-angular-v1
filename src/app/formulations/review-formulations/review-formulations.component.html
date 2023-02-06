@@ -410,16 +410,12 @@
               <h4>Review</h4>
               <span>
                 <div>
-                  <textarea
-                    class="form-control"
-                    style="height: 50px"
-                  ></textarea>
+                  <textarea class="form-control" style="height: 50px" [(ngModel)]="comments"></textarea>
                 </div>
               </span>
             </div>
             <div class="text-center pt-2">
-              <button type="button" class="btn btn-primary mt-4">
-                <!--  (click)="saveTestRequestForm()" -->
+              <button type="button" class="btn btn-primary mt-4" (click)="updateExperimentReview()">
                 Save
               </button>
             </div>
