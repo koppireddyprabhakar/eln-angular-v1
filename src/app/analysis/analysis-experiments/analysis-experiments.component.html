@@ -3,50 +3,22 @@
     <div class="card-body">
       <ul class="nav nav-tabs" id="myTab1" role="tablist">
         <li class="nav-item" role="presentation">
-          <button
-            class="nav-link active"
-            id="allExperiments-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#allExperiments"
-            type="button"
-            role="tab"
-            aria-controls="allExperiments"
-            aria-selected="true"
-            (click)="getExperiments()"
-          >
+          <button class="nav-link active" id="allExperiments-tab" data-bs-toggle="tab" data-bs-target="#allExperiments"
+            type="button" role="tab" aria-controls="allExperiments" aria-selected="true" (click)="getExperiments()">
             All Experiments
           </button>
         </li>
         <li class="nav-item" role="presentation">
-          <button
-            class="nav-link"
-            id="myExperiments-tab"
-            data-bs-toggle="tab"
-            data-bs-target="#myExperiments"
-            type="button"
-            role="tab"
-            aria-controls="myExperiments"
-            aria-selected="false"
-            (click)="getMyExperiments()"
-          >
+          <button class="nav-link" id="myExperiments-tab" data-bs-toggle="tab" data-bs-target="#myExperiments"
+            type="button" role="tab" aria-controls="myExperiments" aria-selected="false" (click)="getMyExperiments()">
             My Experiments
           </button>
         </li>
       </ul>
       <div class="tab-content inner-card" id="myTab1Content">
-        <div
-          class="tab-pane fade show active pt-4"
-          id="allExperiments"
-          role="tabpanel"
-          aria-labelledby="allExperiments-tab"
-        >
-          <table
-            id="first-table"
-            datatable
-            [dtOptions]="dtOptions"
-            [dtTrigger]="dtTrigger"
-            class="row-border hover"
-          >
+        <div class="tab-pane fade show active pt-4" id="allExperiments" role="tabpanel"
+          aria-labelledby="allExperiments-tab">
+          <table id="first-table" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
             <thead>
               <tr>
                 <th>Experiment Name</th>
@@ -64,26 +36,16 @@
                 <td>{{ experiment.batchNumber }}</td>
                 <td>{{ experiment.batchSize }}</td>
                 <td>{{ experiment.projectId }}</td>
-                <td>{{ experiment.formulationName }}</td>
-                <td>{{ experiment.strength }}</td>
+                <td>{{ experiment.project && experiment.project.formulationName }}</td>
+                <td>{{ experiment.project && experiment.project.strength }}</td>
                 <td>{{ experiment.status }}</td>
               </tr>
             </tbody>
           </table>
         </div>
-        <div
-          class="tab-pane fade pt-4"
-          id="myExperiments"
-          role="tabpanel"
-          aria-labelledby="myExperiments-tab"
-        >
-          <table
-            id="second-table"
-            datatable
-            [dtOptions]="dtMyProjectsOptions"
-            [dtTrigger]="dtMyProjectsTrigger"
-            class="row-border hover"
-          >
+        <div class="tab-pane fade pt-4" id="myExperiments" role="tabpanel" aria-labelledby="myExperiments-tab">
+          <table id="second-table" datatable [dtOptions]="dtMyProjectsOptions" [dtTrigger]="dtMyProjectsTrigger"
+            class="row-border hover">
             <thead>
               <tr>
                 <th>Experiment Name</th>
@@ -102,15 +64,11 @@
                 <td>{{ experiment.batchNumber }}</td>
                 <td>{{ experiment.batchSize }}</td>
                 <td>{{ experiment.projectId }}</td>
-                <td>{{ experiment.formulationName }}</td>
-                <td>{{ experiment.strength }}</td>
+                <td>{{ experiment.project && experiment.project.formulationName }}</td>
+                <td>{{ experiment.project && experiment.project.strength }}</td>
                 <td>{{ experiment.status }}</td>
                 <td>
-                  <button
-                    type="button"
-                    class="btn btn-outline-primary"
-                    (click)="onRowClick(experiment)"
-                  >
+                  <button type="button" class="btn btn-outline-primary" (click)="onRowClick(experiment)">
                     Edit
                   </button>
                 </td>

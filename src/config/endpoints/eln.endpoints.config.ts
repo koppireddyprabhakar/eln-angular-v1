@@ -93,7 +93,8 @@ export const elnEndpointsConfig: EndpointConfig = {
     getAnalysisReview: 'analysis/get-analysis-review-by-analysis-id',
     getExperimentReviewByExperimentId: 'experiment/get-experiment-review-by-experiment-id',
     updateExperimentReview: 'experiment/udpate-experiment-review',
-    createExperimentReview: 'experiment/create-experiment-review'
+    createExperimentReview: 'experiment/create-experiment-review',
+    updateTestRequestFormResult: 'analysis/update-test-request-form-results'
   },
 };
 

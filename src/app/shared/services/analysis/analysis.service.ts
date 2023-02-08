@@ -89,7 +89,7 @@ export class AnalysisService {
   }
 
   saveTrfResults(experiment) {
-    const url = elnEndpointsConfig.endpoints['updateTrfResult'];
+    const url = `${elnEndpointsConfig.endpoints['updateTestRequestFormResult']}`;
     return this.http.put<any>(url, experiment);
   }
 
