@@ -87,6 +87,22 @@
                               class="btn btn-outline-primary" (click)="addTrf(experiment)">
                               Add TRF
                             </button>
+
+                            &nbsp;&nbsp;
+                            <button type="button"
+                              *ngIf="experiment && experiment.experimentStatus.toUpperCase() === 'Analysis Submitted'.toUpperCase()"
+                              data-bs-toggle="modal" data-bs-target="#reviewSubmitForms"
+                              (click)="selectUser(experiment)" class="btn btn-outline-primary">
+                              Review
+                            </button>
+
+                            &nbsp;&nbsp;
+                            <button type="button"
+                              *ngIf="experiment && experiment.experimentStatus.toUpperCase() === 'Review Completed'.toUpperCase()"
+                              (click)="selectUser(experiment)" class="btn btn-outline-primary">
+                              Generate COA
+                            </button>
+
                           </td>
                         </tr>
                       </tbody>
@@ -101,3 +117,44 @@
     </div>
   </div>
 </main>
+
+<!-- Review Form -->
+<div class="modal fade" id="reviewSubmitForms" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Reviewer Form</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="row g-3" [formGroup]="reviewSubmitForm">
+          <div class="col-12">
+            <label for="roleId" class="form-label">Reviewer Name</label>
+            <select class="form-select" aria-label="Role Id" formControlName="roleId">
+              <option *ngFor="let userRole of users" [ngValue]="userRole.roleId">
+                {{ (userRole.firstName + ' ' + userRole.lastName) | titlecase }}
+              </option>
+            </select>
+            <span *ngIf="reviewSubmitForm.controls['roleId'].invalid &&
+                        (reviewSubmitForm.controls['roleId'].dirty ||
+                        reviewSubmitForm.controls['roleId'].touched) &&
+                        reviewSubmitForm.get('roleId')?.errors &&
+                        reviewSubmitForm.get('roleId')?.hasError('required')" class="text-danger">
+              Please select Reviewer Name
+            </span>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" #closeButton>
+          Close
+        </button>
+        <button type="button" class="btn btn-primary" (click)="submitReview()">
+          Submit Review
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- End-->

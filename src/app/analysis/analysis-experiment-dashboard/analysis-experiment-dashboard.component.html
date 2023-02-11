@@ -204,7 +204,8 @@
             }" id="{{ dumm.value }}" role="tabpanel" [attr.aria-labelledby]="dumm + '-tab'">
             <ckeditor required ngDefaultControl [(ngModel)]="article[i].text" data="" name="text"></ckeditor>
             <!-- <ckeditor data="<p>Hello, world!</p>"></ckeditor> -->
-            <div class="text-center pt-3" *ngIf="analysisExperimentDetails.status === 'Inprogress'">
+            <div class="text-center pt-3"
+              *ngIf="analysisExperimentDetails && analysisExperimentDetails.status === 'Inprogress'">
               <button type="submit" class="btn btn-primary" (click)="saveTab(i, dumm.label)">
                 Save
               </button>
@@ -245,7 +246,8 @@
                 </tr>
               </tbody>
             </table>
-            <div class="text-center pt-3" *ngIf="analysisExperimentDetails.status === 'Inprogress'">
+            <div class="text-center pt-3"
+              *ngIf="analysisExperimentDetails && analysisExperimentDetails.status === 'Inprogress'">
               <button type="submit" class="btn btn-primary mt-3" (click)="saveExcipients()">
                 Save
               </button>
@@ -295,7 +297,8 @@
               </div>
             </div> -->
 
-            <div class="text-center pt-3" *ngIf="analysisExperimentDetails.status === 'Inprogress'">
+            <div class="text-center pt-3"
+              *ngIf="analysisExperimentDetails && analysisExperimentDetails.status === 'Inprogress'">
               <button type="submit" class="btn btn-primary mt-3" (click)="saveResults()">
                 Save
               </button>

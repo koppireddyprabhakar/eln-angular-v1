@@ -13,6 +13,9 @@ import { GlobalService } from '@app/shared/services/global/global.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject, takeWhile } from 'rxjs';
+import { UserService } from '@app/shared/services/user/user.service';
+import { FormBuilder, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-formulations-experiment',
@@ -25,7 +28,11 @@ export class FormulationsExperimentComponent implements OnInit {
   experiments: any = [];
   myExperiments: any = [];
   subscribeFlag = true;
-
+  selectedUser: object;
+  users: any = [];
+  reviewSubmitForm = this.formBuilder.group({
+    roleId: ['', [Validators.required]]
+  });
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions = {
     pagingType: 'full_numbers',
@@ -43,8 +50,11 @@ export class FormulationsExperimentComponent implements OnInit {
     private readonly projectService: ProjectService,
     private readonly formulationService: FormulationsService,
     private readonly experimentService: ExperimentService,
-    private route: Router
-  ) {}
+    private readonly userService: UserService,
+    private route: Router,
+    private readonly formBuilder: FormBuilder,
+    private readonly toastr: ToastrService
+  ) { }
 
   ngOnInit(): void {
     this.getExperiments();
@@ -114,4 +124,47 @@ export class FormulationsExperimentComponent implements OnInit {
     // var tab = new bootstrap.Tab(someTabTriggerEl)
     // someTabTriggerEl.show()
   }
+
+  selectUser(user) {
+    this.selectedUser = user;
+    this.reviewSubmitForm.patchValue({ roleId: user.roleId });
+  }
+
+  submitReview() {
+    const reviewObj = {
+      reviewUserId: this.reviewSubmitForm.get('roleId')!.value,
+      experimentId: this.selectedUser['expId']
+    };
+    if (this.reviewSubmitForm.get('roleId')!.value) {
+      this.globalService.showLoader();
+
+      this.experimentService
+        .createExperimentReview(reviewObj)
+        .subscribe((data) => {
+          this.toastr.success(data['data'], 'Success');
+          this.globalService.hideLoader();
+          this.route.navigateByUrl(
+            `/forms-page/new-formulation`
+          );
+        });
+    } else {
+      this.reviewSubmitForm.get('roleId')?.markAsDirty();
+    }
+  }
+
+  getUsers() {
+    this.globalService.showLoader();
+    this.userService
+      .getUserDetailsByRoleId(2, 'FORMULATION')
+      .pipe(takeWhile(() => this.subscribeFlag))
+      .subscribe((users) => {
+        const usersList = users.map((user: any) => ({
+          ...user,
+          status: 'str',
+        }));
+        this.users = usersList;
+        this.globalService.hideLoader();
+      });
+  }
+
 }
