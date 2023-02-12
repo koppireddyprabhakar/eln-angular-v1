@@ -22,3 +22,7 @@
 .tableNgx ::ng-deep .text-right {
   text-align: right;
 }
+
+.options-width {
+  width: 200px;
+}

@@ -7,11 +7,14 @@ import {
 } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
+import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
+import { Subject, tap } from 'rxjs';
 
 @Component({
   selector: 'app-analysis-dashbaord',
@@ -19,9 +22,11 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./analysis-dashbaord.component.scss'],
 })
 export class AnalysisDashbaordComponent implements OnInit {
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
   @ViewChild('inputfields') inputfields!: ElementRef;
   dummyTabs: any = [
-    { label: 'Purpose and Conclusion', isEdit: false, value: 'primary' },
+    { label: 'Purpose and Conclusions', isEdit: false, value: 'primary' },
     { label: 'Formulation', isEdit: false, value: 'secondary' },
   ];
   inputValue: string;
@@ -46,12 +51,16 @@ export class AnalysisDashbaordComponent implements OnInit {
   experimentDetails: any;
   file: File;
   isCreatedExperiment = false;
-
+  selectedTrfs$ = this.analysisService.selectedTrfs$;
+  selectedTrfs: any = [];
   dropdownList: any = [];
   selectedItems: any = [];
   dropdownSettings: any = {};
   public files: any = [];
-
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions = {
+    pagingType: 'full_numbers',
+  };
   activeTab = 'summary';
 
   summaryForm = this.formBuilder.group({
@@ -62,6 +71,7 @@ export class AnalysisDashbaordComponent implements OnInit {
   constructor(
     private readonly projectService: ProjectService,
     private readonly experimentService: ExperimentService,
+    private readonly analysisService: AnalysisService,
     private readonly inwardService: InwardManagementService,
     private readonly formulationService: FormulationsService,
     private toastr: ToastrService,
@@ -72,7 +82,10 @@ export class AnalysisDashbaordComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('inngonoit');
+    this.selectedTrfs$.subscribe((trfs) => {
+      this.selectedTrfs = trfs;
+      console.log(trfs);
+    });
     this.getExcipients();
     this.columns = [
       { key: 'excipientsName', title: 'Inward Name' },
@@ -94,19 +107,20 @@ export class AnalysisDashbaordComponent implements OnInit {
       itemsShowLimit: 3,
       allowSearchFilter: true,
     };
-    this.experimentId =
-      this.activatedRoute.snapshot.queryParams['experimentId'];
+    this.experimentId = this.activatedRoute.snapshot.queryParams['analysis'];
     this.projectId = this.activatedRoute.snapshot.queryParams['projectId'];
     this.isCreatedExperiment = this.experimentId ? true : false;
-    console.log('this.isCreatedExperiment', this.isCreatedExperiment);
     this.getBatchNumber();
-    this.getExperimentDetails(this.experimentId);
+    this.getAnalysisById(this.experimentId);
     this.getProjectDetails();
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(null);
   }
 
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
-      console.log(project);
       this.project = project;
     });
   }
@@ -116,10 +130,59 @@ export class AnalysisDashbaordComponent implements OnInit {
     if (activeTab === 'attachments') {
       this.getAttachments();
     }
+    console.log(activeTab.substring(3));
+    if (activeTab === 'excipients') {
+      this.getExcipientDetails();
+    }
+    if (activeTab === 'results') {
+      this.getTrfDetailsById();
+    }
+    if (activeTab.substring(0, 3) === 'tab') {
+      this.getAnalysisDetailsById(activeTab);
+    }
+  }
+
+  getExcipientDetails() {
+    this.analysisService
+      .getExcipientDetailsById(this.experimentId)
+      .subscribe((data) => {
+        console.log(data);
+        if (data.length > 0) {
+          this.tableData = data;
+          this.selectedItems = data;
+          this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+            // Destroy the table first
+            dtInstance.destroy();
+            // Call the dtTrigger to rerender again
+            this.dtTrigger.next(this.tableData);
+          });
+        }
+      });
+  }
+  getTrfDetailsById() {
+    this.analysisService
+      .getTrfDetailsById(this.experimentId)
+      .subscribe((data) => {
+        console.log(data);
+        if (data.length > 0) {
+          this.selectedTrfs = data;
+        }
+      });
+  }
+
+  getAnalysisDetailsById(tabValue) {
+    this.analysisService
+      .getAnalysisDeatilsById(tabValue.substring(3))
+      .subscribe((details) => {
+        const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
+        console.log(index);
+        this.article[index].text = details.fileContent;
+        console.log(details);
+      });
   }
 
   getAttachments() {
-    this.experimentService
+    this.analysisService
       .getAttachmentsById(this.experimentId)
       .subscribe((attachments) => {
         this.files = attachments;
@@ -143,32 +206,43 @@ export class AnalysisDashbaordComponent implements OnInit {
     this.formulationService
       .getFormulationBatchNumber()
       .subscribe((batchNumber) => {
-        console.log(batchNumber.data);
         this.batchNumber = batchNumber.data;
       });
   }
 
-  getExperimentDetails(id) {
+  getAnalysisById(id, firstLoad?: any) {
     this.experimentId = id;
     this.isCreatedExperiment = this.experimentId ? true : false;
     if (this.experimentId) {
       this.route.navigateByUrl(
-        `/analysis-dashboard/dashboard?projectId=${33}&experimentId=${94}`
+        `/exp-analysis/dashboard?projectId=${this.projectId}&analysis=${id}`
       );
-      this.experimentService
-        .getIndvExperimentById(this.experimentId)
+      this.analysisService
+        .getAnalysisById(this.experimentId)
         .subscribe((experimentDetails) => {
           this.experimentDetails = experimentDetails;
-          this.summaryForm.patchValue({
-            experimentName: experimentDetails.experimentName,
-            batchSize: experimentDetails.batchSize,
-          });
+          this.article = experimentDetails.analysisDetails.map((exp) => ({
+            title: '',
+            text: '',
+          }));
+          this.dummyTabs = experimentDetails.analysisDetails.map((exp) => ({
+            label: exp.name,
+            isEdit: false,
+            value: 'tab' + exp.analysisDetailId,
+          }));
+          if (firstLoad === 'firstLoad') {
+            this.activeTab = this.dummyTabs[0].value;
+          }
+          // Commented becaise of no resonse
+          // this.summaryForm.patchValue({
+          //   experimentName: experimentDetails.experimentName,
+          //   batchSize: experimentDetails.batchSize,
+          // });
         });
     }
   }
 
   editMode(index) {
-    console.log(index);
     this.inputValue = '';
     const d = this.dummyTabs.map((tab, i) => {
       if (i === index) {
@@ -181,12 +255,7 @@ export class AnalysisDashbaordComponent implements OnInit {
   }
 
   resetEditMode(index, value) {
-    console.log(index);
-    console.log('input value', this.inputValue);
     const d = this.dummyTabs.map((tab, i) => {
-      console.log(tab);
-      console.log(tab.label);
-      console.log(value);
       return {
         ...tab,
         label: i === index ? this.inputValue || value : tab.label,
@@ -194,14 +263,10 @@ export class AnalysisDashbaordComponent implements OnInit {
       };
     });
     this.dummyTabs = d;
-    console.log(this.dummyTabs);
-
     let elemetClass = document.getElementById('summary-tab');
     this.renderer2.addClass(document.getElementById('summary-tab'), 'active');
     this.renderer2.addClass(document.getElementById('summary'), 'active');
     this.renderer2.addClass(document.getElementById('summary'), 'show');
-    console.log(document.getElementById('summary-tab'));
-    console.log(document.getElementById('summary'));
   }
 
   addNew() {
@@ -211,77 +276,104 @@ export class AnalysisDashbaordComponent implements OnInit {
       text: '',
     });
     this.dummyTabs.push({
-      label: `Add On - ${length + 1}`,
+      label: `New Tab - ${length + 1}`,
       isEdit: false,
       value: `newTab-${(length + 1).toString()}`,
     });
-    console.log(this.dummyTabs);
   }
 
   saveSummary() {
     // if () {
+    console.log(this.selectedTrfs);
     const summary = {
       status: 'string',
       projectId: this.project.projectId,
       teamId: this.project.teamId,
       userId: this.project.userId,
-      experimentName: this.summaryForm.get('experimentName')?.value,
+      analysisName: this.summaryForm.get('experimentName')?.value,
       experimentStatus: 'string',
       summary: 'string',
       batchSize: this.summaryForm.get('batchSize')?.value,
       batchNumber: this.batchNumber,
       experimentDetailsList: [],
       excipients: [],
+      testRequestFormList: this.selectedTrfs,
     };
 
-    this.experimentService
-      .saveExperiment(summary)
-      .subscribe((experiment: any) => {
-        // console.log(data);
-        this.getExperimentDetails(experiment.data);
-        this.activeTab = this.dummyTabs[0].value;
-        this.toastr.success('Experiment Started Successfully', 'Success');
-      });
-    console.log(this.summaryForm.value);
+    this.analysisService.saveAnalysis(summary).subscribe((experiment: any) => {
+      // change here
+      // console.log(experiment)
+      this.getAnalysisById(experiment.data, 'firstLoad');
+      // this.activeTab = this.dummyTabs[0].value;
+      this.toastr.success('Experiment Started Successfully', 'Success');
+    });
   }
 
   onItemSelect(item: any) {
-    console.log(item);
-    this.tableData = this.inwards.filter(({ excipientId: id1 }) =>
-      this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
-    );
-    console.log(this.tableData);
+    this.tableData = this.inwards
+      .filter(({ excipientId: id1 }) =>
+        this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
+      )
+      .map((table) => ({ ...table, analysisId: Number(this.experimentId) }));
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next(this.tableData);
+    });
   }
   deselect(item: any) {
-    console.log(item);
     // this.tableData = this.inwards.filter(({ excipientId: id1 }) =>
     //   this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
     // );
     this.tableData = this.tableData.filter(
       (data) => data.excipientId !== item.excipientId
     );
-    console.log(this.tableData);
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next(this.tableData);
+    });
   }
   onSelectAll(items: any) {
-    console.log(items);
     this.tableData = this.inwards;
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next(this.tableData);
+    });
   }
 
-  saveTab(index, label) {
+  saveTab(index, data) {
     const sss = JSON.stringify(this.article[index].text);
-    console.log(index);
-    console.log(label);
-    console.log(sss);
-    const tabValue = {
+    let tabValue: any = {
       status: 'string',
-      experimentId: this.experimentId,
-      name: label,
+      analysisId: this.experimentId,
+      name: data.label,
       fileContent: this.article[index].text,
     };
-    console.log(this.article);
-    this.experimentService.saveExperimentTabs(tabValue).subscribe((data) => {
-      console.log(data);
-      this.toastr.success(data.data, 'Success');
+    console.log(this.dummyTabs[index].value.substring(0, 3));
+    tabValue = {
+      ...tabValue,
+      analysisDetailId:
+        this.dummyTabs[index].value.substring(0, 3) === 'new'
+          ? null
+          : this.dummyTabs[index].value.substring(3),
+    };
+    this.analysisService.saveAnalysisDetails(tabValue).subscribe((data) => {
+      this.toastr.success(
+        `Experiment detail ${
+          this.dummyTabs[index].id ? 'updated' : 'created'
+        } successfully`,
+        'Success'
+      );
+      if (this.dummyTabs[index].value.substring(0, 3) === 'new') {
+        this.activeTab = 'summary';
+        console.log(this.experimentId);
+        this.getAnalysisById(this.experimentId);
+      }
     });
   }
 
@@ -293,10 +385,9 @@ export class AnalysisDashbaordComponent implements OnInit {
 
   processFile(event) {
     const selectedFile = event.target.files[0];
-    this.experimentService
-      .saveExperimentAttachment(selectedFile, this.experimentId, this.projectId)
+    this.analysisService
+      .saveAnalysisAttachment(selectedFile, this.experimentId, this.projectId)
       .subscribe((response) => {
-        console.log(response);
         this.files = response;
         this.toastr.success('File Uploaded Successfully', 'Success');
       });
@@ -309,10 +400,40 @@ export class AnalysisDashbaordComponent implements OnInit {
   }
 
   saveExcipients() {
-    console.log(this.tableData);
-    this.experimentService.saveExcipient(this.tableData).subscribe((data) => {
+    this.analysisService
+      .saveAnalysisExcipient(this.tableData)
+      .subscribe((data) => {
+        this.toastr.success(data.data, 'Success');
+      });
+  }
+
+  trfResultChange(result, index) {
+    console.log(this.selectedTrfs);
+    console.log(result.value, index);
+    this.selectedTrfs[index].testResult = result.value;
+
+    console.log(this.selectedTrfs);
+  }
+
+  saveResults() {
+    this.analysisService.saveTrfResults(this.selectedTrfs).subscribe((data) => {
       this.toastr.success(data.data, 'Success');
-      console.log(data);
     });
   }
+
+  updateAnalysisStatus(status: string, summary?: string) {
+
+    let analysisRequest = {
+      analysisId: this.experimentId,
+      status: status,
+      summary: summary ? summary : status
+    }
+
+    this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
+      this.toastr.success(data['data'], 'Success');
+      this.route.navigateByUrl(`/exp-analysis/list`);
+    });
+
+  }
+
 }

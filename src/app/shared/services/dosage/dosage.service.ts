@@ -28,9 +28,9 @@ export class DosageService {
     return this.http.put<string>(url, product);
   }
 
-  deleteDosage(productId: number) {
-    const url = `${elnEndpointsConfig.endpoints['deleteDosage']}?dosageId=${productId}`;
-    return this.http.delete<string>(url);
+  deleteDosage(dosage) {
+    const url = `${elnEndpointsConfig.endpoints['deleteDosage']}`;
+    return this.http.delete<string>(url, { body: dosage });
   }
 
   handleError(error: HttpErrorResponse) {

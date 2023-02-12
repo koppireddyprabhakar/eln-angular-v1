@@ -21,7 +21,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormulationsModule } from './formulations/formulations.module';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { CommonModule } from '@angular/common';
-import { AngularMultiSelectModule } from 'angular2-multiselect-dropdown';
 import { CreateTrfComponent } from './test-request-form/create-trf/create-trf.component';
 
 @NgModule({
@@ -35,7 +34,7 @@ import { CreateTrfComponent } from './test-request-form/create-trf/create-trf.co
     PagesLoginComponent,
     PagesError404Component,
     PagesBlankComponent,
-    CreateTrfComponent
+    CreateTrfComponent,
   ],
   imports: [
     BrowserModule,
@@ -50,9 +49,9 @@ import { CreateTrfComponent } from './test-request-form/create-trf/create-trf.co
     SharedModule,
     ReactiveFormsModule,
     ToastrModule.forRoot(),
-    NgMultiSelectDropDownModule.forRoot()
+    NgMultiSelectDropDownModule.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

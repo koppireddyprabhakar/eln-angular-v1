@@ -10,10 +10,9 @@ import { Dosages } from '@app/business-admin/dosage/dosage.interface';
 @Component({
   selector: 'app-create-trf',
   templateUrl: './create-trf.component.html',
-  styleUrls: ['./create-trf.component.css']
+  styleUrls: ['./create-trf.component.css'],
 })
 export class CreateTrfComponent implements OnInit {
-
   public testRequestForm: FormGroup;
   public testRequest: any = {};
   private subscribeFlag: boolean = true;
@@ -25,7 +24,8 @@ export class CreateTrfComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: Router,
     private trfService: TrfService,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
     this.testRequestForm = this.formBuilder.group({
@@ -45,11 +45,8 @@ export class CreateTrfComponent implements OnInit {
       manufacturingDate: ['', [Validators.required]],
       expiryDate: ['', [Validators.required]],
       // testRequestRow: this.formBuilder.array([this.addTests()]),
-      testRequestRow: this.formBuilder.array([])
+      testRequestRow: this.formBuilder.array([]),
     });
-
-    console.log(this.testRequestForm);
-
     // this.testRequestRow = this.testRequestForm.get('testRequestRow');
   }
 
@@ -74,8 +71,10 @@ export class CreateTrfComponent implements OnInit {
       batchSize: this.testRequestForm.get('batchSize')?.value,
       quantity: this.testRequestForm.get('quantity')?.value,
       labelClaim: this.testRequestForm.get('labelClaim')?.value,
-      manufacturingDate: (manDate && new Date(manDate)?.toISOString().split('T')[0]) || '',
-      expiryDate: (expiryDate && new Date(expiryDate)?.toISOString().split('T')[0]) || ''
+      manufacturingDate:
+        (manDate && new Date(manDate)?.toISOString().split('T')[0]) || '',
+      expiryDate:
+        (expiryDate && new Date(expiryDate)?.toISOString().split('T')[0]) || '',
     };
     if (!this.testRequestForm.invalid) {
       this.globalService.showLoader();
@@ -114,7 +113,6 @@ export class CreateTrfComponent implements OnInit {
         //   });
       }
     } else {
-
       this.testRequestForm.get('testRequestId')?.markAsDirty();
       this.testRequestForm.get('department')?.markAsDirty();
       this.testRequestForm.get('dosageForm')?.markAsDirty();
@@ -148,5 +146,4 @@ export class CreateTrfComponent implements OnInit {
       dosageId: [null],
     });
   }
-
 }

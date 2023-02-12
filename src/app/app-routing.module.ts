@@ -67,7 +67,7 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'analysis-dashboard',
+    path: 'exp-analysis',
     component: AnalysisComponent,
     loadChildren: () =>
       import('@app/analysis/analysis.module').then(

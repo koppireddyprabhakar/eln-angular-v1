@@ -1,0 +1,193 @@
+Analysis Controller
+	to create new analysis -- /create-analysis - start experiment
+	to get all analysis experiments -- analysis/get-analysis-list
+	to get analysis list by team id -- /get-analysis-by-team-id?teamId=5
+	to get individual analysis -- get-analysis-by-id?analysisId= (which contains analysis details and analysis excipients list)
+
+	to update analysis -- /update-analysis
+
+	to create/update analysis details -- /save-analysis-details
+	to create/update analysis excipient -- /save-analysis-excipient
+	For attachments
+		/save-analysis-attachment
+		/search-analysis-attachments
+		/get-analysis-attachment-content/{fileName:.+}/{experimentId}/{projectId}
+testrequestformstus - active
+
+tetsnumber - static genettated numver
+
+testid - id of test
+
+
+redirect to experiments
+
+
+hoew to updtae multiple
+
+beacuse of no excipient name unale to update
+
+
+check trfId
+
+create experiment - experiment details (Purpose conclusion ) may be need to change the pai for post put
+
+
+
+
+
+ask ruby to crete  a sub task so that user wont be able to add an new appointmentr row if ther's existing empty row already
+
+
+
+
+
+
+
+	validate  api fail
+
+	new task
+	 deletion bug traced
+
+
+	 worked on pr
+
+	 peer
+
+
+
+Create formmaultion
+		While Updations -> Post call with id
+
+
+		How to get project summary details in analysis summary  (first page)
+		Update postapi not working with anaysisdetailId
+		Excipients on creation the list is not being shwon in the get api
+		get experiments are failing now
+
+
+		update postapi  working with anaysisdetailId  but in the get api there is no updated filecontent respponse
+
+
+		For Test Request Forms records we dont have project IDs populated we have null instaed
+
+
+
+
+		get-experiment-by-id?experimentId=124
+
+		Experiment name. Batch numner backfill issue in Formualtion dashboard   - no backdil -> no response from this api experiment/get-experiment-by-id?experimentId=146
+
+
+
+		project/get-project-by-id?projectId=38 - For Project and trf details
+		/experiment/get-experiment-by-id?experimentId=124
+
+		Test Cases - Label (Lab ytests)
+
+
+		Select test Ids and shoe then in results
+
+
+
+
+
+		trf forms - > send erro messafe on reload submkit
+
+
+		formylations =- craete excipenet / xheminca;s ->  send ecperiment id and excipein id  (still not returning repsonse in the experiment id api)
+
+
+
+		trf forms if select records of different prohect sides throe error - done
+
+
+		analysis experiment - et by tema id has details -> integrate  (not working)
+
+		trf forms ->	create nalysis - send select trf records  - by team Id has no records so unable to navigate to analysis start ecperiment screen
+
+
+
+		purpose convludion tabs -> will tabs immediately after
+
+
+		default puprpose and comcusion on reload
+
+		int 10.128.0.2
+
+		ext 104.154.53.226
+
+
+	blig 34.132.63.119
+
+
+
+excipient cjemicals save update not fully completed because of no respons efform this api /experiment/get-experiment-by-id?experimentId=
+
+In analysis experiments and my analysis experiments no experiments being shown with any team id
+
+
+Formulatiosn Dashbaord :
+
+   Exp Details : experiment/get-experiment-by-id?experimentId=147  Update with default expeiment details - Purpose conc;usion / Foemu
+                for additional details get experiment details by id
+
+   Excipient Details : formulation-dashboard/get-experiment-by-id?experimentId=147
+
+
+ Analysisi Dashboard :
+    Start experimemt : analysis/create-analysis
+	get Exp/anya details : get-analysis-details-by-id?analysisDetailsId=121
+	experiment details save : nalaysis/save-analysis-details
+	excipienr  save : nalaysis/save-analysis-excipeinr
+	save results :  ---------------
+	get results : /analysis/get-test-requests-by-analysi-id?analysisId=6
+	attachments: serach/attachements
+	save : save-analysis-attachment
+
+Analysis Experiments :
+   my experimrnts : get-analysis-by-teamid
+  anaylisdetails - an,aylisis-by-analysi-id   ----
+                     for additional details get analysis details by id
+
+
+	excipeint save / update - use the same save ecipeint call -> payload with table data - > no aanalysis excipiid required (check if duplicates created)
+
+
+Projects :
+	Same flow as alsysuis dashboard :
+	  Results : Same as My experiments (Formulation Dashboard ) Test Resukts
+
+
+
+  AnaylisbyId details not coming for newly created ids  only coming for 6
+In analysisbyId we are not getting experiment name and batch size details
+
+after saving saving analysis details sometimes getting
+{
+    "data": "null"
+}
+getting in this way
+
+
+save anlysi excipient while saving getting 500
+
+here is the object
+
+[
+    {
+        "insertDate": "2022-12-09",
+        "insertUser": "ELN",
+        "updateDate": "2023-01-07",
+        "updateUser": "ELN",
+        "status": "New",
+        "excipientId": 6,
+        "excipientsName": "Demo-1",
+        "materialType": "test",
+        "materialName": "sodium",
+        "batchNo": "B-2022",
+        "sourceName": "raw",
+        "potency": "1",
+        "grade": "1",
+        "analysisId": 6
+    }
+]

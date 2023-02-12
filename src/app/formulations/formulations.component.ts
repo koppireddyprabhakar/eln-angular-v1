@@ -1,10 +1,14 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { takeWhile } from 'rxjs';
+import { FormBuilder, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
-import { takeWhile } from 'rxjs';
+import { UserService } from '@app/shared/services/user/user.service';
 
 @Component({
   selector: 'app-formulations',
@@ -22,6 +26,11 @@ export class FormulationsComponent implements OnInit {
   expColumns: any;
   myExpColumns: any;
   options: any = { rowClickEvent: true };
+  selectedUser: object;
+  users: any = [];
+  reviewSubmitForm = this.formBuilder.group({
+    roleId: ['', [Validators.required]]
+  });
 
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
   @ViewChild('expActionTpl', { static: true }) expActionTpl: TemplateRef<any>;
@@ -31,12 +40,16 @@ export class FormulationsComponent implements OnInit {
     private readonly projectService: ProjectService,
     private readonly formulationService: FormulationsService,
     private readonly experimentService: ExperimentService,
-    private route: Router
-  ) {}
+    private readonly userService: UserService,
+    private route: Router,
+    private readonly formBuilder: FormBuilder,
+    private readonly toastr: ToastrService
+  ) { }
 
   ngOnInit(): void {
     this.getProjects();
     this.getExperiments();
+    this.getUsers();
     this.myProjColumns = [
       { key: 'projectName', title: 'Project Name' },
       { key: 'productName', title: 'Product Name' },
@@ -74,7 +87,7 @@ export class FormulationsComponent implements OnInit {
       { key: 'projectId', title: 'Project ID' },
       { key: 'formulationName', title: 'Formulation Type' },
       { key: 'strength', title: 'Strength' },
-      { key: 'status', title: 'Status' },
+      { key: 'experimentStatus', title: 'Status' },
       // {
       //   key: 'options',
       //   title: '<div class="blue">Options</div>',
@@ -91,7 +104,7 @@ export class FormulationsComponent implements OnInit {
       { key: 'projectId', title: 'Project ID' },
       { key: 'formulationName', title: 'Formulation Type' },
       { key: 'strength', title: 'Strength' },
-      { key: 'status', title: 'Status' },
+      { key: 'experimentStatus', title: 'Status' },
       {
         key: 'options',
         title: '<div class="blue">Options</div>',
@@ -148,23 +161,62 @@ export class FormulationsComponent implements OnInit {
   }
 
   createFormulation(id) {
-    console.log(id);
     this.route.navigateByUrl(`/create-forms?projectId=${id}`);
   }
 
   onRowClick(event) {
-    console.log(event);
     this.route.navigateByUrl(
-      `/create-forms?projectId=${event.projectId}&experimentId=${event.expId}`
+      `/create-forms?projectId=${event.projectId}&experimentId=${event.expId}&edit=true`
     );
   }
 
   addTrf(row) {
-    console.log(row);
     this.route.navigateByUrl(`/forms-page/add-trf?expId=${row.expId}`);
     // var someTabTriggerEl = document.querySelector('#projects');
     // var tab = new bootstrap.Tab(someTabTriggerEl)
-    // console.log(someTabTriggerEl);
     // someTabTriggerEl.show()
   }
+
+  selectUser(user) {
+    this.selectedUser = user;
+    this.reviewSubmitForm.patchValue({ roleId: user.roleId });
+  }
+
+  submitReview() {
+    const reviewObj = {
+      reviewUserId: this.reviewSubmitForm.get('roleId')!.value,
+      experimentId: this.selectedUser['expId']
+    };
+    if (this.reviewSubmitForm.get('roleId')!.value) {
+      this.globalService.showLoader();
+
+      this.experimentService
+        .createExperimentReview(reviewObj)
+        .subscribe((data) => {
+          this.toastr.success(data['data'], 'Success');
+          this.globalService.hideLoader();
+          this.route.navigateByUrl(
+            `/forms-page/new-formulation`
+          );
+        });
+    } else {
+      this.reviewSubmitForm.get('roleId')?.markAsDirty();
+    }
+  }
+
+  getUsers() {
+    this.globalService.showLoader();
+    this.userService
+      .getUserDetailsByRoleId(2, 'FORMULATION')
+      .pipe(takeWhile(() => this.subscribeFlag))
+      .subscribe((users) => {
+        const usersList = users.map((user: any) => ({
+          ...user,
+          status: 'str',
+        }));
+        this.users = usersList;
+        this.globalService.hideLoader();
+      });
+  }
+
 }

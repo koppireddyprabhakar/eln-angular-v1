@@ -69,7 +69,7 @@
         <i class="bi bi-grid"></i> <span>Project Dashboard</span>
       </a>
     </li> -->
-    <li class="nav-item">
+    <!-- <li class="nav-item">
       <a
         class="nav-link"
         routerLink="/forms-page/new-formulation"
@@ -77,6 +77,47 @@
       >
         <i class="bi bi-grid"></i> <span>Formulations Dashboard</span>
       </a>
+    </li> -->
+
+    <li class="nav-item">
+      <a
+        class="nav-link collapsed"
+        data-bs-target="#components-formulations"
+        data-bs-toggle="collapse"
+        aria-expanded="true"
+      >
+        <i class="bi bi-menu-button-wide"></i><span>Formulations Dashboard</span
+        ><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul
+        id="components-formulations"
+        class="nav-content collapse"
+        data-bs-parent="#sidebar-nav"
+      >
+        <!-- <li>
+          <a routerLink="/forms-page/new-formulation" routerLinkActive="active">
+            <i class="bi bi-circle"></i><span>Formulations</span>
+          </a>
+        </li> -->
+        <li>
+          <a routerLink="/forms-page/projects" routerLinkActive="active">
+            <i class="bi bi-circle"></i><span>Projects</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/forms-page/experiments" routerLinkActive="active">
+            <i class="bi bi-circle"></i><span>Experiments</span>
+          </a>
+        </li>
+        <li>
+          <a
+            routerLink="/forms-page/review-formulations"
+            routerLinkActive="active"
+          >
+            <i class="bi bi-circle"></i><span>Review Experiments</span>
+          </a>
+        </li>
+      </ul>
     </li>
 
     <li class="nav-item">
@@ -96,24 +137,26 @@
         data-bs-parent="#sidebar-nav"
       >
         <li>
-          <a routerLink="/analysis-dashboard/list" routerLinkActive="active">
+          <a routerLink="/exp-analysis/list" routerLinkActive="active">
             <i class="bi bi-circle"></i><span>Test Request Forms</span>
           </a>
         </li>
         <li>
           <a
-            routerLink="/analysis-dashboard/analysis-experiments"
+            routerLink="/exp-analysis/analysis-experiments"
             routerLinkActive="active"
           >
             <i class="bi bi-circle"></i><span>Analysis Experiments</span>
           </a>
         </li>
         <li>
-          <a
-            routerLink="/analysis-dashboard/projects"
-            routerLinkActive="active"
-          >
+          <a routerLink="/exp-analysis/projects" routerLinkActive="active">
             <i class="bi bi-circle"></i><span>Projects</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/exp-analysis/review-list" routerLinkActive="active">
+            <i class="bi bi-circle"></i><span>Review Experiments</span>
           </a>
         </li>
       </ul>
@@ -122,7 +165,7 @@
     <!-- <li class="nav-item">
       <a
         class="nav-link"
-        routerLink="/analysis-dashboard/list"
+        routerLink="/exp-analysis/list"
         routerLinkActive="active"
       >
         <i class="bi bi-grid"></i> <span>Analysis Dashboard</span>

@@ -11,7 +11,7 @@ export class ExperimentService {
   constructor(
     private readonly http: HttpClient,
     private readonly clientService: ClientService
-  ) {}
+  ) { }
 
   getExperiments() {
     const url = elnEndpointsConfig.endpoints['getExperiments'];
@@ -26,6 +26,21 @@ export class ExperimentService {
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
+
+  getExperimentDetailsById(id) {
+    const url = `${elnEndpointsConfig.endpoints['getExperimentDetailsById']}?experimentDetailsId=${id}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
+  getExcipientDetailsById(id) {
+    const url = `${elnEndpointsConfig.endpoints['getExcipientDetailsById']}?experimentId=${id}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
   getIndvExperimentById(id) {
     const url = `${elnEndpointsConfig.endpoints['getExperimentById']}?experimentId=${id}`;
     return this.http
@@ -47,23 +62,26 @@ export class ExperimentService {
 
   saveExperiment(experiment) {
     const url = elnEndpointsConfig.endpoints['createExperiment'];
-    console.log(url);
-    console.log(experiment);
     return this.http.post<string>(url, experiment);
   }
   saveExcipient(excipient) {
-    console.log(excipient);
     const url = elnEndpointsConfig.endpoints['saveExcipient'];
-    console.log(url);
-    console.log(excipient);
     return this.http.post<any>(url, excipient);
+  }
+
+  updateExcipient(excipient) {
+    const url = elnEndpointsConfig.endpoints['updateExcipient'];
+    return this.http.put<any>(url, excipient);
   }
 
   saveExperimentTabs(experiment) {
     const url = elnEndpointsConfig.endpoints['saveExperimentDetails'];
-    console.log(url);
-    console.log(experiment);
     return this.http.post<any>(url, experiment);
+  }
+
+  updateExperimentTabs(experiment) {
+    const url = elnEndpointsConfig.endpoints['updateExperimentDetails'];
+    return this.http.put<any>(url, experiment);
   }
 
   saveExperimentAttachment(file, experimentId, projectId): Observable<any> {
@@ -100,6 +118,36 @@ export class ExperimentService {
   createTrf(data) {
     const url = elnEndpointsConfig.endpoints['saveTrf'];
     return this.http.post<string>(url, data);
+  }
+
+  updateExperimentStatus(experimentId, status) {
+    const url = elnEndpointsConfig.endpoints['updateExperimentStatus'];
+    return this.http.put<string>(url, {}, { params: { experimentId: experimentId, status: status } });
+  }
+
+  getExperimentsByStatus(status: string) {
+    const url = `${elnEndpointsConfig.endpoints['getExperimentsByStatus']}?status=${status}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
+  createExperimentReview(experimentReview: any) {
+    const url = `${elnEndpointsConfig.endpoints['createExperimentReview']}`
+    return this.http.post<string>(url, experimentReview);
+  }
+
+  updateExperimentReview(experimentReview: any) {
+    const url = `${elnEndpointsConfig.endpoints['updateExperimentReview']}`
+    return this.http.put<string>(url, experimentReview);
+  }
+
+  getExperimentReviewByExperimentId(experimentId) {
+    const url = `${elnEndpointsConfig.endpoints['getExperimentReviewByExperimentId']
+      }?experimentId=${experimentId}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
   handleError(error: HttpErrorResponse) {

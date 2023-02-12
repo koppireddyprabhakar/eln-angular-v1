@@ -10,8 +10,9 @@ import { Router } from '@angular/router';
 import { DosageService } from '@app/shared/services/dosage/dosage.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { UserService } from '@app/shared/services/user/user.service';
+import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
-import { takeWhile } from 'rxjs';
+import { Subject, takeWhile } from 'rxjs';
 
 @Component({
   selector: 'app-user',
@@ -19,17 +20,19 @@ import { takeWhile } from 'rxjs';
   styleUrls: ['./user.component.css'],
 })
 export class UserComponent implements OnInit {
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
   users: any = [];
   selectedUser: any = {};
   subscribeFlag = true;
-  columns: any;
-  options: any = {};
   showAddForm = false;
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions = {
+    pagingType: 'full_numbers',
+  };
 
   @ViewChild('closeButton') closeButton: ElementRef;
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
-  @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
-  @ViewChild('nameTpl', { static: true }) nameTpl: TemplateRef<any>;
 
   constructor(
     private readonly userService: UserService,
@@ -42,30 +45,10 @@ export class UserComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUsers();
+  }
 
-    this.columns = [
-      {
-        key: 'name',
-        title: '<div class="blue">Name</div>',
-        align: { head: 'left', body: 'left' },
-        sorting: false,
-        cellTemplate: this.nameTpl,
-      },
-      { key: 'dateOfBirth', title: 'DOB' },
-      { key: 'gender', title: 'Gender' },
-      { key: 'roleName', title: 'Role Name' },
-      { key: 'departmentName', title: 'Department Name' },
-      { key: 'contactNo', title: 'Contact Number' },
-      { key: 'mailId', title: 'Mail Id' },
-      {
-        key: 'options',
-        title: '<div class="blue">Options</div>',
-        align: { head: 'center', body: 'center' },
-        sorting: false,
-        width: 150,
-        cellTemplate: this.actionTpl,
-      },
-    ];
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(null);
   }
 
   changeToInt(id: any): number {
@@ -83,7 +66,12 @@ export class UserComponent implements OnInit {
           status: 'str',
         }));
         this.users = usersList;
-        console.log(this.users);
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          // Destroy the table first
+          dtInstance.destroy();
+          // Call the dtTrigger to rerender again
+          this.dtTrigger.next(this.users);
+        });
         this.globalService.hideLoader();
       });
   }

@@ -3,13 +3,13 @@ import { Validators, FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DepartmentService } from '@app/shared/services/department/department.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
-import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { TeamService } from '@app/shared/services/team/team.service';
 import { UserRoleService } from '@app/shared/services/user-role/user-role.service';
 import { UserService } from '@app/shared/services/user/user.service';
 import { ToastrService } from 'ngx-toastr';
 import { finalize, takeWhile } from 'rxjs';
 import { Departments, Teams, UserRoles } from '../user.interface';
+import { DosageService } from '@app/shared/services/dosage/dosage.service';
 
 @Component({
   selector: 'app-add-user',
@@ -25,6 +25,7 @@ export class AddUserComponent implements OnInit {
   userRoles: UserRoles[] = [];
   selectedUser: any = {};
   subscribeFlag = true;
+  dosages: any = [];
   teams: Teams[] = [];
   userId: number;
   editForm = false;
@@ -53,19 +54,20 @@ export class AddUserComponent implements OnInit {
     private readonly globalService: GlobalService,
     private route: Router,
     private activatedRoute: ActivatedRoute,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private dosageService: DosageService
   ) {}
 
   ngOnInit(): void {
     this.userId = this.activatedRoute.snapshot.queryParams['userId'];
     if (this.userId) {
-      console.log('here');
       this.getUserById();
       this.editForm = true;
     }
     this.getDepartments();
     this.getUserRoles();
     this.getTeams();
+    this.getDosages();
   }
 
   saveUser() {
@@ -83,9 +85,8 @@ export class AddUserComponent implements OnInit {
       addressLine2: this.userForm.get('addressLine2')?.value,
       city: this.userForm.get('city')?.value,
       zipCode: this.userForm.get('zipCode')?.value,
-      userTeamRequests: [{ teamId: this.userForm.get('teamId')?.value }],
+      userTeams: [{ teamId: this.userForm.get('teamId')?.value }],
     };
-    console.log(this.selectedUser);
     if (!this.userForm.invalid) {
       this.globalService.showLoader();
       if (Object.keys(this.selectedUser).length === 0) {
@@ -123,7 +124,6 @@ export class AddUserComponent implements OnInit {
           });
       }
     } else {
-      console.log('her');
       this.userForm.get('firstName')?.markAsDirty();
       this.userForm.get('dateOfBirth')?.markAsDirty();
       this.userForm.get('gender')?.markAsDirty();
@@ -136,6 +136,12 @@ export class AddUserComponent implements OnInit {
 
   redirectToUsers() {
     this.route.navigate(['/business-admin/users/']);
+  }
+
+  getDosages() {
+    this.dosageService.getDosages().subscribe((dosages) => {
+      this.dosages = dosages;
+    });
   }
 
   getDepartments() {
@@ -163,7 +169,6 @@ export class AddUserComponent implements OnInit {
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((selectedUser) => {
         this.globalService.hideLoader();
-        console.log(selectedUser);
         this.selectedUser = selectedUser;
         this.userForm.patchValue({
           firstName: selectedUser.firstName,

@@ -1,0 +1,59 @@
+<main id="main" class="main body-height">
+  <div class="pagetitle">
+    <h1>Review Experiments</h1>
+  </div>
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="align-header">
+              <h5 class="card-title">Experiments</h5>
+            </div>
+            <table
+              datatable
+              [dtOptions]="dtOptions"
+              [dtTrigger]="dtTrigger"
+              class="row-border hover"
+            >
+              <thead>
+                <tr>
+                  <th>Experiment Name</th>
+                  <th>Batch No.</th>
+                  <th>Batch Size</th>
+                  <th>Project ID</th>
+                  <th>Formulation Type</th>
+                  <th>Strength</th>
+                  <th>Status</th>
+                  <th>Options</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of myExperiments">
+                  <td>
+                    {{ user.analysisName | titlecase }}
+                  </td>
+                  <td>{{ user.batchNumber }}</td>
+                  <td>{{ user.batchSize }}</td>
+                  <td>{{ user.projectId }}</td>
+                  <td>{{ user.formulationName }}</td>
+                  <td>{{ user.strength }}</td>
+                  <td>{{ user.status }}</td>
+                  <td>
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary"
+                      (click)="onRowClick(user)"
+                    >
+                      Edit
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

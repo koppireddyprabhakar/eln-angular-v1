@@ -21,41 +21,57 @@
                 </button>
               </div>
             </div>
-            <div class="tableNgx">
-              <ngx-datatable
-                tableClass="table table-striped table-bordered table-hover tableNgx"
-                [data]="inwards"
-                [options]="options"
-                [columns]="columns"
-              >
-                <ng-template
-                  #actionTpl
-                  let-row
-                  let-rowIndex="rowIndex"
-                  let-columnValue="columnValue"
-                >
-                  <button
-                    type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#inwardForms"
-                    class="btn btn-outline-primary"
-                    (click)="selectInward(row)"
-                  >
-                    Edit
-                  </button>
-                  &nbsp;&nbsp;
-                  <button
-                    type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#deleteForm"
-                    class="btn btn-outline-danger"
-                    (click)="confirmInwardDeletetion(row)"
-                  >
-                    Delete
-                  </button>
-                </ng-template>
-              </ngx-datatable>
-            </div>
+            <table
+              datatable
+              [dtOptions]="dtOptions"
+              [dtTrigger]="dtTrigger"
+              class="row-border hover"
+            >
+              <thead>
+                <tr>
+                  <th>Inward Name</th>
+                  <th>Material Name</th>
+                  <th>Material Type</th>
+                  <th>Batch Number</th>
+                  <th>Source Name</th>
+                  <th>Potency</th>
+                  <th>Grade</th>
+                  <th>Options</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let inward of inwards">
+                  <td>{{ inward.excipientsName }}</td>
+                  <td>{{ inward.materialName }}</td>
+                  <td>{{ inward.materialType }}</td>
+                  <td>{{ inward.batchNo }}</td>
+                  <td>{{ inward.sourceName }}</td>
+                  <td>{{ inward.potency }}</td>
+                  <td>{{ inward.grade }}</td>
+                  <td class="options-width">
+                    <button
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#inwardForms"
+                      class="btn btn-outline-primary"
+                      (click)="selectInward(inward)"
+                    >
+                      Edit
+                    </button>
+                    &nbsp;&nbsp;
+                    <button
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteForm"
+                      class="btn btn-outline-danger"
+                      (click)="confirmInwardDeletetion(inward)"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

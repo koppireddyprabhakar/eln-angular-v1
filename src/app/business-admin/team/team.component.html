@@ -21,41 +21,53 @@
                 </button>
               </div>
             </div>
-            <div class="tableNgx">
-              <ngx-datatable
-                tableClass="table table-striped table-bordered table-hover tableNgx"
-                [data]="teams"
-                [options]="options"
-                [columns]="columns"
-              >
-                <ng-template
-                  #actionTpl
-                  let-row
-                  let-rowIndex="rowIndex"
-                  let-columnValue="columnValue"
-                >
-                  <button
-                    type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#productForms"
-                    (click)="selectTeam(row)"
-                    class="btn btn-outline-primary"
-                  >
-                    Edit
-                  </button>
-                  &nbsp;&nbsp;
-                  <button
-                    type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#deleteForm"
-                    (click)="confirmTeamDeletetion(row)"
-                    class="btn btn-outline-danger"
-                  >
-                    Delete
-                  </button>
-                </ng-template>
-              </ngx-datatable>
-            </div>
+            <table
+              datatable
+              [dtOptions]="dtOptions"
+              [dtTrigger]="dtTrigger"
+              class="row-border hover"
+            >
+              <thead>
+                <tr>
+                  <th>Team Name</th>
+                  <th>Department Name</th>
+                  <th>Dosage Name</th>
+                  <th>Insert Process</th>
+                  <th>status</th>
+                  <th>Options</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let team of teams">
+                  <td>{{ team.teamName }}</td>
+                  <td>{{ team.departmentName }}</td>
+                  <td>{{ team.dosageName }}</td>
+                  <td>{{ team.insertProcess }}</td>
+                  <td>{{ team.status }}</td>
+                  <td class="options-width">
+                    <button
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#productForms"
+                      (click)="selectTeam(team)"
+                      class="btn btn-outline-primary"
+                    >
+                      Edit
+                    </button>
+                    &nbsp;&nbsp;
+                    <button
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteForm"
+                      (click)="confirmTeamDeletetion(team)"
+                      class="btn btn-outline-danger"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

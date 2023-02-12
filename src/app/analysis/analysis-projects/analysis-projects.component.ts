@@ -1,10 +1,18 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  QueryList,
+  TemplateRef,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
-import { takeWhile } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
+import { Subject, takeWhile } from 'rxjs';
 
 @Component({
   selector: 'app-analysis-projects',
@@ -12,12 +20,23 @@ import { takeWhile } from 'rxjs';
   styleUrls: ['./analysis-projects.component.scss'],
 })
 export class AnalysisProjectsComponent implements OnInit {
+  @ViewChildren(DataTableDirective)
+  dtElements: QueryList<DataTableDirective>;
   projects: any = [];
   myProjects: any = [];
   subscribeFlag = true;
   allProjColumns: any;
   myProjColumns: any;
   options: any = {};
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions = {
+    pagingType: 'full_numbers',
+  };
+  dtMyProjectsTrigger: Subject<any> = new Subject<any>();
+  dtMyProjectsOptions = {
+    pagingType: 'full_numbers',
+  };
+
   constructor(
     private readonly globalService: GlobalService,
     private readonly projectService: ProjectService,
@@ -30,36 +49,11 @@ export class AnalysisProjectsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getProjects();
-    this.myProjColumns = [
-      { key: 'projectName', title: 'Project Name' },
-      { key: 'productName', title: 'Product Name' },
-      { key: 'productCode', title: 'Product Code' },
-      // { key: 'projectId', title: 'Project ID' },
-      { key: 'dosageName', title: 'Dosage Name' },
-      { key: 'formulationName', title: 'Formulation Type' },
-      { key: 'strength', title: 'Strength' },
-      // { key: 'formulationName', title: 'Formulation Department' },
-      { key: 'status', title: 'Status' },
-      {
-        key: 'options',
-        title: '<div class="blue">Options</div>',
-        align: { head: 'center', body: 'center' },
-        sorting: false,
-        width: 120,
-        cellTemplate: this.actionTpl,
-      },
-    ];
-    this.allProjColumns = [
-      { key: 'projectName', title: 'Project Name' },
-      { key: 'productName', title: 'Product Name' },
-      { key: 'productCode', title: 'Product Code' },
-      { key: 'projectId', title: 'Project ID' },
-      { key: 'dosageName', title: 'Dosage Name' },
-      { key: 'formulationName', title: 'Formulation Type' },
-      { key: 'strength', title: 'Strength' },
-      { key: 'formulationName', title: 'Formulation Department' },
-      { key: 'status', title: 'Status' },
-    ];
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(null);
+    this.dtMyProjectsTrigger.next(null);
   }
 
   getProjects() {
@@ -69,6 +63,16 @@ export class AnalysisProjectsComponent implements OnInit {
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((projects) => {
         this.projects = projects;
+        this.dtElements.forEach(
+          (dtElement: DataTableDirective, index: number) => {
+            dtElement.dtInstance.then((dtInstance: any) => {
+              if (dtInstance.table().node().id === 'first-table') {
+                dtInstance.destroy();
+                this.dtTrigger.next(this.projects);
+              }
+            });
+          }
+        );
         this.globalService.hideLoader();
       });
   }
@@ -80,12 +84,22 @@ export class AnalysisProjectsComponent implements OnInit {
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((myProjects) => {
         this.myProjects = myProjects;
+        this.dtElements.forEach(
+          (dtElement: DataTableDirective, index: number) => {
+            dtElement.dtInstance.then((dtInstance: any) => {
+              if (dtInstance.table().node().id === 'second-table') {
+                dtInstance.destroy();
+                console.log(this.myProjects);
+                this.dtMyProjectsTrigger.next(this.myProjects);
+              }
+            });
+          }
+        );
         this.globalService.hideLoader();
       });
   }
 
   createFormulation(id) {
-    console.log(id);
-    this.route.navigateByUrl(`/create-forms?projectId=${id}`);
+    this.route.navigateByUrl(`/exp-analysis/analysis-exp?projectId=${id}`);
   }
 }

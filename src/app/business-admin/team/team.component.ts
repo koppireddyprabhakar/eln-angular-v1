@@ -11,10 +11,11 @@ import { DosageService } from '@app/shared/services/dosage/dosage.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { TeamService } from '@app/shared/services/team/team.service';
 import { ToastrService } from 'ngx-toastr';
-import { finalize, takeWhile } from 'rxjs';
+import { Subject, finalize, takeWhile } from 'rxjs';
 import { Dosages } from '../dosage/dosage.interface';
 import { Departments } from '../user/user.interface';
 import { TeamsList } from './team.interface';
+import { DataTableDirective } from 'angular-datatables';
 
 @Component({
   selector: 'app-team',
@@ -22,6 +23,8 @@ import { TeamsList } from './team.interface';
   styleUrls: ['./team.component.css'],
 })
 export class TeamComponent implements OnInit {
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
   teams: TeamsList[] = [];
   dosages: Dosages[] = [];
   departmentList: Departments[] = [];
@@ -32,12 +35,13 @@ export class TeamComponent implements OnInit {
     deptId: [null, [Validators.required]],
     dosageId: [null, [Validators.required]],
   });
-  columns: any;
-  options: any = {};
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions = {
+    pagingType: 'full_numbers',
+  };
 
   @ViewChild('closeButton') closeButton: ElementRef;
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
-  @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
   constructor(
     private readonly teamService: TeamService,
@@ -49,24 +53,13 @@ export class TeamComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.columns = [
-      { key: 'teamName', title: 'Team Name' },
-      { key: 'departmentName', title: 'Department Name' },
-      { key: 'dosageName', title: 'Dosage Name' },
-      { key: 'insertProcess', title: 'Insert Process' },
-      { key: 'status', title: 'Status' },
-      {
-        key: 'options',
-        title: '<div class="blue">Options</div>',
-        align: { head: 'center', body: 'center' },
-        sorting: false,
-        width: 150,
-        cellTemplate: this.actionTpl,
-      },
-    ];
     this.getTeams();
     this.getDepartments();
     this.getDosages();
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(null);
   }
 
   addTeam() {
@@ -106,6 +99,12 @@ export class TeamComponent implements OnInit {
           status: 'Active',
         }));
         this.teams = newTeamsList;
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          // Destroy the table first
+          dtInstance.destroy();
+          // Call the dtTrigger to rerender again
+          this.dtTrigger.next(this.teams);
+        });
         this.globalService.hideLoader();
       });
   }
@@ -167,7 +166,6 @@ export class TeamComponent implements OnInit {
 
   selectTeam(team) {
     this.selectedTeam = team;
-    console.log(this.selectedTeam);
     this.teamForm.patchValue({
       teamName: team.teamName,
       deptId: team.deptId,
@@ -176,7 +174,19 @@ export class TeamComponent implements OnInit {
   }
 
   confirmTeamDeletetion(team: TeamsList) {
-    this.selectedTeam = team;
+    this.selectedTeam = {
+      status: 'string',
+      teamId: team.teamId,
+      teamName: team.teamName,
+      deptId: team.deptId,
+      teamDosages: [
+        {
+          status: 'string',
+          teamId: team.teamId,
+          dosageId: team.dosageId,
+        },
+      ],
+    };
   }
 
   deleteTeam() {

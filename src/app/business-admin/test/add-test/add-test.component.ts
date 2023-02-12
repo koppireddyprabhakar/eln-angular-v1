@@ -93,16 +93,13 @@ export class AddTestComponent implements OnInit, OnDestroy {
     const newDosage: any = this.testForm.value.testRow?.map((val: any) => ({
       testName: val.testName,
       description: val.description,
-      dosageTestReqeustList: [{ dosageId: val.dosageId || null }],
+      dosageTests: [{ dosageId: val.dosageId || null }],
     }));
     const isInvalidForm = this.testForm.value.testRow?.some(
       (row) => !row.testName
     );
-    console.log(this.testForm.value.testRow);
-    console.log(isInvalidForm);
     if (!isInvalidForm) {
       if (!this.editForm) {
-        console.log('create');
         this.testService
           .saveTest(newDosage)
           .pipe(takeWhile(() => this.subscribeFlag))
@@ -116,7 +113,7 @@ export class AddTestComponent implements OnInit, OnDestroy {
             ...this.selectedTest,
             testName: val.testName,
             description: val.description,
-            dosageTestReqeustList: [{ dosageId: val.dosageId || null }],
+            dosageTests: [{ dosageId: val.dosageId || null }],
           })
         );
         this.testService

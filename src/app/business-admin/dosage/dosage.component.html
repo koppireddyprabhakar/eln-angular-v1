@@ -21,41 +21,50 @@
                 </button>
               </div>
             </div>
-            <div class="tableNgx">
-              <ngx-datatable
-                tableClass="table table-striped table-bordered table-hover tableNgx"
-                [data]="dosages"
-                [options]="options"
-                [columns]="columns"
-              >
-                <ng-template
-                  #actionTpl
-                  let-row
-                  let-rowIndex="rowIndex"
-                  let-columnValue="columnValue"
-                >
-                  <button
-                    type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#productForms"
-                    (click)="selectProduct(row)"
-                    class="btn btn-outline-primary"
-                  >
-                    Edit
-                  </button>
-                  &nbsp;&nbsp;
-                  <button
-                    type="button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#deleteForm"
-                    (click)="confirmProductDeletetion(row)"
-                    class="btn btn-outline-danger"
-                  >
-                    Delete
-                  </button>
-                </ng-template>
-              </ngx-datatable>
-            </div>
+
+            <table
+              datatable
+              [dtOptions]="dtOptions"
+              [dtTrigger]="dtTrigger"
+              class="row-border hover"
+            >
+              <thead>
+                <tr>
+                  <th>Dosage Name'</th>
+                  <th>Formulations</th>
+                  <th>Status</th>
+                  <th>Options</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let dosage of dosages">
+                  <td>{{ dosage.dosageName }}</td>
+                  <td>{{ dosage.formulationsList }}</td>
+                  <td>{{ dosage.status }}</td>
+                  <td>
+                    <button
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#productForms"
+                      (click)="selectProduct(dosage)"
+                      class="btn btn-outline-primary"
+                    >
+                      Edit
+                    </button>
+                    &nbsp;&nbsp;
+                    <button
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteForm"
+                      (click)="confirmProductDeletetion(dosage)"
+                      class="btn btn-outline-danger"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

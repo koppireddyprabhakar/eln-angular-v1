@@ -11,10 +11,17 @@ export class UserService {
   constructor(
     private readonly http: HttpClient,
     private readonly clientService: ClientService
-  ) {}
+  ) { }
 
   getUsers() {
     const url = elnEndpointsConfig.endpoints['getUsers'];
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
+  getUserDetailsByRoleId(roleId, departmentName) {
+    const url = `${elnEndpointsConfig.endpoints['getUserDetailsByRoleId']}?roleId=${roleId}&departmentName=${departmentName}`;
     return this.http
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
