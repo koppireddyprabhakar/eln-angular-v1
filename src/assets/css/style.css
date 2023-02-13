@@ -1151,3 +1151,19 @@ h6 {
   height: calc(100vh - 125px) !important;
   overflow-y: scroll;
 }
+
+.deleteIcon {
+  color: #dc3545;
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+.editIcon {
+  color: #049bf3;
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+.tertiaryIcon {
+  color: #2c3e50;
+  cursor: pointer;
+  font-size: 1.5rem;
+}

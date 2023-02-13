@@ -57,7 +57,7 @@ export class ReviewExperimentsListComponent implements OnInit, OnDestroy {
   }
 
   getMyExperiments() {
-    // this.globalService.showLoader();
+    this.globalService.showLoader();
     this.analysisService
       .getAnalysisByStatus('Inreview')
       .pipe(takeWhile(() => this.subscribeFlag))
