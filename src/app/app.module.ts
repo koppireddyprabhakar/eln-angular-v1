@@ -22,6 +22,10 @@ import { FormulationsModule } from './formulations/formulations.module';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { CommonModule } from '@angular/common';
 import { CreateTrfComponent } from './test-request-form/create-trf/create-trf.component';
+import { ElnLoginComponent } from './eln-login/eln-login.component';
+import { ForgetComponent } from './forget/forget.component';
+import { UpdatePasswordComponent } from './update-password/update-password.component';
+import { OtpVerificationComponent } from './otp-verification/otp-verification.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +39,10 @@ import { CreateTrfComponent } from './test-request-form/create-trf/create-trf.co
     PagesError404Component,
     PagesBlankComponent,
     CreateTrfComponent,
+    ElnLoginComponent,
+    ForgetComponent,
+    UpdatePasswordComponent,
+    OtpVerificationComponent
   ],
   imports: [
     BrowserModule,

@@ -94,7 +94,11 @@ export const elnEndpointsConfig: EndpointConfig = {
     getExperimentReviewByExperimentId: 'experiment/get-experiment-review-by-experiment-id',
     updateExperimentReview: 'experiment/udpate-experiment-review',
     createExperimentReview: 'experiment/create-experiment-review',
-    updateTestRequestFormResult: 'analysis/update-test-request-form-results'
+    updateTestRequestFormResult: 'analysis/update-test-request-form-results',
+    login:'http://localhost:8080/login/login',
+    validMail:'http://localhost:8080/login/forgot-password',
+    verifyOtp:'http://localhost:8080/login/validate-otp',
+    update:'http://localhost:8080/login/updatePassword'
   },
 };
 
