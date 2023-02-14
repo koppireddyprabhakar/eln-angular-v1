@@ -40,13 +40,12 @@
                   <td>{{ user.strength }}</td>
                   <td>{{ user.status }}</td>
                   <td>
-                    <button
-                      type="button"
-                      class="btn btn-outline-primary"
+                    <i
+                      data-bs-toggle="modal"
+                      data-bs-target="#productForms"
                       (click)="onRowClick(user)"
-                    >
-                      Edit
-                    </button>
+                      class="editIcon ri-edit-2-fill"
+                    ></i>
                   </td>
                 </tr>
               </tbody>

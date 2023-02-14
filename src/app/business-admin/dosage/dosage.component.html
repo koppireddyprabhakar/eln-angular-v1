@@ -42,25 +42,19 @@
                   <td>{{ dosage.formulationsList }}</td>
                   <td>{{ dosage.status }}</td>
                   <td>
-                    <button
-                      type="button"
+                    <i
                       data-bs-toggle="modal"
                       data-bs-target="#productForms"
                       (click)="selectProduct(dosage)"
-                      class="btn btn-outline-primary"
-                    >
-                      Edit
-                    </button>
+                      class="editIcon ri-edit-2-fill"
+                    ></i>
                     &nbsp;&nbsp;
-                    <button
-                      type="button"
+                    <i
                       data-bs-toggle="modal"
                       data-bs-target="#deleteForm"
                       (click)="confirmProductDeletetion(dosage)"
-                      class="btn btn-outline-danger"
-                    >
-                      Delete
-                    </button>
+                      class="deleteIcon ri-delete-bin-5-fill"
+                    ></i>
                   </td>
                 </tr>
               </tbody>

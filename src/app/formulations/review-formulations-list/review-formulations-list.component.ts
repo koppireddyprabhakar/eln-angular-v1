@@ -53,7 +53,7 @@ export class ReviewFormulationsListComponent implements OnInit {
   }
 
   getMyExperiments() {
-    // this.globalService.showLoader();
+    this.globalService.showLoader();
 
     this.experimentService
       .getExperimentsByStatus('Inreview')
