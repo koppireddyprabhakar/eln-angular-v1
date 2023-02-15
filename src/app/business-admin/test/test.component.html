@@ -38,23 +38,19 @@
                   <td>{{ test.testTypes }}</td>
                   <td>{{ test.status }}</td>
                   <td class="options-width">
-                    <button
-                      type="button"
+                    <i
+                      data-bs-toggle="modal"
+                      data-bs-target="#productForms"
                       (click)="selectTest(test)"
-                      class="btn btn-outline-primary"
-                    >
-                      Edit
-                    </button>
+                      class="editIcon ri-edit-2-fill"
+                    ></i>
                     &nbsp;&nbsp;
-                    <button
-                      type="button"
+                    <i
                       data-bs-toggle="modal"
                       data-bs-target="#deleteForm"
                       (click)="confirmTesttDeletetion(test)"
-                      class="btn btn-outline-danger"
-                    >
-                      Delete
-                    </button>
+                      class="deleteIcon ri-delete-bin-5-fill"
+                    ></i>
                   </td>
                 </tr>
               </tbody>

@@ -49,25 +49,19 @@
                   <td>{{ inward.potency }}</td>
                   <td>{{ inward.grade }}</td>
                   <td class="options-width">
-                    <button
-                      type="button"
+                    <i
                       data-bs-toggle="modal"
                       data-bs-target="#inwardForms"
-                      class="btn btn-outline-primary"
                       (click)="selectInward(inward)"
-                    >
-                      Edit
-                    </button>
+                      class="editIcon ri-edit-2-fill"
+                    ></i>
                     &nbsp;&nbsp;
-                    <button
-                      type="button"
+                    <i
                       data-bs-toggle="modal"
                       data-bs-target="#deleteForm"
-                      class="btn btn-outline-danger"
                       (click)="confirmInwardDeletetion(inward)"
-                    >
-                      Delete
-                    </button>
+                      class="deleteIcon ri-delete-bin-5-fill"
+                    ></i>
                   </td>
                 </tr>
               </tbody>

@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
+import { GlobalService } from '@app/shared/services/global/global.service';
 import { TrfService } from '@app/shared/services/test-request-form/trf.service';
 import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
@@ -34,7 +35,8 @@ export class AnalysisListComponent implements OnInit {
     private readonly testRequestService: TrfService,
     private toastr: ToastrService,
     private route: Router,
-    private analysisService: AnalysisService
+    private analysisService: AnalysisService,
+    private readonly globalService: GlobalService
   ) {}
 
   ngOnInit(): void {
@@ -46,6 +48,7 @@ export class AnalysisListComponent implements OnInit {
   }
 
   getAnalysisList() {
+    this.globalService.showLoader();
     const flatten = (object) => {
       let value = {};
       for (var property in object) {
@@ -70,6 +73,7 @@ export class AnalysisListComponent implements OnInit {
         // Call the dtTrigger to rerender again
         this.dtTrigger.next(this.trfList);
       });
+      this.globalService.hideLoader();
     });
   }
 
