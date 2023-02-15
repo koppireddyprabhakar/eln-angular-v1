@@ -15,6 +15,10 @@ import { CreateTrfComponent } from './test-request-form/create-trf/create-trf.co
 import { TrfDashboardComponent } from './trf-dashboard/trf-dashboard.component';
 import { FormsPageComponent } from './formulations/forms-page/forms-page.component';
 import { AnalysisComponent } from './analysis/analysis.component';
+import { ElnLoginComponent } from './eln-login/eln-login.component';
+import { ForgetComponent } from './forget/forget.component';
+import { UpdatePasswordComponent } from './update-password/update-password.component';
+import { OtpVerificationComponent } from './otp-verification/otp-verification.component';
 
 // const routes: Routes = [
 //   { path: '', component: DashboardComponent },
@@ -29,6 +33,22 @@ import { AnalysisComponent } from './analysis/analysis.component';
 // ];
 
 const routes: Routes = [
+  {
+    path: "",
+    component: ElnLoginComponent
+  },
+  {
+    path: "app-forget",
+    component: ForgetComponent
+  },
+  {
+    path: "app-update-password",
+    component: UpdatePasswordComponent
+  },
+  {
+    path: "app-otp-verification",
+    component: OtpVerificationComponent
+  },
   {
     path: '',
     redirectTo: '/business-admin/users',
