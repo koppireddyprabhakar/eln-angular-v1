@@ -24,7 +24,7 @@ export const elnEndpointsConfig: EndpointConfig = {
     updateUser:  `${environment.API_BASE_PATH}`+'/usersDetails/update-users-details',
     getUserByID:  `${environment.API_BASE_PATH}`+'/usersDetails/get-users-details-by-id',
     deleteUser:  `${environment.API_BASE_PATH}`+'/usersDetails/delete-users-details',
-    getExcipients: `${environment.API_BASE_PATH}`+'excipients/get-excipients',
+    getExcipients: `${environment.API_BASE_PATH}`+'/excipients/get-excipients',
     createExcipient: `${environment.API_BASE_PATH}`+'/excipients/create-excipient',
     updateExcipient: `${environment.API_BASE_PATH}`+'/excipients/update-excipient',
     deleteExcipient: `${environment.API_BASE_PATH}`+'/excipients/delete-excipient',
