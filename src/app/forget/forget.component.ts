@@ -33,7 +33,6 @@ export class ForgetComponent implements OnInit {
     };
     this.forgetServiceService.validMail(request).subscribe(
     (response) => {
-    //debugger;
    if(response.status === 200) {
     this.toastr.success(
       ' OTP has been sent succesfully',

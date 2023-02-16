@@ -13,7 +13,6 @@ export class UpdatePasswordService {
   constructor(private http: HttpClient,private toastr: ToastrService) { }
 
   Update(request: {mailId: string, password: string}): Observable<any> {
-   // debugger
    const url = elnEndpointsConfig.endpoints['update'];
     return this.http.put(url, request);
   }

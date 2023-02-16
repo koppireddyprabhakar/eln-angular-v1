@@ -66,7 +66,6 @@ export class ProjectManagementComponent implements OnInit {
   }
 
   getProjects() {
-    debugger
     this.globalService.showLoader();
     this.projectService
       .getProjects()
@@ -94,7 +93,6 @@ export class ProjectManagementComponent implements OnInit {
   }
 
   deleteProject() {
-    debugger
     this.selectedProject = { ...this.selectedProject, status: 'Inactive' };
     this.projectService
       .deleteProject(this.selectedProject)

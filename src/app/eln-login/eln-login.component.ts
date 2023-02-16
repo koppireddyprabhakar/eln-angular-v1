@@ -29,14 +29,12 @@ export class ElnLoginComponent implements OnInit {
   }
  
 onSubmit(){
-  debugger
   const request = {
     mailId: this.username,
     password: this.password
   };
  
   this.loginserviceService.login(request).subscribe((data) =>{ 
-    debugger
      if(data.firstLogin==1)
      {
       this.route.navigate(['/app-update-password'],{

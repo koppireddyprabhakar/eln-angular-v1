@@ -78,7 +78,6 @@ export class DosageComponent implements OnInit {
   }
 
   getDosages() {
-    debugger
     this.globalService.showLoader();
     this.dosageService
       .getDosages()
@@ -172,7 +171,6 @@ export class DosageComponent implements OnInit {
   }
 
   deleteDosage() {
-    debugger
     this.selectedDosage = { ...this.selectedDosage, status: 'Inactive' };
     this.dosageService
       .deleteDosage(this.selectedDosage)
@@ -199,7 +197,6 @@ export class DosageComponent implements OnInit {
   }
 
   deleteFormulation(index, id) {
-    debugger
     this.formulations.removeAt(index);
     const formIndex = this.selectedDosage.formulations.findIndex(
       (formulae) => formulae.formulationId === id

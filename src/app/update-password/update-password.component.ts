@@ -26,7 +26,6 @@ export class UpdatePasswordComponent implements OnInit {
 
 
     this.activatedRoute.queryParams.subscribe((params)=>{
-     // debugger
      this.username=params['email'];
      console.log(params);
      
@@ -55,7 +54,6 @@ space(event:any)
   //     return this.updateForm.controls;
   //   }
   onSubmit(){
-   // debugger;
     const request = {
       mailId: this.username,
       password: this.newpassword

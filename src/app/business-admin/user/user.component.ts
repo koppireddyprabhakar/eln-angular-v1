@@ -56,7 +56,6 @@ export class UserComponent implements OnInit {
   }
 
   getUsers() {
-    debugger
     this.globalService.showLoader();
     this.userService
       .getUsers()

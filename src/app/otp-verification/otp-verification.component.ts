@@ -25,7 +25,6 @@ export class OtpVerificationComponent implements OnInit {
   ngOnInit(): void {
 
     this.activatedRoute.queryParams.subscribe((params)=>{
-      //debugger
      this.username=params['email'];
      console.log(params);
     })
@@ -57,7 +56,6 @@ export class OtpVerificationComponent implements OnInit {
          });
      }
      ResendOtp(){
-       //debugger
         this.otpServiceService.ResendOtp({mailId: this.username})
         .subscribe(
         (response) => {

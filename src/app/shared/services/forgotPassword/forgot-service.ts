@@ -13,7 +13,6 @@ export class ForgetServiceService {
  
   validMail(request:{mailId: string}): Observable<HttpResponse<any>> {
     const url = elnEndpointsConfig.endpoints['validMail'];
-    //debugger
      return this.http.post<any>(url, request, { observe: 'response' });
     }
   

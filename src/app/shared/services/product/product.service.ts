@@ -31,7 +31,6 @@ export class ProductService {
   }
 
   deleteProduct(product) {
-    debugger
     const url = `${elnEndpointsConfig.endpoints['deleteProduct']}`;
     return this.http.delete<string>(url, { body: product });
   }

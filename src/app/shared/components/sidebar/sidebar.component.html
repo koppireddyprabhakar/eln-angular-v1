@@ -1,26 +1,32 @@
 <aside id="sidebar" class="sidebar">
   <ul class="sidebar-nav" id="sidebar-nav">
     <li class="nav-item">
-      <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
+      <a class="nav-link collapsed" data-bs-target="#components-projectDash" data-bs-toggle="collapse" aria-expanded="true"
+         routerLinkActive="active">
         <i class="bi bi-grid"></i> <span>Project Dashboard</span>
+        <i class="bi bi-chevron-down ms-auto"></i>
       </a>
+      <ul id="components-projectDash" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+
+        <li>
+          <a routerLink="/business-admin/inward-management" routerLinkActive="active">
+            <i class="bi bi-circle"></i><span>Inward Management</span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/business-admin/project-management" routerLinkActive="active">
+            <i class="bi bi-circle"></i><span>Project Management</span>
+          </a>
+        </li>
+
+      </ul>
     </li>
     <li class="nav-item">
-      <a
-        class="nav-link collapsed"
-        data-bs-target="#components-nav"
-        data-bs-toggle="collapse"
-        aria-expanded="true"
-      >
-        <i class="bi bi-menu-button-wide"></i><span>Business Admin</span
-        ><i class="bi bi-chevron-down ms-auto"></i>
+      <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" aria-expanded="true">
+        <i class="bi bi-menu-button-wide"></i><span>Business Admin</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
-      <ul
-        id="components-nav"
-        class="nav-content collapse"
-        [ngClass]="{ show: toggleBusinessAdmin }"
-        data-bs-parent="#sidebar-nav"
-      >
+      <ul id="components-nav" class="nav-content collapse" [ngClass]="{ show: toggleBusinessAdmin }"
+        data-bs-parent="#sidebar-nav">
         <li>
           <a routerLink="/business-admin/users" routerLinkActive="active">
             <i class="bi bi-circle"></i><span>User Management</span>
@@ -46,59 +52,16 @@
             <i class="bi bi-circle"></i><span>Team Management</span>
           </a>
         </li>
-        <li>
-          <a
-            routerLink="/business-admin/inward-management"
-            routerLinkActive="active"
-          >
-            <i class="bi bi-circle"></i><span>Inward Management</span>
-          </a>
-        </li>
-        <li>
-          <a
-            routerLink="/business-admin/project-management"
-            routerLinkActive="active"
-          >
-            <i class="bi bi-circle"></i><span>Project Management</span>
-          </a>
-        </li>
+
       </ul>
     </li>
-    <!-- <li class="nav-item">
-      <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
-        <i class="bi bi-grid"></i> <span>Project Dashboard</span>
+      <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#components-formulations" data-bs-toggle="collapse"
+        aria-expanded="true">
+        <i class="bi bi-menu-button-wide"></i><span>Formulations Dashboard</span><i
+          class="bi bi-chevron-down ms-auto"></i>
       </a>
-    </li> -->
-    <!-- <li class="nav-item">
-      <a
-        class="nav-link"
-        routerLink="/forms-page/new-formulation"
-        routerLinkActive="active"
-      >
-        <i class="bi bi-grid"></i> <span>Formulations Dashboard</span>
-      </a>
-    </li> -->
-
-    <li class="nav-item">
-      <a
-        class="nav-link collapsed"
-        data-bs-target="#components-formulations"
-        data-bs-toggle="collapse"
-        aria-expanded="true"
-      >
-        <i class="bi bi-menu-button-wide"></i><span>Formulations Dashboard</span
-        ><i class="bi bi-chevron-down ms-auto"></i>
-      </a>
-      <ul
-        id="components-formulations"
-        class="nav-content collapse"
-        data-bs-parent="#sidebar-nav"
-      >
-        <!-- <li>
-          <a routerLink="/forms-page/new-formulation" routerLinkActive="active">
-            <i class="bi bi-circle"></i><span>Formulations</span>
-          </a>
-        </li> -->
+      <ul id="components-formulations" class="nav-content collapse" data-bs-parent="#sidebar-nav">
         <li>
           <a routerLink="/forms-page/projects" routerLinkActive="active">
             <i class="bi bi-circle"></i><span>Projects</span>
@@ -110,10 +73,7 @@
           </a>
         </li>
         <li>
-          <a
-            routerLink="/forms-page/review-formulations"
-            routerLinkActive="active"
-          >
+          <a routerLink="/forms-page/review-formulations" routerLinkActive="active">
             <i class="bi bi-circle"></i><span>Review Experiments</span>
           </a>
         </li>
@@ -121,31 +81,19 @@
     </li>
 
     <li class="nav-item">
-      <a
-        class="nav-link collapsed"
-        data-bs-target="#components-analysis"
-        data-bs-toggle="collapse"
-        aria-expanded="true"
-      >
-        <i class="bi bi-menu-button-wide"></i><span>Analysis Dashboard</span
-        ><i class="bi bi-chevron-down ms-auto"></i>
+      <a class="nav-link collapsed" data-bs-target="#components-analysis" data-bs-toggle="collapse"
+        aria-expanded="true">
+        <i class="bi bi-menu-button-wide"></i><span>Analysis Dashboard</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
       <!--  [ngClass]="{ show: toggleBusinessAdmin }" -->
-      <ul
-        id="components-analysis"
-        class="nav-content collapse"
-        data-bs-parent="#sidebar-nav"
-      >
+      <ul id="components-analysis" class="nav-content collapse" data-bs-parent="#sidebar-nav">
         <li>
           <a routerLink="/exp-analysis/list" routerLinkActive="active">
             <i class="bi bi-circle"></i><span>Test Request Forms</span>
           </a>
         </li>
         <li>
-          <a
-            routerLink="/exp-analysis/analysis-experiments"
-            routerLinkActive="active"
-          >
+          <a routerLink="/exp-analysis/analysis-experiments" routerLinkActive="active">
             <i class="bi bi-circle"></i><span>Analysis Experiments</span>
           </a>
         </li>
@@ -162,24 +110,5 @@
       </ul>
     </li>
 
-    <!-- <li class="nav-item">
-      <a
-        class="nav-link"
-        routerLink="/exp-analysis/list"
-        routerLinkActive="active"
-      >
-        <i class="bi bi-grid"></i> <span>Analysis Dashboard</span>
-      </a>
-    </li> -->
-
-    <!-- <li class="nav-item">
-      <a
-        class="nav-link"
-        routerLink="/test-request-form/trf"
-        routerLinkActive="active"
-      >
-        <i class="bi bi-grid"></i> <span>Test Request Form</span>
-      </a>
-    </li> -->
   </ul>
 </aside>

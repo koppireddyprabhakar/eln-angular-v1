@@ -15,6 +15,7 @@ import { AnalysisNewExperimentComponent } from './analysis-new-experiment/analys
 import { ReviewExperimentsComponent } from './review-experiments/review-experiments.component';
 import { ReviewExperimentsListComponent } from './review-experiments-list/review-experiments-list.component';
 import { DataTablesModule } from 'angular-datatables';
+import { SharedModule } from '@app/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { DataTablesModule } from 'angular-datatables';
     AnalysisRoutingModule,
     CKEditorModule,
     DataTablesModule,
+    SharedModule,
     NgMultiSelectDropDownModule.forRoot(),
   ],
 })

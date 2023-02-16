@@ -38,6 +38,7 @@ import { FormulationsExperimentComponent } from './formulations-experiment/formu
     TrfDashboardModule,
     FormulationsRoutingModule,
     DataTablesModule,
+    SharedModule,
     NgMultiSelectDropDownModule.forRoot(),
   ],
 })

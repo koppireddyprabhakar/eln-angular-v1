@@ -18,7 +18,6 @@ export class LoginserviceService {
 
   login(request:{mailId: string, password: string}): Observable<any> {
     const url = elnEndpointsConfig.endpoints['login'];
-   // debugger
    return this.http.post<{ firstLogin: boolean }>(url,request);
   }
 
