@@ -1,7 +1,7 @@
 <main id="main" class="main">
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title">Test Case Form</h5>
+      <h5 class="card-title">Test Form</h5>
       <form [formGroup]="testForm">
         <div formArrayName="testRow">
           <div
@@ -32,39 +32,56 @@
             </div>
 
             <div class="col-4">
-              <label for="description" class="form-label"
-                >Test Description</label
-              >
+              <label for="description" class="form-label">Test Description</label>
               <input
                 type="text"
                 class="form-control"
                 id="description"
                 formControlName="description"
               />
+               <span
+                *ngIf="
+                  testRow.at(i).get('description')?.invalid &&
+                  (testRow.at(i).get('description')?.dirty ||
+                    testRow.at(i).get('description')?.touched) &&
+                  testRow.at(i).get('description')?.errors &&
+                  testRow.at(i).get('description')?.hasError('required')
+                "
+                class="text-danger pt-3"
+              >
+                Please enter Test Description
+              </span>
             </div>
-            <div
-              [ngClass]="{
-                'col-4': testRow.value.length === 1,
-                'col-3': testRow.value.length > 1
-              }"
+            <div [ngClass]="{
+              'col-4': testRow.value.length === 1,
+              'col-3': testRow.value.length > 1
+            }">
+
+              <label for="dosageId" class="form-label">Dosage</label>
+              <select
+                class="form-select"
+                aria-label="Default select example"
+                formControlName="dosageId"
+               
+              >
+                <option *ngFor="let dosage of dosagesList" [ngValue]="dosage.dosageId">
+                  {{ dosage.dosageName | titlecase }}
+                </option>
+              </select>
+              <span
+              *ngIf="
+                testRow.at(i).get('dosageId')?.invalid &&
+                (testRow.at(i).get('dosageId')?.dirty ||
+                  testRow.at(i).get('dosageId')?.touched) &&
+                testRow.at(i).get('dosageId')?.errors &&
+                testRow.at(i).get('dosageId')?.hasError('required')
+              "
+              class="text-danger pt-3"
             >
-              <label class="form-label">Dosage</label>
-              <div class="col-12">
-                <select
-                  class="form-select"
-                  aria-label="Default select example"
-                  formControlName="dosageId"
-                >
-                  <option value="null">Select</option>
-                  <option
-                    *ngFor="let dosage of dosagesList"
-                    [ngValue]="dosage.dosageId"
-                  >
-                    {{ dosage.dosageName | titlecase }}
-                  </option>
-                </select>
-              </div>
+              Please Select Dosage
+            </span>
             </div>
+
             <div *ngIf="testRow.value.length > 1" class="col-1">
               <div for="description" class="form-label">&nbsp;</div>
               <div class="delete-test">
@@ -83,7 +100,7 @@
         </div>
       </form>
       <div class="text-center">
-        <button type="button" class="btn btn-secondary" #closeButton>
+        <button type="button" class="btn btn-secondary"  data-bs-dismiss="modal" #closeButton (click)="closeTest()">
           Close
         </button>
         &nbsp;&nbsp;&nbsp;

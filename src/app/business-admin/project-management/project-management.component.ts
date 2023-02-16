@@ -66,6 +66,7 @@ export class ProjectManagementComponent implements OnInit {
   }
 
   getProjects() {
+    debugger
     this.globalService.showLoader();
     this.projectService
       .getProjects()
@@ -93,6 +94,7 @@ export class ProjectManagementComponent implements OnInit {
   }
 
   deleteProject() {
+    debugger
     this.selectedProject = { ...this.selectedProject, status: 'Inactive' };
     this.projectService
       .deleteProject(this.selectedProject)
@@ -105,7 +107,7 @@ export class ProjectManagementComponent implements OnInit {
       .subscribe(() => {
         this.getProjects();
         this.closeDeleteButton.nativeElement.click();
-        this.toastr.success('Inward has been deleted succesfully', 'Success');
+        this.toastr.success('Project has been deleted succesfully', 'Success');
       });
   }
 

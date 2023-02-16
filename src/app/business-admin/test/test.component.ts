@@ -72,8 +72,7 @@ export class TestComponent implements OnInit {
       .subscribe((tests) => {
         const testList = tests.map((test: any) => ({
           ...test,
-          testTypes: 'Dosage 1, Dosage 2, Dosage 3, Dosage 4, Dosage 5',
-          status: 'str',
+          testTypes: 'Dosage 1',
         }));
         this.tests = testList;
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
