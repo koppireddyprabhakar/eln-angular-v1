@@ -28,6 +28,7 @@
                 <tr>
                   <th>Test Name</th>
                   <th>Dosages</th>
+                  <th>Test Description</th>
                   <th>Status</th>
                   <th>Options</th>
                 </tr>
@@ -36,6 +37,7 @@
                 <tr *ngFor="let test of tests">
                   <td>{{ test.testName }}</td>
                   <td>{{ test.testTypes }}</td>
+                  <td>{{ test.description }}</td>
                   <td>{{ test.status }}</td>
                   <td class="options-width">
                     <i

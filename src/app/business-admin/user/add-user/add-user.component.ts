@@ -99,7 +99,7 @@ export class AddUserComponent implements OnInit {
             })
           )
           .subscribe(() => {
-            this.toastr.success('Test has been added succesfully', 'Success');
+            this.toastr.success('User has been added succesfully', 'Success');
             this.route.navigate(['/business-admin/users/']);
           });
       } else {
@@ -119,7 +119,7 @@ export class AddUserComponent implements OnInit {
           )
           .subscribe(() => {
             this.route.navigate(['/business-admin/users/']);
-            this.toastr.success('Test has been updated succesfully', 'Success');
+            this.toastr.success('User has been updated succesfully', 'Success');
             this.editForm = false;
           });
       }

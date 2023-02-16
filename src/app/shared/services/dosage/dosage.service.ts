@@ -29,6 +29,7 @@ export class DosageService {
   }
 
   deleteDosage(dosage) {
+    debugger
     const url = `${elnEndpointsConfig.endpoints['deleteDosage']}`;
     return this.http.delete<string>(url, { body: dosage });
   }

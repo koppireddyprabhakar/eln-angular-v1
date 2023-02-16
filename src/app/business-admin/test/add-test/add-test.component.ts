@@ -48,6 +48,9 @@ export class AddTestComponent implements OnInit, OnDestroy {
     }
     this.getDosages();
   }
+  closeTest(){
+    this.route.navigate(['/business-admin/test/']);
+  }
 
   getTestById() {
     this.testService
@@ -66,8 +69,8 @@ export class AddTestComponent implements OnInit, OnDestroy {
   addTests(): FormGroup {
     return this.formBuilder.group({
       testName: ['', [Validators.required]],
-      description: [''],
-      dosageId: [null],
+      description: ['', [Validators.required]],
+      dosageId: ['', [Validators.required]],
     });
   }
 
@@ -80,8 +83,9 @@ export class AddTestComponent implements OnInit, OnDestroy {
   addNewTests(): FormGroup {
     return this.formBuilder.group({
       testName: ['', [Validators.required]],
-      description: [''],
-      dosageId: [null],
+      description: ['', [Validators.required]],
+     // dosageId: [null],
+     dosageId:['', [Validators.required]]
     });
   }
 
@@ -128,6 +132,8 @@ export class AddTestComponent implements OnInit, OnDestroy {
     } else {
       this.testRow.value.forEach((element, index) => {
         this.testRow.at(index).get('testName')?.markAsDirty();
+        this.testRow.at(index).get('description')?.markAsDirty();
+        this.testRow.at(index).get('dosageId')?.markAsDirty();
       });
     }
   }
