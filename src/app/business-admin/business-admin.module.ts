@@ -36,6 +36,7 @@ import { DataTablesModule } from 'angular-datatables';
     FormsModule,
     ReactiveFormsModule,
     DataTablesModule,
+    SharedModule
   ],
 })
 export class BusinessAdminModule {}

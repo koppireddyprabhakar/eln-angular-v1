@@ -93,7 +93,11 @@ export const elnEndpointsConfig: EndpointConfig = {
     getExperimentReviewByExperimentId: `${environment.API_BASE_PATH}`+'/experiment/get-experiment-review-by-experiment-id',
     updateExperimentReview: `${environment.API_BASE_PATH}`+'/experiment/udpate-experiment-review',
     createExperimentReview: `${environment.API_BASE_PATH}`+'/experiment/create-experiment-review',
-    updateTestRequestFormResult: `${environment.API_BASE_PATH}`+'/analysis/update-test-request-form-results'
+    updateTestRequestFormResult: `${environment.API_BASE_PATH}`+'/analysis/update-test-request-form-results',
+    login:`${environment.API_BASE_PATH}`+'/login/login',
+    validMail:`${environment.API_BASE_PATH}`+'/login/forgot-password',
+    verifyOtp:`${environment.API_BASE_PATH}`+'/login/validate-otp',
+    update:`${environment.API_BASE_PATH}`+'/login/updatePassword'
   },
 };
 
