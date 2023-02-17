@@ -32,6 +32,7 @@ export class TeamService {
   }
 
   deleteTeam(team) {
+    debugger
     const url = `${elnEndpointsConfig.endpoints['deleteTeam']}`;
     return this.http.delete<string>(url, { body: team });
   }

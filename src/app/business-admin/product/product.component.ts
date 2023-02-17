@@ -70,7 +70,6 @@ export class ProductComponent implements OnInit {
       .subscribe((products) => {
         const newProductsList = products.map((product: any) => ({
           ...product,
-          status: 'Active',
         }));
         this.products = newProductsList;
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
@@ -145,7 +144,7 @@ export class ProductComponent implements OnInit {
   deleteProduct() {
     this.selectedProduct = {
       ...this.selectedProduct,
-      status: 'string',
+      status: 'Inactive',
       productCode: 'Inactive',
     };
     this.productService
