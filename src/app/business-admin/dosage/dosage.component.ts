@@ -88,7 +88,6 @@ export class DosageComponent implements OnInit {
           formulationsList: dosage.formulations.map(
             (dosage) => dosage.formulationName
           ),
-          status: 'Active',
         }));
         this.dosages = [...newDosagesList];
         console.log(this.dtElement);

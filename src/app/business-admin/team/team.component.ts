@@ -96,7 +96,7 @@ export class TeamComponent implements OnInit {
       .subscribe((teams) => {
         const newTeamsList = teams.map((team: any) => ({
           ...team,
-          status: 'Active',
+          //  status: '',
         }));
         this.teams = newTeamsList;
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
@@ -190,6 +190,7 @@ export class TeamComponent implements OnInit {
   }
 
   deleteTeam() {
+    debugger
     this.selectedTeam = { ...this.selectedTeam, status: 'Inactive' };
     this.teamService
       .deleteTeam(this.selectedTeam)

@@ -51,6 +51,11 @@ export class TestComponent implements OnInit {
   ngAfterViewInit(): void {
     this.dtTrigger.next(null);
   }
+  closeTest(){
+    this.route.navigateByUrl(
+      `/business-admin/test/`
+    );
+  }
 
   addTests(): FormGroup {
     return this.formBuilder.group({
@@ -72,7 +77,6 @@ export class TestComponent implements OnInit {
       .subscribe((tests) => {
         const testList = tests.map((test: any) => ({
           ...test,
-          testTypes: 'Dosage 1',
         }));
         this.tests = testList;
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
