@@ -144,8 +144,7 @@ export class ProductComponent implements OnInit {
   deleteProduct() {
     this.selectedProduct = {
       ...this.selectedProduct,
-      status: 'Inactive',
-      productCode: 'Inactive',
+      status: 'Inactive'
     };
     this.productService
       .deleteProduct(this.selectedProduct)

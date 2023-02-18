@@ -179,15 +179,6 @@ export class DosageComponent implements OnInit {
           this.globalService.hideLoader();
         })
       )
-      // this.selectedProject = { ...this.selectedProject, status: 'Inactive' };
-      // this.projectService
-      //   .deleteProject(this.selectedProject)
-      //   .pipe(
-      //     takeWhile(() => this.subscribeFlag),
-      //     finalize(() => {
-      //       this.globalService.hideLoader();
-      //     })
-      //   )
       .subscribe(() => {
         this.getDosages();
         this.closeDeleteButton.nativeElement.click();

@@ -15,7 +15,7 @@
             *ngIf="
               userForm.controls['firstName'].invalid &&
               (userForm.controls['firstName'].dirty ||
-                userForm.controls['firstName'].touched) &&
+              userForm.controls['firstName'].touched) &&
               userForm.get('firstName')?.errors &&
               userForm.get('firstName')?.hasError('required')
             "

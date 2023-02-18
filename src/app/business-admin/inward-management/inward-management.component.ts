@@ -25,12 +25,12 @@ export class InwardManagementComponent implements OnInit {
   subscribeFlag = true;
   inwardForm = this.formBuilder.group({
     excipientsName: ['', [Validators.required]],
-    materialName: [''],
-    materialType: [''],
-    batchNumber: [''],
-    sourceName: [''],
-    potency: [''],
-    grade: [''],
+    materialName: ['', [Validators.required]],
+    materialType: ['', [Validators.required]],
+    batchNumber: ['', [Validators.required]],
+    sourceName: ['', [Validators.required]],
+    potency: ['', [Validators.required]],
+    grade: ['', [Validators.required]],
   });
 
   dtTrigger: Subject<any> = new Subject<any>();
@@ -82,7 +82,6 @@ export class InwardManagementComponent implements OnInit {
   }
 
   saveInward() {
-    this.globalService.showLoader();
     const newInward = {
       excipientsName: this.inwardForm.get('excipientsName')!.value,
       materialName: this.inwardForm.get('materialName')!.value,
@@ -94,6 +93,7 @@ export class InwardManagementComponent implements OnInit {
       status: 'New',
     };
     if (this.inwardForm.valid) {
+      this.globalService.showLoader();
       if (Object.keys(this.selectedInward).length === 0) {
         this.inwardService
           .saveInward(newInward)
@@ -137,6 +137,12 @@ export class InwardManagementComponent implements OnInit {
       }
     } else {
       this.inwardForm.get('excipientsName')?.markAsDirty();
+      this.inwardForm.get('materialName')?.markAsDirty();
+      this.inwardForm.get('materialType')?.markAsDirty();
+      this.inwardForm.get('batchNumber')?.markAsDirty();
+      this.inwardForm.get('sourceName')?.markAsDirty();
+      this.inwardForm.get('potency')?.markAsDirty();
+      this.inwardForm.get('grade')?.markAsDirty();
     }
   }
 

@@ -357,9 +357,9 @@ export class CreateFormulationComponent implements OnInit {
 
     this.experimentService.saveExperimentTabs(tabValue).subscribe((data) => {
       this.toastr.success(
-        `Experiment detail ${
-          this.dummyTabs[index].id ? 'updated' : 'created'
-        } successfully`,
+        `Experiment Data ${
+          this.dummyTabs[index].id ? 'updated' : 'Saved'
+        } Successfully`,
         'Success'
       );
       // this.dummyTabs[index]['id'] = data.data;
