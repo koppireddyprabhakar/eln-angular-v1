@@ -29,6 +29,7 @@
             >
               <thead>
                 <tr>
+                  <th>S.No</th>
                   <th>Team Name</th>
                   <th>Department Name</th>
                   <th>Dosage Name</th>
@@ -38,7 +39,8 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let team of teams">
+                <tr *ngFor="let team of teams; let i = index">
+                  <td>{{i + 1}}</td>
                   <td>{{ team.teamName }}</td>
                   <td>{{ team.departmentName }}</td>
                   <td>{{ team.dosageName }}</td>

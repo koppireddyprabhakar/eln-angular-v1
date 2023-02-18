@@ -30,14 +30,16 @@
             >
               <thead>
                 <tr>
-                  <th>Dosage Name'</th>
+                  <th>S.No</th>
+                  <th>Dosage Name</th>
                   <th>Formulations</th>
                   <th>Status</th>
                   <th>Options</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let dosage of dosages">
+                <tr *ngFor="let dosage of dosages; let i = index">
+                  <td>{{i + 1}}</td>
                   <td>{{ dosage.dosageName }}</td>
                   <td>{{ dosage.formulationsList }}</td>
                   <td>{{ dosage.status }}</td>

@@ -135,6 +135,7 @@ export class ProductComponent implements OnInit {
   selectProduct(product: Products) {
     this.selectedProduct = product;
     this.productForm.patchValue({ productName: product.productName });
+    this.productForm.patchValue({ productCode: product.productCode });
   }
 
   confirmProductDeletetion(product: Products) {

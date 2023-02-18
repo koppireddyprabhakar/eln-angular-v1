@@ -90,7 +90,6 @@ export class DosageComponent implements OnInit {
           ),
         }));
         this.dosages = [...newDosagesList];
-        console.log(this.dtElement);
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
           // Destroy the table first
           dtInstance.destroy();

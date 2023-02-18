@@ -63,7 +63,6 @@ export class UserComponent implements OnInit {
       .subscribe((users) => {
         const usersList = users.map((user: any) => ({
           ...user,
-          status: 'str',
         }));
         this.users = usersList;
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
