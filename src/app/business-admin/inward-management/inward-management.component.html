@@ -117,6 +117,18 @@
               id="materialName"
               formControlName="materialName"
             />
+            <span
+            *ngIf="
+              inwardForm.controls['materialName'].invalid &&
+              (inwardForm.controls['materialName'].dirty ||
+                inwardForm.controls['materialName'].touched) &&
+              inwardForm.get('materialName')?.errors &&
+              inwardForm.get('materialName')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please enter Material Name
+          </span>
           </div>
           <div class="col-6">
             <label for="materialType" class="form-label">Material Type</label>
@@ -126,6 +138,18 @@
               id="materialType"
               formControlName="materialType"
             />
+            <span
+            *ngIf="
+              inwardForm.controls['materialType'].invalid &&
+              (inwardForm.controls['materialType'].dirty ||
+                inwardForm.controls['materialType'].touched) &&
+              inwardForm.get('materialType')?.errors &&
+              inwardForm.get('materialType')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please enter Material Type 
+          </span>
           </div>
           <div class="col-6">
             <label for="batchNumber" class="form-label">Batch Number</label>
@@ -135,6 +159,18 @@
               id="batchNumber"
               formControlName="batchNumber"
             />
+            <span
+            *ngIf="
+              inwardForm.controls['batchNumber'].invalid &&
+              (inwardForm.controls['batchNumber'].dirty ||
+                inwardForm.controls['batchNumber'].touched) &&
+              inwardForm.get('batchNumber')?.errors &&
+              inwardForm.get('batchNumber')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please enter Batch Number  
+          </span>
           </div>
           <div class="col-6">
             <label for="sourceName" class="form-label">Source Name</label>
@@ -144,6 +180,18 @@
               id="sourceName"
               formControlName="sourceName"
             />
+            <span
+            *ngIf="
+              inwardForm.controls['sourceName'].invalid &&
+              (inwardForm.controls['sourceName'].dirty ||
+                inwardForm.controls['sourceName'].touched) &&
+              inwardForm.get('sourceName')?.errors &&
+              inwardForm.get('sourceName')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please enter Source Name
+          </span>
           </div>
           <div class="col-6">
             <label for="potency" class="form-label">Potency</label>
@@ -153,6 +201,18 @@
               id="potency"
               formControlName="potency"
             />
+            <span
+            *ngIf="
+              inwardForm.controls['potency'].invalid &&
+              (inwardForm.controls['potency'].dirty ||
+                inwardForm.controls['potency'].touched) &&
+              inwardForm.get('potency')?.errors &&
+              inwardForm.get('potency')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please enter Potency
+          </span>
           </div>
           <div class="col-6">
             <label for="grade" class="form-label">Grade</label>
@@ -162,6 +222,18 @@
               id="grade"
               formControlName="grade"
             />
+            <span
+            *ngIf="
+              inwardForm.controls['grade'].invalid &&
+              (inwardForm.controls['grade'].dirty ||
+                inwardForm.controls['grade'].touched) &&
+              inwardForm.get('grade')?.errors &&
+              inwardForm.get('grade')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please enter Grade
+          </span>
           </div>
         </form>
       </div>

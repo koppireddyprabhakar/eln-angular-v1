@@ -138,8 +138,8 @@ export class AddTrfComponent implements OnInit {
       });
   }
 
-  redirectToUsers() {
-    this.route.navigate(['/business-admin/users/']);
+  redirectToExperiments() {
+    this.route.navigate(['/forms-page/experiments/']);
   }
 
   getTests() {
