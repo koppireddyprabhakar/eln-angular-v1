@@ -4,62 +4,33 @@
     <div class="card">
       <div class="card-body pt-4">
         <div class="tab-content inner-card outer-tab-border" id="myTabContent">
-          <div
-            class="tab-pane fade show active"
-            id="experiments"
-            role="tabpanel"
-            aria-labelledby="experiments-tab"
-          >
+          <div class="tab-pane fade show active" id="experiments" role="tabpanel" aria-labelledby="experiments-tab">
             <div class="card pt-4">
               <div class="card-body">
                 <ul class="nav nav-tabs" id="myTab1" role="tablist">
                   <li class="nav-item" role="presentation">
-                    <button
-                      class="nav-link active"
-                      id="allExperiments-tab"
-                      data-bs-toggle="tab"
-                      data-bs-target="#allExperiments"
-                      type="button"
-                      role="tab"
-                      aria-controls="allExperiments"
-                      aria-selected="true"
-                      (click)="getExperiments()"
-                    >
+                    <button class="nav-link active" id="allExperiments-tab" data-bs-toggle="tab"
+                      data-bs-target="#allExperiments" type="button" role="tab" aria-controls="allExperiments"
+                      aria-selected="true" (click)="getExperiments()">
                       All Experiments
                     </button>
                   </li>
                   <li class="nav-item" role="presentation">
-                    <button
-                      class="nav-link"
-                      id="myExperiments-tab"
-                      data-bs-toggle="tab"
-                      data-bs-target="#myExperiments"
-                      type="button"
-                      role="tab"
-                      aria-controls="myExperiments"
-                      aria-selected="false"
-                      (click)="getMyExperiments()"
-                    >
+                    <button class="nav-link" id="myExperiments-tab" data-bs-toggle="tab" data-bs-target="#myExperiments"
+                      type="button" role="tab" aria-controls="myExperiments" aria-selected="false"
+                      (click)="getMyExperiments()">
                       My Experiments
                     </button>
                   </li>
                 </ul>
                 <div class="tab-content inner-card" id="myTab1Content">
-                  <div
-                    class="tab-pane fade show active pt-4"
-                    id="allExperiments"
-                    role="tabpanel"
-                    aria-labelledby="allExperiments-tab"
-                  >
-                    <table
-                      id="first-table"
-                      datatable
-                      [dtOptions]="dtOptions"
-                      [dtTrigger]="dtTrigger"
-                      class="row-border hover"
-                    >
+                  <div class="tab-pane fade show active pt-4" id="allExperiments" role="tabpanel"
+                    aria-labelledby="allExperiments-tab">
+                    <table id="first-table" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                      class="row-border hover">
                       <thead>
                         <tr>
+                          <th>S.No</th>
                           <th>Experiment Name</th>
                           <th>Batch No.</th>
                           <th>Batch Size</th>
@@ -70,7 +41,8 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr *ngFor="let experiment of experiments">
+                        <tr *ngFor="let experiment of experiments; let i = index">
+                          <td>{{i + 1}}</td>
                           <td>{{ experiment.experimentName }}</td>
                           <td>{{ experiment.batchNumber }}</td>
                           <td>{{ experiment.batchSize }}</td>
@@ -82,21 +54,13 @@
                       </tbody>
                     </table>
                   </div>
-                  <div
-                    class="tab-pane fade pt-4"
-                    id="myExperiments"
-                    role="tabpanel"
-                    aria-labelledby="myExperiments-tab"
-                  >
-                    <table
-                      id="second-table"
-                      datatable
-                      [dtOptions]="dtMyProjectsOptions"
-                      [dtTrigger]="dtMyProjectsTrigger"
-                      class="row-border hover"
-                    >
+                  <div class="tab-pane fade pt-4" id="myExperiments" role="tabpanel"
+                    aria-labelledby="myExperiments-tab">
+                    <table id="second-table" datatable [dtOptions]="dtMyProjectsOptions"
+                      [dtTrigger]="dtMyProjectsTrigger" class="row-border hover">
                       <thead>
                         <tr>
+                          <th>S.No</th>
                           <th>Experiment Name</th>
                           <th>Batch No.</th>
                           <th>Batch Size</th>
@@ -108,7 +72,8 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr *ngFor="let experiment of myExperiments">
+                        <tr *ngFor="let experiment of myExperiments; let i = index">
+                          <td>{{i + 1}}</td>
                           <td>{{ experiment.experimentName }}</td>
                           <td>{{ experiment.batchNumber }}</td>
                           <td>{{ experiment.batchSize }}</td>
@@ -117,53 +82,33 @@
                           <td>{{ experiment.project.strength }}</td>
                           <td>{{ experiment.experimentStatus }}</td>
                           <td class="options-width">
-                            <button
-                              type="button"
-                              class="btn btn-outline-danger"
-                              (click)="onRowClick(experiment)"
-                            >
+                            <button type="button" class="btn btn-outline-danger" (click)="onRowClick(experiment)">
                               Edit
                             </button>
                             &nbsp;&nbsp;
-                            <button
-                              type="button"
-                              *ngIf="
+                            <button type="button" *ngIf="
                                 experiment.experimentStatus.toUpperCase() ===
                                 'Complete'.toUpperCase()
-                              "
-                              class="btn btn-outline-primary"
-                              (click)="addTrf(experiment)"
-                            >
+                              " class="btn btn-outline-primary" (click)="addTrf(experiment)">
                               Add TRF
                             </button>
 
                             &nbsp;&nbsp;
-                            <button
-                              type="button"
-                              *ngIf="
+                            <button type="button" *ngIf="
                                 experiment &&
                                 experiment.experimentStatus.toUpperCase() ===
                                   'Analysis Submitted'.toUpperCase()
-                              "
-                              data-bs-toggle="modal"
-                              data-bs-target="#reviewSubmitForms"
-                              (click)="selectUser(experiment)"
-                              class="btn btn-outline-primary"
-                            >
+                              " data-bs-toggle="modal" data-bs-target="#reviewSubmitForms"
+                              (click)="selectUser(experiment)" class="btn btn-outline-primary">
                               Review
                             </button>
 
                             &nbsp;&nbsp;
-                            <button
-                              type="button"
-                              *ngIf="
+                            <button type="button" *ngIf="
                                 experiment &&
                                 experiment.experimentStatus.toUpperCase() ===
                                   'Review Completed'.toUpperCase()
-                              "
-                              (click)="selectUser(experiment)"
-                              class="btn btn-outline-primary"
-                            >
+                              " (click)="selectUser(experiment)" class="btn btn-outline-primary">
                               Generate COA
                             </button>
                           </td>
@@ -187,51 +132,31 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Reviewer Form</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form class="row g-3" [formGroup]="reviewSubmitForm">
           <div class="col-12">
             <label for="roleId" class="form-label">Reviewer Name</label>
-            <select
-              class="form-select"
-              aria-label="Role Id"
-              formControlName="roleId"
-            >
-              <option
-                *ngFor="let userRole of users"
-                [ngValue]="userRole.roleId"
-              >
+            <select class="form-select" aria-label="Role Id" formControlName="roleId">
+              <option *ngFor="let userRole of users" [ngValue]="userRole.roleId">
                 {{ userRole.firstName + " " + userRole.lastName | titlecase }}
               </option>
             </select>
-            <span
-              *ngIf="
+            <span *ngIf="
                 reviewSubmitForm.controls['roleId'].invalid &&
                 (reviewSubmitForm.controls['roleId'].dirty ||
                   reviewSubmitForm.controls['roleId'].touched) &&
                 reviewSubmitForm.get('roleId')?.errors &&
                 reviewSubmitForm.get('roleId')?.hasError('required')
-              "
-              class="text-danger"
-            >
+              " class="text-danger">
               Please select Reviewer Name
             </span>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-          #closeButton
-        >
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" #closeButton>
           Close
         </button>
         <button type="button" class="btn btn-primary" (click)="submitReview()">
