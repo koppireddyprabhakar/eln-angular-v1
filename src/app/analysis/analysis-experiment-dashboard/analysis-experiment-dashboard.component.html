@@ -205,7 +205,7 @@
             <ckeditor required ngDefaultControl [(ngModel)]="article[i].text" data="" name="text"></ckeditor>
             <!-- <ckeditor data="<p>Hello, world!</p>"></ckeditor> -->
             <div class="text-center pt-3"
-              *ngIf="analysisExperimentDetails && analysisExperimentDetails.status === 'Inprogress'">
+              *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase()">
               <button type="submit" class="btn btn-primary" (click)="saveTab(i, dumm.label)">
                 Save
               </button>
@@ -247,7 +247,7 @@
               </tbody>
             </table>
             <div class="text-center pt-3"
-              *ngIf="analysisExperimentDetails && analysisExperimentDetails.status === 'Inprogress'">
+              *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase()">
               <button type="submit" class="btn btn-primary mt-3" (click)="saveExcipients()">
                 Save
               </button>
@@ -298,7 +298,7 @@
             </div> -->
 
             <div class="text-center pt-3"
-              *ngIf="analysisExperimentDetails && analysisExperimentDetails.status === 'Inprogress'">
+              *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase()">
               <button type="submit" class="btn btn-primary mt-3" (click)="saveResults()">
                 Save
               </button>
@@ -309,7 +309,8 @@
               active: activeTab === 'attachments',
               show: activeTab === 'attachments'
             }" id="attachments" role="tabpanel" aria-labelledby="attachments-tab">
-            <div class="row mb-3">
+            <div class="row mb-3"
+              *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase()">
               <label for="inputNumber" class="col-sm-2 col-form-label">
                 Upload</label>
               <div class="col-sm-10">
@@ -328,13 +329,15 @@
               </span>
             </div>
 
-            <div class="text-center pt-3" *ngIf="analysisExperimentDetails.status === 'Inprogress'">
+            <div class="text-center pt-3"
+              *ngIf="analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase()">
               <button type="submit" class="btn btn-primary mt-3" (click)="updateAnalysisStatus('Complete')">
                 Complete Analysis Experiment
               </button>
             </div>
 
-            <div class="text-center pt-3" *ngIf="analysisExperimentDetails.status === 'Review Completed'">
+            <div class="text-center pt-3"
+              *ngIf="analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()">
               <button type="submit" class="btn btn-primary mt-3" (click)="updateAnalysisStatus('Analysis Submitted')">
                 Submit Analysis
               </button>

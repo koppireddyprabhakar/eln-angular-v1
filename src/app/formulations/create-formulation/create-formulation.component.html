@@ -201,7 +201,9 @@
             <ckeditor required [(ngModel)]="article[i].text" data="" name="text"></ckeditor>
             <!-- <ckeditor data="<p>Hello, world!</p>"></ckeditor> -->
             <div class="text-center pt-3">
-              <button type="submit" class="btn btn-primary" (click)="saveTab(i, dumm)">
+              <button type="submit" class="btn btn-primary"
+                *ngIf="experimentDetails && experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase()"
+                (click)="saveTab(i, dumm)">
                 Save
               </button>
             </div>
@@ -242,7 +244,9 @@
               </tbody>
             </table>
             <div class="text-center pt-3">
-              <button type="submit" class="btn btn-primary mt-3" (click)="saveExcipients()">
+              <button type="submit" class="btn btn-primary mt-3"
+                *ngIf="experimentDetails && experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase()"
+                (click)="saveExcipients()">
                 Save
               </button>
             </div>
@@ -251,7 +255,8 @@
               active: activeTab === 'attachments',
               show: activeTab === 'attachments'
             }" id="attachments" role="tabpanel" aria-labelledby="attachments-tab">
-            <div class="row mb-3">
+            <div class="row mb-3"
+              *ngIf="experimentDetails && experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase()">
               <label for="inputNumber" class="col-sm-2 col-form-label">
                 Upload</label>
               <div class="col-sm-10">
@@ -264,8 +269,9 @@
                 <div class="file-container">
                   <span class="file-list" (click)="getFileContent(file.name, file.experimentId)">{{ file.name |
                     titlecase }}</span>
-                  <span class="align-right" (click)="removeAttachment(file)">Remove <i
-                      class="bi bi-trash-fill pointer"></i></span>
+                  <span class="align-right"
+                    *ngIf="experimentDetails && experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase()"
+                    (click)="removeAttachment(file)">Remove <i class="bi bi-trash-fill pointer"></i></span>
                 </div>
               </span>
             </div>
