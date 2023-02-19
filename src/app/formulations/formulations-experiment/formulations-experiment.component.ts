@@ -117,6 +117,12 @@ export class FormulationsExperimentComponent implements OnInit {
       `/create-forms?projectId=${event.projectId}&experimentId=${event.expId}&edit=true`
     );
   }
+  viewExperiment(event) {
+    console.log(event);
+    this.route.navigateByUrl(
+      `/create-forms?projectId=${event.projectId}&experimentId=${event.expId}&edit=false`
+    );
+  }
 
   addTrf(row) {
     this.route.navigateByUrl(`/forms-page/add-trf?expId=${row.expId}`);

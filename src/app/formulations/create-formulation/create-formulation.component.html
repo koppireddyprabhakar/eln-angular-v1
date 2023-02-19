@@ -39,7 +39,7 @@
               Attachments
             </button>
           </li>
-          <li class="nav-item" role="presentation">
+          <li class="nav-item" role="presentation" *ngIf="experimentDetails && experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase()">
             <button class="nav-link" id="attachments-tab" [disabled]="!isCreatedExperiment" type="button"
               (click)="addNew()">
               Add New Tab
@@ -204,7 +204,7 @@
               <button type="submit" class="btn btn-primary"
                 *ngIf="experimentDetails && experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase()"
                 (click)="saveTab(i, dumm)">
-                Save
+                Save 
               </button>
             </div>
           </div>
