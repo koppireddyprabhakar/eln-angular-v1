@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { UsersProfileComponent } from './pages/users-profile/users-profile.component';
+import { UsersProfileComponent } from './users-profile/users-profile.component';
 import { PagesFaqComponent } from './pages/pages-faq/pages-faq.component';
 import { PagesContactComponent } from './pages/pages-contact/pages-contact.component';
 import { PagesRegisterComponent } from './pages/pages-register/pages-register.component';

@@ -8,7 +8,7 @@ import { PagesError404Component } from './pages/pages-error404/pages-error404.co
 import { PagesFaqComponent } from './pages/pages-faq/pages-faq.component';
 import { PagesLoginComponent } from './pages/pages-login/pages-login.component';
 import { PagesRegisterComponent } from './pages/pages-register/pages-register.component';
-import { UsersProfileComponent } from './pages/users-profile/users-profile.component';
+import { UsersProfileComponent } from './users-profile/users-profile.component';
 import { FormulationsComponent } from './formulations/formulations.component';
 import { CreateFormulationComponent } from './formulations/create-formulation/create-formulation.component';
 import { CreateTrfComponent } from './test-request-form/create-trf/create-trf.component';

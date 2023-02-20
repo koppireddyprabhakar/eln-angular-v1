@@ -17,6 +17,8 @@ import { ReviewFormulationsListComponent } from './review-formulations-list/revi
 import { FormulationsProjectsComponent } from './formulations-projects/formulations-projects.component';
 import { DataTablesModule } from 'angular-datatables';
 import { FormulationsExperimentComponent } from './formulations-experiment/formulations-experiment.component';
+import { InwardManagementComponent } from './inward-management/inward-management.component';
+import { TestReqFormsComponent } from './test-req-forms/test-req-forms.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,8 @@ import { FormulationsExperimentComponent } from './formulations-experiment/formu
     ReviewFormulationsListComponent,
     FormulationsProjectsComponent,
     FormulationsExperimentComponent,
+    InwardManagementComponent,
+    TestReqFormsComponent,
   ],
   imports: [
     CommonModule,

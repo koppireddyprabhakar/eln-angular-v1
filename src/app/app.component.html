@@ -12,4 +12,6 @@
   </div>
 </div>
 <router-outlet></router-outlet>
+<app-header *ngIf="!hideHeaderAndSideBar"></app-header>
+<app-sidebar *ngIf="!hideHeaderAndSideBar"></app-sidebar>
 <app-footer></app-footer>
