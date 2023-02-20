@@ -1162,6 +1162,10 @@ h6 {
   cursor: pointer;
   font-size: 1.5rem;
 }
+.viewIcon {
+  cursor: pointer;
+  font-size: 1.5rem;
+}
 .tertiaryIcon {
   color: #2c3e50;
   cursor: pointer;
