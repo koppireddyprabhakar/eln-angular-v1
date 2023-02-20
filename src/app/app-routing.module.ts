@@ -19,6 +19,7 @@ import { ElnLoginComponent } from './eln-login/eln-login.component';
 import { ForgetComponent } from './forget/forget.component';
 import { UpdatePasswordComponent } from './update-password/update-password.component';
 import { OtpVerificationComponent } from './otp-verification/otp-verification.component';
+import { AuthGuardGuard } from './shared/auth-guard/auth-guard.guard';
 
 // const routes: Routes = [
 //   { path: '', component: DashboardComponent },
@@ -53,6 +54,7 @@ const routes: Routes = [
     path: '',
     redirectTo: '/business-admin/users',
     pathMatch: 'full',
+    canLoad: [AuthGuardGuard]
   },
   {
     path: 'dashboard',
@@ -61,6 +63,7 @@ const routes: Routes = [
       import('@app/dashboard/dashboard-routing.module').then(
         (route) => route.DashboardRoutingModule
       ),
+      canLoad: [AuthGuardGuard]
   },
   {
     path: 'business-admin',
@@ -69,6 +72,7 @@ const routes: Routes = [
       import('@app/business-admin/business-admin.module').then(
         (route) => route.BusinessAdminModule
       ),
+      canLoad: [AuthGuardGuard]
   },
   {
     path: 'test-request-form',
@@ -77,6 +81,7 @@ const routes: Routes = [
       import('@app/trf-dashboard/trf-dashboard.module').then(
         (route) => route.TrfDashboardModule
       ),
+      canLoad: [AuthGuardGuard]
   },
   {
     path: 'forms-page',
@@ -85,6 +90,7 @@ const routes: Routes = [
       import('@app/formulations/formulations.module').then(
         (route) => route.FormulationsModule
       ),
+      canLoad: [AuthGuardGuard]
   },
   {
     path: 'exp-analysis',
@@ -93,6 +99,7 @@ const routes: Routes = [
       import('@app/analysis/analysis.module').then(
         (route) => route.AnalysisModule
       ),
+      canLoad: [AuthGuardGuard]
   },
   // {
   //   path: 'forms-page',
@@ -101,10 +108,12 @@ const routes: Routes = [
   {
     path: 'create-forms',
     component: CreateFormulationComponent,
+    canLoad: [AuthGuardGuard]
   },
   {
     path: 'user-profile',
     component: UsersProfileComponent,
+    canLoad: [AuthGuardGuard]
   },
   // {
   //   path: 'test-request-form',

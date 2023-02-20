@@ -35,11 +35,11 @@ export class LoginserviceService {
 
   validateUserSession() {
     if(!this.userDetails) {
-      this.router.navigate['/login'];
-      return false;
+      this.router.navigate(['']);
     } else {
       return true;
     }
+    return false;
   }
 
 }

@@ -26,6 +26,7 @@ import { ElnLoginComponent } from './eln-login/eln-login.component';
 import { ForgetComponent } from './forget/forget.component';
 import { UpdatePasswordComponent } from './update-password/update-password.component';
 import { OtpVerificationComponent } from './otp-verification/otp-verification.component';
+import { AuthGuardGuard } from './shared/auth-guard/auth-guard.guard';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,7 @@ import { OtpVerificationComponent } from './otp-verification/otp-verification.co
     ToastrModule.forRoot(),
     NgMultiSelectDropDownModule.forRoot(),
   ],
-  providers: [],
+  providers: [AuthGuardGuard],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
