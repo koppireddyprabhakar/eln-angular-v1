@@ -102,6 +102,10 @@ const routes: Routes = [
     path: 'create-forms',
     component: CreateFormulationComponent,
   },
+  {
+    path: 'user-profile',
+    component: UsersProfileComponent,
+  },
   // {
   //   path: 'test-request-form',
   //   component: CreateTrfComponent,

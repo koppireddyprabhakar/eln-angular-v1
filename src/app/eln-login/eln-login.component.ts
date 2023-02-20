@@ -19,8 +19,9 @@ export class ElnLoginComponent implements OnInit {
   password: string;
   authError: string;
   constructor(private formBuilder:FormBuilder,private route:Router,
-    private loginserviceService:LoginserviceService,private toastr: ToastrService) { 
+    private loginService:LoginserviceService,private toastr: ToastrService) { 
   }
+  
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
       'Username': ['', [Validators.required]],
@@ -34,7 +35,7 @@ onSubmit(){
     password: this.password
   };
  
-  this.loginserviceService.login(request).subscribe((data) =>{ 
+  this.loginService.login(request).subscribe((data) =>{ 
      if(data.firstLogin==1)
      {
       this.route.navigate(['/app-update-password'],{
@@ -43,6 +44,8 @@ onSubmit(){
      }
      else
      {
+      // Storing user details in global service
+      this.loginService.userDetails = data;
       this.route.navigate(['/dashboard']);
      }
   },
