@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Event, NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { UserService } from '@app/shared/services/user/user.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -9,7 +10,7 @@ import { filter } from 'rxjs/operators';
 })
 export class SidebarComponent implements OnInit {
   toggleBusinessAdmin = false;
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(private router: Router, private route: ActivatedRoute, public userService: UserService) {}
 
   ngOnInit(): void {
     this.router.events
@@ -18,4 +19,6 @@ export class SidebarComponent implements OnInit {
         this.toggleBusinessAdmin = data.url.includes('business-admin');
       });
   }
+
+  
 }

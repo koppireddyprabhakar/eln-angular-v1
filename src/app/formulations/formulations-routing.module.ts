@@ -8,6 +8,7 @@ import { ReviewFormulationsComponent } from './review-formulations/review-formul
 import { ReviewFormulationsListComponent } from './review-formulations-list/review-formulations-list.component';
 import { FormulationsProjectsComponent } from './formulations-projects/formulations-projects.component';
 import { FormulationsExperimentComponent } from './formulations-experiment/formulations-experiment.component';
+import { TestReqFormsComponent } from './test-req-forms/test-req-forms.component';
 
 const routes: Routes = [
   {
@@ -36,6 +37,10 @@ const routes: Routes = [
       {
         path: 'experiments',
         component: FormulationsExperimentComponent,
+      },
+      {
+        path: 'test-req-forms',
+        component: TestReqFormsComponent,
       },
     ],
   },

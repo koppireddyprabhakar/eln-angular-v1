@@ -1,5 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
+import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 
 @Component({
   selector: 'app-header',
@@ -7,9 +8,13 @@ import { Component, Inject, OnInit } from '@angular/core';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
-  constructor(@Inject(DOCUMENT) private document: Document) {}
+  constructor(@Inject(DOCUMENT) private document: Document, private loginService: LoginserviceService) {}
 
-  ngOnInit(): void {}
+  userName: string = '';
+
+  ngOnInit(): void {
+    this.userName = this.loginService.userDetails ? (this.loginService.userDetails['firstName'] + ' ' + this.loginService.userDetails['lastName']) : '';
+  }
 
   sidebarToggle() {
     //toggle sidebar function

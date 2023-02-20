@@ -1,5 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { elnEndpointsConfig } from '@config/endpoints/eln.endpoints.config';
 import { ToastrService } from 'ngx-toastr';
@@ -10,10 +11,12 @@ import { ClientService } from '../client/client.service';
   providedIn: 'root'
 })
 export class LoginserviceService {
+  
+  userDetails: any;
 
 
   constructor(private http: HttpClient,clientService: ClientService,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService, private router:Router) { }
 
 
   login(request:{mailId: string, password: string}): Observable<any> {
@@ -29,6 +32,16 @@ export class LoginserviceService {
     }
     return throwError(error);
   }
+
+  validateUserSession() {
+    if(!this.userDetails) {
+      this.router.navigate(['']);
+    } else {
+      return true;
+    }
+    return false;
+  }
+
 }
   
 

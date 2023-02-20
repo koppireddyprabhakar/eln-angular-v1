@@ -4,7 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { UsersProfileComponent } from './pages/users-profile/users-profile.component';
+import { UsersProfileComponent } from './users-profile/users-profile.component';
 import { PagesFaqComponent } from './pages/pages-faq/pages-faq.component';
 import { PagesContactComponent } from './pages/pages-contact/pages-contact.component';
 import { PagesRegisterComponent } from './pages/pages-register/pages-register.component';
@@ -26,6 +26,7 @@ import { ElnLoginComponent } from './eln-login/eln-login.component';
 import { ForgetComponent } from './forget/forget.component';
 import { UpdatePasswordComponent } from './update-password/update-password.component';
 import { OtpVerificationComponent } from './otp-verification/otp-verification.component';
+import { AuthGuardGuard } from './shared/auth-guard/auth-guard.guard';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,7 @@ import { OtpVerificationComponent } from './otp-verification/otp-verification.co
     ToastrModule.forRoot(),
     NgMultiSelectDropDownModule.forRoot(),
   ],
-  providers: [],
+  providers: [AuthGuardGuard],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

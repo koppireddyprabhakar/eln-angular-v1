@@ -16,6 +16,7 @@ import { ReviewExperimentsComponent } from './review-experiments/review-experime
 import { ReviewExperimentsListComponent } from './review-experiments-list/review-experiments-list.component';
 import { DataTablesModule } from 'angular-datatables';
 import { SharedModule } from '@app/shared/shared.module';
+import { InwardManagementComponent } from './inward-management/inward-management.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { SharedModule } from '@app/shared/shared.module';
     AnalysisNewExperimentComponent,
     ReviewExperimentsComponent,
     ReviewExperimentsListComponent,
+    InwardManagementComponent,
   ],
   imports: [
     CommonModule,

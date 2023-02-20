@@ -13,6 +13,9 @@ export class UserService {
     private readonly clientService: ClientService
   ) { }
 
+  userRole: string;
+  userDepartment: string;
+
   getUsers() {
     const url = elnEndpointsConfig.endpoints['getUsers'];
     return this.http
@@ -55,5 +58,29 @@ export class UserService {
       // show toast
     }
     return throwError(error);
+  }
+
+  isLead() {
+    return this.userRole == 'Lead' ? true : false;  
+  }
+
+  isExec() {
+    return this.userRole == 'Executive' ? true : false;
+  }
+
+  isHod() {
+    return this.userRole == 'HOD' ? true : false;
+  }
+
+  isAdmin() {
+    return this.userRole == 'Admin' ? true : false;
+  }
+
+  isFromAnalysisDept() {
+    return this.userDepartment == 'ANALYSIS' ? true : false;
+  }
+
+  isFromFormulationDept() {
+    return this.userDepartment == 'FORMULATION' ? true : false;
   }
 }

@@ -6,6 +6,9 @@ import { Router} from '@angular/router';
 import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
+import { UserService } from '@app/shared/services/user/user.service';
+import { roleMapping } from '@app/shared/constants/mappings';
+import { departmentMapping } from '@app/shared/constants/mappings';
 
 @Component({
   selector: 'app-eln-login',
@@ -19,8 +22,9 @@ export class ElnLoginComponent implements OnInit {
   password: string;
   authError: string;
   constructor(private formBuilder:FormBuilder,private route:Router,
-    private loginserviceService:LoginserviceService,private toastr: ToastrService) { 
+    private loginService:LoginserviceService,private toastr: ToastrService, private userService: UserService) { 
   }
+  
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
       'Username': ['', [Validators.required]],
@@ -34,7 +38,7 @@ onSubmit(){
     password: this.password
   };
  
-  this.loginserviceService.login(request).subscribe((data) =>{ 
+  this.loginService.login(request).subscribe((data) =>{ 
      if(data.firstLogin==1)
      {
       this.route.navigate(['/app-update-password'],{
@@ -43,12 +47,23 @@ onSubmit(){
      }
      else
      {
+      // Storing user details in global service
+      this.loginService.userDetails = data;
+      this.getUserRoleAndDepartment(this.loginService.userDetails);
       this.route.navigate(['/dashboard']);
      }
   },
   (error: HttpErrorResponse) => {
      this.toastr.error('Invalid credentials', 'Error');
      });
+  }
+
+  getUserRoleAndDepartment(userDetails:any) {
+    if(userDetails) {
+      this.userService.userRole = roleMapping[userDetails['roleId']];
+      this.userService.userDepartment = departmentMapping[userDetails['deptId']]
     }
+  }
+
  }
 
