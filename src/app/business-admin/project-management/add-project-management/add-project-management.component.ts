@@ -24,7 +24,7 @@ export class AddProjectManagementComponent implements OnInit {
   dosages: Dosages[] = [];
   markets: any = [];
   formulations: any = [];
-  productCode: any;
+  productCode: string = '';
   productName: string;
   subscribeFlag = true;
   projectId: number;

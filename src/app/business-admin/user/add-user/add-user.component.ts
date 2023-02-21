@@ -35,6 +35,7 @@ export class AddUserComponent implements OnInit {
     dateOfBirth: ['', [Validators.required]],
     gender: ['', [Validators.required]],
     deptId: ['', [Validators.required]],
+    dosageId: [''],
     roleId: ['', [Validators.required]],
     contactNo: ['', [Validators.required]],
     mailId: ['', [Validators.email, Validators.required]],
@@ -42,7 +43,8 @@ export class AddUserComponent implements OnInit {
     addressLine2: [''],
     city: [''],
     zipCode: [''],
-    teamId: [''],
+    teamId: ['', [Validators.required]],
+    certifiedReviewer:[''],
   });
 
   constructor(
@@ -72,12 +74,14 @@ export class AddUserComponent implements OnInit {
 
   saveUser() {
     const dob = this.userForm.get('dateOfBirth')?.value || '';
+    console.log(this.userForm.get('teamId')?.value);
     const newUser = {
       firstName: this.userForm.get('firstName')?.value,
       lastName: this.userForm.get('lastName')?.value,
       dateOfBirth: (dob && new Date(dob)?.toISOString().split('T')[0]) || '',
       gender: this.userForm.get('gender')?.value,
       deptId: this.userForm.get('deptId')?.value,
+      dosageId: this.userForm.get('dosageId')?.value,
       roleId: this.userForm.get('roleId')?.value,
       contactNo: this.userForm.get('contactNo')?.value?.toString(),
       mailId: this.userForm.get('mailId')?.value,
@@ -86,7 +90,9 @@ export class AddUserComponent implements OnInit {
       city: this.userForm.get('city')?.value,
       zipCode: this.userForm.get('zipCode')?.value,
       userTeams: [{ teamId: this.userForm.get('teamId')?.value }],
+      certifiedReviewer: this.userForm.get('certifiedReviewer')?.value,
     };
+    console.log("newUser=",newUser);
     if (!this.userForm.invalid) {
       this.globalService.showLoader();
       if (Object.keys(this.selectedUser).length === 0) {
@@ -128,9 +134,11 @@ export class AddUserComponent implements OnInit {
       this.userForm.get('dateOfBirth')?.markAsDirty();
       this.userForm.get('gender')?.markAsDirty();
       this.userForm.get('deptId')?.markAsDirty();
+     // this.userForm.get('dosageId')?.markAsDirty();
       this.userForm.get('roleId')?.markAsDirty();
       this.userForm.get('contactNo')?.markAsDirty();
       this.userForm.get('mailId')?.markAsDirty();
+      this.userForm.get('teamId')?.markAsDirty();
     }
   }
 
@@ -184,8 +192,16 @@ export class AddUserComponent implements OnInit {
           city: selectedUser.city,
           zipCode: selectedUser.zipCode,
           teamId: selectedUser.teamId,
+          certifiedReviewer: selectedUser.certifiedReviewer,
         });
       });
+  }
+  depChange() {
+    const values = Object.values(this.teams);
+    const team: any = values.filter(
+      (prod) => prod.deptId ===  Number(this.userForm.get('deptId')?.value)
+    )[0];
+    this.teams = team;
   }
 
   ngOnDestroy(): void {

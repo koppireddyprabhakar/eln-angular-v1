@@ -108,6 +108,7 @@
           <select
             class="form-select"
             aria-label="Role Id"
+            id="roleId"
             formControlName="roleId"
           >
             <option
@@ -131,25 +132,43 @@
           </span>
         </div>
         <div class="col-4">
+          <label for="certifiedReviewer" class="form-label">Certified Reviewer</label><br>
+          <input class="form-check-input" formControlName="certifiedReviewer" type="checkbox" id="certifiedReviewer">
+        </div>
+        <div class="col-4">
           <label for="teamId" class="form-label">Team Name</label>
 
           <select
             class="form-select"
             aria-label="Teams"
+            id ="teamId"
             formControlName="teamId"
           >
             <option *ngFor="let team of teams" [ngValue]="team.teamId">
               {{ team.teamName | titlecase }}
             </option>
           </select>
+          <span
+            *ngIf="
+              userForm.controls['teamId'].invalid &&
+              (userForm.controls['teamId'].dirty ||
+                userForm.controls['teamId'].touched) &&
+              userForm.get('teamId')?.errors &&
+              userForm.get('teamId')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please select Team
+          </span>
         </div>
         <div class="col-4">
-          <label for="teamId" class="form-label">Dosage Name</label>
+          <label for="dosageId" class="form-label">Dosage Name</label>
 
           <select
             class="form-select"
-            aria-label="Teams"
-            formControlName="teamId"
+            aria-label="Dosages"
+            id="dosageId"
+            formControlName="dosageId"
           >
             <option *ngFor="let dosage of dosages" [ngValue]="dosage.dosageId">
               {{ dosage.dosageName | titlecase }}
