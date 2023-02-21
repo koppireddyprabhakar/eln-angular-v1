@@ -10,25 +10,16 @@
             <div class="align-header">
               <h5 class="card-title">Inwards</h5>
               <div class="align-button">
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#inwardForms"
-                  (click)="addInward()"
-                >
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#inwardForms"
+                  (click)="addInward()">
                   <i class="bi bi-plus-circle"></i> Add Inward
                 </button>
               </div>
             </div>
-            <table
-              datatable
-              [dtOptions]="dtOptions"
-              [dtTrigger]="dtTrigger"
-              class="row-border hover"
-            >
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
               <thead>
                 <tr>
+                  <th>S.No</th>
                   <th>Inward Name</th>
                   <th>Material Name</th>
                   <th>Material Type</th>
@@ -40,7 +31,8 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let inward of inwards">
+                <tr *ngFor="let inward of inwards; let i = index">
+                  <td>{{i + 1}}</td>
                   <td>{{ inward.excipientsName }}</td>
                   <td>{{ inward.materialName }}</td>
                   <td>{{ inward.materialType }}</td>
@@ -49,19 +41,11 @@
                   <td>{{ inward.potency }}</td>
                   <td>{{ inward.grade }}</td>
                   <td class="options-width">
-                    <i
-                      data-bs-toggle="modal"
-                      data-bs-target="#inwardForms"
-                      (click)="selectInward(inward)"
-                      class="editIcon ri-edit-2-fill"
-                    ></i>
+                    <i data-bs-toggle="modal" data-bs-target="#inwardForms" (click)="selectInward(inward)"
+                      class="editIcon ri-edit-2-fill"></i>
                     &nbsp;&nbsp;
-                    <i
-                      data-bs-toggle="modal"
-                      data-bs-target="#deleteForm"
-                      (click)="confirmInwardDeletetion(inward)"
-                      class="deleteIcon ri-delete-bin-5-fill"
-                    ></i>
+                    <i data-bs-toggle="modal" data-bs-target="#deleteForm" (click)="confirmInwardDeletetion(inward)"
+                      class="deleteIcon ri-delete-bin-5-fill"></i>
                   </td>
                 </tr>
               </tbody>
@@ -78,172 +62,106 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Inward Form</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form class="row g-3" [formGroup]="inwardForm">
           <div class="col-12">
             <label for="excipientsName" class="form-label">Inward Name</label>
-            <input
-              type="text"
-              class="form-control"
-              id="excipientsName"
-              formControlName="excipientsName"
-            />
-            <span
-              *ngIf="
+            <input type="text" class="form-control" id="excipientsName" formControlName="excipientsName" />
+            <span *ngIf="
                 inwardForm.controls['excipientsName'].invalid &&
                 (inwardForm.controls['excipientsName'].dirty ||
                   inwardForm.controls['excipientsName'].touched) &&
                 inwardForm.get('excipientsName')?.errors &&
                 inwardForm.get('excipientsName')?.hasError('required')
-              "
-              class="text-danger"
-            >
+              " class="text-danger">
               Please enter Inward Name
             </span>
           </div>
 
           <div class="col-6">
             <label for="materialName" class="form-label">Material Name</label>
-            <input
-              type="email"
-              class="form-control"
-              id="materialName"
-              formControlName="materialName"
-            />
-            <span
-            *ngIf="
+            <input type="email" class="form-control" id="materialName" formControlName="materialName" />
+            <span *ngIf="
               inwardForm.controls['materialName'].invalid &&
               (inwardForm.controls['materialName'].dirty ||
                 inwardForm.controls['materialName'].touched) &&
               inwardForm.get('materialName')?.errors &&
               inwardForm.get('materialName')?.hasError('required')
-            "
-            class="text-danger"
-          >
-            Please enter Material Name
-          </span>
+            " class="text-danger">
+              Please enter Material Name
+            </span>
           </div>
           <div class="col-6">
             <label for="materialType" class="form-label">Material Type</label>
-            <input
-              type="email"
-              class="form-control"
-              id="materialType"
-              formControlName="materialType"
-            />
-            <span
-            *ngIf="
+            <input type="email" class="form-control" id="materialType" formControlName="materialType" />
+            <span *ngIf="
               inwardForm.controls['materialType'].invalid &&
               (inwardForm.controls['materialType'].dirty ||
                 inwardForm.controls['materialType'].touched) &&
               inwardForm.get('materialType')?.errors &&
               inwardForm.get('materialType')?.hasError('required')
-            "
-            class="text-danger"
-          >
-            Please enter Material Type 
-          </span>
+            " class="text-danger">
+              Please enter Material Type
+            </span>
           </div>
           <div class="col-6">
             <label for="batchNumber" class="form-label">Batch Number</label>
-            <input
-              type="email"
-              class="form-control"
-              id="batchNumber"
-              formControlName="batchNumber"
-            />
-            <span
-            *ngIf="
+            <input type="email" class="form-control" id="batchNumber" formControlName="batchNumber" />
+            <span *ngIf="
               inwardForm.controls['batchNumber'].invalid &&
               (inwardForm.controls['batchNumber'].dirty ||
                 inwardForm.controls['batchNumber'].touched) &&
               inwardForm.get('batchNumber')?.errors &&
               inwardForm.get('batchNumber')?.hasError('required')
-            "
-            class="text-danger"
-          >
-            Please enter Batch Number  
-          </span>
+            " class="text-danger">
+              Please enter Batch Number
+            </span>
           </div>
           <div class="col-6">
             <label for="sourceName" class="form-label">Source Name</label>
-            <input
-              type="email"
-              class="form-control"
-              id="sourceName"
-              formControlName="sourceName"
-            />
-            <span
-            *ngIf="
+            <input type="email" class="form-control" id="sourceName" formControlName="sourceName" />
+            <span *ngIf="
               inwardForm.controls['sourceName'].invalid &&
               (inwardForm.controls['sourceName'].dirty ||
                 inwardForm.controls['sourceName'].touched) &&
               inwardForm.get('sourceName')?.errors &&
               inwardForm.get('sourceName')?.hasError('required')
-            "
-            class="text-danger"
-          >
-            Please enter Source Name
-          </span>
+            " class="text-danger">
+              Please enter Source Name
+            </span>
           </div>
           <div class="col-6">
             <label for="potency" class="form-label">Potency</label>
-            <input
-              type="email"
-              class="form-control"
-              id="potency"
-              formControlName="potency"
-            />
-            <span
-            *ngIf="
+            <input type="email" class="form-control" id="potency" formControlName="potency" />
+            <span *ngIf="
               inwardForm.controls['potency'].invalid &&
               (inwardForm.controls['potency'].dirty ||
                 inwardForm.controls['potency'].touched) &&
               inwardForm.get('potency')?.errors &&
               inwardForm.get('potency')?.hasError('required')
-            "
-            class="text-danger"
-          >
-            Please enter Potency
-          </span>
+            " class="text-danger">
+              Please enter Potency
+            </span>
           </div>
           <div class="col-6">
             <label for="grade" class="form-label">Grade</label>
-            <input
-              type="email"
-              class="form-control"
-              id="grade"
-              formControlName="grade"
-            />
-            <span
-            *ngIf="
+            <input type="email" class="form-control" id="grade" formControlName="grade" />
+            <span *ngIf="
               inwardForm.controls['grade'].invalid &&
               (inwardForm.controls['grade'].dirty ||
                 inwardForm.controls['grade'].touched) &&
               inwardForm.get('grade')?.errors &&
               inwardForm.get('grade')?.hasError('required')
-            "
-            class="text-danger"
-          >
-            Please enter Grade
-          </span>
+            " class="text-danger">
+              Please enter Grade
+            </span>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-          #closeButton
-        >
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" #closeButton>
           Close
         </button>
         <!-- -->
@@ -259,21 +177,11 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Delete Inward</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">Are you sure you want to delete this Inward?</div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-          #closeDeleteButton
-        >
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" #closeDeleteButton>
           Close
         </button>
         <!--  -->

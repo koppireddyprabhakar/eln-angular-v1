@@ -78,7 +78,7 @@ export class CreateFormulationComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private route: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getExcipients();
@@ -105,7 +105,7 @@ export class CreateFormulationComponent implements OnInit {
     this.experimentId =
       this.activatedRoute.snapshot.queryParams['experimentId'];
     this.editExperiment =
-      this.activatedRoute.snapshot.queryParams['edit'] || false;
+      (this.activatedRoute.snapshot.queryParams['edit'] && this.activatedRoute.snapshot.queryParams['edit'] === "true" ? true : false) || false;
     this.projectId = this.activatedRoute.snapshot.queryParams['projectId'];
     this.isCreatedExperiment = this.experimentId ? true : false;
     this.getBatchNumber();
@@ -178,7 +178,7 @@ export class CreateFormulationComponent implements OnInit {
     const fileData = { ...file, projectId: this.projectId };
     this.experimentService
       .deleteExperimentAttachment(file)
-      .subscribe((experimentDetails) => {});
+      .subscribe((experimentDetails) => { });
   }
 
   getExcipients() {
@@ -357,8 +357,7 @@ export class CreateFormulationComponent implements OnInit {
 
     this.experimentService.saveExperimentTabs(tabValue).subscribe((data) => {
       this.toastr.success(
-        `Experiment Data ${
-          this.dummyTabs[index].id ? 'updated' : 'Saved'
+        `Experiment Data ${this.dummyTabs[index].id ? 'updated' : 'Saved'
         } Successfully`,
         'Success'
       );
@@ -373,7 +372,7 @@ export class CreateFormulationComponent implements OnInit {
     });
   }
 
-  saveAttachment() {}
+  saveAttachment() { }
 
   onChange(event) {
     this.file = event.target.files[0];

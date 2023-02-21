@@ -10,14 +10,10 @@
             <div class="align-header">
               <h5 class="card-title">Experiments</h5>
             </div>
-            <table
-              datatable
-              [dtOptions]="dtOptions"
-              [dtTrigger]="dtTrigger"
-              class="row-border hover"
-            >
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
               <thead>
                 <tr>
+                  <th>S.No</th>
                   <th>Experiment Name</th>
                   <th>Batch No.</th>
                   <th>Batch Size</th>
@@ -29,7 +25,8 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let user of myExperiments">
+                <tr *ngFor="let user of myExperiments; let i = index">
+                  <td>{{i + 1}}</td>
                   <td>
                     {{ user.analysisName | titlecase }}
                   </td>
@@ -40,12 +37,8 @@
                   <td>{{ user.strength }}</td>
                   <td>{{ user.status }}</td>
                   <td>
-                    <i
-                      data-bs-toggle="modal"
-                      data-bs-target="#productForms"
-                      (click)="onRowClick(user)"
-                      class="editIcon ri-edit-2-fill"
-                    ></i>
+                    <i data-bs-toggle="modal" data-bs-target="#productForms" (click)="onRowClick(user)"
+                      class="editIcon ri-edit-2-fill"></i>
                   </td>
                 </tr>
               </tbody>
