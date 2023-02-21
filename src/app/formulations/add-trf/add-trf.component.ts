@@ -48,7 +48,7 @@ export class AddTrfComponent implements OnInit {
     department: ['', [Validators.required]],
     dosageForm: ['', [Validators.required]],
     projectName: ['', [Validators.required]],
-    projectCode: ['', [Validators.required]],
+    productCode: ['', [Validators.required]],
     strength: ['', [Validators.required]],
     batchNumber: ['', [Validators.required]],
     condition: ['', [Validators.required]],
@@ -77,7 +77,7 @@ export class AddTrfComponent implements OnInit {
     private readonly testService: TestService,
     private activatedRoute: ActivatedRoute,
     private formulationService: FormulationsService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.expId = this.activatedRoute.snapshot.queryParams['expId'];
@@ -131,8 +131,8 @@ export class AddTrfComponent implements OnInit {
           strength: this.experiment.strength,
           batchSize: this.experiment.batchSize,
           testRequestId: this.staticTrfId,
-          department: 'string',
-          projectCode: 'string',
+          department: this.experiment.departmentName,
+          productCode: this.experiment.productCode,
         });
         // this.globalService.hideLoader();
       });
@@ -257,7 +257,7 @@ export class AddTrfComponent implements OnInit {
       this.testRequestForm.get('batchNumber')?.markAsDirty();
       this.testRequestForm.get('projectName')?.markAsDirty();
       this.testRequestForm.get('strength')?.markAsDirty();
-      this.testRequestForm.get('projectCode')?.markAsDirty();
+      this.testRequestForm.get('productCode')?.markAsDirty();
       this.testRequestForm.get('condition')?.markAsDirty();
     }
   }
