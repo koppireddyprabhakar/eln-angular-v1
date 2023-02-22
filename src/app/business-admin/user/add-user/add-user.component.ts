@@ -44,7 +44,7 @@ export class AddUserComponent implements OnInit {
     city: [''],
     zipCode: [''],
     teamId: ['', [Validators.required]],
-    certifiedReviewer:[''],
+    certifiedReviewer: [''],
   });
 
   constructor(
@@ -58,7 +58,7 @@ export class AddUserComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private toastr: ToastrService,
     private dosageService: DosageService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.userId = this.activatedRoute.snapshot.queryParams['userId'];
@@ -89,10 +89,10 @@ export class AddUserComponent implements OnInit {
       addressLine2: this.userForm.get('addressLine2')?.value,
       city: this.userForm.get('city')?.value,
       zipCode: this.userForm.get('zipCode')?.value,
-      userTeams: [{ teamId: this.userForm.get('teamId')?.value }],
+      userTeams: [{ teamId: this.userForm.get('teamId')?.value, userId: this.userId ? this.userId : null }],
       certifiedReviewer: this.userForm.get('certifiedReviewer')?.value,
     };
-    console.log("newUser=",newUser);
+    console.log("newUser=", newUser);
     if (!this.userForm.invalid) {
       this.globalService.showLoader();
       if (Object.keys(this.selectedUser).length === 0) {
@@ -134,7 +134,7 @@ export class AddUserComponent implements OnInit {
       this.userForm.get('dateOfBirth')?.markAsDirty();
       this.userForm.get('gender')?.markAsDirty();
       this.userForm.get('deptId')?.markAsDirty();
-     // this.userForm.get('dosageId')?.markAsDirty();
+      // this.userForm.get('dosageId')?.markAsDirty();
       this.userForm.get('roleId')?.markAsDirty();
       this.userForm.get('contactNo')?.markAsDirty();
       this.userForm.get('mailId')?.markAsDirty();
@@ -199,7 +199,7 @@ export class AddUserComponent implements OnInit {
   depChange() {
     const values = Object.values(this.teams);
     const team: any = values.filter(
-      (prod) => prod.deptId ===  Number(this.userForm.get('deptId')?.value)
+      (prod) => prod.deptId === Number(this.userForm.get('deptId')?.value)
     )[0];
     this.teams = team;
   }
