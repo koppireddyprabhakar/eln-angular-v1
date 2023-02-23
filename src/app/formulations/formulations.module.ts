@@ -19,6 +19,8 @@ import { DataTablesModule } from 'angular-datatables';
 import { FormulationsExperimentComponent } from './formulations-experiment/formulations-experiment.component';
 import { InwardManagementComponent } from './inward-management/inward-management.component';
 import { TestReqFormsComponent } from './test-req-forms/test-req-forms.component';
+import { CoaGenerationListComponent } from './coa-generation-list/coa-generation-list.component';
+import { CoaGenerationComponent } from './coa-generation-list/components/coa-generation/coa-generation.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,8 @@ import { TestReqFormsComponent } from './test-req-forms/test-req-forms.component
     FormulationsExperimentComponent,
     InwardManagementComponent,
     TestReqFormsComponent,
+    CoaGenerationListComponent,
+    CoaGenerationComponent,
   ],
   imports: [
     CommonModule,

@@ -1,0 +1,109 @@
+<main id="main" class="main body-height">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">COA GENERATION FORM</h5>
+            <div class="row g-3">
+                <div class="col-4">
+                    <label for="testRequestId" class="form-label">Test Request ID</label>
+                    <input type="text" class="form-control" id="testRequestId" [ngModel]="testRequest.testRequestId"
+                        readonly />
+                </div>
+
+                <div class="col-4">
+                    <label for="department" class="form-label">Department</label>
+                    <input type="text" class="form-control" id="department" [ngModel]="testRequest.department"
+                        readonly />
+                </div>
+                <div class="col-4">
+                    <label for="dosageForm" class="form-label">Dosage Form</label>
+                    <input type="text" class="form-control" id="dosageForm" [ngModel]="testRequest.dosageForm"
+                        readonly />
+                </div>
+
+                <div class="col-4">
+                    <label for="projectName" class="form-label">Project Name</label>
+                    <input type="text" class="form-control" id="projectName" [ngModel]="testRequest.projectName"
+                        readonly />
+                </div>
+                <div class="col-4">
+                    <label for="productCode" class="form-label">Product Code</label>
+                    <input type="text" class="form-control" id="productCode" [ngModel]="testRequest.productCode"
+                        readonly />
+                </div>
+                <div class="col-4">
+                    <label for="strength" class="form-label">Strength</label>
+                    <input type="text" class="form-control" id="strength" [ngModel]="testRequest.strength" readonly />
+                </div>
+                <div class="col-4">
+                    <label for="batchNumber" class="form-label">Batch Number</label>
+                    <input type="text" class="form-control" id="batchNumber" [ngModel]="testRequest.batchNumber"
+                        readonly />
+                </div>
+                <div class="col-4">
+                    <label for="condition" class="form-label">Condition</label>
+                    <input type="text" class="form-control" id="condition" [ngModel]="testRequest.condition" readonly />
+                </div>
+                <div class="col-4">
+                    <label for="stage" class="form-label">Stage</label>
+                    <input type="text" class="form-control" id="stage" [ngModel]="testRequest.stage" readonly />
+                </div>
+                <div class="col-4">
+                    <label for="packaging" class="form-label">Packaging</label>
+                    <input type="text" class="form-control" id="packaging" [ngModel]="testRequest.packaging" readonly />
+                </div>
+                <div class="col-4">
+                    <label for="batchSize" class="form-label">Batch size</label>
+                    <input type="text" class="form-control" id="batchSize" [ngModel]="testRequest.batchSize" readonly />
+                </div>
+                <div class="col-4">
+                    <label for="quantity" class="form-label">Quantity</label>
+                    <input type="number" class="form-control" id="quantity" [ngModel]="testRequest.quantity" readonly />
+                </div>
+                <div class="col-4">
+                    <label for="labelClaim" class="form-label">Label Claim</label>
+                    <input type="text" class="form-control" id="labelClaim" [ngModel]="testRequest.labelClaim"
+                        readonly />
+                </div>
+                <div class="col-4">
+                    <label for="manufacturingDate" class="form-label">Manufacturing Date</label>
+                    <input type="date" class="form-control" id="manufacturingDate"
+                        [ngModel]="testRequest.manufacturingDate" readonly />
+                </div>
+
+                <div class="col-4">
+                    <label for="expiryDate" class="form-label">Expiry Date</label>
+                    <input type="date" class="form-control" id="expiryDate" [ngModel]="testRequest.expiryDate"
+                        readonly />
+                </div>
+            </div>
+
+            <h3>RESULTS</h3>
+
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover pt-4">
+                <thead>
+                    <tr>
+                        <th>Test Id</th>
+                        <th>Test Name</th>
+                        <th>Results</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let test of tests" class="py-2">
+                        <td>{{ test.testNumber }}</td>
+                        <td>{{ test.testName }}</td>
+                        <td>{{ test.testResult }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="text-center pt-4">
+                <button type="button" class="btn btn-secondary" (click)="redirectToExperiments()" #closeButton>
+                    Close
+                </button>
+                &nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-primary" (click)="updateExperimentStatus()">
+                    Complete
+                </button>
+            </div>
+        </div>
+    </div>
+</main>

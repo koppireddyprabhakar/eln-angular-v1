@@ -9,6 +9,8 @@ import { ReviewFormulationsListComponent } from './review-formulations-list/revi
 import { FormulationsProjectsComponent } from './formulations-projects/formulations-projects.component';
 import { FormulationsExperimentComponent } from './formulations-experiment/formulations-experiment.component';
 import { TestReqFormsComponent } from './test-req-forms/test-req-forms.component';
+import { CoaGenerationListComponent } from './coa-generation-list/coa-generation-list.component';
+import { CoaGenerationComponent } from './coa-generation-list/components/coa-generation/coa-generation.component';
 
 const routes: Routes = [
   {
@@ -27,6 +29,10 @@ const routes: Routes = [
         component: ReviewFormulationsListComponent,
       },
       {
+        path: 'coa-generation-list',
+        component: CoaGenerationListComponent
+      },
+      {
         path: 'projects',
         component: FormulationsProjectsComponent,
       },
@@ -42,6 +48,10 @@ const routes: Routes = [
         path: 'test-req-forms',
         component: TestReqFormsComponent,
       },
+      {
+        path: 'coa-generation',
+        component: CoaGenerationComponent
+      }
     ],
   },
 ];
@@ -50,4 +60,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class FormulationsRoutingModule {}
+export class FormulationsRoutingModule { }

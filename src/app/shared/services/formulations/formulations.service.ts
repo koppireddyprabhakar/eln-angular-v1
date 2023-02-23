@@ -12,8 +12,8 @@ export class FormulationsService {
   constructor(
     private readonly http: HttpClient,
     private readonly clientService: ClientService,
-    private loginService:LoginserviceService
-  ) {}
+    private loginService: LoginserviceService
+  ) { }
 
   getProjectsTeamsId() {
     const url = `${elnEndpointsConfig.endpoints['getFormulationProjectsTeamsId']}?teamId=${this.loginService.userDetails.teamId}`;
@@ -38,6 +38,13 @@ export class FormulationsService {
 
   getExperimentsById(id) {
     const url = `${elnEndpointsConfig.endpoints['getFormulationsExperimentById']}?experimentId=${id}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
+  getTrfResultsByExperimentId(experimentId) {
+    const url = `${elnEndpointsConfig.endpoints['getTrfResultsByExperimentId']}?experimentId=${experimentId}`;
     return this.http
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
