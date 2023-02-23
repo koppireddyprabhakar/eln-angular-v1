@@ -30,7 +30,7 @@ export class FormulationsService {
   }
 
   getExperimentsByUserId() {
-    const url = `${elnEndpointsConfig.endpoints['getExperimentsById']}?experimentId=${this.loginService.userDetails.userId}`;
+    const url = `${elnEndpointsConfig.endpoints['getExperimentsById']}?userId=${this.loginService.userDetails.userId}`;
     return this.http
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));

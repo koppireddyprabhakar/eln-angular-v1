@@ -10,6 +10,7 @@ import { ActivatedRoute, Route, Router } from '@angular/router';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
+import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
@@ -77,7 +78,8 @@ export class CreateFormulationComponent implements OnInit {
     private renderer2: Renderer2,
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private route: Router
+    private route: Router,
+    private loginService: LoginserviceService
   ) { }
 
   ngOnInit(): void {
@@ -277,12 +279,12 @@ export class CreateFormulationComponent implements OnInit {
   saveSummary() {
     // if () {
     const summary = {
-      status: 'string',
+      status: 'Inprogress',
       projectId: this.project.projectId,
       teamId: this.project.teamId,
-      userId: 3,
+      userId: this.loginService.userDetails.userId,
       experimentName: this.summaryForm.get('experimentName')?.value,
-      experimentStatus: 'string',
+      experimentStatus: 'Inprogress',
       summary: 'string',
       batchSize: this.summaryForm.get('batchSize')?.value,
       batchNumber: this.batchNumber,
