@@ -9,6 +9,7 @@ import {
   throwError,
 } from 'rxjs';
 import { ClientService } from '../client/client.service';
+import { LoginserviceService } from '../login/loginservice.service';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,8 @@ export class AnalysisService {
   selectedTrfs$ = this.selectedTrfsSubject.asObservable();
   constructor(
     private readonly http: HttpClient,
-    private readonly clientService: ClientService
+    private readonly clientService: ClientService,
+    private loginService: LoginserviceService
   ) { }
 
   getALlAnalysisExperiments() {
@@ -30,7 +32,7 @@ export class AnalysisService {
 
   getAnalysisExperimentById(id) {
     const url = `${elnEndpointsConfig.endpoints['getAnalysisListByTeamId']
-      }?teamId=${10}`;
+      }?teamId=${this.loginService.userDetails.teamId}`;
     return this.http
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
