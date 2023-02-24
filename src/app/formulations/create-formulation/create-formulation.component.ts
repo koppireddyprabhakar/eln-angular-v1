@@ -399,14 +399,14 @@ export class CreateFormulationComponent implements OnInit {
   saveExcipients() {
     const isUpdate = this.tableData.some((data) => data.experimentId);
     if (!isUpdate) {
-      this.experimentService.saveExcipient(this.tableData).subscribe((data) => {
-        this.toastr.success(data.data, 'Success');
-      });
-    } else {
-      this.experimentService.saveExcipient(this.tableData).subscribe((data) => {
-        this.toastr.success(data.data, 'Success');
-      });
+      this.tableData.forEach(data => {
+        data['experimentId'] = this.experimentId;
+      })
     }
+    this.experimentService.saveExcipient(this.tableData).subscribe((data) => {
+      this.toastr.success(data.data, 'Success');
+    });
+
   }
 
   updateExperimentStatus() {
