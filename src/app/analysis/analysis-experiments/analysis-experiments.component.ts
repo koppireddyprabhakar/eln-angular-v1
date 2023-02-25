@@ -144,7 +144,7 @@ export class AnalysisExperimentsComponent implements OnInit {
 
   onRowClick(event) {
     this.route.navigateByUrl(
-      `/exp-analysis/exp-dashboard?projectId=${event.projectId}&analysisId=${event.analysisId}&edit=true`
+      `/exp-analysis/exp-dashboard?projectId=${event.projectId}&analysisId=${event.analysisId}`
     );
 
   }

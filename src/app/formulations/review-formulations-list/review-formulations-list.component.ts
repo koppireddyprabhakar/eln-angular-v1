@@ -33,7 +33,7 @@ export class ReviewFormulationsListComponent implements OnInit {
     private readonly formulationService: FormulationsService,
     private readonly experimentService: ExperimentService,
     private route: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getMyExperiments();
@@ -72,7 +72,7 @@ export class ReviewFormulationsListComponent implements OnInit {
 
   onRowClick(event) {
     this.route.navigateByUrl(
-      `/forms-page/review?projectId=${event.projectId}&analysisId=${event.expId}&edit=true`
+      `/forms-page/review?projectId=${event.projectId}&analysisId=${event.expId}`
     );
   }
 

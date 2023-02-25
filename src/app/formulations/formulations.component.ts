@@ -166,7 +166,7 @@ export class FormulationsComponent implements OnInit {
 
   onRowClick(event) {
     this.route.navigateByUrl(
-      `/create-forms?projectId=${event.projectId}&experimentId=${event.expId}&edit=true`
+      `/create-forms?projectId=${event.projectId}&experimentId=${event.expId}`
     );
   }
 

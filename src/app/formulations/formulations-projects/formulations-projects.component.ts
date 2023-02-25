@@ -46,7 +46,7 @@ export class FormulationsProjectsComponent implements OnInit {
     private readonly formulationService: FormulationsService,
     private readonly experimentService: ExperimentService,
     private route: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getProjects();
@@ -108,8 +108,7 @@ export class FormulationsProjectsComponent implements OnInit {
             dtElement.dtInstance.then((dtInstance: any) => {
               if (dtInstance.table().node().id === 'second-table') {
                 console.log(
-                  `The DataTable ${index} instance ID is: ${
-                    dtInstance.table().node().id
+                  `The DataTable ${index} instance ID is: ${dtInstance.table().node().id
                   }`
                 );
                 dtInstance.destroy();
@@ -129,7 +128,7 @@ export class FormulationsProjectsComponent implements OnInit {
 
   onRowClick(event) {
     this.route.navigateByUrl(
-      `/create-forms?projectId=${event.projectId}&experimentId=${event.expId}&edit=true`
+      `/create-forms?projectId=${event.projectId}&experimentId=${event.expId}`
     );
   }
 

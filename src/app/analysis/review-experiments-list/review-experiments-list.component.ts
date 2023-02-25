@@ -37,7 +37,7 @@ export class ReviewExperimentsListComponent implements OnInit, OnDestroy {
     private readonly analysisService: AnalysisService,
     private readonly formulationService: FormulationsService,
     private route: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getMyExperiments();
@@ -75,7 +75,7 @@ export class ReviewExperimentsListComponent implements OnInit, OnDestroy {
 
   onRowClick(event) {
     this.route.navigateByUrl(
-      `/exp-analysis/review?projectId=${event.projectId}&analysisId=${event.analysisId}&edit=true`
+      `/exp-analysis/review?projectId=${event.projectId}&analysisId=${event.analysisId}`
     );
   }
 
