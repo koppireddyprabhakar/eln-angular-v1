@@ -29,6 +29,7 @@
                 <th>Formulation</th>
                 <th>Strength</th>
                 <th>Status</th>
+                <th>Options</th>
               </tr>
             </thead>
             <tbody>
@@ -43,6 +44,8 @@
                 </td>
                 <td>{{ experiment.project && experiment.project.strength }}</td>
                 <td>{{ experiment.status }}</td>
+                <td><i (click)="viewAnalysisExperiment(experiment)" class="viewIcon bi-eye-fill">
+                  </i></td>
               </tr>
             </tbody>
           </table>

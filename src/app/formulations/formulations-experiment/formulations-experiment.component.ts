@@ -112,15 +112,13 @@ export class FormulationsExperimentComponent implements OnInit {
   }
 
   onRowClick(event) {
-    console.log(event);
     this.route.navigateByUrl(
       `/create-forms?projectId=${event.projectId}&experimentId=${event.expId}`
     );
   }
   viewExperiment(event) {
-    console.log(event);
     this.route.navigateByUrl(
-      `/create-forms?projectId=${event.projectId}&experimentId=${event.expId}`
+      `/view-formulation-experiment?projectId=${event.projectId}&experimentId=${event.expId}`
     );
   }
 

@@ -21,6 +21,7 @@ import { InwardManagementComponent } from './inward-management/inward-management
 import { TestReqFormsComponent } from './test-req-forms/test-req-forms.component';
 import { CoaGenerationListComponent } from './coa-generation-list/coa-generation-list.component';
 import { CoaGenerationComponent } from './coa-generation-list/components/coa-generation/coa-generation.component';
+import { ViewFormulationExperimentComponent } from './view-formulation-experiment/view-formulation-experiment.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { CoaGenerationComponent } from './coa-generation-list/components/coa-gen
     TestReqFormsComponent,
     CoaGenerationListComponent,
     CoaGenerationComponent,
+    ViewFormulationExperimentComponent,
   ],
   imports: [
     CommonModule,

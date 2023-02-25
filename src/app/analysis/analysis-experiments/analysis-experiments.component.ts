@@ -191,4 +191,10 @@ export class AnalysisExperimentsComponent implements OnInit {
       });
   }
 
+  viewAnalysisExperiment(event) {
+    this.route.navigateByUrl(
+      `/exp-analysis/view-analysis-experiment?projectId=${event.projectId}&analysisId=${event.analysisId}`
+    );
+  }
+
 }

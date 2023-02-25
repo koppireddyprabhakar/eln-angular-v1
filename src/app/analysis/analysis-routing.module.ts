@@ -8,6 +8,7 @@ import { AnalysisExperimentDashboardComponent } from './analysis-experiment-dash
 import { AnalysisNewExperimentComponent } from './analysis-new-experiment/analysis-new-experiment.component';
 import { ReviewExperimentsComponent } from './review-experiments/review-experiments.component';
 import { ReviewExperimentsListComponent } from './review-experiments-list/review-experiments-list.component';
+import { ViewAnalysisExperimentComponent } from './view-analysis-experiment/view-analysis-experiment.component';
 
 const routes: Routes = [
   {
@@ -45,6 +46,10 @@ const routes: Routes = [
         path: 'review',
         component: ReviewExperimentsComponent,
       },
+      {
+        path: 'view-analysis-experiment',
+        component: ViewAnalysisExperimentComponent
+      }
     ],
   },
 ];
@@ -53,4 +58,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AnalysisRoutingModule {}
+export class AnalysisRoutingModule { }

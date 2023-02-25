@@ -19,7 +19,7 @@ import { ProjectService } from '@app/shared/services/project/project.service';
 import { TestService } from '@app/shared/services/test/test.service';
 import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
-import { Subject, takeWhile } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-analysis-new-experiment',
