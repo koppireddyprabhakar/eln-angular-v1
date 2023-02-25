@@ -31,6 +31,15 @@
               Excipients/Chemicals
             </button>
           </li>
+          <li
+            *ngIf="experimentDetails && experimentDetails.experimentStatus.toUpperCase() === 'Analysis Submitted'.toUpperCase()"
+            class="nav-item" role="presentation">
+            <button class="nav-link" id="results-tab" [disabled]="!isCreatedExperiment" data-bs-toggle="tab"
+              data-bs-target="#results" (click)="search('results', -1)" [ngClass]="{ active: activeTab === 'results' }"
+              type="button" role="tab" aria-controls="results" aria-selected="false">
+              Results
+            </button>
+          </li>
           <li class="nav-item" role="presentation">
             <button class="nav-link" id="attachments-tab" [disabled]="!isCreatedExperiment" data-bs-toggle="tab"
               data-bs-target="#attachments" (click)="search('attachments', -1)"
@@ -128,18 +137,15 @@
                           <div class="col-sm-9">
                             <input type="text" class="form-control" id="experimentName" formControlName="experimentName"
                               [readonly]="experimentId" />
-                              <span
-                              *ngIf="
+                            <span *ngIf="
                               summaryForm.controls['experimentName'].invalid &&
                                (summaryForm.controls['experimentName'].dirty ||
                                summaryForm.controls['experimentName'].touched) &&
                                summaryForm.get('experimentName')?.errors &&
                                summaryForm.get('experimentName')?.hasError('required')
-                              "
-                             class="text-danger"
-                              >
-                            Please enter Experiment Name
-                           </span>
+                              " class="text-danger">
+                              Please enter Experiment Name
+                            </span>
                           </div>
                         </div>
                         <!-- <div class="row mb-3">
@@ -153,18 +159,15 @@
                           <div class="col-sm-9">
                             <input type="text" class="form-control" id="batchSize" formControlName="batchSize"
                               [readonly]="experimentId" />
-                              <span
-                              *ngIf="
+                            <span *ngIf="
                               summaryForm.controls['batchSize'].invalid &&
                                (summaryForm.controls['batchSize'].dirty ||
                                summaryForm.controls['batchSize'].touched) &&
                                summaryForm.get('batchSize')?.errors &&
                                summaryForm.get('batchSize')?.hasError('required')
-                              "
-                             class="text-danger"
-                              >
-                            Please enter BatchSize
-                           </span>
+                              " class="text-danger">
+                              Please enter BatchSize
+                            </span>
                           </div>
                         </div>
                       </form>
@@ -244,7 +247,7 @@
                 (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)">
               </ng-multiselect-dropdown>
             </div>
-            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+            <table id="first-table" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
               <thead>
                 <tr>
                   <th>Inward Name</th>
@@ -275,6 +278,33 @@
                 Save
               </button>
             </div>
+          </div>
+          <div
+            *ngIf="experimentDetails && experimentDetails.experimentStatus.toUpperCase() === 'Analysis Submitted'.toUpperCase()"
+            class="tab-pane fade" [ngClass]="{
+                        active: activeTab === 'results',
+                        show: activeTab === 'results'
+                      }" id="results" role="tabpanel" aria-labelledby="results-tab">
+
+            <h3>RESULTS</h3>
+
+            <table id="second-table" datatable [dtOptions]="dtResultOptions" [dtTrigger]="dtResultTrigger"
+              class="row-border hover pt-4">
+              <thead>
+                <tr>
+                  <th>Test Id</th>
+                  <th>Test Name</th>
+                  <th>Results</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let test of tests" class="py-2">
+                  <td>{{ test.testNumber }}</td>
+                  <td>{{ test.testName }}</td>
+                  <td>{{ test.testResult }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
           <div class="tab-pane fade" [ngClass]="{
               active: activeTab === 'attachments',

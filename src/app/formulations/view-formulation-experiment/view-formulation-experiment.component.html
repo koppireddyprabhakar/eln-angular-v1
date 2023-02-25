@@ -29,6 +29,15 @@
                             Excipients/Chemicals
                         </button>
                     </li>
+                    <li *ngIf="experimentDetails && experimentDetails.experimentStatus.toUpperCase() === 'Analysis Submitted'.toUpperCase()"
+                        class="nav-item" role="presentation">
+                        <button class="nav-link" id="results-tab" [disabled]="!isCreatedExperiment" data-bs-toggle="tab"
+                            data-bs-target="#results" (click)="search('results', -1)"
+                            [ngClass]="{ active: activeTab === 'results' }" type="button" role="tab"
+                            aria-controls="results" aria-selected="false">
+                            Results
+                        </button>
+                    </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="attachments-tab" [disabled]="!isCreatedExperiment"
                             data-bs-toggle="tab" data-bs-target="#attachments" (click)="search('attachments', -1)"
@@ -130,13 +139,8 @@
                 active: activeTab === 'contact',
                 show: activeTab === 'contact'
               }" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                        <div class="pt-3 pb-3">
-                            <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="inwards"
-                                [(ngModel)]="selectedItems" (onSelect)="onItemSelect($event)"
-                                (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)">
-                            </ng-multiselect-dropdown>
-                        </div>
-                        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+                        <table id="first-table" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                            class="row-border hover">
                             <thead>
                                 <tr>
                                     <th>Inward Name</th>
@@ -157,6 +161,32 @@
                                     <td>{{ user.sourceName }}</td>
                                     <td>{{ user.potency }}</td>
                                     <td>{{ user.grade }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div *ngIf="experimentDetails && experimentDetails.experimentStatus.toUpperCase() === 'Analysis Submitted'.toUpperCase()"
+                        class="tab-pane fade" [ngClass]="{
+                        active: activeTab === 'results',
+                        show: activeTab === 'results'
+                      }" id="results" role="tabpanel" aria-labelledby="results-tab">
+
+                        <h3>RESULTS</h3>
+
+                        <table id="second-table" datatable [dtOptions]="dtResultOptions" [dtTrigger]="dtResultTrigger"
+                            class="row-border hover pt-4">
+                            <thead>
+                                <tr>
+                                    <th>Test Id</th>
+                                    <th>Test Name</th>
+                                    <th>Results</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let test of tests" class="py-2">
+                                    <td>{{ test.testNumber }}</td>
+                                    <td>{{ test.testName }}</td>
+                                    <td>{{ test.testResult }}</td>
                                 </tr>
                             </tbody>
                         </table>

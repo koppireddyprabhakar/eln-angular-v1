@@ -4,11 +4,14 @@ import {
   OnInit,
   ViewChild,
   Renderer2,
+  ViewChildren,
+  QueryList,
 } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
+import { GlobalService } from '@app/shared/services/global/global.service';
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
@@ -22,8 +25,9 @@ import { Subject, takeWhile } from 'rxjs';
   styleUrls: ['./create-formulation.component.scss'],
 })
 export class CreateFormulationComponent implements OnInit {
-  @ViewChild(DataTableDirective, { static: false })
-  dtElement: DataTableDirective;
+  @ViewChildren(DataTableDirective)
+  dtElements: QueryList<DataTableDirective>;
+
   @ViewChild('inputfields') inputfields!: ElementRef;
   dummyTabs: any = [
     { label: 'Purpose and Conclusions', isEdit: false, value: 'primary' },
@@ -64,10 +68,19 @@ export class CreateFormulationComponent implements OnInit {
     experimentName: ['', [Validators.required]],
     batchSize: ['' as any, [Validators.required]],
   });
+  private subscribeFlag: boolean = true;
+  tests: any = [];
+
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions = {
     pagingType: 'full_numbers',
   };
+
+  dtResultTrigger: Subject<any> = new Subject<any>();
+  dtResultOptions: DataTables.Settings = {
+    pagingType: 'full_numbers',
+  };
+
 
   constructor(
     private readonly projectService: ProjectService,
@@ -79,7 +92,8 @@ export class CreateFormulationComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private route: Router,
-    private loginService: LoginserviceService
+    private loginService: LoginserviceService,
+    private globalService: GlobalService,
   ) { }
 
   ngOnInit(): void {
@@ -117,6 +131,7 @@ export class CreateFormulationComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.dtTrigger.next(null);
+    this.dtResultTrigger.next(null);
   }
 
   getProjectDetails() {
@@ -138,6 +153,9 @@ export class CreateFormulationComponent implements OnInit {
     if (activeTab.substring(0, 3) === 'tab') {
       this.getExperimentDetailsById(activeTab);
     }
+    if (activeTab === 'results') {
+      this.getTestResults();
+    }
   }
 
   getExcipientDetails() {
@@ -148,11 +166,20 @@ export class CreateFormulationComponent implements OnInit {
         if (data.length > 0) {
           this.tableData = data;
           this.selectedItems = data;
-          this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-            // Destroy the table first
-            dtInstance.destroy();
-            // Call the dtTrigger to rerender again
-            this.dtTrigger.next(this.tableData);
+          // this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          //   // Destroy the table first
+          //   dtInstance.destroy();
+          //   // Call the dtTrigger to rerender again
+          //   this.dtTrigger.next(this.tableData);
+          // });
+
+          this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+            dtElement.dtInstance.then((dtInstance: any) => {
+              if (dtInstance.table().node().id === 'first-table') {
+                dtInstance.destroy();
+                this.dtTrigger.next(this.tableData);
+              }
+            });
           });
         }
       });
@@ -292,20 +319,20 @@ export class CreateFormulationComponent implements OnInit {
       excipients: [],
     };
 
-    if(!this.summaryForm.invalid){
+    if (!this.summaryForm.invalid) {
       this.experimentService
         .saveExperiment(summary)
         .subscribe((experiment: any) => {
-        this.getExperimentDetails(experiment.data, 'firstLoad');
-        // redirect to 2
-  
-        this.toastr.success('Experiment Started Successfully', 'Success');
+          this.getExperimentDetails(experiment.data, 'firstLoad');
+          // redirect to 2
+
+          this.toastr.success('Experiment Started Successfully', 'Success');
         });
-      }
-      else{
-        this.summaryForm.get('experimentName')?.markAsDirty();
-        this.summaryForm.get('batchSize')?.markAsDirty();
-      }
+    }
+    else {
+      this.summaryForm.get('experimentName')?.markAsDirty();
+      this.summaryForm.get('batchSize')?.markAsDirty();
+    }
   }
 
   onItemSelect(item: any) {
@@ -314,11 +341,19 @@ export class CreateFormulationComponent implements OnInit {
         this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
       )
       .map((data) => ({ ...data, experimentId: Number(this.experimentId) }));
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next(this.tableData);
+    // this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+    //   // Destroy the table first
+    //   dtInstance.destroy();
+    //   // Call the dtTrigger to rerender again
+    //   this.dtTrigger.next(this.tableData);
+    // });
+    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'first-table') {
+          dtInstance.destroy();
+          this.dtTrigger.next(this.tableData);
+        }
+      });
     });
   }
 
@@ -329,20 +364,37 @@ export class CreateFormulationComponent implements OnInit {
     this.tableData = this.tableData.filter(
       (data) => data.excipientId !== item.excipientId
     );
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next(this.tableData);
+    // this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+    //   // Destroy the table first
+    //   dtInstance.destroy();
+    //   // Call the dtTrigger to rerender again
+    //   this.dtTrigger.next(this.tableData);
+    // });
+
+    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'first-table') {
+          dtInstance.destroy();
+          this.dtTrigger.next(this.tableData);
+        }
+      });
     });
   }
   onSelectAll(items: any) {
     this.tableData = this.inwards;
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next(this.tableData);
+    // this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+    //   // Destroy the table first
+    //   dtInstance.destroy();
+    //   // Call the dtTrigger to rerender again
+    //   this.dtTrigger.next(this.tableData);
+    // });
+    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'first-table') {
+          dtInstance.destroy();
+          this.dtTrigger.next(this.tableData);
+        }
+      });
     });
   }
 
@@ -423,6 +475,27 @@ export class CreateFormulationComponent implements OnInit {
         `/forms-page/new-formulation`
       );
     });
+  }
+
+  getTestResults() {
+    this.globalService.showLoader();
+    this.formulationService
+      .getTrfResultsByExperimentId(this.experimentId)
+      .pipe(takeWhile(() => this.subscribeFlag))
+      .subscribe((tests) => {
+        this.tests = tests;
+
+        this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+          dtElement.dtInstance.then((dtInstance: any) => {
+            if (dtInstance.table().node().id === 'second-table') {
+              dtInstance.destroy();
+              this.dtResultTrigger.next(this.tests);
+            }
+          });
+        });
+
+        this.globalService.hideLoader();
+      });
   }
 
 }
