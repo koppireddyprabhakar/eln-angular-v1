@@ -68,7 +68,7 @@ export class InwardManagementComponent implements OnInit {
       .subscribe((inwards) => {
         const newInwardsList = inwards.map((inward: any) => ({
           ...inward,
-          status: inward.status.toLowerCase() === 'act' ? 'Active' : 'InActive', // change later
+          // status: inward.status.toLowerCase() === 'act' ? 'Active' : 'InActive', // change later
         }));
         this.inwards = [...newInwardsList];
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
@@ -90,7 +90,7 @@ export class InwardManagementComponent implements OnInit {
       sourceName: this.inwardForm.get('sourceName')!.value,
       potency: this.inwardForm.get('potency')!.value,
       grade: this.inwardForm.get('grade')!.value,
-      status: 'New',
+      // status: 'New',
     };
     if (this.inwardForm.valid) {
       this.globalService.showLoader();
