@@ -546,12 +546,18 @@ export class AnalysisNewExperimentComponent implements OnInit {
       testRequestFormList: [],
     };
 
-    this.analysisService.saveAnalysis(summary).subscribe((experiment: any) => {
-      // change here
-      this.getAnalysisById(experiment.data, 'firstLoad');
-      // this.activeTab = this.dummyTabs[0].value;
-      this.toastr.success('Experiment Started Successfully', 'Success');
-    });
+    if(!this.summaryForm.invalid){
+      this.analysisService.saveAnalysis(summary).subscribe((experiment: any) => {
+        // change here
+        this.getAnalysisById(experiment.data, 'firstLoad');
+        // this.activeTab = this.dummyTabs[0].value;
+        this.toastr.success('Experiment Started Successfully', 'Success');
+      });
+     }else
+    {
+      this.summaryForm.get('experimentName')?.markAsDirty();
+      this.summaryForm.get('batchSize')?.markAsDirty();
+    }
   }
 
   onItemSelect(item: any) {

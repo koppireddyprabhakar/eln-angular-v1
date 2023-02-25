@@ -292,14 +292,20 @@ export class CreateFormulationComponent implements OnInit {
       excipients: [],
     };
 
-    this.experimentService
-      .saveExperiment(summary)
-      .subscribe((experiment: any) => {
+    if(!this.summaryForm.invalid){
+      this.experimentService
+        .saveExperiment(summary)
+        .subscribe((experiment: any) => {
         this.getExperimentDetails(experiment.data, 'firstLoad');
         // redirect to 2
-
+  
         this.toastr.success('Experiment Started Successfully', 'Success');
-      });
+        });
+      }
+      else{
+        this.summaryForm.get('experimentName')?.markAsDirty();
+        this.summaryForm.get('batchSize')?.markAsDirty();
+      }
   }
 
   onItemSelect(item: any) {

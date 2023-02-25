@@ -76,7 +76,6 @@ space(event:any)
       this.updatePasswordService.Update(request).subscribe((response)=>{
         if(response.status=200)
         {
-          alert("hai")
           this.route.navigate(['/dashboard']);
           this.toastr.success(
             ' Password has been updated succesfully',

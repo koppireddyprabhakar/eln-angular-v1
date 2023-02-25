@@ -133,6 +133,18 @@
                           <div class="col-sm-9">
                             <input type="text" class="form-control" id="experimentName" formControlName="experimentName"
                               [readonly]="experimentId" />
+                              <span
+                              *ngIf="
+                              summaryForm.controls['experimentName'].invalid &&
+                               (summaryForm.controls['experimentName'].dirty ||
+                               summaryForm.controls['experimentName'].touched) &&
+                               summaryForm.get('experimentName')?.errors &&
+                               summaryForm.get('experimentName')?.hasError('required')
+                              "
+                             class="text-danger"
+                              >
+                            Please enter Experiment Name
+                           </span>
                           </div>
                         </div>
                         <!-- <div class="row mb-3">
@@ -146,6 +158,18 @@
                           <div class="col-sm-9">
                             <input type="text" class="form-control" id="batchSize" formControlName="batchSize"
                               [readonly]="experimentId" />
+                              <span
+                              *ngIf="
+                               summaryForm.controls['batchSize'].invalid &&
+                               (summaryForm.controls['batchSize'].dirty ||
+                               summaryForm.controls['batchSize'].touched) &&
+                               summaryForm.get('batchSize')?.errors &&
+                               summaryForm.get('batchSize')?.hasError('required')
+                              "
+                             class="text-danger"
+                              >
+                            Please enter Batch Size
+                           </span>
                           </div>
                         </div>
                       </form>

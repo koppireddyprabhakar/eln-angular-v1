@@ -49,7 +49,7 @@ export class AnalysisDashbaordComponent implements OnInit {
   tableData: any = [];
   experimentId: string;
   experimentDetails: any;
-  file: File;
+  file: File;aveSummary
   isCreatedExperiment = false;
   selectedTrfs$ = this.analysisService.selectedTrfs$;
   selectedTrfs: any = [];
@@ -299,7 +299,7 @@ export class AnalysisDashbaordComponent implements OnInit {
       excipients: [],
       testRequestFormList: this.selectedTrfs,
     };
-
+   if(!this.summaryForm.invalid){
     this.analysisService.saveAnalysis(summary).subscribe((experiment: any) => {
       // change here
       // console.log(experiment)
@@ -307,6 +307,11 @@ export class AnalysisDashbaordComponent implements OnInit {
       // this.activeTab = this.dummyTabs[0].value;
       this.toastr.success('Experiment Started Successfully', 'Success');
     });
+  }
+  else{
+    this.summaryForm.get('experimentName')?.markAsDirty();
+      this.summaryForm.get('batchSize')?.markAsDirty();
+  }
   }
 
   onItemSelect(item: any) {
