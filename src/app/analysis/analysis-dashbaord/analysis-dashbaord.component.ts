@@ -11,6 +11,7 @@ import { AnalysisService } from '@app/shared/services/analysis/analysis.service'
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
+import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
@@ -26,8 +27,8 @@ export class AnalysisDashbaordComponent implements OnInit {
   dtElement: DataTableDirective;
   @ViewChild('inputfields') inputfields!: ElementRef;
   dummyTabs: any = [
-    { label: 'Purpose and Conclusions', isEdit: false, value: 'primary' },
-    { label: 'Formulation', isEdit: false, value: 'secondary' },
+    { label: 'Purpose and Details', isEdit: false, value: 'primary' },
+    { label: 'Analysis Details', isEdit: false, value: 'secondary' },
   ];
   inputValue: string;
   projectId: number;
@@ -78,7 +79,8 @@ export class AnalysisDashbaordComponent implements OnInit {
     private renderer2: Renderer2,
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private route: Router
+    private route: Router,
+    private loginService: LoginserviceService
   ) {}
 
   ngOnInit(): void {
@@ -284,14 +286,13 @@ export class AnalysisDashbaordComponent implements OnInit {
 
   saveSummary() {
     // if () {
-    console.log(this.selectedTrfs);
     const summary = {
-      status: 'string',
+      status: 'Active',
       projectId: this.project.projectId,
       teamId: this.project.teamId,
-      userId: this.project.userId,
+      userId: this.loginService.userDetails.userId,
       analysisName: this.summaryForm.get('experimentName')?.value,
-      experimentStatus: 'string',
+      experimentStatus: 'New',
       summary: 'string',
       batchSize: this.summaryForm.get('batchSize')?.value,
       batchNumber: this.batchNumber,

@@ -14,6 +14,7 @@ import { AnalysisService } from '@app/shared/services/analysis/analysis.service'
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
+import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { TestService } from '@app/shared/services/test/test.service';
 import { DataTableDirective } from 'angular-datatables';
@@ -31,8 +32,8 @@ export class ReviewExperimentsComponent implements OnInit {
   @ViewChild('inputfields') inputfields!: ElementRef;
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
   dummyTabs: any = [
-    { label: 'Purpose and Conclusions', isEdit: false, value: 'primary' },
-    { label: 'Formulation', isEdit: false, value: 'secondary' },
+    { label: 'Purpose and Details', isEdit: false, value: 'primary' },
+    { label: 'Analysis Details', isEdit: false, value: 'secondary' },
   ];
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions = {
@@ -117,7 +118,8 @@ export class ReviewExperimentsComponent implements OnInit {
     private renderer2: Renderer2,
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private route: Router
+    private route: Router,
+    private loginService: LoginserviceService
   ) {}
 
   ngOnInit(): void {
@@ -482,10 +484,10 @@ export class ReviewExperimentsComponent implements OnInit {
       status: 'string',
       projectId: this.project.projectId,
       teamId: this.project.teamId,
-      userId: this.project.userId,
+      userId: this.loginService.userDetails.userId,
       analysisName: this.summaryForm.get('experimentName')?.value,
-      experimentStatus: 'string',
-      summary: 'string',
+      experimentStatus: 'New',
+      summary: 'Active',
       batchSize: this.summaryForm.get('batchSize')?.value,
       batchNumber: this.batchNumber,
       experimentDetailsList: [],

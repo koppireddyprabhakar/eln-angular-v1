@@ -32,8 +32,8 @@ export class AnalysisNewExperimentComponent implements OnInit {
   @ViewChild('inputfields') inputfields!: ElementRef;
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
   dummyTabs: any = [
-    { label: 'Purpose and Conclusions', isEdit: false, value: 'primary' },
-    { label: 'Formulation', isEdit: false, value: 'secondary' },
+    { label: 'Purpose and Details', isEdit: false, value: 'primary' },
+    { label: 'Analysis Details', isEdit: false, value: 'secondary' },
   ];
 
   testRequestForm = this.formBuilder.group({
@@ -532,12 +532,12 @@ export class AnalysisNewExperimentComponent implements OnInit {
   saveSummary() {
     // if () {
     const summary = {
-      status: 'string',
+      status: 'Active',
       projectId: this.project.projectId,
       teamId: this.project.teamId,
       userId: this.loginService.userDetails.userId,
       analysisName: this.summaryForm.get('experimentName')?.value,
-      experimentStatus: 'string',
+      experimentStatus: 'New',
       summary: 'string',
       batchSize: this.summaryForm.get('batchSize')?.value,
       batchNumber: this.batchNumber,

@@ -32,8 +32,8 @@ export class ViewAnalysisExperimentComponent implements OnInit {
   dtElement: DataTableDirective;
   @ViewChild('inputfields') inputfields!: ElementRef;
   dummyTabs: any = [
-    { label: 'Purpose and Conclusions', isEdit: false, value: 'primary' },
-    { label: 'Formulation', isEdit: false, value: 'secondary' },
+    { label: 'Purpose and Details', isEdit: false, value: 'primary' },
+    { label: 'Analysis Details', isEdit: false, value: 'secondary' },
   ];
   inputValue: string;
   projectId: number;
