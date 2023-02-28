@@ -30,9 +30,9 @@ export class AnalysisService {
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
-  getAnalysisExperimentById(id) {
+  getAnalysisExperimentById() {
     const url = `${elnEndpointsConfig.endpoints['getAnalysisListByTeamId']
-      }?teamId=${this.loginService.userDetails.teamId}`;
+      }?userId=${this.loginService.userDetails.userId}`;
     return this.http
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));

@@ -124,7 +124,7 @@ export class AnalysisExperimentsComponent implements OnInit {
   getMyExperiments() {
     // this.globalService.showLoader();
     this.analysisService
-      .getAnalysisExperimentById(5)
+      .getAnalysisExperimentById()
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((myExperiments) => {
         this.myExperiments = myExperiments;
