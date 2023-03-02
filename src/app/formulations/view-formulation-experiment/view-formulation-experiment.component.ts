@@ -19,6 +19,7 @@ import { InwardManagementService } from '@app/shared/services/inward-management/
 import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: 'app-view-formulation-experiment',
@@ -277,7 +278,7 @@ export class ViewFormulationExperimentComponent implements OnInit {
 
   getFileContent(fileName: string, experimentId: number) {
     window.location.assign(
-      `http://localhost:4201/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`
+      `${environment.API_BASE_PATH}` + `/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`
     );
   }
 

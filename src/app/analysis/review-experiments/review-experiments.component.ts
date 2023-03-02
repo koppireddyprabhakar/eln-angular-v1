@@ -10,6 +10,10 @@ import {
 } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
+import { ToastrService } from 'ngx-toastr';
+
 import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
@@ -17,9 +21,7 @@ import { InwardManagementService } from '@app/shared/services/inward-management/
 import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { TestService } from '@app/shared/services/test/test.service';
-import { DataTableDirective } from 'angular-datatables';
-import { ToastrService } from 'ngx-toastr';
-import { Subject } from 'rxjs';
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: 'app-review-experiments',
@@ -120,7 +122,7 @@ export class ReviewExperimentsComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: Router,
     private loginService: LoginserviceService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.selectedTrfs$.subscribe((trfs) => {
@@ -391,10 +393,10 @@ export class ReviewExperimentsComponent implements OnInit {
   }
 
   removeAttachment(file) {
-    const fileData = { ...file, projectId: this.projectId };
+    const fileData = { ...file, experimentAttachmentId: file.attachmentId, projectId: this.projectId };
     this.experimentService
-      .deleteExperimentAttachment(file)
-      .subscribe((experimentDetails) => {});
+      .deleteExperimentAttachment(fileData)
+      .subscribe((experimentDetails) => { });
   }
 
   getExcipients() {
@@ -521,8 +523,7 @@ export class ReviewExperimentsComponent implements OnInit {
     };
     this.analysisService.saveAnalysisDetails(tabValue).subscribe((data) => {
       this.toastr.success(
-        `Experiment detail ${
-          this.dummyTabs[index].id ? 'updated' : 'created'
+        `Experiment detail ${this.dummyTabs[index].id ? 'updated' : 'created'
         } successfully`,
         'Success'
       );
@@ -534,7 +535,7 @@ export class ReviewExperimentsComponent implements OnInit {
     });
   }
 
-  saveAttachment() {}
+  saveAttachment() { }
 
   onChange(event) {
     this.file = event.target.files[0];
@@ -552,7 +553,7 @@ export class ReviewExperimentsComponent implements OnInit {
 
   getFileContent(fileName: string, experimentId: number) {
     window.location.assign(
-      `http://localhost:4201/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`
+      `${environment.API_BASE_PATH}` + `/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`
     );
   }
 }

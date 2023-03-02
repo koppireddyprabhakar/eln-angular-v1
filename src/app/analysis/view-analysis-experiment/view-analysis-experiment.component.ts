@@ -10,16 +10,16 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
+import { ToastrService } from 'ngx-toastr';
+
 import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
-import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
-import { TestService } from '@app/shared/services/test/test.service';
-import { DataTableDirective } from 'angular-datatables';
-import { ToastrService } from 'ngx-toastr';
-import { Subject } from 'rxjs';
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: 'app-view-analysis-experiment',
@@ -332,7 +332,7 @@ export class ViewAnalysisExperimentComponent implements OnInit {
 
   getFileContent(fileName: string, experimentId: number) {
     window.location.assign(
-      `http://localhost:4201/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`
+      `${environment.API_BASE_PATH}` + `/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`
     );
   }
 

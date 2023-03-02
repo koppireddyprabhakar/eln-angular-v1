@@ -6,15 +6,18 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
+import { ToastrService } from 'ngx-toastr';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
-import { DataTableDirective } from 'angular-datatables';
-import { ToastrService } from 'ngx-toastr';
-import { Subject } from 'rxjs';
+import { environment } from "src/environments/environment";
+
 @Component({
   selector: 'app-analysis-experiment-dashboard',
   templateUrl: './analysis-experiment-dashboard.component.html',
@@ -79,7 +82,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private route: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getExcipients();
@@ -186,10 +189,10 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   }
 
   removeAttachment(file) {
-    const fileData = { ...file, projectId: this.projectId };
-    this.experimentService
-      .deleteExperimentAttachment(file)
-      .subscribe((experimentDetails) => {});
+    const fileData = { ...file, analysisAttachmentId: file.attachmentId, projectId: this.projectId };
+    this.analysisService
+      .deleteAnalysisAttachment(fileData)
+      .subscribe((experimentDetails) => { });
   }
 
   getExcipients() {
@@ -368,7 +371,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     });
   }
 
-  saveAttachment() {}
+  saveAttachment() { }
 
   onChange(event) {
     this.file = event.target.files[0];
@@ -390,7 +393,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
 
   getFileContent(fileName: string, experimentId: number) {
     window.location.assign(
-      `http://localhost:4201/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`
+      `${environment.API_BASE_PATH}` + `/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`
     );
   }
 

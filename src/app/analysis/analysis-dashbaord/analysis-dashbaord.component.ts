@@ -7,15 +7,17 @@ import {
 } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { Subject, tap } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
+
 import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
-import { DataTableDirective } from 'angular-datatables';
-import { ToastrService } from 'ngx-toastr';
-import { Subject, tap } from 'rxjs';
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: 'app-analysis-dashbaord',
@@ -50,7 +52,7 @@ export class AnalysisDashbaordComponent implements OnInit {
   tableData: any = [];
   experimentId: string;
   experimentDetails: any;
-  file: File;aveSummary
+  file: File; aveSummary
   isCreatedExperiment = false;
   selectedTrfs$ = this.analysisService.selectedTrfs$;
   selectedTrfs: any = [];
@@ -81,7 +83,7 @@ export class AnalysisDashbaordComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: Router,
     private loginService: LoginserviceService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.selectedTrfs$.subscribe((trfs) => {
@@ -192,10 +194,10 @@ export class AnalysisDashbaordComponent implements OnInit {
   }
 
   removeAttachment(file) {
-    const fileData = { ...file, projectId: this.projectId };
-    this.experimentService
-      .deleteExperimentAttachment(file)
-      .subscribe((experimentDetails) => {});
+    const fileData = { ...file, analysisAttachmentId: file.attachmentId, projectId: this.projectId };
+    this.analysisService
+      .deleteAnalysisAttachment(fileData)
+      .subscribe((experimentDetails) => { });
   }
 
   getExcipients() {
@@ -300,19 +302,19 @@ export class AnalysisDashbaordComponent implements OnInit {
       excipients: [],
       testRequestFormList: this.selectedTrfs,
     };
-   if(!this.summaryForm.invalid){
-    this.analysisService.saveAnalysis(summary).subscribe((experiment: any) => {
-      // change here
-      // console.log(experiment)
-      this.getAnalysisById(experiment.data, 'firstLoad');
-      // this.activeTab = this.dummyTabs[0].value;
-      this.toastr.success('Experiment Started Successfully', 'Success');
-    });
-  }
-  else{
-    this.summaryForm.get('experimentName')?.markAsDirty();
+    if (!this.summaryForm.invalid) {
+      this.analysisService.saveAnalysis(summary).subscribe((experiment: any) => {
+        // change here
+        // console.log(experiment)
+        this.getAnalysisById(experiment.data, 'firstLoad');
+        // this.activeTab = this.dummyTabs[0].value;
+        this.toastr.success('Experiment Started Successfully', 'Success');
+      });
+    }
+    else {
+      this.summaryForm.get('experimentName')?.markAsDirty();
       this.summaryForm.get('batchSize')?.markAsDirty();
-  }
+    }
   }
 
   onItemSelect(item: any) {
@@ -370,8 +372,7 @@ export class AnalysisDashbaordComponent implements OnInit {
     };
     this.analysisService.saveAnalysisDetails(tabValue).subscribe((data) => {
       this.toastr.success(
-        `Experiment detail ${
-          this.dummyTabs[index].id ? 'updated' : 'created'
+        `Experiment detail ${this.dummyTabs[index].id ? 'updated' : 'created'
         } successfully`,
         'Success'
       );
@@ -383,7 +384,7 @@ export class AnalysisDashbaordComponent implements OnInit {
     });
   }
 
-  saveAttachment() {}
+  saveAttachment() { }
 
   onChange(event) {
     this.file = event.target.files[0];
@@ -401,7 +402,7 @@ export class AnalysisDashbaordComponent implements OnInit {
 
   getFileContent(fileName: string, experimentId: number) {
     window.location.assign(
-      `http://localhost:4201/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`
+      `${environment.API_BASE_PATH}` + `/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`
     );
   }
 

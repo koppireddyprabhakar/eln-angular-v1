@@ -133,6 +133,13 @@ export class AnalysisService {
     return this.http.post<string>(url, formData);
   }
 
+  deleteAnalysisAttachment(file) {
+    const url = `${elnEndpointsConfig.endpoints['deleteAnalysisAttachment']}`;
+    return this.http
+      .delete<any>(url, { body: file })
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
   getExperimentDetailsById(id) {
     const url = `${elnEndpointsConfig.endpoints['getExperimentDetailsById']}?experimentDetailsId=${id}`;
     return this.http
@@ -143,13 +150,6 @@ export class AnalysisService {
     const url = `${elnEndpointsConfig.endpoints['getExperimentById']}?experimentId=${id}`;
     return this.http
       .get<any>(url)
-      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
-  }
-
-  deleteExperimentAttachment(file) {
-    const url = `${elnEndpointsConfig.endpoints['deleteExperimentAttachment']}`;
-    return this.http
-      .delete<any>(url, { body: file })
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 

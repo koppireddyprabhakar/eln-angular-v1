@@ -81,6 +81,7 @@ export const elnEndpointsConfig: EndpointConfig = {
     saveAnalysisExcipient: `${environment.API_BASE_PATH}` + '/analysis/save-analysis-excipient',
     searchAnalysisAttachments: `${environment.API_BASE_PATH}` + '/analysis/search-analysis-attachments',
     saveAnalysisAttachments: `${environment.API_BASE_PATH}` + '/analysis/save-analysis-attachment',
+    deleteAnalysisAttachment: `${environment.API_BASE_PATH}` + '/analysis/delete-analysis-attachment',
     createAnalysis: `${environment.API_BASE_PATH}` + '/analysis/create-analysis',
     updateExperimentStatus: `${environment.API_BASE_PATH}` + '/experiment/update-experiment-status',
     updateAnalysisStatus: `${environment.API_BASE_PATH}` + '/analysis/update-analysis-status',
