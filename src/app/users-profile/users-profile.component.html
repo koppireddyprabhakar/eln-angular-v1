@@ -36,35 +36,47 @@
                         <p class="small fst-italic">Sunt est soluta temporibus accusantium neque nam maiores cumque temporibus. Tempora libero non est unde veniam est qui dolor. Ut sunt iure rerum quae quisquam autem eveniet perspiciatis odit. Fuga sequi sed ea saepe at unde.</p> -->
                         <h5 class="card-title">Profile Details</h5>
                         <div class="row">
-                           <div class="col-lg-3 col-md-4 label ">Full Name</div>
-                           <div class="col-lg-9 col-md-8">Jassa</div>
+                           <div class="col-lg-3 col-md-4 label ">First Name</div>
+                           <div class="col-lg-9 col-md-8">{{userDetails.firstName}}</div>
                         </div>
                         <div class="row">
-                           <div class="col-lg-3 col-md-4 label">Company</div>
-                           <div class="col-lg-9 col-md-8">Therichpost</div>
+                           <div class="col-lg-3 col-md-4 label">Last Name</div>
+                           <div class="col-lg-9 col-md-8">{{userDetails.lastName}}</div>
                         </div>
                         <div class="row">
-                           <div class="col-lg-3 col-md-4 label">Job</div>
-                           <div class="col-lg-9 col-md-8">Web Designer</div>
+                           <div class="col-lg-3 col-md-4 label">Department</div>
+                           <div class="col-lg-9 col-md-8">{{userDepartment}}</div>
                         </div>
                         <div class="row">
-                           <div class="col-lg-3 col-md-4 label">Country</div>
-                           <div class="col-lg-9 col-md-8">USA</div>
+                           <div class="col-lg-3 col-md-4 label">Role</div>
+                           <div class="col-lg-9 col-md-8">{{userRole}}</div>
                         </div>
                         <div class="row">
-                           <div class="col-lg-3 col-md-4 label">Address</div>
-                           <div class="col-lg-9 col-md-8">Ludhiana, Punjab, India</div>
-                        </div>
-                        <div class="row">
-                           <div class="col-lg-3 col-md-4 label">Phone</div>
-                           <div class="col-lg-9 col-md-8">(436) 486-3538 x29071</div>
+                           <div class="col-lg-3 col-md-4 label">Contact No.</div>
+                           <div class="col-lg-9 col-md-8">{{userDetails.contactNo}}</div>
                         </div>
                         <div class="row">
                            <div class="col-lg-3 col-md-4 label">Email</div>
-                           <div class="col-lg-9 col-md-8"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e982c788878d8c9b9a8687a98c91888499858cc78a8684">[email&#160;protected]</a></div>
+                           <div class="col-lg-9 col-md-8"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e982c788878d8c9b9a8687a98c91888499858cc78a8684">{{userDetails.mailId}}</a></div>
+                        </div>
+                        <div class="row">
+                           <div class="col-lg-3 col-md-4 label">Gender</div>
+                           <div class="col-lg-9 col-md-8">{{userDetails.gender}}</div>
+                        </div>
+                        <div class="row">
+                           <div class="col-lg-3 col-md-4 label">Address</div>
+                           <div class="col-lg-9 col-md-8">{{userDetails.addressLine1 ? userDetails.addressLine1 + ' , '+userDetails.addressLine2 : ''}}</div>
+                        </div>
+                        <div class="row">
+                           <div class="col-lg-3 col-md-4 label">City</div>
+                           <div class="col-lg-9 col-md-8">{{userDetails.city}}</div>
+                        </div>
+                        <div class="row">
+                           <div class="col-lg-3 col-md-4 label">Zip Code</div>
+                           <div class="col-lg-9 col-md-8">{{userDetails.zipCode}}</div>
                         </div>
                      </div>
-                     <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+                     <!-- <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
                         <form>
                            <div class="row mb-3">
                               <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
@@ -123,8 +135,8 @@
                            </div>
                            <div class="text-center"> <button type="submit" class="btn btn-primary">Save Changes</button></div>
                         </form>
-                     </div>
-                     <div class="tab-pane fade pt-3" id="profile-settings">
+                     </div> -->
+                     <!-- <div class="tab-pane fade pt-3" id="profile-settings">
                         <form>
                            <div class="row mb-3">
                               <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Email Notifications</label>
@@ -137,7 +149,7 @@
                            </div>
                            <div class="text-center"> <button type="submit" class="btn btn-primary">Save Changes</button></div>
                         </form>
-                     </div>
+                     </div> -->
                      <div class="tab-pane fade pt-3" id="profile-change-password">
                         <form>
                            <div class="row mb-3">
@@ -154,6 +166,7 @@
                            </div>
                            <div class="text-center"> <button type="submit" class="btn btn-primary">Change Password</button></div>
                         </form>
+                        <!-- <app-update-password></app-update-password> -->
                      </div>
                   </div>
                </div>
