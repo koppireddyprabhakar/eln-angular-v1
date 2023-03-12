@@ -38,13 +38,13 @@
                         />
                       </td> -->
                     <td>
-                      {{ trf.projectName | titlecase }}
+                      {{ trf.project.projectName | titlecase }}
                     </td>
                     <td>
                       {{ trf.testRequestFormId }}
                     </td>
-                    <td>{{ trf.productName }}</td>
-                    <td>{{ trf.batchNumber }}</td>
+                    <td>{{ trf.project.productName }}</td>
+                    <td>{{ trf.experiment.batchNumber }}</td>
                     <td>{{ trf.insertDate }}</td>
                     <td>{{ trf.condition }}</td>
                     <td>{{ trf.testRequestFormStatus }}</td>

@@ -33,6 +33,8 @@ export class InwardManagementComponent implements OnInit {
     grade: ['', [Validators.required]],
   });
 
+  public showErrorMsg: boolean = false;
+
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions = {
     pagingType: 'full_numbers',
@@ -45,7 +47,7 @@ export class InwardManagementComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     private readonly globalService: GlobalService,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getExcipients();
@@ -82,6 +84,20 @@ export class InwardManagementComponent implements OnInit {
   }
 
   saveInward() {
+
+    this.showErrorMsg = false;
+    let formExcipientName = this.inwardForm['controls'] && this.inwardForm['controls']['excipientsName'].value ? this.inwardForm['controls']['excipientsName'].value : '';
+    let batchNumber = this.inwardForm['controls'] && this.inwardForm['controls']['batchNumber'].value ? this.inwardForm['controls']['batchNumber'].value : '';
+
+    let isObjectExists = this.inwards.find(i =>
+      (i.excipientsName + i.batchNo) === (formExcipientName + batchNumber)
+    );
+
+    if (isObjectExists) {
+      this.showErrorMsg = true;
+      return;
+    }
+
     const newInward = {
       excipientsName: this.inwardForm.get('excipientsName')!.value,
       materialName: this.inwardForm.get('materialName')!.value,

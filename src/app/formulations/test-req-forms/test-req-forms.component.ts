@@ -38,7 +38,7 @@ export class TestReqFormsComponent implements OnInit {
     private route: Router,
     private analysisService: AnalysisService,
     private readonly globalService: GlobalService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getAnalysisList();
@@ -55,7 +55,14 @@ export class TestReqFormsComponent implements OnInit {
       for (var property in object) {
         if (typeof object[property] === 'object') {
           for (var p in object[property]) {
-            value[p] = object[property][p];
+            if (!value[property]) {
+              value[property] = object[property];
+              if (!value[property][p]) {
+                value[property][p] = object[property][p];
+              }
+            } else {
+              value[property][p] = object[property][p];
+            }
           }
         } else {
           value[property] = object[property];
