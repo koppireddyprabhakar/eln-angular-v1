@@ -330,14 +330,14 @@
             </div>
 
             <div class="text-center pt-3"
-              *ngIf="analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase()">
+              *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase()">
               <button type="submit" class="btn btn-primary mt-3" (click)="updateAnalysisStatus('Complete')">
                 Complete Analysis Experiment
               </button>
             </div>
 
             <div class="text-center pt-3"
-              *ngIf="analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()">
+              *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()">
               <button type="submit" class="btn btn-primary mt-3" (click)="updateAnalysisStatus('Analysis Submitted')">
                 Submit Analysis
               </button>

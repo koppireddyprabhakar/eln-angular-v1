@@ -109,7 +109,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     };
     this.analysisID = this.activatedRoute.snapshot.queryParams['analysisId'];
     this.projectId = this.activatedRoute.snapshot.queryParams['projectId'];
-    // this.isCreatedExperiment = this.experimentId ? true : false;
+    this.isCreatedExperiment = this.analysisID ? true : false;
     this.getAnalysisExperimentDetails(this.analysisID);
     this.getProjectDetails();
   }
@@ -192,7 +192,11 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     const fileData = { ...file, analysisAttachmentId: file.attachmentId, projectId: this.projectId };
     this.analysisService
       .deleteAnalysisAttachment(fileData)
-      .subscribe((experimentDetails) => { });
+      .subscribe((experimentDetails) => {
+        if (experimentDetails['data'] === "Analysis Attachment Delete Successfully") {
+          this.getAttachments();
+        }
+      });
   }
 
   getExcipients() {

@@ -209,7 +209,11 @@ export class CreateFormulationComponent implements OnInit {
     const fileData = { ...file, experimentAttachmentId: file.attachmentId, projectId: this.projectId };
     this.experimentService
       .deleteExperimentAttachment(fileData)
-      .subscribe((experimentDetails) => { });
+      .subscribe((experimentDetails) => {
+        if (experimentDetails['data'] === "Experiment Attachment Delete Successfully") {
+          this.getAttachments();
+        }
+      });
   }
 
   getExcipients() {

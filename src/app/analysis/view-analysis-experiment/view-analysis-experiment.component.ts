@@ -113,7 +113,7 @@ export class ViewAnalysisExperimentComponent implements OnInit {
     };
     this.analysisID = this.activatedRoute.snapshot.queryParams['analysisId'];
     this.projectId = this.activatedRoute.snapshot.queryParams['projectId'];
-    // this.isCreatedExperiment = this.experimentId ? true : false;
+    // this.isCreatedExperiment = this.analysisID ? true : false;
     this.getAnalysisExperimentDetails(this.analysisID);
     this.getProjectDetails();
   }
