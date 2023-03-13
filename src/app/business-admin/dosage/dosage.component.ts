@@ -44,12 +44,14 @@ export class DosageComponent implements OnInit {
   @ViewChild('closeButton') closeButton: ElementRef;
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
 
+  public showErrorMsg: boolean = false;
+
   constructor(
     private readonly dosageService: DosageService,
     private readonly formBuilder: FormBuilder,
     private readonly globalService: GlobalService,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getDosages();
@@ -71,8 +73,10 @@ export class DosageComponent implements OnInit {
   }
 
   addDosage() {
+    this.showErrorMsg = false;
     this.formulations.clear();
     this.addNewFormulations();
+    this.dosageForm.get('dosageName')?.enable();
     this.selectedDosage = {} as Dosages;
     this.dosageForm.reset();
   }
@@ -101,6 +105,17 @@ export class DosageComponent implements OnInit {
   }
 
   saveDosage() {
+
+    this.showErrorMsg = false;
+    let dosageName = this.dosageForm.get('dosageName')!.value;
+
+    let isDosageNameExist = this.dosages.find(p => p.dosageName === dosageName);
+
+    if (isDosageNameExist) {
+      this.showErrorMsg = true;
+      return;
+    }
+
     if (this.dosageForm.get('dosageName')!.value) {
       this.globalService.showLoader();
       if (Object.keys(this.selectedDosage).length === 0) {
@@ -153,8 +168,10 @@ export class DosageComponent implements OnInit {
 
   selectProduct(product: Dosages) {
     this.selectedDosage = product;
+    this.showErrorMsg = false;
     this.formulations.clear();
     this.dosageForm.patchValue({ dosageName: product.dosageName });
+    this.dosageForm.get('dosageName')?.disable();
     this.selectedDosage.formulations.forEach((formulation, index) => {
       this.formulations.push(this.addFormulations());
       this.formulations.at(index).patchValue({

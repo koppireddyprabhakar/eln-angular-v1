@@ -10,23 +10,13 @@
             <div class="align-header">
               <h5 class="card-title">Products</h5>
               <div class="align-button">
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#productForms"
-                  (click)="addProduct()"
-                >
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productForms"
+                  (click)="addProduct()">
                   <i class="bi bi-plus-circle"></i> Add Product
                 </button>
               </div>
             </div>
-            <table
-              datatable
-              [dtOptions]="dtOptions"
-              [dtTrigger]="dtTrigger"
-              class="row-border hover"
-            >
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
               <thead>
                 <tr>
                   <th>S.No</th>
@@ -43,19 +33,11 @@
                   <td>{{ product.productCode }}</td>
                   <!-- <td>{{ product.status }}</td> -->
                   <td class="options-width">
-                    <i
-                      data-bs-toggle="modal"
-                      data-bs-target="#productForms"
-                      (click)="selectProduct(product)"
-                      class="editIcon ri-edit-2-fill"
-                    ></i>
+                    <i data-bs-toggle="modal" data-bs-target="#productForms" (click)="selectProduct(product)"
+                      class="editIcon ri-edit-2-fill"></i>
                     &nbsp;&nbsp;
-                    <i
-                      data-bs-toggle="modal"
-                      data-bs-target="#deleteForm"
-                      (click)="confirmProductDeletetion(product)"
-                      class="deleteIcon ri-delete-bin-5-fill"
-                    ></i>
+                    <i data-bs-toggle="modal" data-bs-target="#deleteForm" (click)="confirmProductDeletetion(product)"
+                      class="deleteIcon ri-delete-bin-5-fill"></i>
                   </td>
                 </tr>
               </tbody>
@@ -72,54 +54,34 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Product Form</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div *ngIf="showErrorMsg">
+        <span style="color:red">Same data already exist</span>
       </div>
       <div class="modal-body">
         <form class="row g-3" [formGroup]="productForm">
           <div class="col-12">
             <label for="productName" class="form-label">Product Name</label>
-            <input
-              type="text"
-              class="form-control"
-              id="productName"
-              formControlName="productName"
-            />
+            <input type="text" class="form-control" id="productName" formControlName="productName" />
           </div>
-          <div
-            *ngIf="
+          <div *ngIf="
               productForm.controls['productName'].invalid &&
               (productForm.controls['productName'].dirty ||
                 productForm.controls['productName'].touched) &&
               productForm.get('productName')?.errors &&
               productForm.get('productName')?.hasError('required')
-            "
-            class="text-danger"
-          >
+            " class="text-danger">
             Please enter Product Name
           </div>
           <div class="col-12">
             <label for="productCode" class="form-label">Product Code</label>
-            <input
-              type="text"
-              class="form-control"
-              id="productCode"
-              formControlName="productCode"
-            />
+            <input type="text" class="form-control" id="productCode" formControlName="productCode" />
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-          #closeButton
-        >
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" #closeButton>
           Close
         </button>
         <button type="button" class="btn btn-primary" (click)="saveProduct()">
@@ -134,23 +96,13 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Delete Product</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         Are you sure you want to delete this product?
       </div>
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-          #closeDeleteButton
-        >
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" #closeDeleteButton>
           Close
         </button>
         <button type="button" class="btn btn-primary" (click)="deleteProduct()">

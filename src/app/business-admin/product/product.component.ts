@@ -42,12 +42,14 @@ export class ProductComponent implements OnInit {
   @ViewChild('closeButton') closeButton: ElementRef;
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
 
+  public showErrorMsg: boolean = false;
+
   constructor(
     private readonly productService: ProductService,
     private readonly formBuilder: FormBuilder,
     private readonly globalService: GlobalService,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getProducts();
@@ -83,6 +85,17 @@ export class ProductComponent implements OnInit {
   }
 
   saveProduct() {
+
+    this.showErrorMsg = false;
+    let productName = this.productForm.get('productName')!.value;
+
+    let isProductNameExist = this.products.find(p => p.productName === productName);
+
+    if (isProductNameExist) {
+      this.showErrorMsg = true;
+      return;
+    }
+
     const newProduct = {
       productName: this.productForm.get('productName')!.value,
       productCode: this.productForm.get('productCode')!.value,
