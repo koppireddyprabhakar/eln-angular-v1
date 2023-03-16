@@ -87,7 +87,8 @@
                   }">
                   <label class="col-sm-2 col-form-label">Formulation</label>
 
-                  <input type="text" class="form-control" id="formulationName" formControlName="formulationName" />
+                  <input type="text" class="form-control" id="formulationName" formControlName="formulationName"
+                    (blur)="onChange(i, $event, formulations.value[i].formulationId)" />
                 </div>
                 <div *ngIf="formulations.value.length > 1" class="col-1">
                   <div for="description" class="form-label">&nbsp;</div>

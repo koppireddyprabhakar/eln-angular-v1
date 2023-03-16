@@ -89,9 +89,12 @@ export class ProductComponent implements OnInit {
     this.showErrorMsg = false;
     let productName = this.productForm.get('productName')!.value;
 
-    let isProductNameExist = this.products.find(p => p.productName === productName);
+    let filteredProducts = this.products.filter(p => p.productName === productName);
 
-    if (isProductNameExist) {
+    if (filteredProducts && filteredProducts.length === 1 && this.selectedProduct && !this.selectedProduct.productId) {
+      this.showErrorMsg = true;
+      return;
+    } else if (filteredProducts && filteredProducts.length >= 1 && this.selectedProduct && this.selectedProduct.productId) {
       this.showErrorMsg = true;
       return;
     }

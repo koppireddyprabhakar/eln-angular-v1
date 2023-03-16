@@ -76,7 +76,6 @@ export class DosageComponent implements OnInit {
     this.showErrorMsg = false;
     this.formulations.clear();
     this.addNewFormulations();
-    this.dosageForm.get('dosageName')?.enable();
     this.selectedDosage = {} as Dosages;
     this.dosageForm.reset();
   }
@@ -109,9 +108,12 @@ export class DosageComponent implements OnInit {
     this.showErrorMsg = false;
     let dosageName = this.dosageForm.get('dosageName')!.value;
 
-    let isDosageNameExist = this.dosages.find(p => p.dosageName === dosageName);
+    let filteredDosages = this.dosages.filter(p => p.dosageName === dosageName);
 
-    if (isDosageNameExist) {
+    if (filteredDosages && filteredDosages.length === 1 && this.selectedDosage && !this.selectedDosage.dosageId) {
+      this.showErrorMsg = true;
+      return;
+    } else if (filteredDosages && filteredDosages.length > 1 && this.selectedDosage && this.selectedDosage.dosageId) {
       this.showErrorMsg = true;
       return;
     }
@@ -167,11 +169,11 @@ export class DosageComponent implements OnInit {
   }
 
   selectProduct(product: Dosages) {
+    this.selectedDosage = {} as Dosages;
     this.selectedDosage = product;
     this.showErrorMsg = false;
     this.formulations.clear();
     this.dosageForm.patchValue({ dosageName: product.dosageName });
-    this.dosageForm.get('dosageName')?.disable();
     this.selectedDosage.formulations.forEach((formulation, index) => {
       this.formulations.push(this.addFormulations());
       this.formulations.at(index).patchValue({
@@ -208,6 +210,15 @@ export class DosageComponent implements OnInit {
       (formulae) => formulae.formulationId === id
     );
     this.selectedDosage.formulations[formIndex].status = 'Inactive';
+  }
+
+  onChange(index, event, id) {
+    if (!id) {
+      this.selectedDosage.formulations.push(this.formulations.controls[index].value);
+    } else {
+      this.selectedDosage.formulations[index].formulationName = event.target && event.target.value;
+      this.selectedDosage.formulations[index].status = 'Active';
+    }
   }
 
   ngOnDestroy(): void {
