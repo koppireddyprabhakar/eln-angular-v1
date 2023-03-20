@@ -203,6 +203,24 @@
           </span>
         </div>
 
+        <div class="col-4">
+          <label for="purpose" class="form-label">Choose Your Purpose</label>
+          <select class="form-select" aria-label="Purpose" formControlName="purpose">
+            <option *ngFor="let purpose of purposeList" [ngValue]="purpose.value">
+              {{purpose.label | titlecase }}
+            </option>
+          </select>
+          <span *ngIf="
+              testRequestForm.controls['purpose'].invalid &&
+              (testRequestForm.controls['purpose'].dirty ||
+                testRequestForm.controls['purpose'].touched) &&
+              testRequestForm.get('purpose')?.errors &&
+              testRequestForm.get('purpose')?.hasError('required')
+            " class="text-danger">
+            Please Choose Your Purpose
+          </span>
+        </div>   
+
         <h3>Tests Required</h3>
 
         <div class="pb-3">

@@ -604,7 +604,15 @@ export class AnalysisNewExperimentComponent implements OnInit {
     });
   }
 
+  isValid(index: number): boolean {
+    return !this.article[index].text || this.article[index].text.trim().length === 0;
+  }
+  
   saveTab(index, data) {
+    if (this.isValid(index)) {
+      this.toastr.error('Please enter some content before attempting to save.', 'Error');
+      return;
+    }
     const sss = JSON.stringify(this.article[index].text);
     let tabValue: any = {
       status: 'string',
@@ -657,6 +665,11 @@ export class AnalysisNewExperimentComponent implements OnInit {
   }
 
   saveExcipients() {
+    if (this.selectedItems.length === 0) {
+      this.toastr.error('Please select at least one excipient', 'Error');
+      return;
+    }
+
     this.analysisService
       .saveAnalysisExcipient(this.tableData)
       .subscribe((data) => {

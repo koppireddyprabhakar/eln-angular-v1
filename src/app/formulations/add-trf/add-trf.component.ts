@@ -20,6 +20,11 @@ export class AddTrfComponent implements OnInit {
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
 
+  purposeList = [
+    { label: 'Informative', value: 'Informative' },
+    { label: 'Release', value: 'Release' },
+  ];
+
   public testRequest: any = {};
   private subscribeFlag: boolean = true;
   public dosagesList: Dosages[] = [];
@@ -60,6 +65,7 @@ export class AddTrfComponent implements OnInit {
     manufacturingDate: ['', [Validators.required]],
     expiryDate: ['', [Validators.required]],
     testRequestRow: this.formBuilder.array([this.addTests()]),
+    purpose: ['', [Validators.required]]
   });
 
   testRequestRow = this.testRequestForm.get('testRequestRow') as FormArray;
@@ -225,6 +231,7 @@ export class AddTrfComponent implements OnInit {
       packaging: this.testRequestForm.get('packaging')?.value || '',
       labelClaim: this.testRequestForm.get('labelClaim')?.value || '',
       quantity: this.testRequestForm.get('quantity')?.value || 0,
+      purpose: this.testRequestForm.get('purpose')?.value,
       manufacturingDate: manDate,
       expireDate: expiryDate,
       trfTestResults: this.tableData,
@@ -259,6 +266,7 @@ export class AddTrfComponent implements OnInit {
       this.testRequestForm.get('strength')?.markAsDirty();
       this.testRequestForm.get('productCode')?.markAsDirty();
       this.testRequestForm.get('condition')?.markAsDirty();
+      this.testRequestForm.get('purpose')?.markAsDirty();
     }
   }
 

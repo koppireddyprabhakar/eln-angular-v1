@@ -61,7 +61,7 @@ export class AddTestComponent implements OnInit, OnDestroy {
         this.testRow.at(0).patchValue({
           testName: this.selectedTest.testName,
           description: this.selectedTest.description,
-          dosageId: this.selectedTest.dosageId,
+          dosageId: this.selectedTest.dosageTest.dosageId,
         });
       });
   }

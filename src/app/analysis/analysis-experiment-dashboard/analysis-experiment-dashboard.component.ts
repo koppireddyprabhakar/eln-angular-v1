@@ -357,8 +357,15 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       this.dtTrigger.next(this.tableData);
     });
   }
+  isValid(index: number): boolean {
+    return !this.article[index].text || this.article[index].text.trim().length === 0;
+  }
 
   saveTab(index, label) {
+    if (this.isValid(index)) {
+      this.toastr.error('Please enter some content before attempting to save.', 'Error');
+      return;
+    }
     const sss = JSON.stringify(this.article[index].text);
     let tabValue: any = {
       status: 'ACTIVE',

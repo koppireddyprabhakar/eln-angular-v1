@@ -45,7 +45,7 @@ export class AddProjectManagementComponent implements OnInit {
     team: ['' as any, [Validators.required]],
     formulationType: ['' as any, [Validators.required]],
     market: ['' as any, [Validators.required]],
-    productCode:['' as any, [Validators.required]],
+    productCode:['' as any],
   });
 
   constructor(
@@ -74,7 +74,6 @@ export class AddProjectManagementComponent implements OnInit {
   }
 
   saveProject() {
-    debugger
     let newProject: any = {
       projectName: this.projectForm.get('projectName')?.value,
       productId: this.productId,
@@ -251,12 +250,11 @@ export class AddProjectManagementComponent implements OnInit {
           this.formulations = this.dosages.filter(
             (dosage) => dosage.dosageId === selectedProject.dosageId
           )[0].formulations;
-          this.selectedProject = selectedProject;
+          this.selectedProject = selectedProject;       
           this.projectForm.patchValue({
             projectName: selectedProject.projectName,
             productName: selectedProject.productId,
-            dosageForm: selectedProject.dosageId,
-           
+            dosageForm: selectedProject.dosageId,           
             strength: selectedProject.strength,
             team: selectedProject.teamId,
             formulationType: selectedProject.formulationId,
