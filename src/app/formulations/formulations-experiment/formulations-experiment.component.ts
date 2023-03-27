@@ -58,6 +58,7 @@ export class FormulationsExperimentComponent implements OnInit {
 
   ngOnInit(): void {
     this.getExperiments();
+    this.getUsers();
   }
 
   ngAfterViewInit(): void {
@@ -148,7 +149,7 @@ export class FormulationsExperimentComponent implements OnInit {
           this.toastr.success(data['data'], 'Success');
           this.globalService.hideLoader();
           this.route.navigateByUrl(
-            `/forms-page/new-formulation`
+            `/forms-page/experiments`
           );
         });
     } else {
