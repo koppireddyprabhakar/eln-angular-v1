@@ -15,14 +15,14 @@
                 <thead>
                   <tr>
                     <th></th>
+                    <th>TRF ID</th>
+                    <th>Test Name</th>
+                    <th>Test ID</th>
                     <th>Project Name</th>
-                    <th>TRF Request Id</th>
                     <th>Product Name</th>
                     <th>Batch Number</th>
-                    <th>Date Created</th>
-                    <th>Condition</th>
-                    <th>Test Required</th>
-                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Test Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -31,18 +31,14 @@
                       <input *ngIf="trf && trf.testRequestFormStatus.toUpperCase() === 'New'.toUpperCase()"
                         class="form-check-input" type="checkbox" id="gridCheck1" (click)="onCheckboxClick(trf)" />
                     </td>
-                    <td>
-                      {{ trf.project.projectName | titlecase }}
-                    </td>
-                    <td>
-                      {{ trf.testRequestFormId }}
-                    </td>
+                    <td>{{trf.trfNumber}}</td>
+                    <td>{{trf.testName}}</td>
+                    <td>{{ trf.testNumber }}</td>
+                    <td>{{ trf.project.projectName | titlecase }}</td>
                     <td>{{ trf.project.productName }}</td>
                     <td>{{ trf.experiment.batchNumber }}</td>
                     <td>{{ trf.insertDate }}</td>
-                    <td>{{ trf.condition }}</td>
                     <td>{{ trf.testRequestFormStatus }}</td>
-                    <td>{{ trf.status }}</td>
                   </tr>
                 </tbody>
               </table>

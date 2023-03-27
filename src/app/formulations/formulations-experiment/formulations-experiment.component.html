@@ -84,7 +84,7 @@
                           <td>{{ experiment.project.formulationName }}</td>
                           <td>{{ experiment.project.strength }}</td>
                           <td>{{ experiment.experimentStatus }}</td>
-                          <td class="options-width">
+                          <td >
 
                             <i *ngIf="experiment.experimentStatus.toUpperCase() ===
                              'Inprogress'.toUpperCase()" (click)="onRowClick(experiment)"

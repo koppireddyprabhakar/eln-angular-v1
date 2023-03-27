@@ -490,7 +490,7 @@ export class CreateFormulationComponent implements OnInit {
       this.toastr.success(data['data'], 'Success');
 
       this.route.navigateByUrl(
-        `/forms-page/new-formulation`
+        `/forms-page/experiments`
       );
     });
   }

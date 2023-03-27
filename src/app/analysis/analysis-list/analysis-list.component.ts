@@ -97,14 +97,12 @@ export class AnalysisListComponent implements OnInit {
         (e) => e.testRequestFormId !== selectCheckBoxArr.testRequestFormId
       );
     }
-    console.log(this.selectedRows);
     var valueArr = this.selectedRows.map((item) => item.projectName);
-    console.log(valueArr[0]);
     const selectedTrfList = this.unchangedTrfList.filter(
       (list) => list.project.projectName === valueArr[0]
     );
-    console.log(selectedTrfList[0].project.projectId);
-    this.projectId = selectedTrfList[0].project.projectId;
+    console.log(this.selectedRows[0].project.projectId);
+    this.projectId = this.selectedRows[0].project.projectId;
     this.isDuplicate = valueArr.every((arr) => valueArr[0] === arr);
     this.analysisService.syncTrf(this.selectedRows);
   }

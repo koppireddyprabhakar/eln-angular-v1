@@ -78,9 +78,12 @@
                 <td>{{ project.strength }}</td>
                 <td>{{ project.status }}</td>
                 <td>
-                  <button type="button" (click)="createFormulation(project.projectId)" class="btn btn-outline-primary">
+                  <!-- <button type="button" (click)="createFormulation(project.projectId)" class="btn btn-outline-primary">
                     Create Experiment
-                  </button>
+                  </button> -->
+                  <i class="btn btn-link" (click)="createFormulation(project.projectId)">
+                    Add&nbsp;Experiment
+                  </i>
                 </td>
               </tr>
             </tbody>

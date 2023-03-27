@@ -226,6 +226,7 @@ export class AddTrfComponent implements OnInit {
       status: 'string',
       expId: Number(this.expId),
       testRequestFormStatus: 'active',
+      trfNumber: this.testRequestForm.get('testRequestId')?.value || '',
       condition: this.testRequestForm.get('condition')?.value || '',
       stage: this.testRequestForm.get('stage')?.value || '',
       packaging: this.testRequestForm.get('packaging')?.value || '',

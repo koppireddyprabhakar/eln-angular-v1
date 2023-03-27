@@ -31,14 +31,13 @@
                       <thead>
                         <tr>
                           <th>S.No</th>
-                          <th>Project Name</th>
+                          <th>Project&nbsp;Name</th>
                           <th>Product Name</th>
-                          <th>Product Code</th>
-                          <!-- <th>Project ID</th> -->
+                          <th>Code</th>
                           <th>Dosage</th>
                           <th>Formulation</th>
                           <th>Strength</th>
-                          <th>Formulation Dept</th>
+                          <th>Creation Date</th>
                           <th>Status</th>
                         </tr>
                       </thead>
@@ -48,11 +47,10 @@
                           <td>{{ project.projectName }}</td>
                           <td>{{ project.productName }}</td>
                           <td>{{ project.productCode }}</td>
-                          <!-- <td>{{ project.projectId }}</td> -->
                           <td>{{ project.dosageName }}</td>
                           <td>{{ project.formulationName }}</td>
                           <td>{{ project.strength }}</td>
-                          <td>{{ project.formulationName }}</td>
+                          <td>{{ project.insertDate  | date }}</td>
                           <td>{{ project.status }}</td>
                         </tr>
                       </tbody>
@@ -64,12 +62,13 @@
                       <thead>
                         <tr>
                           <th>S.No</th>
-                          <th>Project Name</th>
+                          <th>Project&nbsp;Name</th>
                           <th>Product Name</th>
-                          <th>Product Code</th>
+                          <th>Code</th>
                           <th>Dosage</th>
                           <th>Formulation</th>
-                          <th>Strength</th>
+                          <!-- <th>Strength</th> -->
+                          <th>Creation Date</th>
                           <th>Status</th>
                           <th>Options</th>
                         </tr>
@@ -82,7 +81,8 @@
                           <td>{{ project.productCode }}</td>
                           <td>{{ project.dosageName }}</td>
                           <td>{{ project.formulationName }}</td>
-                          <td>{{ project.strength }}</td>
+                          <!-- <td>{{ project.strength }}</td> -->
+                          <td>{{ project.insertDate  | date }}</td>
                           <td>{{ project.status }}</td>
                           <td>
                             <i class="btn btn-link" (click)="createFormulation(project.projectId)">
