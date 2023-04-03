@@ -544,7 +544,7 @@ export class ReviewExperimentsComponent implements OnInit {
   processFile(event) {
     const selectedFile = event.target.files[0];
     this.analysisService
-      .saveAnalysisAttachment(selectedFile, this.experimentId, this.projectId)
+      .saveAnalysisAttachment(selectedFile, this.experimentId, this.projectId, null)
       .subscribe((response) => {
         this.files = response;
         this.toastr.success('File Uploaded Successfully', 'Success');

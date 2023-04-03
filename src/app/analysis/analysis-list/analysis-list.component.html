@@ -28,8 +28,7 @@
                 <tbody>
                   <tr *ngFor="let trf of trfList">
                     <td>
-                      <input *ngIf="trf && trf.testRequestFormStatus.toUpperCase() === 'New'.toUpperCase()"
-                        class="form-check-input" type="checkbox" id="gridCheck1" (click)="onCheckboxClick(trf)" />
+                      <input class="form-check-input" type="checkbox" id="gridCheck1" (click)="onCheckboxClick(trf)" />
                     </td>
                     <td>{{trf.trfNumber}}</td>
                     <td>{{trf.testName}}</td>

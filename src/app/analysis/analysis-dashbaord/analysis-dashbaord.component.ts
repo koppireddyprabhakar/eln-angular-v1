@@ -71,6 +71,8 @@ export class AnalysisDashbaordComponent implements OnInit {
     batchSize: ['' as any, [Validators.required]],
   });
 
+  public selectedFile: any;
+
   constructor(
     private readonly projectService: ProjectService,
     private readonly experimentService: ExperimentService,
@@ -304,9 +306,19 @@ export class AnalysisDashbaordComponent implements OnInit {
     };
     if (!this.summaryForm.invalid) {
       this.analysisService.saveAnalysis(summary).subscribe((experiment: any) => {
-        // change here
-        // console.log(experiment)
-        this.getAnalysisById(experiment.data, 'firstLoad');
+        if (this.selectedFile) {
+          this.analysisService
+            .saveAnalysisAttachment(this.selectedFile, experiment['data'], this.projectId,
+              "Y")
+            .subscribe((response) => {
+              this.files = response;
+              this.getAnalysisById(experiment.data, 'firstLoad');
+            });
+        } else {
+          this.getAnalysisById(experiment.data, 'firstLoad');
+        }
+
+
         // this.activeTab = this.dummyTabs[0].value;
         this.toastr.success('Experiment Started Successfully', 'Success');
       });
@@ -357,7 +369,7 @@ export class AnalysisDashbaordComponent implements OnInit {
   isValid(index: number): boolean {
     return !this.article[index].text || this.article[index].text.trim().length === 0;
   }
-  
+
   saveTab(index, data) {
 
     if (this.isValid(index)) {
@@ -399,10 +411,15 @@ export class AnalysisDashbaordComponent implements OnInit {
     this.file = event.target.files[0];
   }
 
+  attachFile(event) {
+    this.selectedFile = event.target.files[0];
+    console.log(this.selectedFile);
+  }
+
   processFile(event) {
-    const selectedFile = event.target.files[0];
+    const attachedFile = event.target.files[0];
     this.analysisService
-      .saveAnalysisAttachment(selectedFile, this.experimentId, this.projectId)
+      .saveAnalysisAttachment(attachedFile, this.experimentId, this.projectId, null)
       .subscribe((response) => {
         this.files = response;
         this.toastr.success('File Uploaded Successfully', 'Success');

@@ -135,8 +135,8 @@
                         <div class="row mb-3">
                           <label for="experimentName" class="col-sm-3 col-form-label">Experiment Name</label>
                           <div class="col-sm-9">
-                            <input type="text" class="form-control" id="experimentName" formControlName="experimentName"
-                              [readonly]="experimentId" />
+                            <input type="text" class="form-control" id="experimentName"
+                              formControlName="experimentName" />
                             <span *ngIf="
                               summaryForm.controls['experimentName'].invalid &&
                                (summaryForm.controls['experimentName'].dirty ||
@@ -157,8 +157,7 @@
                         <div class="row mb-3">
                           <label for="batchSize" class="col-sm-3 col-form-label">Batch Size</label>
                           <div class="col-sm-9">
-                            <input type="text" class="form-control" id="batchSize" formControlName="batchSize"
-                              [readonly]="experimentId" />
+                            <input type="text" class="form-control" id="batchSize" formControlName="batchSize" />
                             <span *ngIf="
                               summaryForm.controls['batchSize'].invalid &&
                                (summaryForm.controls['batchSize'].dirty ||
@@ -174,6 +173,12 @@
                       <div class="text-center" *ngIf="!experimentId">
                         <button type="submit" class="btn btn-primary" (click)="saveSummary()">
                           Start Experiment
+                        </button>
+                      </div>
+
+                      <div class="text-center" *ngIf="experimentId">
+                        <button type="submit" class="btn btn-primary" (click)="updateSummary()">
+                          Update Experiment
                         </button>
                       </div>
 

@@ -71,6 +71,8 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     pagingType: 'full_numbers',
   };
 
+  public selectedFile: any;
+
   constructor(
     private readonly projectService: ProjectService,
     private readonly experimentService: ExperimentService,
@@ -112,6 +114,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     this.isCreatedExperiment = this.analysisID ? true : false;
     this.getAnalysisExperimentDetails(this.analysisID);
     this.getProjectDetails();
+    this.getAttachments();
   }
 
   ngAfterViewInit(): void {
@@ -299,25 +302,39 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   saveSummary() {
     // if () {
     const summary = {
-      status: 'string',
+      analysisId: this.analysisExperimentDetails.analysisId,
+      analysisName: this.summaryForm.get('experimentName')?.value,
+      status: this.analysisExperimentDetails.status,
       projectId: this.project.projectId,
       teamId: this.project.teamId,
-      userId: this.project.userId,
+      userId: this.analysisExperimentDetails.userId,
       experimentName: this.summaryForm.get('experimentName')?.value,
-      experimentStatus: 'string',
-      summary: 'string',
+      summary: this.analysisExperimentDetails.summary,
       batchSize: this.summaryForm.get('batchSize')?.value,
       batchNumber: this.batchNumber,
-      experimentDetailsList: [],
-      excipients: [],
+      analysisDetailsList: this.analysisExperimentDetails.analysisDetails,
     };
 
-    this.experimentService
-      .saveExperiment(summary)
+    this.analysisService
+      .updateAnalysis(summary)
       .subscribe((experiment: any) => {
-        this.getAnalysisExperimentDetails(experiment.data);
-        this.activeTab = this.dummyTabs[0].value;
-        this.toastr.success('Experiment Started Successfully', 'Success');
+
+        if (this.selectedFile) {
+          this.analysisService
+            .saveAnalysisAttachment(this.selectedFile, this.analysisExperimentDetails.analysisId, this.projectId,
+              "Y")
+            .subscribe((response) => {
+              this.files = response;
+              this.getAnalysisExperimentDetails(experiment.data);
+              this.toastr.success('Updated Analysis Successfully', 'Success');
+              this.activeTab = this.dummyTabs[0].value;
+            });
+        } else {
+          this.getAnalysisExperimentDetails(experiment.data);
+          this.toastr.success('Updated Analysis Successfully', 'Success');
+          this.activeTab = this.dummyTabs[0].value;
+        }
+
       });
   }
 
@@ -384,17 +401,23 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
 
   saveAttachment() { }
 
+  attachFile(event) {
+    this.selectedFile = event.target.files[0];
+    console.log(this.selectedFile);
+  }
+
   onChange(event) {
     this.file = event.target.files[0];
   }
 
   processFile(event) {
-    const selectedFile = event.target.files[0];
+    const attachedFile = event.target.files[0];
     this.analysisService
       .saveAnalysisAttachment(
-        selectedFile,
+        attachedFile,
         this.analysisID.toString(),
-        this.analysisExperimentDetails.projectId.toString()
+        this.analysisExperimentDetails.projectId.toString(),
+        null
       )
       .subscribe((response) => {
         this.files = response;

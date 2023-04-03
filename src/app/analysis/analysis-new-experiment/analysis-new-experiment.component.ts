@@ -607,7 +607,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
   isValid(index: number): boolean {
     return !this.article[index].text || this.article[index].text.trim().length === 0;
   }
-  
+
   saveTab(index, data) {
     if (this.isValid(index)) {
       this.toastr.error('Please enter some content before attempting to save.', 'Error');
@@ -651,7 +651,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
   processFile(event) {
     const selectedFile = event.target.files[0];
     this.analysisService
-      .saveAnalysisAttachment(selectedFile, this.experimentId, this.projectId)
+      .saveAnalysisAttachment(selectedFile, this.experimentId, this.projectId, null)
       .subscribe((response) => {
         this.files = response;
         this.toastr.success('File Uploaded Successfully', 'Success');
