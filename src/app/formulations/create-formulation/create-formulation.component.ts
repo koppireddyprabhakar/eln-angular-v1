@@ -83,6 +83,7 @@ export class CreateFormulationComponent implements OnInit {
     pagingType: 'full_numbers',
   };
 
+  public startDate = new Date();
 
   constructor(
     private readonly projectService: ProjectService,

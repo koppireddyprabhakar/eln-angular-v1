@@ -72,6 +72,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   };
 
   public selectedFile: any;
+  public startDate = new Date();
 
   constructor(
     private readonly projectService: ProjectService,
