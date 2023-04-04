@@ -33,6 +33,7 @@ export class AddTrfComponent implements OnInit {
     pagingType: 'full_numbers',
   };
 
+  saveClicked = false;
   expId: number;
   experiment: any;
   staticTrfId = 'TRF123';
@@ -49,6 +50,7 @@ export class AddTrfComponent implements OnInit {
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
   testRequestForm = this.formBuilder.group({
+    selectedTests: [[''], Validators.required],
     testRequestId: ['', [Validators.required]],
     department: ['', [Validators.required]],
     dosageForm: ['', [Validators.required]],
@@ -237,6 +239,7 @@ export class AddTrfComponent implements OnInit {
       expireDate: expiryDate,
       trfTestResults: this.tableData,
     };
+    this.saveClicked = true;
     if (!this.testRequestForm.invalid) {
       this.globalService.showLoader();
       this.trfService

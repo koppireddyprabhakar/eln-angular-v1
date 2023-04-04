@@ -438,6 +438,10 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   }
 
   saveExcipients() {
+    if (this.selectedItems.length === 0) {
+      this.toastr.error('Please select at least one excipient', 'Error');
+      return;
+    }
     this.analysisService
       .saveAnalysisExcipient(this.tableData)
       .subscribe((data) => {
