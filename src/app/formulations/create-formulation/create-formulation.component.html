@@ -132,6 +132,20 @@
                           <label for="inputEmail3" class="col-sm-3 col-form-label">Batch Number</label>
                           <div class="col-sm-9 pt-1">{{ batchNumber }}</div>
                         </div>
+
+                        <div class="row mb-3">
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Start Date</label>
+                          <div class="col-sm-9 pt-1">{{ (experimentDetails && experimentDetails.insertDate ||
+                            startDate.toLocaleDateString())
+                            | date }}</div>
+                        </div>
+
+                        <div class="row mb-3">
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Analysis Submitted Date</label>
+                          <div class="col-sm-9 pt-1">{{ (experimentDetails && experimentDetails.analysisSubmitDate) |
+                            date }}</div>
+                        </div>
+
                         <div class="row mb-3">
                           <label for="experimentName" class="col-sm-3 col-form-label">Experiment Name</label>
                           <div class="col-sm-9">
