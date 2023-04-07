@@ -17,6 +17,7 @@ import { FormulationsService } from '@app/shared/services/formulations/formulati
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { environment } from "src/environments/environment";
+import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 
 @Component({
   selector: 'app-analysis-experiment-dashboard',
@@ -66,6 +67,12 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     experimentName: ['', [Validators.required]],
     batchSize: ['' as any, [Validators.required]],
   });
+
+  userValidateForm = this.formBuilder.group({
+    userName: [''],
+    password: [''],
+  });
+
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions = {
     pagingType: 'full_numbers',
@@ -84,7 +91,8 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     private renderer2: Renderer2,
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private route: Router
+    private route: Router,
+    private loginService: LoginserviceService
   ) { }
 
   ngOnInit(): void {
@@ -189,6 +197,15 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       .getAttachmentsById(this.analysisID)
       .subscribe((attachments) => {
         this.files = attachments;
+
+        if (this.analysisExperimentDetails && this.analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()) {
+          let userName = this.loginService.userDetails ? this.loginService.userDetails['mailId'] : '';
+          this.userValidateForm = this.formBuilder.group({
+            userName: [userName, [Validators.required]],
+            password: ['', [Validators.required]],
+          });
+        }
+
       });
   }
 
@@ -462,12 +479,36 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       status: status,
       summary: summary ? summary : status
     }
+    if (this.analysisExperimentDetails && this.analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()) {
+      if (!this.userValidateForm.invalid) {
 
-    this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
-      this.toastr.success(data['data'], 'Success');
-      this.route.navigateByUrl(
-        `/exp-analysis/analysis-experiments`
-      );
-    });
+        const request = {
+          mailId: this.userValidateForm.value.userName || '',
+          password: this.userValidateForm.value.password || ''
+        };
+
+        this.loginService.login(request).subscribe(response => {
+          if (response) {
+            this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
+              this.toastr.success(data['data'], 'Success');
+              this.route.navigateByUrl(
+                `/exp-analysis/analysis-experiments`
+              );
+            });
+          }
+        });
+      } else {
+        this.userValidateForm.get('userName')?.markAsDirty();
+        this.userValidateForm.get('password')?.markAsDirty();
+      }
+    } else {
+      this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
+        this.toastr.success(data['data'], 'Success');
+        this.route.navigateByUrl(
+          `/exp-analysis/analysis-experiments`
+        );
+      });
+    }
+
   }
 }
