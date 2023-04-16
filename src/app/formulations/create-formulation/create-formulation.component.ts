@@ -84,6 +84,7 @@ export class CreateFormulationComponent implements OnInit {
   };
 
   public startDate = new Date();
+  public prereviewStatus: string;
 
   constructor(
     private readonly projectService: ProjectService,
@@ -514,7 +515,16 @@ export class CreateFormulationComponent implements OnInit {
   }
 
   updateExperimentStatus() {
-    this.experimentService.updateExperimentStatus(this.experimentId, 'Complete').subscribe((data) => {
+    let status = "Complete";
+    if (this.experimentDetails && this.experimentDetails.experimentStatus.toUpperCase() === 'Complete'.toUpperCase()) {
+      status = this.prereviewStatus;
+      if (this.prereviewStatus === "Create TRF") {
+        status = "Prereview Completed";
+      }
+
+    }
+
+    this.experimentService.updateExperimentStatus(this.experimentId, status).subscribe((data) => {
       this.toastr.success(data['data'], 'Success');
 
       this.route.navigateByUrl(
