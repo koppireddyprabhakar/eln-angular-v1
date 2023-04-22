@@ -122,12 +122,15 @@ export class AnalysisService {
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
-  saveAnalysisAttachment(file, experimentId, projectId): Observable<any> {
+  saveAnalysisAttachment(file, experimentId, projectId, fromSummary): Observable<any> {
     const url = elnEndpointsConfig.endpoints['saveAnalysisAttachments'];
     const formData = new FormData();
     formData.append('experimentId', experimentId.toString());
     formData.append('projectId', projectId.toString());
     formData.append('status', 'ACTIVE');
+    if (fromSummary) {
+      formData.append('fromSummary', fromSummary);
+    }
     formData.append('file', file, file.name);
 
     return this.http.post<string>(url, formData);
@@ -161,6 +164,11 @@ export class AnalysisService {
   saveAnalysis(experiment) {
     const url = elnEndpointsConfig.endpoints['createAnalysis'];
     return this.http.post<string>(url, experiment);
+  }
+
+  updateAnalysis(experiment) {
+    const url = elnEndpointsConfig.endpoints['updateAnalysis'];
+    return this.http.put<string>(url, experiment);
   }
 
   saveExperimentTabs(experiment) {

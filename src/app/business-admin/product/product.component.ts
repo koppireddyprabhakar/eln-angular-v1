@@ -32,7 +32,7 @@ export class ProductComponent implements OnInit {
   subscribeFlag = true;
   productForm = this.formBuilder.group({
     productName: ['', [Validators.required]],
-    productCode: [''],
+    productCode: ['', [Validators.required]]
   });
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions = {
@@ -145,6 +145,7 @@ export class ProductComponent implements OnInit {
       }
     } else {
       this.productForm.get('productName')?.markAsDirty();
+      this.productForm.get('productCode')?.markAsDirty();
     }
   }
 

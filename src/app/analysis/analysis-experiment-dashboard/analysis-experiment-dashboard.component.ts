@@ -17,6 +17,7 @@ import { FormulationsService } from '@app/shared/services/formulations/formulati
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { environment } from "src/environments/environment";
+import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 
 @Component({
   selector: 'app-analysis-experiment-dashboard',
@@ -66,10 +67,19 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     experimentName: ['', [Validators.required]],
     batchSize: ['' as any, [Validators.required]],
   });
+
+  userValidateForm = this.formBuilder.group({
+    userName: [''],
+    password: [''],
+  });
+
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions = {
     pagingType: 'full_numbers',
   };
+
+  public selectedFile: any;
+  public startDate = new Date();
 
   constructor(
     private readonly projectService: ProjectService,
@@ -81,7 +91,8 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     private renderer2: Renderer2,
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private route: Router
+    private route: Router,
+    private loginService: LoginserviceService
   ) { }
 
   ngOnInit(): void {
@@ -112,6 +123,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     this.isCreatedExperiment = this.analysisID ? true : false;
     this.getAnalysisExperimentDetails(this.analysisID);
     this.getProjectDetails();
+    this.getAttachments();
   }
 
   ngAfterViewInit(): void {
@@ -185,6 +197,15 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       .getAttachmentsById(this.analysisID)
       .subscribe((attachments) => {
         this.files = attachments;
+
+        if (this.analysisExperimentDetails && this.analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()) {
+          let userName = this.loginService.userDetails ? this.loginService.userDetails['mailId'] : '';
+          this.userValidateForm = this.formBuilder.group({
+            userName: [userName, [Validators.required]],
+            password: ['', [Validators.required]],
+          });
+        }
+
       });
   }
 
@@ -299,25 +320,39 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   saveSummary() {
     // if () {
     const summary = {
-      status: 'string',
+      analysisId: this.analysisExperimentDetails.analysisId,
+      analysisName: this.summaryForm.get('experimentName')?.value,
+      status: this.analysisExperimentDetails.status,
       projectId: this.project.projectId,
       teamId: this.project.teamId,
-      userId: this.project.userId,
+      userId: this.analysisExperimentDetails.userId,
       experimentName: this.summaryForm.get('experimentName')?.value,
-      experimentStatus: 'string',
-      summary: 'string',
+      summary: this.analysisExperimentDetails.summary,
       batchSize: this.summaryForm.get('batchSize')?.value,
       batchNumber: this.batchNumber,
-      experimentDetailsList: [],
-      excipients: [],
+      analysisDetailsList: this.analysisExperimentDetails.analysisDetails,
     };
 
-    this.experimentService
-      .saveExperiment(summary)
+    this.analysisService
+      .updateAnalysis(summary)
       .subscribe((experiment: any) => {
-        this.getAnalysisExperimentDetails(experiment.data);
-        this.activeTab = this.dummyTabs[0].value;
-        this.toastr.success('Experiment Started Successfully', 'Success');
+
+        if (this.selectedFile) {
+          this.analysisService
+            .saveAnalysisAttachment(this.selectedFile, this.analysisExperimentDetails.analysisId, this.projectId,
+              "Y")
+            .subscribe((response) => {
+              this.files = response;
+              this.getAnalysisExperimentDetails(experiment.data);
+              this.toastr.success('Updated Analysis Successfully', 'Success');
+              this.activeTab = this.dummyTabs[0].value;
+            });
+        } else {
+          this.getAnalysisExperimentDetails(experiment.data);
+          this.toastr.success('Updated Analysis Successfully', 'Success');
+          this.activeTab = this.dummyTabs[0].value;
+        }
+
       });
   }
 
@@ -384,17 +419,23 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
 
   saveAttachment() { }
 
+  attachFile(event) {
+    this.selectedFile = event.target.files[0];
+    console.log(this.selectedFile);
+  }
+
   onChange(event) {
     this.file = event.target.files[0];
   }
 
   processFile(event) {
-    const selectedFile = event.target.files[0];
+    const attachedFile = event.target.files[0];
     this.analysisService
       .saveAnalysisAttachment(
-        selectedFile,
+        attachedFile,
         this.analysisID.toString(),
-        this.analysisExperimentDetails.projectId.toString()
+        this.analysisExperimentDetails.projectId.toString(),
+        null
       )
       .subscribe((response) => {
         this.files = response;
@@ -415,6 +456,10 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   }
 
   saveExcipients() {
+    if (this.selectedItems.length === 0) {
+      this.toastr.error('Please select at least one excipient', 'Error');
+      return;
+    }
     this.analysisService
       .saveAnalysisExcipient(this.tableData)
       .subscribe((data) => {
@@ -434,12 +479,36 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       status: status,
       summary: summary ? summary : status
     }
+    if (this.analysisExperimentDetails && this.analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()) {
+      if (!this.userValidateForm.invalid) {
 
-    this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
-      this.toastr.success(data['data'], 'Success');
-      this.route.navigateByUrl(
-        `/exp-analysis/analysis-experiments`
-      );
-    });
+        const request = {
+          mailId: this.userValidateForm.value.userName || '',
+          password: this.userValidateForm.value.password || ''
+        };
+
+        this.loginService.login(request).subscribe(response => {
+          if (response) {
+            this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
+              this.toastr.success(data['data'], 'Success');
+              this.route.navigateByUrl(
+                `/exp-analysis/analysis-experiments`
+              );
+            });
+          }
+        });
+      } else {
+        this.userValidateForm.get('userName')?.markAsDirty();
+        this.userValidateForm.get('password')?.markAsDirty();
+      }
+    } else {
+      this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
+        this.toastr.success(data['data'], 'Success');
+        this.route.navigateByUrl(
+          `/exp-analysis/analysis-experiments`
+        );
+      });
+    }
+
   }
 }

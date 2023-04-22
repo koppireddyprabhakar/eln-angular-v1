@@ -225,8 +225,17 @@
 
         <div class="pb-3">
           <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="tests" [(ngModel)]="selectedItems"
-            (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)">
+            (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)" formControlName="selectedTests">
           </ng-multiselect-dropdown>
+          <div *ngIf="
+              testRequestForm.controls['selectedTests'].invalid &&
+              (testRequestForm.controls['selectedTests'].dirty ||
+                testRequestForm.controls['selectedTests'].touched) &&
+              testRequestForm.get('selectedTests')?.errors &&
+              testRequestForm.get('selectedTests')?.hasError('required') && saveClicked" 
+              class="text-danger">
+              Please select at least one test.
+        </div>
         </div>
         <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover pt-4">
           <thead>

@@ -78,6 +78,16 @@
             <label for="productCode" class="form-label">Product Code</label>
             <input type="text" class="form-control" id="productCode" formControlName="productCode" />
           </div>
+          <div *ngIf="
+              productForm.controls['productCode'].invalid &&
+              (productForm.controls['productCode'].dirty ||
+                productForm.controls['productCode'].touched) &&
+              productForm.get('productCode')?.errors &&
+              productForm.get('productCode')?.hasError('required')
+            " class="text-danger">
+            Please enter Product Code
+          </div>
+		  
         </form>
       </div>
       <div class="modal-footer">

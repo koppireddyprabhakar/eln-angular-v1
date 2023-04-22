@@ -126,11 +126,24 @@
                           <label for="inputEmail3" class="col-sm-3 col-form-label">Batch Number</label>
                           <div class="col-sm-9 pt-1">{{ batchNumber }}</div>
                         </div>
+
+                        <div class="row mb-3">
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Start Date</label>
+                          <div class="col-sm-9 pt-1">{{ (analysisExperimentDetails.insertDate ||
+                            startDate.toLocaleDateString())
+                            | date }}</div>
+                        </div>
+
+                        <div class="row mb-3">
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Analysis Submitted Date</label>
+                          <div class="col-sm-9 pt-1">{{ analysisExperimentDetails.analysisSubmitDate | date }}</div>
+                        </div>
+
                         <div class="row mb-3">
                           <label for="experimentName" class="col-sm-3 col-form-label">Analysis Name</label>
                           <div class="col-sm-9">
-                            <input type="text" class="form-control" id="experimentName" formControlName="experimentName"
-                              [readonly]="analysisID" />
+                            <input type="text" class="form-control" id="experimentName"
+                              formControlName="experimentName" />
                           </div>
                         </div>
                         <!-- <div class="row mb-3">
@@ -142,14 +155,48 @@
                         <div class="row mb-3">
                           <label for="batchSize" class="col-sm-3 col-form-label">Batch Size</label>
                           <div class="col-sm-9">
-                            <input type="text" class="form-control" id="batchSize" formControlName="batchSize"
-                              [readonly]="analysisID" />
+                            <input type="text" class="form-control" id="batchSize" formControlName="batchSize" />
                           </div>
                         </div>
                       </form>
-                      <div class="text-center" *ngIf="!analysisID">
+
+                      <!--
+  Upload attachmens start
+-->
+                      <div class="row g-3" style="padding-top: 14px;">
+                        <div class="row mb-3">
+                          <label for="inputNumber" class="col-sm-3 col-form-label">
+                            Upload</label>
+                          <div class="col-sm-9">
+                            <input class="form-control" type="file" id="formFile" (change)="attachFile($event)" />
+                          </div>
+                        </div>
+                        <div class="row mb-3" *ngIf="selectedFile">
+                          <label>Attachements</label>
+                          <span>
+                            <div class="file-container">
+                              <span class="file-list">{{ selectedFile.name |
+                                titlecase }}</span>
+                            </div>
+                          </span>
+                        </div>
+                        <div class="row mb-3">
+                          <label *ngIf="files.length > 0">Uploaded Attachements</label>
+                          <span *ngFor="let file of files">
+                            <div class="file-container" *ngIf="file.fromSummary === 'Y'">
+                              <span class="file-list" (click)="getFileContent(file.name, file.experimentId)">{{
+                                file.name | titlecase }}</span>
+                              <span class="align-right" (click)="removeAttachment(file)">Remove
+                                <i class="bi bi-trash-fill pointer"></i></span>
+                            </div>
+                          </span>
+                        </div>
+                      </div>
+                      <!-- End-->
+
+                      <div class="text-center" *ngIf="analysisID">
                         <button type="submit" class="btn btn-primary" (click)="saveSummary()">
-                          Start Experiment
+                          Update Experiment
                         </button>
                       </div>
 
@@ -204,8 +251,8 @@
             }" id="{{ dumm.value }}" role="tabpanel" [attr.aria-labelledby]="dumm + '-tab'">
             <ckeditor required ngDefaultControl [(ngModel)]="article[i].text" data="" name="text"></ckeditor>
             <!-- <ckeditor data="<p>Hello, world!</p>"></ckeditor> -->
-            <div class="text-center pt-3"
-              *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase()">
+            <div class="text-center pt-3" *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase() 
+              || analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase()">
               <button type="submit" class="btn btn-primary" (click)="saveTab(i, dumm.label)">
                 Save
               </button>
@@ -246,8 +293,8 @@
                 </tr>
               </tbody>
             </table>
-            <div class="text-center pt-3"
-              *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase()">
+            <div class="text-center pt-3" *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase() 
+              || analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase()">
               <button type="submit" class="btn btn-primary mt-3" (click)="saveExcipients()">
                 Save
               </button>
@@ -297,8 +344,8 @@
               </div>
             </div> -->
 
-            <div class="text-center pt-3"
-              *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase()">
+            <div class="text-center pt-3" *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase() 
+              || analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase()">
               <button type="submit" class="btn btn-primary mt-3" (click)="saveResults()">
                 Save
               </button>
@@ -309,8 +356,8 @@
               active: activeTab === 'attachments',
               show: activeTab === 'attachments'
             }" id="attachments" role="tabpanel" aria-labelledby="attachments-tab">
-            <div class="row mb-3"
-              *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase()">
+            <div class="row mb-3" *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase() 
+              || analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase()">
               <label for="inputNumber" class="col-sm-2 col-form-label">
                 Upload</label>
               <div class="col-sm-10">
@@ -329,8 +376,9 @@
               </span>
             </div>
 
-            <div class="text-center pt-3"
-              *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase()">
+            <div class="text-center pt-3" *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase() 
+              || analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase()">
+
               <button type="submit" class="btn btn-primary mt-3" (click)="updateAnalysisStatus('Complete')">
                 Complete Analysis
               </button>
@@ -338,6 +386,31 @@
 
             <div class="text-center pt-3"
               *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()">
+              <form class="row g-3" [formGroup]="userValidateForm">
+                <div class="row mb-3">
+                  <label for="userName" class="col-sm-2 col-form-label" style="width: 11% !important;">User
+                    Name</label>
+                  <div class="col-sm-3">
+                    <input type="text" class="form-control" id="userName" formControlName="userName" readonly />
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="password" class="col-sm-2 col-form-label" style="width: 11% !important;">Password</label>
+                  <div class="col-sm-3">
+                    <input type="password" class="form-control" id="password" formControlName="password" />
+                    <span *ngIf="userValidateForm.controls['password'].invalid &&
+                               (userValidateForm.controls['password'].dirty ||
+                               userValidateForm.controls['password'].touched) &&
+                               userValidateForm.get('password')?.errors &&
+                               userValidateForm.get('password')?.hasError('required')" class="text-danger">
+                      Please enter Password
+                    </span>
+                  </div>
+                </div>
+              </form>
+
+
               <button type="submit" class="btn btn-primary mt-3" (click)="updateAnalysisStatus('Analysis Submitted')">
                 Submit Analysis
               </button>

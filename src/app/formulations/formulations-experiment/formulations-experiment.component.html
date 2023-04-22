@@ -84,23 +84,35 @@
                           <td>{{ experiment.project.formulationName }}</td>
                           <td>{{ experiment.project.strength }}</td>
                           <td>{{ experiment.experimentStatus }}</td>
-                          <td >
+                          <td>
 
                             <i *ngIf="experiment.experimentStatus.toUpperCase() ===
-                             'Inprogress'.toUpperCase()" (click)="onRowClick(experiment)"
-                              class="editIcon ri-edit-2-fill">
+                             'Inprogress'.toUpperCase() || experiment.experimentStatus.toUpperCase() === 'Need Correction'.toUpperCase() "
+                              (click)="onRowClick(experiment)" class="editIcon ri-edit-2-fill">
                             </i>
                             <i *ngIf="experiment.experimentStatus.toUpperCase() !==
                              'Inprogress'.toUpperCase()" (click)="onRowClick(experiment)" class="viewIcon bi-eye-fill">
                             </i>
                             <i *ngIf="
-                                  (experiment.experimentStatus.toUpperCase() !==
-                                  'Inprogress'.toUpperCase()) &&  (experiment.experimentStatus.toUpperCase() !==
-                                  'Inreview'.toUpperCase())
+                                  experiment.experimentStatus.toUpperCase() ===
+                                  'Prereview Completed'.toUpperCase()
                                 " class="btn btn-link" (click)="addTrf(experiment)">
                               Add TRF
                             </i>
-                           
+
+                            <i *ngIf="experiment.experimentStatus.toUpperCase() ==='Complete'.toUpperCase()"
+                              class="btn btn-link" data-bs-toggle="modal" data-bs-target="#reviewSubmitForms"
+                              (click)="selectUser(experiment)">
+                              PreReview
+                            </i>
+
+                            <!-- <button type="button" *ngIf="
+                                experiment.experimentStatus.toUpperCase() ===
+                                'Complete'.toUpperCase()
+                              " class="btn btn-outline-primary" (click)="addTrf(experiment)">
+                              Add TRF
+                            </button> -->
+
                             &nbsp;&nbsp;
                             <i *ngIf="experiment && experiment.experimentStatus.toUpperCase() === 'Analysis Submitted'.toUpperCase() " data-bs-toggle="modal"
                             data-bs-target="#reviewSubmitForms" (click)="selectUser(experiment)"
@@ -126,7 +138,8 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Reviewer Form</h5>
+        <h5 class="modal-title">{{selectedUser && selectedUser['experimentStatus'].toUpperCase() ===
+          'Complete'.toUpperCase() ? 'PreReview Form' : 'Reviewer Form'}}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -155,7 +168,8 @@
           Close
         </button>
         <button type="button" class="btn btn-primary" (click)="submitReview()">
-          Submit Review
+          {{selectedUser && selectedUser['experimentStatus'].toUpperCase() ===
+          'Complete'.toUpperCase() ? 'Submit PreReview' : 'Submit Review'}}
         </button>
       </div>
     </div>

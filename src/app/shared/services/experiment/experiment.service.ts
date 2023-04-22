@@ -64,6 +64,12 @@ export class ExperimentService {
     const url = elnEndpointsConfig.endpoints['createExperiment'];
     return this.http.post<string>(url, experiment);
   }
+
+  updateExperiment(experiment) {
+    const url = elnEndpointsConfig.endpoints['updateExperiment'];
+    return this.http.put<string>(url, experiment);
+  }
+
   saveExcipient(excipient) {
     const url = elnEndpointsConfig.endpoints['saveExcipient'];
     return this.http.post<any>(url, excipient);

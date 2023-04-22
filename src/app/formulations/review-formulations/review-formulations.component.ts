@@ -101,6 +101,7 @@ export class ReviewFormulationsComponent implements OnInit {
   });
   reviewData: any = {};
   comments: string;
+  public prereviewStatus: string;
 
   constructor(
     private readonly projectService: ProjectService,
@@ -462,7 +463,7 @@ export class ReviewFormulationsComponent implements OnInit {
   processFile(event) {
     const selectedFile = event.target.files[0];
     this.analysisService
-      .saveAnalysisAttachment(selectedFile, this.experimentId, this.projectId)
+      .saveAnalysisAttachment(selectedFile, this.experimentId, this.projectId, null)
       .subscribe((response) => {
         this.files = response;
         this.toastr.success('File Uploaded Successfully', 'Success');
@@ -497,11 +498,19 @@ export class ReviewFormulationsComponent implements OnInit {
 
   updateExperimentReview() {
 
+    if (!(this.comments || this.comments.trim().length)) {
+      this.comments = '';
+      this.toastr.error('Please enter comments.', 'Error');
+      return;
+    }
+
     const reviewRequest = {
       experimentReviewId: this.reviewData['experimentReviewId'],
       reviewUserId: this.reviewData['reviewUserId'],
       experimentId: this.reviewData['experimentId'],
-      comments: this.comments
+      comments: this.comments,
+      reviewType: this.reviewData['reviewType'],
+      status: this.prereviewStatus
     };
 
     this.experimentService.updateExperimentReview(reviewRequest).subscribe((data) => {

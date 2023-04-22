@@ -83,6 +83,7 @@ export class CreateFormulationComponent implements OnInit {
     pagingType: 'full_numbers',
   };
 
+  public startDate = new Date();
 
   constructor(
     private readonly projectService: ProjectService,
@@ -341,6 +342,33 @@ export class CreateFormulationComponent implements OnInit {
     }
   }
 
+  updateSummary() {
+    const summary = {
+      experimentId: this.experimentDetails.expId,
+      projectId: this.project.projectId,
+      teamId: this.experimentDetails.teamId,
+      userId: this.experimentDetails.userId,
+      experimentName: this.summaryForm.get('experimentName')?.value,
+      experimentStatus: this.experimentDetails.experimentStatus,
+      summary: this.experimentDetails.summary,
+      batchSize: this.summaryForm.get('batchSize')?.value,
+      batchNumber: this.batchNumber,
+      status: 'Active'
+    };
+
+    if (!this.summaryForm.invalid) {
+      this.experimentService
+        .updateExperiment(summary)
+        .subscribe((experiment: any) => {
+          this.getExperimentDetails(this.experimentDetails.expId, 'firstLoad');
+          this.toastr.success('Experiment updated Successfully', 'Success');
+        });
+    } else {
+      this.summaryForm.get('experimentName')?.markAsDirty();
+      this.summaryForm.get('batchSize')?.markAsDirty();
+    }
+  }
+
   onItemSelect(item: any) {
     this.tableData = this.inwards
       .filter(({ excipientId: id1 }) =>
@@ -486,7 +514,10 @@ export class CreateFormulationComponent implements OnInit {
   }
 
   updateExperimentStatus() {
-    this.experimentService.updateExperimentStatus(this.experimentId, 'Complete').subscribe((data) => {
+    let status = "Complete";
+
+
+    this.experimentService.updateExperimentStatus(this.experimentId, status).subscribe((data) => {
       this.toastr.success(data['data'], 'Success');
 
       this.route.navigateByUrl(

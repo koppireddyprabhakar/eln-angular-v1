@@ -138,7 +138,9 @@ export class FormulationsExperimentComponent implements OnInit {
   submitReview() {
     const reviewObj = {
       reviewUserId: this.reviewSubmitForm.get('roleId')!.value,
-      experimentId: this.selectedUser['expId']
+      experimentId: this.selectedUser['expId'],
+      reviewType: this.selectedUser && this.selectedUser['experimentStatus'].toUpperCase() ===
+        'Complete'.toUpperCase() ? "PreReview" : "Review"
     };
     if (this.reviewSubmitForm.get('roleId')!.value) {
       this.globalService.showLoader();
