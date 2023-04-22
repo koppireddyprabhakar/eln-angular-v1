@@ -101,7 +101,8 @@
                             </i>
 
                             <i *ngIf="experiment.experimentStatus.toUpperCase() ==='Complete'.toUpperCase()"
-                              class="btn btn-link" (click)="onRowClick(experiment)">
+                              class="btn btn-link" data-bs-toggle="modal" data-bs-target="#reviewSubmitForms"
+                              (click)="selectUser(experiment)">
                               PreReview
                             </i>
 
@@ -150,7 +151,8 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Reviewer Form</h5>
+        <h5 class="modal-title">{{selectedUser && selectedUser['experimentStatus'].toUpperCase() ===
+          'Complete'.toUpperCase() ? 'PreReview Form' : 'Reviewer Form'}}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -179,7 +181,8 @@
           Close
         </button>
         <button type="button" class="btn btn-primary" (click)="submitReview()">
-          Submit Review
+          {{selectedUser && selectedUser['experimentStatus'].toUpperCase() ===
+          'Complete'.toUpperCase() ? 'Submit PreReview' : 'Submit Review'}}
         </button>
       </div>
     </div>

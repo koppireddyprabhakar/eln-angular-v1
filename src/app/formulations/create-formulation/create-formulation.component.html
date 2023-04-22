@@ -359,21 +359,7 @@
               </button>
             </div>
 
-            <!-- PREREVIEW BUTTON-->
-            <div
-              *ngIf="experimentDetails && experimentDetails.experimentStatus.toUpperCase() === 'Complete'.toUpperCase()">
-              <input type="radio" id="needCorrection" name="prereview" value="Need Correction"
-                [(ngModel)]="prereviewStatus">
-              <label for="needCorrection">Need Correction</label><br>
-              <input type="radio" id="createTRF" name="prereview" value="Create TRF" [(ngModel)]="prereviewStatus">
-              <label for="createTRF">Create TRF</label><br>
 
-              <!-- <span>
-                <div>
-                  <textarea class="form-control" style="height: 50px" [(ngModel)]="summary"></textarea>
-                </div>
-              </span> -->
-            </div>
             <div class="text-center pt-3">
               <button type="submit"
                 *ngIf="experimentDetails && experimentDetails.experimentStatus.toUpperCase() === 'Complete'.toUpperCase()"

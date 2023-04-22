@@ -108,6 +108,7 @@ export class ReviewExperimentsComponent implements OnInit {
     batchSize: ['' as any, [Validators.required]],
   });
   summary: string;
+  public reviewStatus: string;
 
   constructor(
     private readonly projectService: ProjectService,
@@ -371,11 +372,18 @@ export class ReviewExperimentsComponent implements OnInit {
     //   summary: this.summary ? this.summary : status
     // }
 
+    if (!this.summary || !this.summary.trim().length) {
+      this.summary = '';
+      this.toastr.error('Please enter comments.', 'Error');
+      return;
+    }
+
     const reviewRequest = {
       analysisReviewId: this.reviewData['analysisReviewId'],
       reviewUserId: this.reviewData['reviewUserId'],
       analysisId: this.reviewData['analysisId'],
-      comments: this.summary
+      comments: this.summary,
+      status: this.reviewStatus
     };
 
     this.analysisService.updateAnalysisReview(reviewRequest).subscribe((data) => {

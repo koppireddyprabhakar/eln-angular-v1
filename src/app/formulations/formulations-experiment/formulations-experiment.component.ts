@@ -58,6 +58,7 @@ export class FormulationsExperimentComponent implements OnInit {
 
   ngOnInit(): void {
     this.getExperiments();
+    this.getUsers();
   }
 
   ngAfterViewInit(): void {
@@ -137,7 +138,9 @@ export class FormulationsExperimentComponent implements OnInit {
   submitReview() {
     const reviewObj = {
       reviewUserId: this.reviewSubmitForm.get('roleId')!.value,
-      experimentId: this.selectedUser['expId']
+      experimentId: this.selectedUser['expId'],
+      reviewType: this.selectedUser && this.selectedUser['experimentStatus'].toUpperCase() ===
+        'Complete'.toUpperCase() ? "PreReview" : "Review"
     };
     if (this.reviewSubmitForm.get('roleId')!.value) {
       this.globalService.showLoader();
@@ -148,7 +151,7 @@ export class FormulationsExperimentComponent implements OnInit {
           this.toastr.success(data['data'], 'Success');
           this.globalService.hideLoader();
           this.route.navigateByUrl(
-            `/forms-page/new-formulation`
+            `/forms-page/experiments`
           );
         });
     } else {
