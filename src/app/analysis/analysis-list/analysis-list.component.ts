@@ -86,22 +86,21 @@ export class AnalysisListComponent implements OnInit {
 
   onCheckboxClick(selectCheckBoxArr) {
     console.log(selectCheckBoxArr.testRequestFormId);
-    if (
-      !this.selectedRows.some(
-        (e) => e.testRequestFormId === selectCheckBoxArr.testRequestFormId
-      )
-    ) {
+    if (!this.selectedRows.some((e) => e.testRequestFormId === selectCheckBoxArr.testRequestFormId)) {
       this.selectedRows.push(selectCheckBoxArr);
+       
       /* same result as above, but a different function return type */
     } else {
+      console.log("Else Exp");
       this.selectedRows = this.selectedRows.filter(
         (e) => e.testRequestFormId !== selectCheckBoxArr.testRequestFormId
       );
     }
-    var valueArr = this.selectedRows.map((item) => item.projectName);
+    var valueArr = this.selectedRows.map((item) => item.expId);
     const selectedTrfList = this.unchangedTrfList.filter(
       (list) => list.project.projectName === valueArr[0]
     );
+  
     this.projectId = this.selectedRows[0].project.projectId;
     this.isDuplicate = valueArr.every((arr) => valueArr[0] === arr);
     this.analysisService.syncTrf(this.selectedRows);
@@ -113,7 +112,7 @@ export class AnalysisListComponent implements OnInit {
         `/exp-analysis/dashboard?projectId=${this.projectId}`
       );
     } else {
-      this.toastr.warning('Please Select TRFs of same projects', 'Warning');
+      this.toastr.warning('Please Select Tests of same Experiment', 'Warning');
     }
   }
 }
