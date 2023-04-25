@@ -91,7 +91,7 @@
                               (click)="onRowClick(experiment)" class="editIcon ri-edit-2-fill">
                             </i>
                             <i *ngIf="experiment.experimentStatus.toUpperCase() !==
-                             'Inprogress'.toUpperCase()" (click)="onRowClick(experiment)" class="viewIcon bi-eye-fill">
+                             'Inprogress'.toUpperCase() && experiment.experimentStatus.toUpperCase() !== 'Need Correction'.toUpperCase()" (click)="onRowClick(experiment)" class="viewIcon bi-eye-fill">
                             </i>
                             <i *ngIf="
                                   experiment.experimentStatus.toUpperCase() ===

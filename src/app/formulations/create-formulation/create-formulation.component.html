@@ -190,7 +190,8 @@
                         </button>
                       </div>
 
-                      <div class="text-center" *ngIf="!experimentId">
+                      <div class="text-center" *ngIf="experimentId && experimentDetails && (experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase() || 
+                      experimentDetails.experimentStatus.toUpperCase() === 'Need Correction'.toUpperCase())">
                         <button type="submit" class="btn btn-primary" (click)="updateSummary()">
                           Update Experiment
                         </button>

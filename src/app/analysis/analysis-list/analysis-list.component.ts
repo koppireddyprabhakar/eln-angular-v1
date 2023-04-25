@@ -85,6 +85,7 @@ export class AnalysisListComponent implements OnInit {
   }
 
   onCheckboxClick(selectCheckBoxArr) {
+    console.log(selectCheckBoxArr.testRequestFormId);
     if (
       !this.selectedRows.some(
         (e) => e.testRequestFormId === selectCheckBoxArr.testRequestFormId
@@ -101,7 +102,6 @@ export class AnalysisListComponent implements OnInit {
     const selectedTrfList = this.unchangedTrfList.filter(
       (list) => list.project.projectName === valueArr[0]
     );
-    console.log(this.selectedRows[0].project.projectId);
     this.projectId = this.selectedRows[0].project.projectId;
     this.isDuplicate = valueArr.every((arr) => valueArr[0] === arr);
     this.analysisService.syncTrf(this.selectedRows);

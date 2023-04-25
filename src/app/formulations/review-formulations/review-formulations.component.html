@@ -227,11 +227,11 @@
                 </tr>
               </tbody>
             </table>
-            <div class="text-center pt-3">
+            <!-- <div class="text-center pt-3">
               <button type="submit" class="btn btn-primary mt-3" (click)="saveExcipients()">
                 Submit
               </button>
-            </div>
+            </div> -->
           </div>
 
           <div class="tab-pane fade" [ngClass]="{
@@ -260,12 +260,14 @@
               <div style="margin-bottom: 15px"
                 *ngIf="(experimentDetails && experimentDetails.experimentStatus.toUpperCase() === 'Inreview'.toUpperCase()) &&
                 (reviewData && reviewData.reviewType && reviewData.reviewType.toUpperCase() === 'PreReview'.toUpperCase())">
-                <input type="radio" id="needCorrection" name="prereview" value="Need Correction"
-                  [(ngModel)]="prereviewStatus">
-                <label for="needCorrection">Need Correction</label><br>
-                <input type="radio" id="createTRF" name="prereview" value="Prereview Completed"
-                  [(ngModel)]="prereviewStatus">
-                <label for="createTRF">Create TRF</label><br>
+                <div class="form-check"><input type="radio" id="needCorrection" name="prereview" value="Need Correction"
+                    class="form-check-input" [(ngModel)]="prereviewStatus">
+                  <label for="needCorrection" class="form-check-label">Need Correction</label>
+                </div>
+                <div class="form-check"><input type="radio" id="createTRF" name="prereview" value="Prereview Completed"
+                    class="form-check-input" [(ngModel)]="prereviewStatus">
+                  <label for="createTRF" class="form-check-label">Create TRF</label>
+                </div>
               </div>
               <span>
                 <div><label>Comments:</label>
