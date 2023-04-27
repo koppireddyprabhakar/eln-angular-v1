@@ -198,7 +198,9 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       .subscribe((attachments) => {
         this.files = attachments;
 
-        if (this.analysisExperimentDetails && this.analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()) {
+        if (this.analysisExperimentDetails && (this.analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()) ||
+          (this.analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase())
+          || (this.analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase())) {
           let userName = this.loginService.userDetails ? this.loginService.userDetails['mailId'] : '';
           this.userValidateForm = this.formBuilder.group({
             userName: [userName, [Validators.required]],
@@ -479,7 +481,9 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       status: status,
       summary: summary ? summary : status
     }
-    if (this.analysisExperimentDetails && this.analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()) {
+    if (this.analysisExperimentDetails && (this.analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()) ||
+      (this.analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase())
+      || (this.analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase())) {
       if (!this.userValidateForm.invalid) {
 
         const request = {

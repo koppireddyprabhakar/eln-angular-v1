@@ -84,6 +84,10 @@ export class CreateFormulationComponent implements OnInit {
   };
 
   public startDate = new Date();
+  userValidateForm = this.formBuilder.group({
+    userName: [''],
+    password: [''],
+  });
 
   constructor(
     private readonly projectService: ProjectService,
@@ -198,11 +202,23 @@ export class CreateFormulationComponent implements OnInit {
         console.log(details);
       });
   }
+
   getAttachments() {
     this.experimentService
       .getAttachmentsById(this.experimentId)
       .subscribe((attachments) => {
         this.files = attachments;
+
+        if (this.experimentDetails && (this.experimentDetails.experimentStatus.toUpperCase() === 'Review Completed'.toUpperCase() ||
+          this.experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase()
+          || this.experimentDetails.experimentStatus.toUpperCase() === 'Need Correction'.toUpperCase())) {
+          let userName = this.loginService.userDetails ? this.loginService.userDetails['mailId'] : '';
+          this.userValidateForm = this.formBuilder.group({
+            userName: [userName, [Validators.required]],
+            password: ['', [Validators.required]],
+          });
+        }
+
       });
   }
 
@@ -516,14 +532,35 @@ export class CreateFormulationComponent implements OnInit {
   updateExperimentStatus() {
     let status = "Complete";
 
+    if (this.experimentDetails && (this.experimentDetails.experimentStatus.toUpperCase() === 'Review Completed'.toUpperCase() ||
+      this.experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase()
+      || this.experimentDetails.experimentStatus.toUpperCase() === 'Need Correction'.toUpperCase())) {
+      if (!this.userValidateForm.invalid) {
 
-    this.experimentService.updateExperimentStatus(this.experimentId, status).subscribe((data) => {
-      this.toastr.success(data['data'], 'Success');
+        const request = {
+          mailId: this.userValidateForm.value.userName || '',
+          password: this.userValidateForm.value.password || ''
+        };
 
-      this.route.navigateByUrl(
-        `/forms-page/experiments`
-      );
-    });
+        this.loginService.login(request).subscribe(response => {
+          if (response) {
+            this.experimentService.updateExperimentStatus(this.experimentId, status).subscribe((data) => {
+              this.toastr.success(data['data'], 'Success');
+              this.route.navigateByUrl(`/forms-page/experiments`);
+            });
+          }
+        });
+      } else {
+        this.userValidateForm.get('userName')?.markAsDirty();
+        this.userValidateForm.get('password')?.markAsDirty();
+      }
+    } else {
+      this.experimentService.updateExperimentStatus(this.experimentId, status).subscribe((data) => {
+        this.toastr.success(data['data'], 'Success');
+        this.route.navigateByUrl(`/forms-page/experiments`);
+      });
+    }
+
   }
 
   getTestResults() {

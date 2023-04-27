@@ -376,16 +376,9 @@
               </span>
             </div>
 
-            <div class="text-center pt-3" *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase() 
-              || analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase()">
-
-              <button type="submit" class="btn btn-primary mt-3" (click)="updateAnalysisStatus('Complete')">
-                Complete Analysis
-              </button>
-            </div>
-
-            <div class="text-center pt-3"
-              *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()">
+            <div class="text-center pt-3" *ngIf="analysisExperimentDetails && (analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()) || 
+              (analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase()) 
+              || (analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase())">
               <form class="row g-3" [formGroup]="userValidateForm">
                 <div class="row mb-3">
                   <label for="userName" class="col-sm-2 col-form-label" style="width: 11% !important;">User
@@ -410,10 +403,20 @@
                 </div>
               </form>
 
-
-              <button type="submit" class="btn btn-primary mt-3" (click)="updateAnalysisStatus('Analysis Submitted')">
+              <button type="submit" class="btn btn-primary mt-3"
+                *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()"
+                (click)="updateAnalysisStatus('Analysis Submitted')">
                 Submit Analysis
               </button>
+
+              <div class="text-center pt-3" *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase() 
+              || analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase()">
+
+                <button type="submit" class="btn btn-primary mt-3" (click)="updateAnalysisStatus('Complete')">
+                  Complete Analysis
+                </button>
+              </div>
+
             </div>
           </div>
         </div>
