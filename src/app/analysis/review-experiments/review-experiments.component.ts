@@ -109,6 +109,10 @@ export class ReviewExperimentsComponent implements OnInit {
   });
   summary: string;
   public reviewStatus: string;
+  userValidateForm = this.formBuilder.group({
+    userName: [''],
+    password: [''],
+  });
 
   constructor(
     private readonly projectService: ProjectService,
@@ -315,6 +319,13 @@ export class ReviewExperimentsComponent implements OnInit {
       .getAnalysisReview(this.experimentId)
       .subscribe((details) => {
         this.reviewData = details;
+
+        let userName = this.loginService.userDetails ? this.loginService.userDetails['mailId'] : '';
+        this.userValidateForm = this.formBuilder.group({
+          userName: [userName, [Validators.required]],
+          password: ['', [Validators.required]],
+        });
+
       });
   }
 
@@ -378,18 +389,40 @@ export class ReviewExperimentsComponent implements OnInit {
       return;
     }
 
-    const reviewRequest = {
-      analysisReviewId: this.reviewData['analysisReviewId'],
-      reviewUserId: this.reviewData['reviewUserId'],
-      analysisId: this.reviewData['analysisId'],
-      comments: this.summary,
-      status: this.reviewStatus
-    };
 
-    this.analysisService.updateAnalysisReview(reviewRequest).subscribe((data) => {
-      this.toastr.success(data['data'], 'Success');
-      this.route.navigateByUrl(`/exp-analysis/list`);
-    });
+
+
+
+    if (!this.userValidateForm.invalid) {
+
+      const reviewRequest = {
+        analysisReviewId: this.reviewData['analysisReviewId'],
+        reviewUserId: this.reviewData['reviewUserId'],
+        analysisId: this.reviewData['analysisId'],
+        comments: this.summary,
+        status: this.reviewStatus
+      };
+
+      const request = {
+        mailId: this.userValidateForm.value.userName || '',
+        password: this.userValidateForm.value.password || ''
+      };
+
+      this.loginService.login(request).subscribe(response => {
+        if (response) {
+          this.analysisService.updateAnalysisReview(reviewRequest).subscribe((data) => {
+            this.toastr.success(data['data'], 'Success');
+            this.route.navigateByUrl(`/exp-analysis/list`);
+          });
+        }
+      });
+    } else {
+      this.userValidateForm.get('userName')?.markAsDirty();
+      this.userValidateForm.get('password')?.markAsDirty();
+    }
+
+
+
   }
 
   getAttachments() {

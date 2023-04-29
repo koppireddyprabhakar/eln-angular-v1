@@ -433,12 +433,37 @@
                 <label for="reviewCompleted">Complete Review</label><br>
               </div>
 
-              <span>
+              <span style="margin-bottom: 15px">
                 <div><label>Comments:</label>
                   <textarea class="form-control" label="Comments" style="height: 50px" [(ngModel)]="summary"></textarea>
                 </div>
               </span>
             </div>
+
+            <form class="row g-3" [formGroup]="userValidateForm">
+              <div class="row mb-3">
+                <label for="userName" class="col-sm-2 col-form-label" style="width: 11% !important;">User
+                  Name</label>
+                <div class="col-sm-3">
+                  <input type="text" class="form-control" id="userName" formControlName="userName" readonly />
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label for="password" class="col-sm-2 col-form-label" style="width: 11% !important;">Password</label>
+                <div class="col-sm-3">
+                  <input type="password" class="form-control" id="password" formControlName="password" />
+                  <span *ngIf="userValidateForm.controls['password'].invalid &&
+                           (userValidateForm.controls['password'].dirty ||
+                           userValidateForm.controls['password'].touched) &&
+                           userValidateForm.get('password')?.errors &&
+                           userValidateForm.get('password')?.hasError('required')" class="text-danger">
+                    Please enter Password
+                  </span>
+                </div>
+              </div>
+            </form>
+
             <div class="text-center pt-2">
               <button type="button" class="btn btn-primary mt-4" (click)="updateAnalysisStatus('Review Completed')">
                 Save

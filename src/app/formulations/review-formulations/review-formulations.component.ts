@@ -19,6 +19,7 @@ import { InwardManagementService } from '@app/shared/services/inward-management/
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { TestService } from '@app/shared/services/test/test.service';
 import { environment } from "src/environments/environment";
+import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 
 @Component({
   selector: 'app-review-formulations',
@@ -102,6 +103,10 @@ export class ReviewFormulationsComponent implements OnInit {
   reviewData: any = {};
   comments: string;
   public prereviewStatus: string;
+  userValidateForm = this.formBuilder.group({
+    userName: [''],
+    password: [''],
+  });
 
   constructor(
     private readonly projectService: ProjectService,
@@ -114,7 +119,8 @@ export class ReviewFormulationsComponent implements OnInit {
     private renderer2: Renderer2,
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private route: Router
+    private route: Router,
+    private loginService: LoginserviceService,
   ) { }
 
   ngOnInit(): void {
@@ -493,6 +499,13 @@ export class ReviewFormulationsComponent implements OnInit {
       .getExperimentReviewByExperimentId(this.experimentId)
       .subscribe((details) => {
         this.reviewData = details;
+
+        let userName = this.loginService.userDetails ? this.loginService.userDetails['mailId'] : '';
+        this.userValidateForm = this.formBuilder.group({
+          userName: [userName, [Validators.required]],
+          password: ['', [Validators.required]],
+        });
+
       });
   }
 
@@ -504,19 +517,35 @@ export class ReviewFormulationsComponent implements OnInit {
       return;
     }
 
-    const reviewRequest = {
-      experimentReviewId: this.reviewData['experimentReviewId'],
-      reviewUserId: this.reviewData['reviewUserId'],
-      experimentId: this.reviewData['experimentId'],
-      comments: this.comments,
-      reviewType: this.reviewData['reviewType'],
-      status: this.prereviewStatus
-    };
+    if (!this.userValidateForm.invalid) {
 
-    this.experimentService.updateExperimentReview(reviewRequest).subscribe((data) => {
-      this.toastr.success(data['data'], 'Success');
-      this.route.navigateByUrl(`/forms-page/review-formulations`);
-    });
+      const reviewRequest = {
+        experimentReviewId: this.reviewData['experimentReviewId'],
+        reviewUserId: this.reviewData['reviewUserId'],
+        experimentId: this.reviewData['experimentId'],
+        comments: this.comments,
+        reviewType: this.reviewData['reviewType'],
+        status: this.reviewData['reviewType'] === "PreReview" ? this.prereviewStatus : "Review Completed"
+      };
+
+      const request = {
+        mailId: this.userValidateForm.value.userName || '',
+        password: this.userValidateForm.value.password || ''
+      };
+
+      this.loginService.login(request).subscribe(response => {
+        if (response) {
+          this.experimentService.updateExperimentReview(reviewRequest).subscribe((data) => {
+            this.toastr.success(data['data'], 'Success');
+            this.route.navigateByUrl(`/forms-page/review-formulations`);
+          });
+        }
+      });
+    } else {
+      this.userValidateForm.get('userName')?.markAsDirty();
+      this.userValidateForm.get('password')?.markAsDirty();
+    }
+
   }
 
 }
