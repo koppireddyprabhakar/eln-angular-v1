@@ -30,6 +30,13 @@ export class UserService {
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
+  getCustomRoles(departmentName) {
+    const url = `${elnEndpointsConfig.endpoints['getCustomRoles']}?departmentName=${departmentName}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+ 
   saveUser(userData) {
     const url = elnEndpointsConfig.endpoints['createUser'];
     return this.http.post<string>(url, userData);

@@ -124,7 +124,7 @@
                         </div>
                         <div class="row mb-3">
                           <label for="inputEmail3" class="col-sm-3 col-form-label">Batch Number</label>
-                          <div class="col-sm-9 pt-1">{{ batchNumber }}</div>
+                          <div class="col-sm-9 pt-1">{{ analysisExperimentDetails.batchNumber }}</div>
                         </div>
 
                         <div class="row mb-3">
@@ -140,10 +140,10 @@
                         </div> -->
 
                         <div class="row mb-3">
-                          <label for="experimentName" class="col-sm-3 col-form-label">Analysis Name</label>
+                          <label for="experimentName" class="col-sm-3 col-form-label">Experiment Name</label>
                           <div class="col-sm-9">
                             <input type="text" class="form-control" id="experimentName"
-                              formControlName="experimentName" />
+                              formControlName="experimentName"  [(ngModel)]=" analysisExperimentDetails.analysisName" readonly/>
                           </div>
                         </div>
                         <!-- <div class="row mb-3">
@@ -155,7 +155,7 @@
                         <div class="row mb-3">
                           <label for="batchSize" class="col-sm-3 col-form-label">Batch Size</label>
                           <div class="col-sm-9">
-                            <input type="text" class="form-control" id="batchSize" formControlName="batchSize" />
+                            <input type="text" class="form-control" id="batchSize" formControlName="batchSize" [(ngModel)]=" analysisExperimentDetails.batchSize" readonly />
                           </div>
                         </div>
                       </form>

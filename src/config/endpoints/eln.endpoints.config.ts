@@ -101,7 +101,8 @@ export const elnEndpointsConfig: EndpointConfig = {
     validMail: `${environment.API_BASE_PATH}` + '/login/forgot-password',
     verifyOtp: `${environment.API_BASE_PATH}` + '/login/validate-otp',
     update: `${environment.API_BASE_PATH}` + '/login/updatePassword',
-    getTrfResultsByExperimentId: `${environment.API_BASE_PATH}` + '/experiment/get-test-requests-by-experiment-id'
+    getTrfResultsByExperimentId: `${environment.API_BASE_PATH}` + '/experiment/get-test-requests-by-experiment-id',
+    getCustomRoles: `${environment.API_BASE_PATH}` + '/analysis/get-users-with-custom-roles'
   },
 };
 

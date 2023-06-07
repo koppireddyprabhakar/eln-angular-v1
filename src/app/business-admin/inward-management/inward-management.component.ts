@@ -8,6 +8,7 @@ import {
 import { FormBuilder, Validators } from '@angular/forms';
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
+import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, finalize, takeWhile } from 'rxjs';
@@ -46,7 +47,8 @@ export class InwardManagementComponent implements OnInit {
     private readonly inwardService: InwardManagementService,
     private readonly formBuilder: FormBuilder,
     private readonly globalService: GlobalService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private loginService: LoginserviceService 
   ) { }
 
   ngOnInit(): void {
@@ -106,6 +108,8 @@ export class InwardManagementComponent implements OnInit {
       sourceName: this.inwardForm.get('sourceName')!.value,
       potency: this.inwardForm.get('potency')!.value,
       grade: this.inwardForm.get('grade')!.value,
+      insertUser: this.loginService.userDetails.userId
+
       // status: 'New',
     };
     if (this.inwardForm.valid) {

@@ -10,6 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 import { finalize, takeWhile } from 'rxjs';
 import { Departments, Teams, UserRoles } from '../user.interface';
 import { DosageService } from '@app/shared/services/dosage/dosage.service';
+import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 
 @Component({
   selector: 'app-add-user',
@@ -57,7 +58,9 @@ export class AddUserComponent implements OnInit {
     private route: Router,
     private activatedRoute: ActivatedRoute,
     private toastr: ToastrService,
-    private dosageService: DosageService
+    private dosageService: DosageService,
+    private loginService: LoginserviceService 
+
   ) { }
 
   ngOnInit(): void {

@@ -445,7 +445,11 @@ export class AnalysisNewExperimentComponent implements OnInit {
     const fileData = { ...file, analysisAttachmentId: file.attachmentId, projectId: this.projectId };
     this.analysisService
       .deleteAnalysisAttachment(fileData)
-      .subscribe((experimentDetails) => { });
+      .subscribe((experimentDetails) => {
+        if (experimentDetails['data'] === "Analysis Attachment Delete Successfully") {
+          this.getAttachments();
+        }
+       });
   }
 
   getExcipients() {

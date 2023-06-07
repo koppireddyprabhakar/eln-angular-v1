@@ -16,6 +16,7 @@ import { Dosages } from '../dosage/dosage.interface';
 import { Departments } from '../user/user.interface';
 import { TeamsList } from './team.interface';
 import { DataTableDirective } from 'angular-datatables';
+import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 
 @Component({
   selector: 'app-team',
@@ -49,8 +50,8 @@ export class TeamComponent implements OnInit {
     private readonly globalService: GlobalService,
     private readonly departmentService: DepartmentService,
     private readonly dosageService: DosageService,
-    private toastr: ToastrService
-  ) {}
+    private toastr: ToastrService,
+    private loginService: LoginserviceService  ) {}
 
   ngOnInit(): void {
     this.getTeams();
@@ -113,6 +114,8 @@ export class TeamComponent implements OnInit {
     const newTeam = {
       teamName: this.teamForm.get('teamName')!.value,
       deptId: this.teamForm.get('deptId')!.value,
+      insertUser: this.loginService.userDetails.userId,
+
       teamDosages: [
         {
           teamId:
@@ -190,7 +193,6 @@ export class TeamComponent implements OnInit {
   }
 
   deleteTeam() {
-    debugger
     this.selectedTeam = { ...this.selectedTeam, status: 'Inactive' };
     this.teamService
       .deleteTeam(this.selectedTeam)

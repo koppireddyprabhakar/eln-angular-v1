@@ -37,8 +37,9 @@
                   <td>{{ user.project.strength}}</td>
                   <td>{{ user.status }}</td>
                   <td>
-                    <i data-bs-toggle="modal" data-bs-target="#productForms" (click)="onRowClick(user)"
-                      class="editIcon ri-edit-2-fill"></i>
+                    <i class="btn btn-link" (click)="onRowClick(user)">
+                      Review
+                    </i>
                   </td>
                 </tr>
               </tbody>

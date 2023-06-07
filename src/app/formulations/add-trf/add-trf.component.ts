@@ -10,6 +10,7 @@ import { ExperimentService } from '@app/shared/services/experiment/experiment.se
 import { TestService } from '@app/shared/services/test/test.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { DataTableDirective } from 'angular-datatables';
+import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 
 @Component({
   selector: 'app-add-trf',
@@ -84,7 +85,8 @@ export class AddTrfComponent implements OnInit {
     private readonly experimentService: ExperimentService,
     private readonly testService: TestService,
     private activatedRoute: ActivatedRoute,
-    private formulationService: FormulationsService
+    private formulationService: FormulationsService,
+    private loginservice:LoginserviceService
   ) { }
 
   ngOnInit(): void {
@@ -238,6 +240,7 @@ export class AddTrfComponent implements OnInit {
       manufacturingDate: manDate,
       expireDate: expiryDate,
       trfTestResults: this.tableData,
+      insertUser: this.loginservice.userDetails.userId
     };
     this.saveClicked = true;
     if (!this.testRequestForm.invalid) {

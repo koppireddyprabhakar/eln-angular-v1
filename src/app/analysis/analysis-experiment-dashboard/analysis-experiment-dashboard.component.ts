@@ -331,7 +331,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       experimentName: this.summaryForm.get('experimentName')?.value,
       summary: this.analysisExperimentDetails.summary,
       batchSize: this.summaryForm.get('batchSize')?.value,
-      batchNumber: this.batchNumber,
+      batchNumber: this.analysisExperimentDetails.batchNumber,
       analysisDetailsList: this.analysisExperimentDetails.analysisDetails,
     };
 
@@ -475,7 +475,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   }
 
   updateAnalysisStatus(status: string, summary?: string) {
-
     let analysisRequest = {
       analysisId: this.analysisID,
       status: status,

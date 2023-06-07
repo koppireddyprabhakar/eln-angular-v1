@@ -29,9 +29,10 @@
                 <th>Product Code</th>
                 <th>Project ID</th>
                 <th>Dosage Name</th>
+                <th>Creation Date</th>
                 <th>Formulation Type</th>
                 <th>Strength</th>
-                <th>Formulation Department</th>
+                <!-- <th>Formulation Department</th> -->
                 <th>Status</th>
               </tr>
             </thead>
@@ -43,9 +44,10 @@
                 <td>{{ project.productCode }}</td>
                 <td>{{ project.projectId }}</td>
                 <td>{{ project.dosageName }}</td>
+                <td>{{ project.insertDate  | date }}</td>
                 <td>{{ project.formulationName }}</td>
                 <td>{{ project.strength }}</td>
-                <td>{{ project.formulationName }}</td>
+                <!-- <td>{{ project.formulationName }}</td> -->
                 <td>{{ project.status }}</td>
               </tr>
             </tbody>
@@ -61,6 +63,7 @@
                 <th>Product Name</th>
                 <th>Product Code</th>
                 <th>Dosage Name</th>
+                <th>Creation Date</th>
                 <th>Formulation Type</th>
                 <th>Strength</th>
                 <th>Status</th>
@@ -74,6 +77,7 @@
                 <td>{{ project.productName }}</td>
                 <td>{{ project.productCode }}</td>
                 <td>{{ project.dosageName }}</td>
+                <td>{{ project.insertDate  | date }}</td>
                 <td>{{ project.formulationName }}</td>
                 <td>{{ project.strength }}</td>
                 <td>{{ project.status }}</td>

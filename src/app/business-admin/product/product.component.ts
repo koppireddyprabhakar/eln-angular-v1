@@ -18,6 +18,7 @@ import { ToastrService } from 'ngx-toastr';
 import { finalize, Subject, takeWhile } from 'rxjs';
 import { Products } from './product.interface';
 import { DataTableDirective } from 'angular-datatables';
+import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 
 @Component({
   selector: 'app-product',
@@ -48,7 +49,9 @@ export class ProductComponent implements OnInit {
     private readonly productService: ProductService,
     private readonly formBuilder: FormBuilder,
     private readonly globalService: GlobalService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private loginService: LoginserviceService 
+
   ) { }
 
   ngOnInit(): void {
@@ -102,6 +105,8 @@ export class ProductComponent implements OnInit {
     const newProduct = {
       productName: this.productForm.get('productName')!.value,
       productCode: this.productForm.get('productCode')!.value,
+      insertUser: this.loginService.userDetails.userId
+
     };
     if (this.productForm.get('productName')!.value) {
       this.globalService.showLoader();

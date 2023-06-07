@@ -6,6 +6,7 @@ import { Products } from '@app/business-admin/product/product.interface';
 import { TeamsList } from '@app/business-admin/team/team.interface';
 import { DosageService } from '@app/shared/services/dosage/dosage.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
+import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { MarketService } from '@app/shared/services/market/market.service';
 import { ProductService } from '@app/shared/services/product/product.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
@@ -48,6 +49,7 @@ export class AddProjectManagementComponent implements OnInit {
     productCode:['' as any],
   });
 
+
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly globalService: GlobalService,
@@ -58,7 +60,8 @@ export class AddProjectManagementComponent implements OnInit {
     private readonly projectService: ProjectService,
     private route: Router,
     private activatedRoute: ActivatedRoute,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private loginService: LoginserviceService
   ) {}
 
   ngOnInit(): void {
@@ -88,6 +91,7 @@ export class AddProjectManagementComponent implements OnInit {
       teamName: this.teamName,
       marketId: this.projectForm.get('market')?.value,
       markertName: this.marketName,
+      insertUser: this.loginService.userDetails.userId,
       projectTeam: {
         teamId: this.projectForm.get('team')?.value,
       },

@@ -31,7 +31,7 @@ export class FormulationsExperimentComponent implements OnInit {
   selectedUser: object;
   users: any = [];
   reviewSubmitForm = this.formBuilder.group({
-    roleId: ['', [Validators.required]]
+    userId: ['', [Validators.required]]
   });
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions = {
@@ -132,17 +132,17 @@ export class FormulationsExperimentComponent implements OnInit {
 
   selectUser(user) {
     this.selectedUser = user;
-    this.reviewSubmitForm.patchValue({ roleId: user.roleId });
+   // this.reviewSubmitForm.patchValue({ roleId: user.roleId });
   }
 
   submitReview() {
     const reviewObj = {
-      reviewUserId: this.reviewSubmitForm.get('roleId')!.value,
+      reviewUserId: this.reviewSubmitForm.get('userId')!.value,
       experimentId: this.selectedUser['expId'],
       reviewType: this.selectedUser && this.selectedUser['experimentStatus'].toUpperCase() ===
         'Complete'.toUpperCase() ? "PreReview" : "Review"
     };
-    if (this.reviewSubmitForm.get('roleId')!.value) {
+    if (this.reviewSubmitForm.get('userId')!.value) {
       this.globalService.showLoader();
 
       this.experimentService
@@ -155,14 +155,15 @@ export class FormulationsExperimentComponent implements OnInit {
           );
         });
     } else {
-      this.reviewSubmitForm.get('roleId')?.markAsDirty();
+      this.reviewSubmitForm.get('userId')?.markAsDirty();
     }
   }
+  
 
   getUsers() {
     this.globalService.showLoader();
     this.userService
-      .getUserDetailsByRoleId(2, 'FORMULATION')
+      .getCustomRoles('FORMULATION')
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((users) => {
         const usersList = users.map((user: any) => ({
@@ -173,5 +174,5 @@ export class FormulationsExperimentComponent implements OnInit {
         this.globalService.hideLoader();
       });
   }
-
+  
 }

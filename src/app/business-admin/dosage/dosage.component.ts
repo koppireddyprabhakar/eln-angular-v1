@@ -18,6 +18,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Subject, finalize, takeWhile } from 'rxjs';
 import { Dosages } from './dosage.interface';
 import { DataTableDirective } from 'angular-datatables';
+import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 
 @Component({
   selector: 'app-dosage',
@@ -50,7 +51,8 @@ export class DosageComponent implements OnInit {
     private readonly dosageService: DosageService,
     private readonly formBuilder: FormBuilder,
     private readonly globalService: GlobalService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private loginService: LoginserviceService 
   ) { }
 
   ngOnInit(): void {
@@ -118,12 +120,15 @@ export class DosageComponent implements OnInit {
       return;
     }
 
+    
+
     if (this.dosageForm.get('dosageName')!.value) {
       this.globalService.showLoader();
       if (Object.keys(this.selectedDosage).length === 0) {
         const newDosage: any = {
           dosageName: this.dosageForm.get('dosageName')!.value,
           formulations: this.formulations.value,
+          insertUser: this.loginService.userDetails.userId,
         };
         this.dosageService
           .saveDosage(newDosage)

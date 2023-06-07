@@ -37,6 +37,7 @@
                           <!-- <th>Project ID</th> -->
                           <th>Formulation</th>
                           <th>Strength</th>
+                          <th>Creation Date</th>
                           <th>Status</th>
                           <th>Options</th>
                         </tr>
@@ -50,6 +51,7 @@
                           <!-- <td>{{ experiment.projectId }}</td> -->
                           <td>{{ experiment.project.formulationName }}</td>
                           <td>{{ experiment.project.strength }}</td>
+                          <td>{{ experiment.insertDate}}</td>
                           <td>{{ experiment.experimentStatus }}</td>
                           <td><i (click)="viewExperiment(experiment)" class="viewIcon bi-eye-fill">
                             </i></td>
@@ -70,6 +72,7 @@
                           <!-- <th>Project ID</th> -->
                           <th>Formulation</th>
                           <th>Strength</th>
+                          <th>Creation Date</th>
                           <th>Status</th>
                           <th>Options</th>
                         </tr>
@@ -83,6 +86,7 @@
                           <!-- <td>{{ experiment.projectId }}</td> -->
                           <td>{{ experiment.project.formulationName }}</td>
                           <td>{{ experiment.project.strength }}</td>
+                          <td>{{ experiment.insertDate}}</td>
                           <td>{{ experiment.experimentStatus }}</td>
                           <td>
 
@@ -144,18 +148,18 @@
       <div class="modal-body">
         <form class="row g-3" [formGroup]="reviewSubmitForm">
           <div class="col-12">
-            <label for="roleId" class="form-label">Reviewer Name</label>
-            <select class="form-select" aria-label="Role Id" formControlName="roleId">
-              <option *ngFor="let userRole of users" [ngValue]="userRole.roleId">
+            <label for="userId" class="form-label">Reviewer Name</label>
+            <select class="form-select" aria-label="Role Id" formControlName="userId">
+              <option *ngFor="let userRole of users" [ngValue]="userRole.userId">
                 {{ userRole.firstName + " " + userRole.lastName | titlecase }}
               </option>
             </select>
             <span *ngIf="
-                reviewSubmitForm.controls['roleId'].invalid &&
-                (reviewSubmitForm.controls['roleId'].dirty ||
-                  reviewSubmitForm.controls['roleId'].touched) &&
-                reviewSubmitForm.get('roleId')?.errors &&
-                reviewSubmitForm.get('roleId')?.hasError('required')
+                reviewSubmitForm.controls['userId'].invalid &&
+                (reviewSubmitForm.controls['userId'].dirty ||
+                  reviewSubmitForm.controls['userId'].touched) &&
+                reviewSubmitForm.get('userId')?.errors &&
+                reviewSubmitForm.get('userId')?.hasError('required')
               " class="text-danger">
               Please select Reviewer Name
             </span>

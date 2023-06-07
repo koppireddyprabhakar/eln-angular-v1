@@ -23,10 +23,10 @@ export class AppComponent {
     s.src = '../assets/js/main.js';
     this.elementRef.nativeElement.appendChild(s);
     this._router.events.subscribe((event: any) => {
-      const url: string = event.url;
-      if (url) {
-        const routeUrls: Array<string> = ['','/', '/app-forget', '/app-update-password', '/app-otp-verification'];
-        this.hideHeaderAndSideBar = routeUrls.includes(url) ? true : false;
+      if (event instanceof NavigationEnd) {
+        const url: string = event.urlAfterRedirects.split('?')[0];
+        const routeUrls: Array<string> = ['', '/', '/app-forget', '/app-update-password', '/app-otp-verification'];
+        this.hideHeaderAndSideBar = routeUrls.includes(url);
       }
     });
   }

@@ -11,6 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Dosages } from '@app/business-admin/dosage/dosage.interface';
 import { DosageService } from '@app/shared/services/dosage/dosage.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
+import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { TestService } from '@app/shared/services/test/test.service';
 import { ToastrService } from 'ngx-toastr';
 import { takeWhile } from 'rxjs';
@@ -25,11 +26,13 @@ export class AddTestComponent implements OnInit, OnDestroy {
   testForm = this.formBuilder.group({
     testRow: this.formBuilder.array([this.addTests()]),
   });
+
   editForm = false;
   subscribeFlag = true;
   testRow = this.testForm.get('testRow') as FormArray;
   testId: number;
   selectedTest: any = {};
+ 
 
   constructor(
     private readonly testService: TestService,
@@ -37,7 +40,9 @@ export class AddTestComponent implements OnInit, OnDestroy {
     private readonly formBuilder: FormBuilder,
     private route: Router,
     private activatedRoute: ActivatedRoute,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private loginService: LoginserviceService
+
   ) {}
 
   ngOnInit(): void {
@@ -98,6 +103,7 @@ export class AddTestComponent implements OnInit, OnDestroy {
       testName: val.testName,
       description: val.description,
       dosageTests: [{ dosageId: val.dosageId || null }],
+      insertUser: this.loginService.userDetails.userId
     }));
     const isInvalidForm = this.testForm.value.testRow?.some(
       (row) => !row.testName

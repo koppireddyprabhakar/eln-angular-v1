@@ -131,8 +131,7 @@
                         <div class="row mb-3">
                           <label for="inputEmail3" class="col-sm-3 col-form-label">Start Date</label>
                           <div class="col-sm-9 pt-1">{{ (experimentDetails &&experimentDetails.insertDate ||
-                            startDate.toLocaleDateString())
-                            | date:'medium'  }}</div>
+                            startDate | date:'medium') }}</div>
                         </div>
 
                         <!-- <div class="row mb-3">

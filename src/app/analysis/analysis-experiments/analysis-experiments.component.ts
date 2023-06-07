@@ -17,6 +17,7 @@ import { FormulationsService } from '@app/shared/services/formulations/formulati
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { DataTableDirective } from 'angular-datatables';
 import { UserService } from '@app/shared/services/user/user.service';
+import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 
 @Component({
   selector: 'app-analysis-experiments',
@@ -33,6 +34,7 @@ export class AnalysisExperimentsComponent implements OnInit {
   myExpColumns: any;
   users: any = [];
   options: any = { rowClickEvent: true };
+  userId: any;
 
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions = {
@@ -45,7 +47,7 @@ export class AnalysisExperimentsComponent implements OnInit {
 
   selectedUser: object;
   reviewSubmitForm = this.formBuilder.group({
-    roleId: ['', [Validators.required]]
+    userId: ['', [Validators.required]]
   });
 
   @ViewChild('expActionTpl', { static: true }) expActionTpl: TemplateRef<any>;
@@ -57,7 +59,8 @@ export class AnalysisExperimentsComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     private readonly userService: UserService,
     private readonly toastr: ToastrService,
-    private route: Router
+    private route: Router,
+    private loginService: LoginserviceService 
   ) { }
 
   ngOnInit(): void {
@@ -151,15 +154,16 @@ export class AnalysisExperimentsComponent implements OnInit {
 
   selectUser(user) {
     this.selectedUser = user;
-    this.reviewSubmitForm.patchValue({ roleId: user.roleId });
+   // this.reviewSubmitForm.patchValue({ roleId: user.userId });
   }
 
   submitReview() {
     const reviewObj = {
-      reviewUserId: this.reviewSubmitForm.get('roleId')!.value,
-      analysisId: this.selectedUser['analysisId']
+      reviewUserId: this.reviewSubmitForm.get('userId')!.value,
+      analysisId: this.selectedUser['analysisId'],
+      userId: this.loginService.userDetails.userId
     };
-    if (this.reviewSubmitForm.get('roleId')!.value) {
+    if (this.reviewSubmitForm.get('userId')!.value) {
       this.globalService.showLoader();
 
       this.analysisService
@@ -179,7 +183,7 @@ export class AnalysisExperimentsComponent implements OnInit {
   getUsers() {
     this.globalService.showLoader();
     this.userService
-      .getUserDetailsByRoleId(2, 'ANALYSIS')
+      .getCustomRoles('ANALYSIS')
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((users) => {
         const usersList = users.map((user: any) => ({
