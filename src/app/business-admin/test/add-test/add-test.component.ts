@@ -1,20 +1,18 @@
 import {
   Component,
-  EventEmitter,
-  Input,
   OnDestroy,
-  OnInit,
-  Output,
+  OnInit
 } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Dosages } from '@app/business-admin/dosage/dosage.interface';
-import { DosageService } from '@app/shared/services/dosage/dosage.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
-import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
-import { TestService } from '@app/shared/services/test/test.service';
 import { ToastrService } from 'ngx-toastr';
 import { takeWhile } from 'rxjs';
+
+import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
+import { TestService } from '@app/shared/services/test/test.service';
+import { DosageService } from '@app/shared/services/dosage/dosage.service';
+import { Dosages } from '@app/business-admin/dosage/dosage.interface';
 
 @Component({
   selector: 'app-add-test',
@@ -22,6 +20,7 @@ import { takeWhile } from 'rxjs';
   styleUrls: ['./add-test.component.css'],
 })
 export class AddTestComponent implements OnInit, OnDestroy {
+
   dosagesList: Dosages[] = [];
   testForm = this.formBuilder.group({
     testRow: this.formBuilder.array([this.addTests()]),
@@ -32,7 +31,7 @@ export class AddTestComponent implements OnInit, OnDestroy {
   testRow = this.testForm.get('testRow') as FormArray;
   testId: number;
   selectedTest: any = {};
- 
+  tests: any = [];
 
   constructor(
     private readonly testService: TestService,
@@ -41,9 +40,10 @@ export class AddTestComponent implements OnInit, OnDestroy {
     private route: Router,
     private activatedRoute: ActivatedRoute,
     private toastr: ToastrService,
-    private loginService: LoginserviceService
+    private loginService: LoginserviceService,
+    private readonly globalService: GlobalService,
 
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.testId = this.activatedRoute.snapshot.queryParams['testId'];
@@ -52,8 +52,24 @@ export class AddTestComponent implements OnInit, OnDestroy {
       this.editForm = true;
     }
     this.getDosages();
+    this.getTests();
   }
-  closeTest(){
+
+  getTests() {
+    this.globalService.showLoader();
+    this.testService
+      .getTests()
+      .pipe(takeWhile(() => this.subscribeFlag))
+      .subscribe((tests) => {
+        const testList = tests.map((test: any) => ({
+          ...test,
+        }));
+        this.tests = testList;
+        this.globalService.hideLoader();
+      });
+  }
+
+  closeTest() {
     this.route.navigate(['/business-admin/test/']);
   }
 
@@ -89,8 +105,8 @@ export class AddTestComponent implements OnInit, OnDestroy {
     return this.formBuilder.group({
       testName: ['', [Validators.required]],
       description: ['', [Validators.required]],
-     // dosageId: [null],
-     dosageId:['', [Validators.required]]
+      // dosageId: [null],
+      dosageId: ['', [Validators.required]]
     });
   }
 
@@ -99,19 +115,26 @@ export class AddTestComponent implements OnInit, OnDestroy {
   }
 
   saveTest() {
-    const newDosage: any = this.testForm.value.testRow?.map((val: any) => ({
+    const newTests: any = this.testForm.value.testRow?.map((val: any) => ({
       testName: val.testName,
       description: val.description,
       dosageTests: [{ dosageId: val.dosageId || null }],
       insertUser: this.loginService.userDetails.userId
     }));
+
     const isInvalidForm = this.testForm.value.testRow?.some(
       (row) => !row.testName
     );
+
     if (!isInvalidForm) {
       if (!this.editForm) {
+
+        if (this.isTestExist(newTests)) {
+          return;
+        }
+
         this.testService
-          .saveTest(newDosage)
+          .saveTest(newTests)
           .pipe(takeWhile(() => this.subscribeFlag))
           .subscribe(() => {
             this.route.navigate(['/business-admin/test/']);
@@ -142,6 +165,22 @@ export class AddTestComponent implements OnInit, OnDestroy {
         this.testRow.at(index).get('dosageId')?.markAsDirty();
       });
     }
+  }
+
+  isTestExist(newTests) {
+
+    for (let i = 0; i < this.tests.length; i++) {
+      for (let j = 0; j < newTests.length; j++) {
+        if (this.tests[i].testName === newTests[j].testName) {
+
+          this.toastr.error('Same name -' + newTests[j].testName + '- already exist.', 'Error');
+
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   deleteTest(index) {
