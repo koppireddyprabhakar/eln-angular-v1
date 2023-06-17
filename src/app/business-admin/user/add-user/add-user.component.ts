@@ -45,7 +45,8 @@ export class AddUserComponent implements OnInit {
     city: [''],
     zipCode: [''],
     teamId: ['', [Validators.required]],
-    certifiedReviewer: [''],
+    certifiedReviewer: false,
+    coaPermission:false
   });
 
   constructor(
@@ -94,6 +95,8 @@ export class AddUserComponent implements OnInit {
       zipCode: this.userForm.get('zipCode')?.value,
       userTeams: [{ teamId: this.userForm.get('teamId')?.value, userId: this.userId ? this.userId : null }],
       certifiedReviewer: this.userForm.get('certifiedReviewer')?.value,
+      coaPermission: this.userForm.get('coaPermission')?.value,
+
     };
     console.log("newUser=", newUser);
     if (!this.userForm.invalid) {
@@ -196,6 +199,8 @@ export class AddUserComponent implements OnInit {
           zipCode: selectedUser.zipCode,
           teamId: selectedUser.teamId,
           certifiedReviewer: selectedUser.certifiedReviewer,
+          coaPermission: selectedUser.coaPermission,
+
         });
       });
   }

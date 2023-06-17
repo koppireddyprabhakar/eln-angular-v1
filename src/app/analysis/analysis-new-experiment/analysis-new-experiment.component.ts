@@ -399,6 +399,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
       expireDate: expiryDate,
       trfTestResults: this.tableTestData,
       analysisId: this.experimentId,
+      insertUser: this.loginService.userDetails.userId
     };
 
     console.log(this.testRequestForm.get('expiryDate')?.value);

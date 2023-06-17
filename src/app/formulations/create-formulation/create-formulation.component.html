@@ -149,7 +149,7 @@
                           <label for="experimentName" class="col-sm-3 col-form-label">Experiment Name</label>
                           <div class="col-sm-9">
                             <input type="text" class="form-control" id="experimentName"
-                              formControlName="experimentName" />
+                              formControlName="experimentName"  [readonly]="experimentId"/>
                             <span *ngIf="
                               summaryForm.controls['experimentName'].invalid &&
                                (summaryForm.controls['experimentName'].dirty ||
