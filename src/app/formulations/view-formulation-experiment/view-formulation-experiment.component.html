@@ -15,7 +15,7 @@
                             [disabled]="!isCreatedExperiment" data-bs-toggle="tab"
                             [attr.data-bs-target]="'#' + dumm.value" type="button" role="tab"
                             [ngClass]="{ active: activeTab === dumm.value }" [attr.aria-controls]="dumm.value"
-                            aria-selected="true">
+                            aria-selected="true" (click)="search(dumm.value, i)">
                             {{ dumm.label }}
                             <i class="bi bi-pencil-square" *ngIf="isCreatedExperiment"></i>
                             <!-- <span >Edit</span> -->

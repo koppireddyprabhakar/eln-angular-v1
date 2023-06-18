@@ -41,9 +41,7 @@ export class AddTestComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private toastr: ToastrService,
     private loginService: LoginserviceService,
-    private readonly globalService: GlobalService,
-
-  ) { }
+    private readonly globalService: GlobalService) { }
 
   ngOnInit(): void {
     this.testId = this.activatedRoute.snapshot.queryParams['testId'];

@@ -51,7 +51,7 @@ export class TeamComponent implements OnInit {
     private readonly departmentService: DepartmentService,
     private readonly dosageService: DosageService,
     private toastr: ToastrService,
-    private loginService: LoginserviceService  ) {}
+    private loginService: LoginserviceService) { }
 
   ngOnInit(): void {
     this.getTeams();
@@ -127,8 +127,12 @@ export class TeamComponent implements OnInit {
       ],
     };
     if (!this.teamForm.invalid) {
-      this.globalService.showLoader();
       if (Object.keys(this.selectedTeam).length === 0) {
+
+        if (this.isTeamExist(newTeam)) {
+          return;
+        }
+        this.globalService.showLoader();
         this.teamService
           .saveTeam(newTeam)
           .pipe(
@@ -212,4 +216,17 @@ export class TeamComponent implements OnInit {
   ngOnDestroy(): void {
     this.subscribeFlag = false;
   }
+
+  isTeamExist(newTeam) {
+
+    for (let i = 0; i < this.teams.length; i++) {
+      if (this.teams[i].teamName === newTeam.teamName) {
+        this.toastr.error('Same name -' + newTeam.teamName + '- already exist.', 'Error');
+        return true;
+      }
+    }
+
+    return false;
+  }
+
 }

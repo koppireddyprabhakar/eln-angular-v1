@@ -244,8 +244,8 @@
                 <div class="file-container">
                   <span class="file-list" (click)="getFileContent(file.name, file.experimentId)">{{ file.name |
                     titlecase }}</span>
-                  <span class="align-right" (click)="removeAttachment(file)">Remove <i
-                      class="bi bi-trash-fill pointer"></i></span>
+                  <!-- <span class="align-right" (click)="removeAttachment(file)">Remove <i
+                      class="bi bi-trash-fill pointer"></i></span> -->
                 </div>
               </span>
             </div>
@@ -271,8 +271,10 @@
               </div>
               <span style="margin-bottom: 15px">
                 <div><label>Comments:</label>
-                  <textarea class="form-control" style="height: 50px" [(ngModel)]="comments" [(ngModel)]="comments" name="comments" required #commentsInput="ngModel"></textarea>
-                  <div *ngIf="commentsInput.invalid && commentsInput.errors?.['required'] && submitClicked" class="text-danger">
+                  <textarea class="form-control" style="height: 50px" [(ngModel)]="comments" [(ngModel)]="comments"
+                    name="comments" required #commentsInput="ngModel"></textarea>
+                  <div *ngIf="commentsInput.invalid && commentsInput.errors?.['required'] && submitClicked"
+                    class="text-danger">
                     Please enter comments.
                   </div>
                 </div>

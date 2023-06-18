@@ -263,7 +263,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
           this.savedSelectedItems =
             analysisExperimentDetails.analysisExcipients;
           this.tableData = analysisExperimentDetails.analysisExcipients;
-          this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          this.dtElement && this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
             // Destroy the table first
             dtInstance.destroy();
             // Call the dtTrigger to rerender again
