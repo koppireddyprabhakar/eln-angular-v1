@@ -290,14 +290,14 @@ export class ViewFormulationExperimentComponent implements OnInit {
       .subscribe((tests) => {
         this.tests = tests;
 
-        this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
-          dtElement.dtInstance.then((dtInstance: any) => {
-            if (dtInstance.table().node().id === 'second-table') {
-              dtInstance.destroy();
-              this.dtResultTrigger.next(this.tests);
-            }
-          });
-        });
+        // this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+        //   dtElement.dtInstance.then((dtInstance: any) => {
+        //     if (dtInstance.table().node().id === 'second-table') {
+        //       dtInstance.destroy();
+        //       this.dtResultTrigger.next(this.tests);
+        //     }
+        //   });
+        // });
 
         this.globalService.hideLoader();
       });
@@ -305,6 +305,14 @@ export class ViewFormulationExperimentComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.subscribeFlag = false;
+  }
+
+  checkStatus(status: string) {
+    let formulationStatuses = ["Analysis Submitted", "Inreview", "Review Completed", "COA Generated", "Archive"];
+
+    let obj = formulationStatuses.find(f => f.toLocaleUpperCase() === status);
+
+    return formulationStatuses.find(f => f.toLocaleUpperCase() === status) ? true : false;
   }
 
 }

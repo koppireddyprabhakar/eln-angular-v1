@@ -571,17 +571,23 @@ export class CreateFormulationComponent implements OnInit {
       .subscribe((tests) => {
         this.tests = tests;
 
-        this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
-          dtElement.dtInstance.then((dtInstance: any) => {
-            if (dtInstance.table().node().id === 'second-table') {
-              dtInstance.destroy();
-              this.dtResultTrigger.next(this.tests);
-            }
-          });
-        });
+        // this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+        //   dtElement.dtInstance.then((dtInstance: any) => {
+        //     if (dtInstance.table().node().id === 'second-table') {
+        //       dtInstance.destroy();
+        //       this.dtResultTrigger.next(this.tests);
+        //     }
+        //   });
+        // });
 
         this.globalService.hideLoader();
       });
+  }
+
+  checkStatus(status: string) {
+    let formulationStatuses = ["Analysis Submitted", "Inreview", "Review Completed", "COA Generated", "Archive"];
+
+    return formulationStatuses.find(f => f.toLocaleUpperCase() === status) ? true : false;
   }
 
 }

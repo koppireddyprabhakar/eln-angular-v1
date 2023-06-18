@@ -29,7 +29,7 @@
                             Excipients/Chemicals
                         </button>
                     </li>
-                    <li *ngIf="experimentDetails && experimentDetails.experimentStatus.toUpperCase() === 'Analysis Submitted'.toUpperCase()"
+                    <li *ngIf="experimentDetails && checkStatus(experimentDetails.experimentStatus.toUpperCase())"
                         class="nav-item" role="presentation">
                         <button class="nav-link" id="results-tab" [disabled]="!isCreatedExperiment" data-bs-toggle="tab"
                             data-bs-target="#results" (click)="search('results', -1)"
@@ -165,7 +165,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div *ngIf="experimentDetails && experimentDetails.experimentStatus.toUpperCase() === 'Analysis Submitted'.toUpperCase()"
+                    <div *ngIf="experimentDetails && checkStatus(experimentDetails.experimentStatus.toUpperCase())"
                         class="tab-pane fade" [ngClass]="{
                         active: activeTab === 'results',
                         show: activeTab === 'results'

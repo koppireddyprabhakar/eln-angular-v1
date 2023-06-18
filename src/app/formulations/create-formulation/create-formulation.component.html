@@ -31,8 +31,7 @@
               Excipients/Chemicals
             </button>
           </li>
-          <li
-            *ngIf="experimentDetails && (experimentDetails.experimentStatus.toUpperCase() === 'Analysis Submitted'.toUpperCase())"
+          <li *ngIf="experimentDetails && (checkStatus(experimentDetails.experimentStatus.toUpperCase()))"
             class="nav-item" role="presentation">
             <button class="nav-link" id="results-tab" [disabled]="!isCreatedExperiment" data-bs-toggle="tab"
               data-bs-target="#results" (click)="search('results', -1)" [ngClass]="{ active: activeTab === 'results' }"
@@ -148,8 +147,8 @@
                         <div class="row mb-3">
                           <label for="experimentName" class="col-sm-3 col-form-label">Experiment Name</label>
                           <div class="col-sm-9">
-                            <input type="text" class="form-control" id="experimentName"
-                              formControlName="experimentName"  [readonly]="experimentId"/>
+                            <input type="text" class="form-control" id="experimentName" formControlName="experimentName"
+                              [readonly]="experimentId" />
                             <span *ngIf="
                               summaryForm.controls['experimentName'].invalid &&
                                (summaryForm.controls['experimentName'].dirty ||
@@ -299,8 +298,7 @@
               </button>
             </div>
           </div>
-          <div
-            *ngIf="experimentDetails && (experimentDetails.experimentStatus.toUpperCase() === 'Analysis Submitted'.toUpperCase())"
+          <div *ngIf="experimentDetails && checkStatus(experimentDetails.experimentStatus.toUpperCase())"
             class="tab-pane fade" [ngClass]="{
                         active: activeTab === 'results',
                         show: activeTab === 'results'

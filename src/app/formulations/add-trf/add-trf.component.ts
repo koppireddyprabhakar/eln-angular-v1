@@ -74,6 +74,11 @@ export class AddTrfComponent implements OnInit {
   testRequestRow = this.testRequestForm.get('testRequestRow') as FormArray;
   testId = 0;
 
+  userValidateForm = this.formBuilder.group({
+    userName: [''],
+    password: [''],
+  });
+
   // public testRequestRow: FormArray;
 
   constructor(
@@ -86,7 +91,7 @@ export class AddTrfComponent implements OnInit {
     private readonly testService: TestService,
     private activatedRoute: ActivatedRoute,
     private formulationService: FormulationsService,
-    private loginservice:LoginserviceService
+    private loginservice: LoginserviceService
   ) { }
 
   ngOnInit(): void {
@@ -159,6 +164,14 @@ export class AddTrfComponent implements OnInit {
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((tests) => {
         this.tests = tests;
+
+        let userName = this.loginservice.userDetails ? this.loginservice.userDetails['mailId'] : '';
+
+        this.userValidateForm = this.formBuilder.group({
+          userName: [userName, [Validators.required]],
+          password: ['', [Validators.required]],
+        });
+
         this.globalService.hideLoader();
       });
   }
@@ -226,37 +239,50 @@ export class AddTrfComponent implements OnInit {
     const manDate = this.testRequestForm.get('manufacturingDate')?.value || '';
     const expiryDate = this.testRequestForm.get('expiryDate')?.value || '';
 
-    const newTestRequest = {
-      status: 'string',
-      expId: Number(this.expId),
-      testRequestFormStatus: 'active',
-      trfNumber: this.testRequestForm.get('testRequestId')?.value || '',
-      condition: this.testRequestForm.get('condition')?.value || '',
-      stage: this.testRequestForm.get('stage')?.value || '',
-      packaging: this.testRequestForm.get('packaging')?.value || '',
-      labelClaim: this.testRequestForm.get('labelClaim')?.value || '',
-      quantity: this.testRequestForm.get('quantity')?.value || 0,
-      purpose: this.testRequestForm.get('purpose')?.value,
-      manufacturingDate: manDate,
-      expireDate: expiryDate,
-      trfTestResults: this.tableData,
-      insertUser: this.loginservice.userDetails.userId
-    };
-    this.saveClicked = true;
-    if (!this.testRequestForm.invalid) {
+    if (!this.userValidateForm.invalid && !this.testRequestForm.invalid) {
+
+      const request = {
+        mailId: this.userValidateForm.value.userName || '',
+        password: this.userValidateForm.value.password || ''
+      };
+
+      const newTestRequest = {
+        status: 'string',
+        expId: Number(this.expId),
+        testRequestFormStatus: 'active',
+        trfNumber: this.testRequestForm.get('testRequestId')?.value || '',
+        condition: this.testRequestForm.get('condition')?.value || '',
+        stage: this.testRequestForm.get('stage')?.value || '',
+        packaging: this.testRequestForm.get('packaging')?.value || '',
+        labelClaim: this.testRequestForm.get('labelClaim')?.value || '',
+        quantity: this.testRequestForm.get('quantity')?.value || 0,
+        purpose: this.testRequestForm.get('purpose')?.value,
+        manufacturingDate: manDate,
+        expireDate: expiryDate,
+        trfTestResults: this.tableData,
+        insertUser: this.loginservice.userDetails.userId
+      };
+      this.saveClicked = true;
+
       this.globalService.showLoader();
-      this.trfService
-        .createTestRequestForm(newTestRequest)
-        .pipe(
-          takeWhile(() => this.subscribeFlag),
-          finalize(() => {
-            this.globalService.hideLoader();
-          })
-        )
-        .subscribe(() => {
-          this.toastr.success('Test has been added succesfully', 'Success');
-          this.route.navigate(['/forms-page/experiments']);
-        });
+
+      this.loginservice.login(request).subscribe(response => {
+        if (response) {
+          this.trfService
+            .createTestRequestForm(newTestRequest)
+            .pipe(
+              takeWhile(() => this.subscribeFlag),
+              finalize(() => {
+                this.globalService.hideLoader();
+              })
+            )
+            .subscribe(() => {
+              this.toastr.success('Test has been added succesfully', 'Success');
+              this.route.navigate(['/forms-page/experiments']);
+            });
+        }
+      });
+
     } else {
       this.testRequestForm.get('testRequestId')?.markAsDirty();
       this.testRequestForm.get('department')?.markAsDirty();
@@ -274,6 +300,7 @@ export class AddTrfComponent implements OnInit {
       this.testRequestForm.get('productCode')?.markAsDirty();
       this.testRequestForm.get('condition')?.markAsDirty();
       this.testRequestForm.get('purpose')?.markAsDirty();
+      this.userValidateForm.get('password')?.markAsDirty();
     }
   }
 

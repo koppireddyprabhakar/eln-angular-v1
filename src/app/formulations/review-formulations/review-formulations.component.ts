@@ -107,7 +107,7 @@ export class ReviewFormulationsComponent implements OnInit {
     userName: [''],
     password: [''],
   });
-  submitClicked : boolean = false;
+  submitClicked: boolean = false;
 
   constructor(
     private readonly projectService: ProjectService,
@@ -514,7 +514,7 @@ export class ReviewFormulationsComponent implements OnInit {
 
     this.submitClicked = true;
 
-    if (!(this.comments || this.comments.trim().length)) {
+    if (this.comments === undefined || this.comments.trim().length === 0) {
       this.comments = '';
       this.toastr.error('Please enter comments.', 'Error');
       return;
