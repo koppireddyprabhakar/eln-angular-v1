@@ -389,10 +389,6 @@ export class ReviewExperimentsComponent implements OnInit {
       return;
     }
 
-
-
-
-
     if (!this.userValidateForm.invalid) {
 
       const reviewRequest = {
@@ -412,7 +408,7 @@ export class ReviewExperimentsComponent implements OnInit {
         if (response) {
           this.analysisService.updateAnalysisReview(reviewRequest).subscribe((data) => {
             this.toastr.success(data['data'], 'Success');
-            this.route.navigateByUrl(`/exp-analysis/list`);
+            this.route.navigateByUrl(`/exp-analysis/review-list`);
           });
         }
       });

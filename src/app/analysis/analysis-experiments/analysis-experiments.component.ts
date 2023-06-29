@@ -60,7 +60,7 @@ export class AnalysisExperimentsComponent implements OnInit {
     private readonly userService: UserService,
     private readonly toastr: ToastrService,
     private route: Router,
-    private loginService: LoginserviceService 
+    private loginService: LoginserviceService
   ) { }
 
   ngOnInit(): void {
@@ -154,7 +154,7 @@ export class AnalysisExperimentsComponent implements OnInit {
 
   selectUser(user) {
     this.selectedUser = user;
-   // this.reviewSubmitForm.patchValue({ roleId: user.userId });
+    // this.reviewSubmitForm.patchValue({ roleId: user.userId });
   }
 
   submitReview() {
@@ -171,9 +171,10 @@ export class AnalysisExperimentsComponent implements OnInit {
         .subscribe((data) => {
           this.toastr.success(data['data'], 'Success');
           this.globalService.hideLoader();
-          this.route.navigateByUrl(
-            `/exp-analysis/analysis-experiments`
-          );
+          this.getMyExperiments();
+          // this.route.navigateByUrl(
+          //   `/exp-analysis/analysis-experiments`
+          // );
         });
     } else {
       this.reviewSubmitForm.get('roleId')?.markAsDirty();

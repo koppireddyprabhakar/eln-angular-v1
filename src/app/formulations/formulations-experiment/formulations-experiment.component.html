@@ -167,10 +167,10 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" #closeButton>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           Close
         </button>
-        <button type="button" class="btn btn-primary" (click)="submitReview()">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="submitReview()" id="closeModal">
           {{selectedUser && selectedUser['experimentStatus'].toUpperCase() ===
           'Complete'.toUpperCase() ? 'Submit PreReview' : 'Submit Review'}}
         </button>

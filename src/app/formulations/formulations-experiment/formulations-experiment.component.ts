@@ -4,7 +4,7 @@ import {
   QueryList,
   TemplateRef,
   ViewChild,
-  ViewChildren,
+  ViewChildren
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
@@ -132,7 +132,7 @@ export class FormulationsExperimentComponent implements OnInit {
 
   selectUser(user) {
     this.selectedUser = user;
-   // this.reviewSubmitForm.patchValue({ roleId: user.roleId });
+    // this.reviewSubmitForm.patchValue({ roleId: user.roleId });
   }
 
   submitReview() {
@@ -144,21 +144,21 @@ export class FormulationsExperimentComponent implements OnInit {
     };
     if (this.reviewSubmitForm.get('userId')!.value) {
       this.globalService.showLoader();
-
       this.experimentService
         .createExperimentReview(reviewObj)
         .subscribe((data) => {
           this.toastr.success(data['data'], 'Success');
           this.globalService.hideLoader();
-          this.route.navigateByUrl(
-            `/forms-page/experiments`
-          );
+          this.getMyExperiments();
+          // this.route.navigateByUrl(
+          //   `/forms-page/experiments`
+          // );
         });
     } else {
       this.reviewSubmitForm.get('userId')?.markAsDirty();
     }
   }
-  
+
 
   getUsers() {
     this.globalService.showLoader();
@@ -174,5 +174,5 @@ export class FormulationsExperimentComponent implements OnInit {
         this.globalService.hideLoader();
       });
   }
-  
+
 }
