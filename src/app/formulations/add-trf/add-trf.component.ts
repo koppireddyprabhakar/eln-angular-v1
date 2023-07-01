@@ -262,7 +262,7 @@ export class AddTrfComponent implements OnInit {
         trfTestResults: this.tableData,
         insertUser: this.loginservice.userDetails.userId
       };
-      this.saveClicked = true;
+     
 
       this.globalService.showLoader();
 
@@ -284,6 +284,7 @@ export class AddTrfComponent implements OnInit {
       });
 
     } else {
+      this.saveClicked = true;
       this.testRequestForm.get('testRequestId')?.markAsDirty();
       this.testRequestForm.get('department')?.markAsDirty();
       this.testRequestForm.get('dosageForm')?.markAsDirty();

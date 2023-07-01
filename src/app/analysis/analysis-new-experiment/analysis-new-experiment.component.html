@@ -125,6 +125,11 @@
                           </div>
                         </div>
                         <div class="row mb-3">
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Start Date</label>
+                          <div class="col-sm-9 pt-1">{{ (experimentDetails && experimentDetails.expStartDate ||
+                            startDate | date:'medium') }}</div>
+                        </div>
+                        <div class="row mb-3">
                           <label for="inputEmail3" class="col-sm-3 col-form-label">Batch Number</label>
                           <div class="col-sm-9 pt-1">{{ batchNumber }}</div>
                         </div>
@@ -238,7 +243,7 @@
             }" id="contact" role="tabpanel" aria-labelledby="contact-tab">
             <div class="pt-3 pb-3">
               <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="inwards" [(ngModel)]="selectedItems"
-                (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)">
+                (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)"  (onDeSelectAll)="onDeSelectAll()">
               </ng-multiselect-dropdown>
             </div>
             <table id="first-table" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
@@ -504,6 +509,7 @@
                   <td class="options-width">
                     <textarea class="form-control" style="height: 50px" [(ngModel)]="tableTestData[rowIndex].testResult"
                       (change)="resultChange($event.target, rowIndex)"></textarea>
+                      <div *ngIf="!user.testResult && isSaveClicked" class="text-danger">Please enter details.</div>
                   </td>
                 </tr>
               </tbody>

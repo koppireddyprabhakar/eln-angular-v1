@@ -73,6 +73,8 @@ export class AnalysisDashbaordComponent implements OnInit {
 
   public selectedFile: any;
   public startDate = new Date();
+  isSaveClicked: boolean = false;
+  resultsData: any;
 
   constructor(
     private readonly projectService: ProjectService,
@@ -366,6 +368,19 @@ export class AnalysisDashbaordComponent implements OnInit {
       this.dtTrigger.next(this.tableData);
     });
   }
+  onDeSelectAll() {
+    this.deselect
+    this.tableData = [];
+  
+    if (this.dtElement) {
+      this.dtElement.dtInstance.then((dtInstance: any) => {
+        dtInstance.clear();
+        dtInstance.draw();
+      });
+    }
+  }
+  
+  
 
   isValid(index: number): boolean {
     return !this.article[index].text || this.article[index].text.trim().length === 0;
@@ -394,7 +409,7 @@ export class AnalysisDashbaordComponent implements OnInit {
     };
     this.analysisService.saveAnalysisDetails(tabValue).subscribe((data) => {
       this.toastr.success(
-        `Experiment detail ${this.dummyTabs[index].id ? 'updated' : 'created'
+        `Experiment details ${this.dummyTabs[index].id ? 'updated' : 'created'
         } successfully`,
         'Success'
       );
@@ -453,14 +468,24 @@ export class AnalysisDashbaordComponent implements OnInit {
     console.log(this.selectedTrfs);
   }
 
+  // saveResults() {
+  //   this.analysisService.saveTrfResults(this.selectedTrfs).subscribe((data) => {
+  //     this.toastr.success(data.data, 'Success');
+  //   });
+  // }
   saveResults() {
+    this.isSaveClicked = true;
+    const hasEmptyResults = this.resultsData.some(result => !result.testResult);
+    if (hasEmptyResults) {
+      this.toastr.error('Please enter a value for all resultsss.', 'Error');
+      return; // Stop further execution
+    }
     this.analysisService.saveTrfResults(this.selectedTrfs).subscribe((data) => {
       this.toastr.success(data.data, 'Success');
     });
   }
 
   updateAnalysisStatus(status: string, summary?: string) {
-
     let analysisRequest = {
       analysisId: this.experimentId,
       status: status,

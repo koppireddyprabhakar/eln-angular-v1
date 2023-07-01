@@ -426,16 +426,23 @@
 
               <div style="margin-bottom: 15px">
                 <input type="radio" id="needCorrection" name="review" value="Need Correction"
-                  [(ngModel)]="reviewStatus">
+                  [(ngModel)]="reviewStatus" (change)="isOptionSelected = true" required>
                 <label for="needCorrection">Need Correction</label><br>
                 <input type="radio" id="reviewCompleted" name="review" value="Review Completed"
-                  [(ngModel)]="reviewStatus">
+                  [(ngModel)]="reviewStatus" (change)="isOptionSelected = true" required>
                 <label for="reviewCompleted">Complete Review</label><br>
               </div>
-
+              <div *ngIf="!isOptionSelected && submitClicked" class="text-danger">
+                Please select an option.
+              </div>
+              
               <span style="margin-bottom: 15px">
                 <div><label>Comments:</label>
-                  <textarea class="form-control" label="Comments" style="height: 50px" [(ngModel)]="summary"></textarea>
+                  <textarea class="form-control" label="Comments" style="height: 50px" [(ngModel)]="summary" name="comments" required #commentsInput="ngModel"></textarea>
+                  <div *ngIf="commentsInput.invalid && commentsInput.errors?.['required'] && submitClicked"
+                  class="text-danger">
+                  Please enter comments.
+                </div>
                 </div>
               </span>
             </div>

@@ -113,6 +113,8 @@ export class ReviewExperimentsComponent implements OnInit {
     userName: [''],
     password: [''],
   });
+  submitClicked: boolean = false;
+  isOptionSelected: boolean = false;
 
   constructor(
     private readonly projectService: ProjectService,
@@ -382,7 +384,10 @@ export class ReviewExperimentsComponent implements OnInit {
     //   status: status,
     //   summary: this.summary ? this.summary : status
     // }
-
+    this.submitClicked = true; 
+    if (!this.isOptionSelected) {
+      return;
+    }
     if (!this.summary || !this.summary.trim().length) {
       this.summary = '';
       this.toastr.error('Please enter comments.', 'Error');

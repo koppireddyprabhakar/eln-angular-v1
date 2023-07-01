@@ -67,6 +67,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     experimentName: ['', [Validators.required]],
     batchSize: ['' as any, [Validators.required]],
   });
+  isSaveClicked: boolean = false;
 
   userValidateForm = this.formBuilder.group({
     userName: [''],
@@ -394,6 +395,20 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       this.dtTrigger.next(this.tableData);
     });
   }
+  onDeSelectAll() {
+    this.tableData = [];
+  
+    if (this.dtElement) {
+      this.dtElement.dtInstance.then((dtInstance: any) => {
+        dtInstance.clear();
+        dtInstance.draw();
+      });
+    }
+  }
+  
+  
+  
+
   isValid(index: number): boolean {
     return !this.article[index].text || this.article[index].text.trim().length === 0;
   }
@@ -414,7 +429,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     };
 
     this.analysisService.saveAnalysisDetails(tabValue).subscribe((data) => {
-      this.toastr.success(`Experiment detail updated successfully`, 'Success');
+      this.toastr.success(`Experiment details updated successfully`, 'Success');
       this.getAnalysisExperimentDetails(this.analysisID);
     });
   }
@@ -465,10 +480,16 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     this.analysisService
       .saveAnalysisExcipient(this.tableData)
       .subscribe((data) => {
-        this.toastr.success(data.data, 'Success');
+        this.toastr.success('Excipients Updated successfully', 'Success');
       });
   }
   saveResults() {
+    this.isSaveClicked = true;
+    const hasEmptyResults = this.resultsData.some(result => !result.testResult);
+    if (hasEmptyResults) {
+      this.toastr.error('Please enter a value for all results.', 'Error');
+      return; // Stop further execution
+    }
     this.analysisService.saveTrfResults(this.resultsData).subscribe((data) => {
       this.toastr.success(data.data, 'Success');
     });
@@ -493,7 +514,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
         this.loginService.login(request).subscribe(response => {
           if (response) {
             this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
-              this.toastr.success(data['data'], 'Success');
+              this.toastr.success('Analysis Details Submitted succssfully', 'Success');
               this.route.navigateByUrl(
                 `/exp-analysis/analysis-experiments`
               );

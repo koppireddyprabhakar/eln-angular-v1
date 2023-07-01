@@ -91,11 +91,19 @@ export class InwardManagementComponent implements OnInit {
     let formExcipientName = this.inwardForm['controls'] && this.inwardForm['controls']['excipientsName'].value ? this.inwardForm['controls']['excipientsName'].value : '';
     let batchNumber = this.inwardForm['controls'] && this.inwardForm['controls']['batchNumber'].value ? this.inwardForm['controls']['batchNumber'].value : '';
 
+    // let isObjectExists = this.inwards.find(i =>
+    //   (i.excipientsName + i.batchNo) === (formExcipientName + batchNumber)
+    // );
     let isObjectExists = this.inwards.find(i =>
-      (i.excipientsName + i.batchNo) === (formExcipientName + batchNumber)
+      i.excipientsName === formExcipientName && i.batchNo === batchNumber && i !== this.selectedInward
     );
+    
 
-    if (isObjectExists) {
+    // if (isObjectExists) {
+    //   this.showErrorMsg = true;
+    //   return;
+    // }
+    if (isObjectExists && (Object.keys(this.selectedInward).length === 0 || (this.selectedInward.excipientsName !== formExcipientName || this.selectedInward.batchNo !== batchNumber))) {
       this.showErrorMsg = true;
       return;
     }

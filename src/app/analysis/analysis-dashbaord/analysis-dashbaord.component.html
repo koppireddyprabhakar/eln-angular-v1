@@ -249,7 +249,7 @@
             }" id="contact" role="tabpanel" aria-labelledby="contact-tab">
             <div class="pt-3 pb-3">
               <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="inwards" [(ngModel)]="selectedItems"
-                (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)">
+                (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)" (onDeSelectAll)="onDeSelectAll()">
               </ng-multiselect-dropdown>
             </div>
 
@@ -317,6 +317,7 @@
                   <label for="inputPassword" class="col-sm-2 col-form-label">Textarea</label> -->
                   <textarea class="form-control" style="height: 50px" ngModel="{{ trf.testResult }}"
                     (change)="trfResultChange($event.target, i)"></textarea>
+                    <div *ngIf="!trf.testResult && isSaveClicked" class="text-danger">Please enter details.</div>
                 </div>
               </div>
             </div>

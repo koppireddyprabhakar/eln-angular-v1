@@ -349,7 +349,7 @@ export class CreateFormulationComponent implements OnInit {
           this.getExperimentDetails(experiment.data, 'firstLoad');
           // redirect to 2
 
-          this.toastr.success('Experiment Started Successfully', 'Success');
+          this.toastr.success('Formulation Experiment Started Successfully', 'Success');
         });
     }
     else {
@@ -377,7 +377,7 @@ export class CreateFormulationComponent implements OnInit {
         .updateExperiment(summary)
         .subscribe((experiment: any) => {
           this.getExperimentDetails(this.experimentDetails.expId, 'firstLoad');
-          this.toastr.success('Experiment updated Successfully', 'Success');
+          this.toastr.success('Formulation Experiment updated Successfully', 'Success');
         });
     } else {
       this.summaryForm.get('experimentName')?.markAsDirty();
@@ -443,10 +443,22 @@ export class CreateFormulationComponent implements OnInit {
         if (dtInstance.table().node().id === 'first-table') {
           dtInstance.destroy();
           this.dtTrigger.next(this.tableData);
+        }       
+      });
+    });
+  }
+  onDeSelectAll() {
+    this.tableData = []; 
+    this.dtElements.forEach((dtElement: DataTableDirective) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'first-table') {
+          dtInstance.clear();
+          dtInstance.draw();
         }
       });
     });
   }
+  
 
   isValid(index: number): boolean {
     return !this.article[index].text || this.article[index].text.trim().length === 0;
@@ -545,7 +557,7 @@ export class CreateFormulationComponent implements OnInit {
         this.loginService.login(request).subscribe(response => {
           if (response) {
             this.experimentService.updateExperimentStatus(this.experimentId, status).subscribe((data) => {
-              this.toastr.success(data['data'], 'Success');
+              this.toastr.success('Formulation Experiment Completed Successfully ', 'Success');
               this.route.navigateByUrl(`/forms-page/experiments`);
             });
           }

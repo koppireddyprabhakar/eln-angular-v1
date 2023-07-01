@@ -147,7 +147,7 @@ export class FormulationsExperimentComponent implements OnInit {
       this.experimentService
         .createExperimentReview(reviewObj)
         .subscribe((data) => {
-          this.toastr.success(data['data'], 'Success');
+          this.toastr.success('PreReview form submit successfully', 'Success');
           this.globalService.hideLoader();
           this.getMyExperiments();
           // this.route.navigateByUrl(

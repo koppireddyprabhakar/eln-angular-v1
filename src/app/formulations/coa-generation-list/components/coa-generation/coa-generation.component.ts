@@ -162,7 +162,7 @@ export class CoaGenerationComponent implements OnInit {
         this.testRequest['stage'] = test.stage;
         this.testRequest['packaging'] = test.packaging;
         this.testRequest['labelClaim'] = test.labelClaim;
-        this.testRequest['quantity'] = test.quantit;
+        this.testRequest['quantity'] = test.quantity;
 
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
           // Destroy the table first

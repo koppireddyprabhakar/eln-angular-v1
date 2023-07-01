@@ -56,7 +56,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
     expiryDate: ['', [Validators.required]],
     testRequestRow: this.formBuilder.array([this.addTests()]),
   });
-
+  isSaveClicked: boolean = false;
   inputValue: string;
   projectId: number;
   project: any;
@@ -106,6 +106,8 @@ export class AnalysisNewExperimentComponent implements OnInit {
   dtMyProjectsOptions: DataTables.Settings = {
     pagingType: 'full_numbers',
   };
+
+  public startDate = new Date();
 
   constructor(
     private readonly projectService: ProjectService,
@@ -386,6 +388,13 @@ export class AnalysisNewExperimentComponent implements OnInit {
   saveTestRequestForm() {
     const manDate = this.testRequestForm.get('manufacturingDate')?.value || '';
     const expiryDate = this.testRequestForm.get('expiryDate')?.value || '';
+    const hasEmptyResults = this.tableTestData.some(user => !user.testResult);
+
+    if (hasEmptyResults) {
+      this.isSaveClicked = true;
+      this.toastr.error('Please enter details in results', 'Error');
+      return;
+    }
 
     let newTestRequest = {
       status: 'string',
@@ -401,8 +410,10 @@ export class AnalysisNewExperimentComponent implements OnInit {
       analysisId: this.experimentId,
       insertUser: this.loginService.userDetails.userId
     };
-
-    console.log(this.testRequestForm.get('expiryDate')?.value);
+    // if (!this.selectedTestItems || this.selectedTestItems.length === 0) {
+    //   this.toastr.error('Please select at least one lab test', 'Error');
+    //   return;
+    // }
     if (!this.testRequestForm.invalid) {
       if (this.resultData.analysisId) {
         this.analysisService.updateTestForm(newTestRequest).subscribe(() => {
@@ -608,7 +619,17 @@ export class AnalysisNewExperimentComponent implements OnInit {
       });
     });
   }
-
+  onDeSelectAll() {
+    this.tableData = []; 
+    this.dtElements.forEach((dtElement: DataTableDirective) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'first-table') {
+          dtInstance.clear();
+          dtInstance.draw();
+        }
+      });
+    });
+  }
   isValid(index: number): boolean {
     return !this.article[index].text || this.article[index].text.trim().length === 0;
   }
@@ -635,7 +656,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
     };
     this.analysisService.saveAnalysisDetails(tabValue).subscribe((data) => {
       this.toastr.success(
-        `Experiment detail ${this.dummyTabs[index].id ? 'updated' : 'created'
+        `Experiment details ${this.dummyTabs[index].id ? 'updated' : 'created'
         } successfully`,
         'Success'
       );
@@ -691,7 +712,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
     this.analysisService
       .updateAnalysisStatus(analysisRequest)
       .subscribe((data) => {
-        this.toastr.success(data['data'], 'Success');
+        this.toastr.success('Experiment Completed Successfully', 'Success');
         this.route.navigateByUrl(`/exp-analysis/list`);
       });
   }

@@ -263,7 +263,7 @@
             }" id="contact" role="tabpanel" aria-labelledby="contact-tab">
             <div class="pt-3 pb-3">
               <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="inwards" [(ngModel)]="selectedItems"
-                (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)">
+                (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)" (onDeSelectAll)="onDeSelectAll()">
               </ng-multiselect-dropdown>
             </div>
             <table id="first-table" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">

@@ -108,6 +108,7 @@ export class ReviewFormulationsComponent implements OnInit {
     password: [''],
   });
   submitClicked: boolean = false;
+  isOptionSelected: boolean = false;
 
   constructor(
     private readonly projectService: ProjectService,
@@ -510,10 +511,19 @@ export class ReviewFormulationsComponent implements OnInit {
       });
   }
 
+  
+
   updateExperimentReview() {
 
     this.submitClicked = true;
 
+    if (this.reviewData['reviewType'] !== "FinalReview" && !this.isOptionSelected) {
+      if (this.reviewData['reviewType'] === "Review") {
+        // Handle the logic for the review phase without the need for correction or TRF
+      } else {
+        return;
+      }
+    }
     if (this.comments === undefined || this.comments.trim().length === 0) {
       this.comments = '';
       this.toastr.error('Please enter comments.', 'Error');
@@ -539,7 +549,7 @@ export class ReviewFormulationsComponent implements OnInit {
       this.loginService.login(request).subscribe(response => {
         if (response) {
           this.experimentService.updateExperimentReview(reviewRequest).subscribe((data) => {
-            this.toastr.success(data['data'], 'Success');
+            this.toastr.success('Formulation review completed successfully', 'Success');
             this.route.navigateByUrl(`/forms-page/review-formulations`);
           });
         }

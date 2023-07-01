@@ -158,6 +158,10 @@ export class AnalysisExperimentsComponent implements OnInit {
   }
 
   submitReview() {
+    if (this.reviewSubmitForm.invalid) {
+      this.toastr.error('Please select a reviewer.');
+      return;
+    }
     const reviewObj = {
       reviewUserId: this.reviewSubmitForm.get('userId')!.value,
       analysisId: this.selectedUser['analysisId'],
