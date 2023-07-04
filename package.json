@@ -21,6 +21,7 @@
     "@types/node": "^18.11.0",
     "angular-datatables": "^14.0.0",
     "angular2-multiselect-dropdown": "^5.0.4",
+    "chart.js": "^4.3.0",
     "ckeditor4-angular": "^3.2.1",
     "datatables.net": "^1.11.3",
     "datatables.net-dt": "^1.11.3",
