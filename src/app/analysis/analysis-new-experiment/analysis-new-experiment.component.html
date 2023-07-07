@@ -483,15 +483,17 @@
                   Please enter Expiry Date
                 </span>
               </div>
-            </form>
             <h3 class="mt-4">Lab Tests</h3>
-
             <div class="pb-3">
               <ng-multiselect-dropdown [settings]="dropdownTestSettings" [data]="tests" [(ngModel)]="selectedTestItems"
                 (onSelect)="onTestItemSelect($event)" (onSelectAll)="onTestSelectAll($event)"
-                (onDeSelect)="testdeselect($event)">
+                (onDeSelect)="testdeselect($event)" formControlName="labTests">
               </ng-multiselect-dropdown>
+              <span *ngIf="isSaveClicked && testRequestForm.get('labTests')?.invalid && testRequestForm.get('labTests')?.errors?.['required']" class="text-danger">
+                Please select Lab Tests
+              </span>
             </div>
+          </form>
             <table id="second-table" datatable [dtOptions]="dtMyProjectsOptions" [dtTrigger]="dtMyProjectsTrigger"
               class="row-border hover">
               <thead>

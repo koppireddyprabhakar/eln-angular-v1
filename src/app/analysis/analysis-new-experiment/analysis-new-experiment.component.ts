@@ -55,6 +55,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
     manufacturingDate: ['', [Validators.required]],
     expiryDate: ['', [Validators.required]],
     testRequestRow: this.formBuilder.array([this.addTests()]),
+    labTests: [[], Validators.required],
   });
   isSaveClicked: boolean = false;
   inputValue: string;
@@ -427,6 +428,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
         });
       }
     } else {
+      this.isSaveClicked = true;
       this.testRequestForm.get('testRequestId')?.markAsDirty();
       this.testRequestForm.get('department')?.markAsDirty();
       this.testRequestForm.get('dosageForm')?.markAsDirty();

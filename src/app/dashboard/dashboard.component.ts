@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DashboardService } from '@app/shared/services/dashboard/dashboard.service';
 import Chart from 'chart.js/auto';
 @Component({
   selector: 'app-dashboard',
@@ -12,14 +13,79 @@ export class DashboardComponent implements OnInit {
   analsysBarChart: any = [];
   pieChart: any = [];
   doughnutChart: any = [];
-  constructor() {}
+  projectCount: any = [];
+  formulationExperimentsCount: any = [];
+  ExperimentsStatusCount: any = [];
+  TrfStatusCount: any = [];
+  analysisexperimentCount: any = [];
+  constructor(private dashboardService:DashboardService) {}
 
   ngOnInit(): void {
-    this.createLineChart();
-    this.createFormulationBarChart();
-    this.createAnalsysBarChart();
-    this.createPieChart();
-    this.createDoughnutChart();
+    this.getProjectCount();
+    this.getFormulationExperimentsCount();
+    this.getAnalsysExperimentsCount();
+    this.getExperimentsStatusCount();
+    this.getTrfStatusCount();
+  }
+
+  getProjectCount() {
+    this.dashboardService.getProjectsByMonth().subscribe(
+      (data) => {
+         this.projectCount = data;
+         this.createLineChart();
+      },
+      (error) => {
+        console.error('Error:', error);
+        this.createLineChart();
+      });  
+  }
+
+  getFormulationExperimentsCount() {
+    this.dashboardService.getExperimentsByMonth().subscribe(
+      (data) => {
+         this.formulationExperimentsCount = data;
+         this.createFormulationBarChart();
+      },
+      (error) => {
+        console.error('Error:', error);
+        this.createFormulationBarChart();
+      });  
+  }
+
+  getExperimentsStatusCount() {
+    this.dashboardService.getExperimentStatusByMonth().subscribe(
+      (data) => {
+         this.ExperimentsStatusCount = data;
+         this.createPieChart();
+      },
+      (error) => {
+        console.error('Error:', error);
+        this.createPieChart();
+      });  
+  }
+
+  getTrfStatusCount() {
+    this.dashboardService.getTrfStatusByMonth().subscribe(
+      (data) => {
+         this.TrfStatusCount = data;
+         this.createDoughnutChart();
+      },
+      (error) => {
+        console.error('Error:', error);
+        this.createDoughnutChart();
+      });  
+  }
+
+  getAnalsysExperimentsCount() {
+    this.dashboardService.getAnalysisexperimentByMonth().subscribe(
+      (data) => {
+         this.analysisexperimentCount = data;
+         this.createAnalsysBarChart();
+      },
+      (error) => {
+        console.error('Error:', error);
+        this.createAnalsysBarChart();
+      });  
   }
   
   createLineChart() {
@@ -29,7 +95,7 @@ export class DashboardComponent implements OnInit {
         labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July','August', 'September', 'October', 'November', 'December'],
         datasets: [{
           label: 'Projects',
-          data: [65, 59, 80, 81, 56, 55, 40,0],
+          data: this.projectCount,
           fill: false,
           borderColor: 'rgb(75, 192, 192)',
           tension: 0.1
@@ -44,6 +110,7 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
+
   createFormulationBarChart() {
     this.barChart = new Chart('barChart', {
       type: 'bar',
@@ -51,7 +118,7 @@ export class DashboardComponent implements OnInit {
         labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July','August', 'September', 'October', 'November', 'December'],
         datasets: [{
           label: 'Formulation Experiments',
-          data: [65, 59, 80, 81, 56, 55, 40],
+          data: this.formulationExperimentsCount,
           backgroundColor: [
             'rgba(255, 99, 132, 0.2)',
             'rgba(255, 159, 64, 0.2)',
@@ -89,7 +156,7 @@ export class DashboardComponent implements OnInit {
         labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July','August', 'September', 'October', 'November', 'December'],
         datasets: [{
           label: 'Analsys Experiments',
-          data: [65, 59, 80, 81, 56, 55, 40],
+          data: this.analysisexperimentCount,
           backgroundColor: [
             'rgba(255, 99, 132, 0.2)',
             'rgba(255, 159, 64, 0.2)',
@@ -125,17 +192,21 @@ export class DashboardComponent implements OnInit {
       type: 'pie',
       data: {
         labels: [
-          'Red',
-          'Blue',
-          'Yellow'
+          'Inprogress',
+          'Complete',
+          'TRF Created',
+          'Analysis Submitted',
+          'COA Genarated'
         ],
         datasets: [{
-          label: 'My First Dataset',
-          data: [300, 50, 100],
+          label: 'Experiments',
+          data: this.ExperimentsStatusCount,
           backgroundColor: [
             'rgb(255, 99, 132)',
+            'rgb(255, 159, 64)',
+            'rgb(255, 205, 86)',
+            'rgb(75, 192, 192)',
             'rgb(54, 162, 235)',
-            'rgb(255, 205, 86)'
           ],
           hoverOffset: 4
         }]
@@ -147,13 +218,13 @@ export class DashboardComponent implements OnInit {
       type: 'doughnut',
       data: {
         labels: [
-          'Red',
-          'Blue',
-          'Yellow'
+          'New',
+          'Inprogress',
+          'Analysis Submitted'
         ],
         datasets: [{
-          label: 'My First Dataset',
-          data: [300, 50, 100],
+          label: 'trf ',
+          data: this.TrfStatusCount,
           backgroundColor: [
             'rgb(255, 99, 132)',
             'rgb(54, 162, 235)',
@@ -163,6 +234,5 @@ export class DashboardComponent implements OnInit {
         }]
       }
     });
-  }
- 
+  } 
 }

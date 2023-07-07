@@ -102,7 +102,12 @@ export const elnEndpointsConfig: EndpointConfig = {
     verifyOtp: `${environment.API_BASE_PATH}` + '/login/validate-otp',
     update: `${environment.API_BASE_PATH}` + '/login/updatePassword',
     getTrfResultsByExperimentId: `${environment.API_BASE_PATH}` + '/experiment/get-test-requests-by-experiment-id',
-    getCustomRoles: `${environment.API_BASE_PATH}` + '/analysis/get-users-with-custom-roles'
+    getCustomRoles: `${environment.API_BASE_PATH}` + '/analysis/get-users-with-custom-roles',
+    getProjectByMonths:`${environment.API_BASE_PATH}`+'/dashboard/project-by-month',
+    getExperimentsByMonths:`${environment.API_BASE_PATH}`+'/dashboard/experiments-by-month',
+    getAnalysisExperimentByMonths:`${environment.API_BASE_PATH}`+'/dashboard/analysis-experiments-by-month',
+    getTrfStatusByMonths:`${environment.API_BASE_PATH}`+'/dashboard/trf-by-status',
+    getExperimentStatusByMonths:`${environment.API_BASE_PATH}`+'/dashboard/experiment-by-status'
   },
 };
 
