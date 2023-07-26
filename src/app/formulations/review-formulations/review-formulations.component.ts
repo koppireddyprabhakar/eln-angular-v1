@@ -514,7 +514,6 @@ export class ReviewFormulationsComponent implements OnInit {
   
 
   updateExperimentReview() {
-
     this.submitClicked = true;
 
     if (this.reviewData['reviewType'] !== "FinalReview" && !this.isOptionSelected) {
@@ -549,7 +548,15 @@ export class ReviewFormulationsComponent implements OnInit {
       this.loginService.login(request).subscribe(response => {
         if (response) {
           this.experimentService.updateExperimentReview(reviewRequest).subscribe((data) => {
-            this.toastr.success('Formulation review completed successfully', 'Success');
+            if(reviewRequest.status=='Need Correction'){
+            this.toastr.success('Need Correction request submitted successfully', 'Success');
+            }
+            else if(reviewRequest.status=='Prereview Completed'){
+              this.toastr.success('Formulation PreReview completed successfully', 'Success');
+            }
+            else{
+              this.toastr.success('Formulation Experiment review completed successfully', 'Success');
+            }
             this.route.navigateByUrl(`/forms-page/review-formulations`);
           });
         }
@@ -558,7 +565,5 @@ export class ReviewFormulationsComponent implements OnInit {
       this.userValidateForm.get('userName')?.markAsDirty();
       this.userValidateForm.get('password')?.markAsDirty();
     }
-
   }
-
 }

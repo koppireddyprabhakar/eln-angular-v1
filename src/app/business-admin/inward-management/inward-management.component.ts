@@ -62,6 +62,7 @@ export class InwardManagementComponent implements OnInit {
   addInward() {
     this.selectedInward = {};
     this.inwardForm.reset();
+    this.showErrorMsg = false;
   }
 
   getExcipients() {
@@ -86,8 +87,6 @@ export class InwardManagementComponent implements OnInit {
   }
 
   saveInward() {
-
-    this.showErrorMsg = false;
     let formExcipientName = this.inwardForm['controls'] && this.inwardForm['controls']['excipientsName'].value ? this.inwardForm['controls']['excipientsName'].value : '';
     let batchNumber = this.inwardForm['controls'] && this.inwardForm['controls']['batchNumber'].value ? this.inwardForm['controls']['batchNumber'].value : '';
 
@@ -96,8 +95,7 @@ export class InwardManagementComponent implements OnInit {
     // );
     let isObjectExists = this.inwards.find(i =>
       i.excipientsName === formExcipientName && i.batchNo === batchNumber && i !== this.selectedInward
-    );
-    
+    ); 
 
     // if (isObjectExists) {
     //   this.showErrorMsg = true;
@@ -107,7 +105,7 @@ export class InwardManagementComponent implements OnInit {
       this.showErrorMsg = true;
       return;
     }
-
+     this.showErrorMsg = false;
     const newInward = {
       excipientsName: this.inwardForm.get('excipientsName')!.value,
       materialName: this.inwardForm.get('materialName')!.value,
@@ -117,7 +115,6 @@ export class InwardManagementComponent implements OnInit {
       potency: this.inwardForm.get('potency')!.value,
       grade: this.inwardForm.get('grade')!.value,
       insertUser: this.loginService.userDetails.userId
-
       // status: 'New',
     };
     if (this.inwardForm.valid) {
@@ -176,6 +173,7 @@ export class InwardManagementComponent implements OnInit {
 
   selectInward(inward) {
     this.selectedInward = inward;
+
     this.inwardForm.patchValue({
       excipientsName: inward.excipientsName,
       materialName: inward.materialName,
@@ -185,6 +183,7 @@ export class InwardManagementComponent implements OnInit {
       potency: inward.potency,
       grade: inward.grade,
     });
+    this.showErrorMsg = false;
   }
 
   confirmInwardDeletetion(inward) {

@@ -235,6 +235,18 @@ export class AddTrfComponent implements OnInit {
     });
   }
 
+  onDeSelectAll() {
+    this.deselect
+    this.tableData = [];
+  
+    if (this.dtElement) {
+      this.dtElement.dtInstance.then((dtInstance: any) => {
+        dtInstance.clear();
+        dtInstance.draw();
+      });
+    }
+  }
+
   saveTestRequestForm() {
     const manDate = this.testRequestForm.get('manufacturingDate')?.value || '';
     const expiryDate = this.testRequestForm.get('expiryDate')?.value || '';
@@ -277,7 +289,7 @@ export class AddTrfComponent implements OnInit {
               })
             )
             .subscribe(() => {
-              this.toastr.success('Test has been added succesfully', 'Success');
+              this.toastr.success('Test Request Form Created succesfully', 'Success');
               this.route.navigate(['/forms-page/experiments']);
             });
         }

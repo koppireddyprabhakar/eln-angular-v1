@@ -226,7 +226,7 @@
         <div class="pb-3">
           <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="tests" [(ngModel)]="selectedItems"
             (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)"
-            formControlName="selectedTests">
+            (onDeSelectAll)="onDeSelectAll()" formControlName="selectedTests">
           </ng-multiselect-dropdown>
           <div *ngIf="
               testRequestForm.controls['selectedTests'].invalid &&

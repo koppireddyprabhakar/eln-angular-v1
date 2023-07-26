@@ -373,6 +373,18 @@ export class AnalysisNewExperimentComponent implements OnInit {
       });
     });
   }
+  onTestDeSelectAll(items: any){
+    console.log(items);
+    this.tableTestData = [];
+    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'second-table') {
+          dtInstance.destroy();
+          this.dtMyProjectsTrigger.next(this.tableTestData);
+        }
+      });
+    });
+  }
 
   resultValue(event, index) {
     this.tableTestData[index]['result'] = event.target.value;

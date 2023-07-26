@@ -468,14 +468,9 @@ export class AnalysisDashbaordComponent implements OnInit {
     console.log(this.selectedTrfs);
   }
 
-  // saveResults() {
-  //   this.analysisService.saveTrfResults(this.selectedTrfs).subscribe((data) => {
-  //     this.toastr.success(data.data, 'Success');
-  //   });
-  // }
   saveResults() {
     this.isSaveClicked = true;
-    const hasEmptyResults = this.resultsData.some(result => !result.testResult);
+    const hasEmptyResults = this.selectedTrfs.some(result => !result.testResult);
     if (hasEmptyResults) {
       this.toastr.error('Please enter a value for all resultsss.', 'Error');
       return; // Stop further execution

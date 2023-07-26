@@ -132,7 +132,7 @@ export class FormulationsExperimentComponent implements OnInit {
 
   selectUser(user) {
     this.selectedUser = user;
-    // this.reviewSubmitForm.patchValue({ roleId: user.roleId });
+    this.reviewSubmitForm.patchValue({ userId: null });
   }
 
   submitReview() {
@@ -147,7 +147,11 @@ export class FormulationsExperimentComponent implements OnInit {
       this.experimentService
         .createExperimentReview(reviewObj)
         .subscribe((data) => {
-          this.toastr.success('PreReview form submit successfully', 'Success');
+          if (reviewObj.reviewType === 'PreReview') {
+            this.toastr.success('PreReview form submit successfully', 'Success');
+          } else {
+            this.toastr.success('Experiment review created successfully', 'Success');
+          }
           this.globalService.hideLoader();
           this.getMyExperiments();
           // this.route.navigateByUrl(

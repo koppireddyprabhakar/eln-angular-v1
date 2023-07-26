@@ -159,7 +159,7 @@ export class AnalysisExperimentsComponent implements OnInit {
 
   submitReview() {
     if (this.reviewSubmitForm.invalid) {
-      this.toastr.error('Please select a reviewer.');
+      this.toastr.error('Experiment has to be assigned to reviewer.');
       return;
     }
     const reviewObj = {
