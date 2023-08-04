@@ -85,10 +85,16 @@
                     'col-12': formulations.value.length === 1,
                     'col-11': formulations.value.length > 1
                   }">
+                 
                   <label class="col-sm-2 col-form-label">Formulation</label>
-
                   <input type="text" class="form-control" id="formulationName" formControlName="formulationName"
                     (blur)="onChange(i, $event, formulations.value[i].formulationId)" />
+                    <span
+                    *ngIf="formulations.at(i).get('formulationName')?.invalid && (formulations.at(i).get('formulationName')?.dirty && formulations.at(i).get('formulationName')?.touched || saveButtonClicked) && formulations.at(i).get('formulationName')?.hasError('required')"
+                    class="text-danger pt-3"
+                  >
+                    Please enter Formulation Name
+                  </span>
                 </div>
                 <div *ngIf="formulations.value.length > 1" class="col-1">
                   <div for="description" class="form-label">&nbsp;</div>
@@ -104,8 +110,8 @@
               </div>
             </section>
             <div class="add-formulation">
-              <i class="bi bi-plus-circle pointer"></i><span class="pointer" (click)="addNewFormulations()">Add
-                Formulation</span>
+              <button class="btn btn-primary" (click)="addNewFormulations()"><i class="bi bi-plus-circle"></i>Add
+                Formulation</button>
             </div>
           </div>
         </form>

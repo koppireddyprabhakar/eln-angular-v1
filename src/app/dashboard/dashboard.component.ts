@@ -120,22 +120,32 @@ export class DashboardComponent implements OnInit {
           label: 'Formulation Experiments',
           data: this.formulationExperimentsCount,
           backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(255, 159, 64, 0.2)',
-            'rgba(0, 255, 0, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(201, 203, 207, 0.2)'
+            'rgba(255, 99, 132, 0.2)', // January
+            'rgba(255, 159, 64, 0.2)', // February
+            'rgba(255, 205, 86, 0.2)', // March
+            'rgba(75, 192, 192, 0.2)', // April
+            'rgba(54, 162, 235, 0.2)', // May
+            'rgba(153, 102, 255, 0.2)', // June
+            'rgba(255, 0, 0, 0.2)',     // July
+            'rgba(0, 255, 0, 0.2)',     // August
+            'rgba(0, 0, 255, 0.2)',     // September
+            'rgba(128, 0, 128, 0.2)',   // October
+            'rgba(255, 0, 255, 0.2)',   // November
+            'rgba(0, 128, 128, 0.2)'    // December
           ],
           borderColor: [
-            'rgb(255, 99, 132)',
-            'rgb(255, 159, 64)',
-            'rgb(0, 255, 0)',
-            'rgb(75, 192, 192)',
-            'rgb(54, 162, 235)',
-            'rgb(153, 102, 255)',
-            'rgb(201, 203, 207)'
+            'rgba(255, 99, 132)', // January
+            'rgba(255, 159, 64)', // February
+            'rgba(255, 205, 86)', // March
+            'rgba(75, 192, 192)', // April
+            'rgba(54, 162, 235)', // May
+            'rgba(153, 102, 255)', // June
+            'rgba(255, 0, 0)',     // July
+            'rgba(0, 255, 0)',     // August
+            'rgba(0, 0, 255)',     // September
+            'rgba(128, 0, 128)',   // October
+            'rgba(255, 0, 255)',   // November
+            'rgba(0, 128, 128)'    // December
           ],
           borderWidth: 1
         }]
@@ -155,25 +165,35 @@ export class DashboardComponent implements OnInit {
       data: {
         labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July','August', 'September', 'October', 'November', 'December'],
         datasets: [{
-          label: 'Analsys Experiments',
+          label: 'Analysis Experiments',
           data: this.analysisexperimentCount,
           backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(255, 159, 64, 0.2)',
-            'rgba(0, 255, 0, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(201, 203, 207, 0.2)'
+            'rgba(255, 99, 132, 0.2)', // January
+            'rgba(255, 159, 64, 0.2)', // February
+            'rgba(255, 205, 86, 0.2)', // March
+            'rgba(75, 192, 192, 0.2)', // April
+            'rgba(54, 162, 235, 0.2)', // May
+            'rgba(153, 102, 255, 0.2)', // June
+            'rgba(255, 0, 0, 0.2)',     // July
+            'rgba(0, 255, 0, 0.2)',     // August
+            'rgba(0, 0, 255, 0.2)',     // September
+            'rgba(128, 0, 128, 0.2)',   // October
+            'rgba(255, 0, 255, 0.2)',   // November
+            'rgba(0, 128, 128, 0.2)'    // December
           ],
           borderColor: [
-            'rgb(255, 99, 132)',
-            'rgb(255, 159, 64)',
-            'rgb(0, 255, 0)',
-            'rgb(75, 192, 192)',
-            'rgb(54, 162, 235)',
-            'rgb(153, 102, 255)',
-            'rgb(201, 203, 207)'
+            'rgba(255, 99, 132)', // January
+            'rgba(255, 159, 64)', // February
+            'rgba(255, 205, 86)', // March
+            'rgba(75, 192, 192)', // April
+            'rgba(54, 162, 235)', // May
+            'rgba(153, 102, 255)', // June
+            'rgba(255, 0, 0)',     // July
+            'rgba(0, 255, 0)',     // August
+            'rgba(0, 0, 255)',     // September
+            'rgba(128, 0, 128)',   // October
+            'rgba(255, 0, 255)',   // November
+            'rgba(0, 128, 128)'    // December
           ],
           borderWidth: 1
         }]

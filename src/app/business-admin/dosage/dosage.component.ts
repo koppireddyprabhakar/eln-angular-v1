@@ -46,6 +46,7 @@ export class DosageComponent implements OnInit {
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
 
   public showErrorMsg: boolean = false;
+  saveButtonClicked: boolean = false;
 
   constructor(
     private readonly dosageService: DosageService,
@@ -65,10 +66,11 @@ export class DosageComponent implements OnInit {
 
   addFormulations(): FormGroup {
     return this.formBuilder.group({
-      formulationName: [null],
+      formulationName: ['', Validators.required], // Add Validators.required here
       formulationId: [null],
     });
   }
+  
 
   addNewFormulations() {
     this.formulations.push(this.addFormulations());
@@ -76,6 +78,7 @@ export class DosageComponent implements OnInit {
 
   addDosage() {
     this.showErrorMsg = false;
+    this.saveButtonClicked = false;
     this.formulations.clear();
     this.addNewFormulations();
     this.selectedDosage = {} as Dosages;
@@ -106,8 +109,9 @@ export class DosageComponent implements OnInit {
   }
 
   saveDosage() {
-
     this.showErrorMsg = false;
+    this.saveButtonClicked = true;
+
     let dosageName = this.dosageForm.get('dosageName')!.value;
 
     let filteredDosages = this.dosages.filter(p => p.dosageName === dosageName);
@@ -119,8 +123,18 @@ export class DosageComponent implements OnInit {
       this.showErrorMsg = true;
       return;
     }
-
-    
+    let allFormulationsValid = false;
+    this.formulations.controls.forEach(formulationGroup => {
+      const formulationControl = formulationGroup.get('formulationName');
+      if (!formulationControl || formulationControl.invalid || formulationControl.value === '') {
+        allFormulationsValid = true;
+      }
+    });
+  
+    if (allFormulationsValid) {
+      // Show validation message for formulation names
+      return;
+    }
 
     if (this.dosageForm.get('dosageName')!.value) {
       this.globalService.showLoader();
@@ -170,6 +184,7 @@ export class DosageComponent implements OnInit {
       }
     } else {
       this.dosageForm.get('dosageName')?.markAsDirty();
+      this.formulations.get('formulationName')?.markAsDirty();
     }
   }
 

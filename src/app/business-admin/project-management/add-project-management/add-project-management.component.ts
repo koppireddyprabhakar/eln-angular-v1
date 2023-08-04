@@ -265,7 +265,7 @@ export class AddProjectManagementComponent implements OnInit {
             market: selectedProject.marketId,
             productCode:selectedProject.productCode,
           });
-        }, 2000);
+        }, 1000);
       });
   }
 

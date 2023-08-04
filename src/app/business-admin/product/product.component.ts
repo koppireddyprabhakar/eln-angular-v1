@@ -63,6 +63,7 @@ export class ProductComponent implements OnInit {
   }
 
   addProduct() {
+    this.showErrorMsg = false;
     this.selectedProduct = {} as Products;
     this.productForm.reset();
   }
@@ -88,8 +89,6 @@ export class ProductComponent implements OnInit {
   }
 
   saveProduct() {
-
-    this.showErrorMsg = false;
     let productName = this.productForm.get('productName')!.value;
 
     let filteredProducts = this.products.filter(p => p.productName === productName);
@@ -121,6 +120,7 @@ export class ProductComponent implements OnInit {
           )
           .subscribe(() => {
             this.getProducts();
+            this.showErrorMsg = false;
             this.closeButton.nativeElement.click();
             this.toastr.success(
               'Product has been added succesfully',

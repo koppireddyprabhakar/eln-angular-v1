@@ -154,7 +154,7 @@ export class AnalysisExperimentsComponent implements OnInit {
 
   selectUser(user) {
     this.selectedUser = user;
-    // this.reviewSubmitForm.patchValue({ roleId: user.userId });
+    this.reviewSubmitForm.patchValue({ userId: null });
   }
 
   submitReview() {

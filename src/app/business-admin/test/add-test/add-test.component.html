@@ -92,10 +92,9 @@
         </div>
 
         <div *ngIf="!editForm" class="add-formulation">
-          <i class="bi bi-plus-circle pointer"></i> &nbsp;<span
-            class="pointer"
+          <button class="btn btn-primary"
             (click)="addNewTest()"
-            >Add Test</span
+            ><i class="bi bi-plus-circle"></i> Add Test</button
           >
         </div>
       </form>
