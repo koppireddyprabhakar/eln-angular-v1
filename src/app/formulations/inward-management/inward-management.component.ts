@@ -11,6 +11,7 @@ import { InwardManagementService } from '@app/shared/services/inward-management/
 import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, finalize, takeWhile } from 'rxjs';
+import { departmentMapping } from '@app/shared/constants/mappings';
 
 @Component({
   selector: 'app-inward-management',
@@ -45,7 +46,7 @@ export class InwardManagementComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     private readonly globalService: GlobalService,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getExcipients();
@@ -63,7 +64,7 @@ export class InwardManagementComponent implements OnInit {
   getExcipients() {
     this.globalService.showLoader();
     this.inwardService
-      .getInwards()
+      .getInwardsByCreationSource(departmentMapping[1])
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((inwards) => {
         const newInwardsList = inwards.map((inward: any) => ({
@@ -90,6 +91,7 @@ export class InwardManagementComponent implements OnInit {
       sourceName: this.inwardForm.get('sourceName')!.value,
       potency: this.inwardForm.get('potency')!.value,
       grade: this.inwardForm.get('grade')!.value,
+      creationSource: departmentMapping[1]
       // status: 'New',
     };
     if (this.inwardForm.valid) {

@@ -6,6 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { departmentMapping } from '@app/shared/constants/mappings';
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { DataTableDirective } from 'angular-datatables';
@@ -45,7 +46,7 @@ export class InwardManagementComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     private readonly globalService: GlobalService,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getExcipients();
@@ -63,7 +64,7 @@ export class InwardManagementComponent implements OnInit {
   getExcipients() {
     this.globalService.showLoader();
     this.inwardService
-      .getInwards()
+      .getInwardsByCreationSource(departmentMapping[2])
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((inwards) => {
         const newInwardsList = inwards.map((inward: any) => ({
@@ -90,6 +91,7 @@ export class InwardManagementComponent implements OnInit {
       sourceName: this.inwardForm.get('sourceName')!.value,
       potency: this.inwardForm.get('potency')!.value,
       grade: this.inwardForm.get('grade')!.value,
+      creationSource: departmentMapping[2]
       // status: 'New',
     };
     if (this.inwardForm.valid) {

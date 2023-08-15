@@ -25,6 +25,7 @@ export const elnEndpointsConfig: EndpointConfig = {
     getUserByID: `${environment.API_BASE_PATH}` + '/usersDetails/get-users-details-by-id',
     deleteUser: `${environment.API_BASE_PATH}` + '/usersDetails/delete-users-details',
     getExcipients: `${environment.API_BASE_PATH}` + '/excipients/get-excipients',
+    getExcipientsByCreationSource: `${environment.API_BASE_PATH}` + '/excipients/get-excipients-by-creation-source',
     createExcipient: `${environment.API_BASE_PATH}` + '/excipients/create-excipient',
     updateExcipient: `${environment.API_BASE_PATH}` + '/excipients/update-excipient',
     deleteExcipient: `${environment.API_BASE_PATH}` + '/excipients/delete-excipient',
@@ -103,11 +104,11 @@ export const elnEndpointsConfig: EndpointConfig = {
     update: `${environment.API_BASE_PATH}` + '/login/updatePassword',
     getTrfResultsByExperimentId: `${environment.API_BASE_PATH}` + '/experiment/get-test-requests-by-experiment-id',
     getCustomRoles: `${environment.API_BASE_PATH}` + '/analysis/get-users-with-custom-roles',
-    getProjectByMonths:`${environment.API_BASE_PATH}`+'/dashboard/project-by-month',
-    getExperimentsByMonths:`${environment.API_BASE_PATH}`+'/dashboard/experiments-by-month',
-    getAnalysisExperimentByMonths:`${environment.API_BASE_PATH}`+'/dashboard/analysis-experiments-by-month',
-    getTrfStatusByMonths:`${environment.API_BASE_PATH}`+'/dashboard/trf-by-status',
-    getExperimentStatusByMonths:`${environment.API_BASE_PATH}`+'/dashboard/experiment-by-status'
+    getProjectByMonths: `${environment.API_BASE_PATH}` + '/dashboard/project-by-month',
+    getExperimentsByMonths: `${environment.API_BASE_PATH}` + '/dashboard/experiments-by-month',
+    getAnalysisExperimentByMonths: `${environment.API_BASE_PATH}` + '/dashboard/analysis-experiments-by-month',
+    getTrfStatusByMonths: `${environment.API_BASE_PATH}` + '/dashboard/trf-by-status',
+    getExperimentStatusByMonths: `${environment.API_BASE_PATH}` + '/dashboard/experiment-by-status'
   },
 };
 

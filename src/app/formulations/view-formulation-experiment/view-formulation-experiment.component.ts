@@ -20,6 +20,7 @@ import { LoginserviceService } from '@app/shared/services/login/loginservice.ser
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { environment } from "src/environments/environment";
+import { departmentMapping } from '@app/shared/constants/mappings';
 
 @Component({
   selector: 'app-view-formulation-experiment',
@@ -228,7 +229,7 @@ export class ViewFormulationExperimentComponent implements OnInit {
   }
 
   getExcipients() {
-    this.inwardService.getInwards().subscribe((inwards) => {
+    this.inwardService.getInwardsByCreationSource(departmentMapping[1]).subscribe((inwards) => {
       this.inwards = inwards;
     });
   }

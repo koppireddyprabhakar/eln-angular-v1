@@ -20,6 +20,7 @@ import { InwardManagementService } from '@app/shared/services/inward-management/
 import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { environment } from "src/environments/environment";
+import { departmentMapping } from '@app/shared/constants/mappings';
 
 @Component({
   selector: 'app-create-formulation',
@@ -234,7 +235,7 @@ export class CreateFormulationComponent implements OnInit {
   }
 
   getExcipients() {
-    this.inwardService.getInwards().subscribe((inwards) => {
+    this.inwardService.getInwardsByCreationSource(departmentMapping[1]).subscribe((inwards) => {
       this.inwards = inwards;
     });
   }
@@ -443,12 +444,12 @@ export class CreateFormulationComponent implements OnInit {
         if (dtInstance.table().node().id === 'first-table') {
           dtInstance.destroy();
           this.dtTrigger.next(this.tableData);
-        }       
+        }
       });
     });
   }
   onDeSelectAll() {
-    this.tableData = []; 
+    this.tableData = [];
     this.dtElements.forEach((dtElement: DataTableDirective) => {
       dtElement.dtInstance.then((dtInstance: any) => {
         if (dtInstance.table().node().id === 'first-table') {
@@ -458,7 +459,7 @@ export class CreateFormulationComponent implements OnInit {
       });
     });
   }
-  
+
 
   isValid(index: number): boolean {
     return !this.article[index].text || this.article[index].text.trim().length === 0;

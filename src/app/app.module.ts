@@ -63,4 +63,4 @@ import { AuthGuardGuard } from './shared/auth-guard/auth-guard.guard';
   providers: [AuthGuardGuard],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

@@ -18,6 +18,7 @@ import { InwardManagementService } from '@app/shared/services/inward-management/
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { environment } from "src/environments/environment";
 import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
+import { departmentMapping } from '@app/shared/constants/mappings';
 
 @Component({
   selector: 'app-analysis-experiment-dashboard',
@@ -224,7 +225,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   }
 
   getExcipients() {
-    this.inwardService.getInwards().subscribe((inwards) => {
+    this.inwardService.getInwardsByCreationSource(departmentMapping[2]).subscribe((inwards) => {
       this.inwards = inwards.map((inward) => ({
         ...inward,
         analysisId: Number(this.analysisID),
@@ -397,7 +398,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   }
   onDeSelectAll() {
     this.tableData = [];
-  
+
     if (this.dtElement) {
       this.dtElement.dtInstance.then((dtInstance: any) => {
         dtInstance.clear();
@@ -405,9 +406,9 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       });
     }
   }
-  
-  
-  
+
+
+
 
   isValid(index: number): boolean {
     return !this.article[index].text || this.article[index].text.trim().length === 0;

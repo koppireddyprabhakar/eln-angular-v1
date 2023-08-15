@@ -20,6 +20,7 @@ import { ProjectService } from '@app/shared/services/project/project.service';
 import { TestService } from '@app/shared/services/test/test.service';
 import { environment } from "src/environments/environment";
 import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
+import { departmentMapping } from '@app/shared/constants/mappings';
 
 @Component({
   selector: 'app-review-formulations',
@@ -339,7 +340,7 @@ export class ReviewFormulationsComponent implements OnInit {
   }
 
   getExcipients() {
-    this.inwardService.getInwards().subscribe((inwards) => {
+    this.inwardService.getInwardsByCreationSource(departmentMapping[1]).subscribe((inwards) => {
       this.inwards = inwards;
     });
   }
@@ -511,7 +512,7 @@ export class ReviewFormulationsComponent implements OnInit {
       });
   }
 
-  
+
 
   updateExperimentReview() {
     this.submitClicked = true;
@@ -548,13 +549,13 @@ export class ReviewFormulationsComponent implements OnInit {
       this.loginService.login(request).subscribe(response => {
         if (response) {
           this.experimentService.updateExperimentReview(reviewRequest).subscribe((data) => {
-            if(reviewRequest.status=='Need Correction'){
-            this.toastr.success('Need Correction request submitted successfully', 'Success');
+            if (reviewRequest.status == 'Need Correction') {
+              this.toastr.success('Need Correction request submitted successfully', 'Success');
             }
-            else if(reviewRequest.status=='Prereview Completed'){
+            else if (reviewRequest.status == 'Prereview Completed') {
               this.toastr.success('Formulation PreReview completed successfully', 'Success');
             }
-            else{
+            else {
               this.toastr.success('Formulation Experiment review completed successfully', 'Success');
             }
             this.route.navigateByUrl(`/forms-page/review-formulations`);

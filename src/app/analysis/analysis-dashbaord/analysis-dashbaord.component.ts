@@ -18,6 +18,7 @@ import { InwardManagementService } from '@app/shared/services/inward-management/
 import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { environment } from "src/environments/environment";
+import { departmentMapping } from '@app/shared/constants/mappings';
 
 @Component({
   selector: 'app-analysis-dashbaord',
@@ -206,7 +207,7 @@ export class AnalysisDashbaordComponent implements OnInit {
   }
 
   getExcipients() {
-    this.inwardService.getInwards().subscribe((inwards) => {
+    this.inwardService.getInwardsByCreationSource(departmentMapping[2]).subscribe((inwards) => {
       this.inwards = inwards;
     });
   }
@@ -371,7 +372,7 @@ export class AnalysisDashbaordComponent implements OnInit {
   onDeSelectAll() {
     this.deselect
     this.tableData = [];
-  
+
     if (this.dtElement) {
       this.dtElement.dtInstance.then((dtInstance: any) => {
         dtInstance.clear();
@@ -379,8 +380,8 @@ export class AnalysisDashbaordComponent implements OnInit {
       });
     }
   }
-  
-  
+
+
 
   isValid(index: number): boolean {
     return !this.article[index].text || this.article[index].text.trim().length === 0;

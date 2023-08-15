@@ -31,7 +31,8 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let inward of inwards">
+                <tr *ngFor="let inward of inwards; let i = index">
+                  <td>{{i + 1}}</td>
                   <td>{{ inward.excipientsName }}</td>
                   <td>{{ inward.materialName }}</td>
                   <td>{{ inward.materialType }}</td>

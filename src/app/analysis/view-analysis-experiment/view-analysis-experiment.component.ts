@@ -20,6 +20,7 @@ import { FormulationsService } from '@app/shared/services/formulations/formulati
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { environment } from "src/environments/environment";
+import { departmentMapping } from '@app/shared/constants/mappings';
 
 @Component({
   selector: 'app-view-analysis-experiment',
@@ -193,7 +194,7 @@ export class ViewAnalysisExperimentComponent implements OnInit {
   }
 
   getExcipients() {
-    this.inwardService.getInwards().subscribe((inwards) => {
+    this.inwardService.getInwardsByCreationSource(departmentMapping[2]).subscribe((inwards) => {
       this.inwards = inwards.map((inward) => ({
         ...inward,
         analysisId: Number(this.analysisID),

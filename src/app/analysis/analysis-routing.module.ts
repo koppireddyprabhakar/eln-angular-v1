@@ -9,6 +9,7 @@ import { AnalysisNewExperimentComponent } from './analysis-new-experiment/analys
 import { ReviewExperimentsComponent } from './review-experiments/review-experiments.component';
 import { ReviewExperimentsListComponent } from './review-experiments-list/review-experiments-list.component';
 import { ViewAnalysisExperimentComponent } from './view-analysis-experiment/view-analysis-experiment.component';
+import { InwardManagementComponent } from './inward-management/inward-management.component';
 
 const routes: Routes = [
   {
@@ -49,6 +50,10 @@ const routes: Routes = [
       {
         path: 'view-analysis-experiment',
         component: ViewAnalysisExperimentComponent
+      },
+      {
+        path: 'analysis-inward-management',
+        component: InwardManagementComponent
       }
     ],
   },

@@ -12,6 +12,7 @@ import { TestReqFormsComponent } from './test-req-forms/test-req-forms.component
 import { CoaGenerationListComponent } from './coa-generation-list/coa-generation-list.component';
 import { CoaGenerationComponent } from './coa-generation-list/components/coa-generation/coa-generation.component';
 import { ViewFormulationExperimentComponent } from './view-formulation-experiment/view-formulation-experiment.component';
+import { InwardManagementComponent } from './inward-management/inward-management.component';
 
 const routes: Routes = [
   {
@@ -56,6 +57,10 @@ const routes: Routes = [
       {
         path: 'view-formulation-experiment',
         component: ViewFormulationExperimentComponent
+      },
+      {
+        path: 'formulation-inward-management',
+        component: InwardManagementComponent
       }
     ],
   },

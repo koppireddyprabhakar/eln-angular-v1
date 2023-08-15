@@ -11,10 +11,17 @@ export class InwardManagementService {
   constructor(
     private readonly http: HttpClient,
     private readonly clientService: ClientService
-  ) {}
+  ) { }
 
   getInwards() {
     const url = elnEndpointsConfig.endpoints['getExcipients'];
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
+  getInwardsByCreationSource(creationSource: string) {
+    const url = `${elnEndpointsConfig.endpoints['getExcipientsByCreationSource']}?creationSource=${creationSource}`;
     return this.http
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));

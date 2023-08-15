@@ -22,6 +22,7 @@ import { LoginserviceService } from '@app/shared/services/login/loginservice.ser
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { TestService } from '@app/shared/services/test/test.service';
 import { environment } from "src/environments/environment";
+import { departmentMapping } from '@app/shared/constants/mappings';
 
 @Component({
   selector: 'app-review-experiments',
@@ -384,7 +385,7 @@ export class ReviewExperimentsComponent implements OnInit {
     //   status: status,
     //   summary: this.summary ? this.summary : status
     // }
-    this.submitClicked = true; 
+    this.submitClicked = true;
     if (!this.isOptionSelected) {
       return;
     }
@@ -442,7 +443,7 @@ export class ReviewExperimentsComponent implements OnInit {
   }
 
   getExcipients() {
-    this.inwardService.getInwards().subscribe((inwards) => {
+    this.inwardService.getInwardsByCreationSource(departmentMapping[2]).subscribe((inwards) => {
       this.inwards = inwards;
     });
   }

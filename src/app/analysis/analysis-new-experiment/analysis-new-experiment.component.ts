@@ -22,6 +22,7 @@ import { LoginserviceService } from '@app/shared/services/login/loginservice.ser
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { TestService } from '@app/shared/services/test/test.service';
 import { environment } from "src/environments/environment";
+import { departmentMapping } from '@app/shared/constants/mappings';
 
 @Component({
   selector: 'app-analysis-new-experiment',
@@ -373,7 +374,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
       });
     });
   }
-  onTestDeSelectAll(items: any){
+  onTestDeSelectAll(items: any) {
     console.log(items);
     this.tableTestData = [];
     this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
@@ -475,11 +476,11 @@ export class AnalysisNewExperimentComponent implements OnInit {
         if (experimentDetails['data'] === "Analysis Attachment Delete Successfully") {
           this.getAttachments();
         }
-       });
+      });
   }
 
   getExcipients() {
-    this.inwardService.getInwards().subscribe((inwards) => {
+    this.inwardService.getInwardsByCreationSource(departmentMapping[2]).subscribe((inwards) => {
       this.inwards = inwards;
     });
   }
@@ -634,7 +635,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
     });
   }
   onDeSelectAll() {
-    this.tableData = []; 
+    this.tableData = [];
     this.dtElements.forEach((dtElement: DataTableDirective) => {
       dtElement.dtInstance.then((dtInstance: any) => {
         if (dtInstance.table().node().id === 'first-table') {

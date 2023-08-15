@@ -48,7 +48,7 @@ export class InwardManagementComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     private readonly globalService: GlobalService,
     private toastr: ToastrService,
-    private loginService: LoginserviceService 
+    private loginService: LoginserviceService
   ) { }
 
   ngOnInit(): void {
@@ -95,7 +95,7 @@ export class InwardManagementComponent implements OnInit {
     // );
     let isObjectExists = this.inwards.find(i =>
       i.excipientsName === formExcipientName && i.batchNo === batchNumber && i !== this.selectedInward
-    ); 
+    );
 
     // if (isObjectExists) {
     //   this.showErrorMsg = true;
@@ -105,7 +105,7 @@ export class InwardManagementComponent implements OnInit {
       this.showErrorMsg = true;
       return;
     }
-     this.showErrorMsg = false;
+    this.showErrorMsg = false;
     const newInward = {
       excipientsName: this.inwardForm.get('excipientsName')!.value,
       materialName: this.inwardForm.get('materialName')!.value,
