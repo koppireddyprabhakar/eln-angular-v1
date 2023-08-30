@@ -303,7 +303,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     });
     this.dummyTabs = d;
     let elemetClass = document.getElementById('summary-tab');
-    this.renderer2.addClass(document.getElementById('summary-tab'), 'active');
+    this.renderer2.addClass(document.getElementById(`${this.dummyTabs[index].value}-tab`), 'active');
     this.renderer2.addClass(document.getElementById('summary'), 'active');
     this.renderer2.addClass(document.getElementById('summary'), 'show');
   }

@@ -544,7 +544,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
     });
     this.dummyTabs = d;
     let elemetClass = document.getElementById('summary-tab');
-    this.renderer2.addClass(document.getElementById('summary-tab'), 'active');
+    this.renderer2.addClass(document.getElementById(`${this.dummyTabs[index].value}-tab`), 'active');
     this.renderer2.addClass(document.getElementById('summary'), 'active');
     this.renderer2.addClass(document.getElementById('summary'), 'show');
   }
@@ -676,7 +676,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
         'Success'
       );
       if (this.dummyTabs[index].value.substring(0, 3) === 'new') {
-        this.activeTab = 'summary';
+        this.activeTab = `${this.dummyTabs[index].value}-tab`;
         console.log(this.experimentId);
         this.getAnalysisById(this.experimentId);
       }

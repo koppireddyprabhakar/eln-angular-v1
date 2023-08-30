@@ -20,9 +20,15 @@
             </div>
             </div>
             <div class="col-12">
-            <label for="yourPassword" class="form-label">Password</label> <input type="password"   name="password" [(ngModel)]="password" formControlName="Password" class="form-control" id="password" required>
-            <div class="invalid-feedback">Please enter your password!</div>
-            </div>
+                <label for="yourPassword" class="form-label">Password</label>
+                <div class="input-group has-validation">
+                  <input type="{{ showPassword ? 'text' : 'password' }}" name="password" [(ngModel)]="password" formControlName="Password" class="form-control" id="password" required/>
+                  <button class="input-group-text" (mousedown)="showPassword = true" (mouseup)="showPassword = false" (mouseleave)="showPassword = false">
+                    <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                  </button>
+                  <div class="invalid-feedback">Please enter your password!</div>
+                </div>
+              </div>
             <div class="col-12"> <button class="btn btn-primary w-100" type="submit" (click)="onSubmit()">Login</button></div> 
             <!-- <p class="small mb-0"> <a routerLink="/app-update-password">Login</a></p>  -->
             <div class="col-12">

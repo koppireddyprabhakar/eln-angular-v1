@@ -174,7 +174,7 @@
                             <input class="form-control" type="file" id="formFile" (change)="attachFile($event)" />
                           </div>
                         </div>
-                        <div class="row mb-3" *ngIf="selectedFile">
+                        <div class="row mb-3" *ngIf="selectedFile && files.length === 0">
                           <label>Attachements</label>
                           <span>
                             <div class="file-container">

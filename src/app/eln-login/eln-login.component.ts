@@ -21,6 +21,8 @@ export class ElnLoginComponent implements OnInit {
   username: string;
   password: string;
   authError: string;
+  showPassword: boolean = false;
+
   constructor(private formBuilder:FormBuilder,private route:Router,
     private loginService:LoginserviceService,private toastr: ToastrService, private userService: UserService) { 
   }
@@ -30,6 +32,10 @@ export class ElnLoginComponent implements OnInit {
       'Username': ['', [Validators.required]],
       'Password': ['', [Validators.required]]
     });
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
  
 onSubmit(){
