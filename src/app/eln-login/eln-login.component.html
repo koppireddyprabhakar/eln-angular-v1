@@ -11,30 +11,34 @@
             <h5 class="card-title text-center pb-0 fs-4">Login to Your Account</h5>
             <p class="text-center small">Enter your username & password to login</p>
             </div>
-            <form   class="row g-3 needs-validation" [formGroup]="loginForm" novalidate>
-            <div class="col-12">
-            <label for="yourUsername" class="form-label">Username</label>
-            <div class="input-group has-validation">
-            <span class="input-group-text" id="inputGroupPrepend">@</span> <input type="text" name="username" [(ngModel)]="username" formControlName="Username" class="form-control" id="username" required>
-            <div class="invalid-feedback">Please enter your username.</div>
-            </div>
-            </div>
-            <div class="col-12">
-                <label for="yourPassword" class="form-label">Password</label>
+            <form class="row g-3 needs-validation" [formGroup]="loginForm" novalidate (ngSubmit)="onSubmit()">
+              <div class="col-12">
+                <label for="yourUsername" class="form-label">Username</label>
                 <div class="input-group has-validation">
-                  <input type="{{ showPassword ? 'text' : 'password' }}" name="password" [(ngModel)]="password" formControlName="Password" class="form-control" id="password" required/>
-                  <button class="input-group-text" (mousedown)="showPassword = true" (mouseup)="showPassword = false" (mouseleave)="showPassword = false">
+                  <span class="input-group-text" id="inputGroupPrepend">@</span>
+                  <input type="text" name="username" [(ngModel)]="username" formControlName="Username" class="form-control" id="username" required
+                    [ngClass]="{'is-invalid': isSubmitted && loginForm.get('Username')?.hasError('required')}"/>
+                  <div class="invalid-feedback">Please enter your username.</div>
+                </div>
+              </div>
+              <div class="col-12"> <label for="yourPassword" class="form-label">Password</label> 
+                <div class="input-group has-validation">
+                   <input type="{{ showPassword ? 'text' : 'password' }}" name="password" [(ngModel)]="password" formControlName="Password" class="form-control" id="password" required
+                    [ngClass]="{'is-invalid': isSubmitted && loginForm.get('Password')?.hasError('required')}"/>
+                  <button type="button" class="input-group-text" (mousedown)="showPassword = true" (mouseup)="showPassword = false" (mouseleave)="showPassword = false">
                     <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
-                  </button>
+                </button>                
                   <div class="invalid-feedback">Please enter your password!</div>
                 </div>
               </div>
-            <div class="col-12"> <button class="btn btn-primary w-100" type="submit" (click)="onSubmit()">Login</button></div> 
-            <!-- <p class="small mb-0"> <a routerLink="/app-update-password">Login</a></p>  -->
-            <div class="col-12">
-            <p class="small mb-0"> <a routerLink="/app-forget">Forgot Password</a></p> 
-            <!-- <p class="small mb-0" (click)="myFunc()"> Forgot Password</p> -->
-            </div>
+              <div class="col-12">
+                <button class="btn btn-primary w-100" type="submit">Login</button>
+              </div>
+              <div class="col-12">
+                <p class="small mb-0">
+                  <a routerLink="/app-forget">Forgot Password</a>
+                </p>
+              </div>
             </form>
             </div>
             </div>

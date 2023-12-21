@@ -156,7 +156,7 @@ export class DosageComponent implements OnInit {
             this.getDosages();
             this.closeButton.nativeElement.click();
             this.toastr.success(
-              'Dosage has been updated succesfully',
+              'Dosage has been created succesfully',
               'Success'
             );
           });

@@ -22,6 +22,7 @@ export class ElnLoginComponent implements OnInit {
   password: string;
   authError: string;
   showPassword: boolean = false;
+  isSubmitted: boolean = false;
 
   constructor(private formBuilder:FormBuilder,private route:Router,
     private loginService:LoginserviceService,private toastr: ToastrService, private userService: UserService) { 
@@ -39,11 +40,13 @@ export class ElnLoginComponent implements OnInit {
   }
  
 onSubmit(){
-  const request = {
-    mailId: this.username,
-    password: this.password
-  };
- 
+  this.isSubmitted = true;
+
+    if (this.loginForm.valid) {
+      const request = {
+        mailId: this.username,
+        password: this.password,
+      };
   this.loginService.login(request).subscribe((data) =>{ 
      if(data.firstLogin==1)
      {
@@ -63,6 +66,7 @@ onSubmit(){
      this.toastr.error('Invalid credentials', 'Error');
      });
   }
+ }
 
   getUserRoleAndDepartment(userDetails:any) {
     if(userDetails) {

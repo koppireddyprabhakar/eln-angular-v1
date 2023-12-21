@@ -111,7 +111,7 @@ export class AddUserComponent implements OnInit {
             })
           )
           .subscribe(() => {
-            this.toastr.success('User has been added succesfully', 'Success');
+            this.toastr.success('User has been created succesfully', 'Success');
             this.route.navigate(['/business-admin/users/']);
           });
       } else {

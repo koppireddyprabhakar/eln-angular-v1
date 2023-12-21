@@ -66,6 +66,7 @@ export class CreateFormulationComponent implements OnInit {
   public files: any = [];
 
   activeTab = 'summary';
+  isNewTabDataSaved: boolean = false;
 
   summaryForm = this.formBuilder.group({
     experimentName: ['', [Validators.required]],
@@ -324,8 +325,10 @@ export class CreateFormulationComponent implements OnInit {
       label: `New Tab - ${length + 1}`,
       isEdit: false,
       value: `newTab-${(length + 1).toString()}`,
+      showDeleteIcon: true,
     });
   }
+  
 
   saveSummary() {
     // if () {
@@ -477,7 +480,7 @@ export class CreateFormulationComponent implements OnInit {
       name: data.label,
       fileContent: this.article[index].text,
     };
-
+  
     tabValue = {
       ...tabValue,
       experimentDetailId:
@@ -485,22 +488,27 @@ export class CreateFormulationComponent implements OnInit {
           ? null
           : this.dummyTabs[index].value.substring(3),
     };
-
+  
     this.experimentService.saveExperimentTabs(tabValue).subscribe((data) => {
       this.toastr.success(
-        `Experiment Data ${this.dummyTabs[index].id ? 'updated' : 'Saved'
-        } Successfully`,
+        `Experiment Data ${this.dummyTabs[index].id ? 'updated' : 'Saved'} Successfully`,
         'Success'
       );
-      // this.dummyTabs[index]['id'] = data.data;
-      //
+  
       if (this.dummyTabs[index].value.substring(0, 3) === 'new') {
-        console.log('to summar');
+        console.log('to summary');
         this.activeTab = `${this.dummyTabs[index].value}-tab`;
         this.getExperimentDetails(this.experimentId);
       }
-      // this.getExperimentDetails(this.experimentId, 'noTabLoad');
+        this.dummyTabs[index].showDeleteIcon = false;
     });
+  }
+  
+  
+  deleteNewTab(index: number, tab: any) {
+    if (index >= 2) {
+      this.dummyTabs.splice(index, 1);
+    }
   }
 
   saveAttachment() { }

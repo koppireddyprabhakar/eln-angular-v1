@@ -13,6 +13,7 @@ export class ForgetComponent implements OnInit {
 
  forgetForm:FormGroup
  username: string;
+ isSubmitted: boolean = false;
 
   constructor(private route:Router,
     private formBuilder:FormBuilder,
@@ -27,7 +28,8 @@ export class ForgetComponent implements OnInit {
     });
   }
   onSubmit(){
-  
+    
+    this.isSubmitted = true;
     const request = {
       mailId: this.username
     };

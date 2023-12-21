@@ -71,7 +71,7 @@
           <div *ngIf="
               dosageForm.controls['dosageName'].invalid &&
               (dosageForm.controls['dosageName'].dirty ||
-                dosageForm.controls['dosageName'].touched) &&
+                dosageForm.controls['dosageName'].touched || saveButtonClicked) &&
               dosageForm.get('dosageName')?.errors &&
               dosageForm.get('dosageName')?.hasError('required')
             " class="text-danger">
@@ -90,7 +90,10 @@
                   <input type="text" class="form-control" id="formulationName" formControlName="formulationName"
                     (blur)="onChange(i, $event, formulations.value[i].formulationId)" />
                     <span
-                    *ngIf="formulations.at(i).get('formulationName')?.invalid && (formulations.at(i).get('formulationName')?.dirty && formulations.at(i).get('formulationName')?.touched || saveButtonClicked) && formulations.at(i).get('formulationName')?.hasError('required')"
+                    *ngIf="formulations.at(i).get('formulationName')?.invalid &&
+                     (formulations.at(i).get('formulationName')?.dirty &&
+                      formulations.at(i).get('formulationName')?.touched || saveButtonClicked) &&
+                       formulations.at(i).get('formulationName')?.hasError('required')"
                     class="text-danger pt-3"
                   >
                     Please enter Formulation Name

@@ -203,7 +203,11 @@ export class AnalysisDashbaordComponent implements OnInit {
     const fileData = { ...file, analysisAttachmentId: file.attachmentId, projectId: this.projectId };
     this.analysisService
       .deleteAnalysisAttachment(fileData)
-      .subscribe((experimentDetails) => { });
+      .subscribe((experimentDetails) => { 
+        if (experimentDetails['data'] === "Analysis Attachment Delete Successfully") {
+          this.getAttachments();
+        }
+      });
   }
 
   getExcipients() {
@@ -289,6 +293,7 @@ export class AnalysisDashbaordComponent implements OnInit {
       label: `New Tab - ${length + 1}`,
       isEdit: false,
       value: `newTab-${(length + 1).toString()}`,
+      showDeleteIcon: true,
     });
   }
 
@@ -388,7 +393,6 @@ export class AnalysisDashbaordComponent implements OnInit {
   }
 
   saveTab(index, data) {
-
     if (this.isValid(index)) {
       this.toastr.error('Please enter some content before attempting to save.', 'Error');
       return;
@@ -419,8 +423,16 @@ export class AnalysisDashbaordComponent implements OnInit {
         console.log(this.experimentId);
         this.getAnalysisById(this.experimentId);
       }
+      this.dummyTabs[index].showDeleteIcon = false;
     });
   }
+
+  deleteNewTab(index: number, tab: any) {
+    if (index >= 2) {
+      this.dummyTabs.splice(index, 1);
+    }
+  }
+
 
   saveAttachment() { }
 

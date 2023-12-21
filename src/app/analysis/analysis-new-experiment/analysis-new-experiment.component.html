@@ -16,7 +16,8 @@
               (click)="search(dumm.value)" [ngClass]="{ active: activeTab === dumm.value }"
               [attr.aria-controls]="dumm.value" aria-selected="true">
               {{ dumm.label }}
-              <i class="bi bi-pencil-square" (click)="editMode(i)"></i>
+              <i class="bi bi-pencil-square" (click)="editMode(i)"></i>&nbsp;&nbsp;
+              <i *ngIf="i >= 2 && dumm.showDeleteIcon" class="bi bi-x ml-2" (click)="deleteNewTab(i, dumm)" style="color: red; font-size: 15px;"></i>
               <!-- <span >Edit</span> -->
             </button>
 

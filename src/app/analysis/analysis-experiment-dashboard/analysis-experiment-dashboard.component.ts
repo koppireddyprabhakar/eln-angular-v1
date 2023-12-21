@@ -318,6 +318,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       label: `Add On - ${length + 1}`,
       isEdit: false,
       value: `newTab-${(length + 1).toString()}`,
+      showDeleteIcon: true,
     });
   }
 
@@ -408,8 +409,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   }
 
 
-
-
   isValid(index: number): boolean {
     return !this.article[index].text || this.article[index].text.trim().length === 0;
   }
@@ -432,8 +431,16 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     this.analysisService.saveAnalysisDetails(tabValue).subscribe((data) => {
       this.toastr.success(`Experiment details updated successfully`, 'Success');
       this.getAnalysisExperimentDetails(this.analysisID);
+      this.dummyTabs[index].showDeleteIcon = false;
     });
   }
+
+  deleteNewTab(index: number, tab: any) {
+    if (index >= 2) {
+      this.dummyTabs.splice(index, 1);
+    }
+  }
+
 
   saveAttachment() { }
 
@@ -515,7 +522,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
         this.loginService.login(request).subscribe(response => {
           if (response) {
             this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
-              this.toastr.success('Analysis Details Submitted succssfully', 'Success');
+              this.toastr.success('Analysis Details Submitted successfully', 'Success');
               this.route.navigateByUrl(
                 `/exp-analysis/analysis-experiments`
               );

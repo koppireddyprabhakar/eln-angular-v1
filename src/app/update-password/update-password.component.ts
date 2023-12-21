@@ -16,6 +16,7 @@ export class UpdatePasswordComponent implements OnInit {
   username:string;
   newpassword: string;
   confirmpassword: string;
+  isSubmitted: boolean = false;
    constructor(private route:Router,
     private activatedRoute:ActivatedRoute,
     private formBuilder:FormBuilder,
@@ -23,8 +24,6 @@ export class UpdatePasswordComponent implements OnInit {
     private toastr: ToastrService) { }
 
   ngOnInit(): void {
-
-
     this.activatedRoute.queryParams.subscribe((params)=>{
      this.username=params['email'];
      console.log(params);
@@ -50,28 +49,12 @@ space(event:any)
     event.prevenDefault();
   }
 }
-  // get f(){
-  //     return this.updateForm.controls;
-  //   }
   onSubmit(){
+    this.isSubmitted = true;
     const request = {
       mailId: this.username,
       password: this.newpassword
     };
-    // this.updatePasswordService.Update(request).subscribe((data)=>{
-    //   if(this.confirmpassword == this.newpassword && this.confirmpassword != '' ){
-    //     this.toastr.success(
-    //       ' Password has been updated succesfully',
-    //       'Success'
-    //     );
-    //     this.route.navigate(['/dashboard']);
-    //   }
-    //   else{
-    //     this.toastr.error(
-    //       ' Password mismatch',
-    //       'Error');
-    //   }
-    // })  
     if(this.confirmpassword == this.newpassword && this.confirmpassword != '' ){
       this.updatePasswordService.Update(request).subscribe((response)=>{
         if(response.status=200)
@@ -85,24 +68,17 @@ space(event:any)
         else{
           this.toastr.error(
             ' Password has been updated UNsuccesfully',
-            'Success'
+            'error'
           );
         }
-      
       })  
-    //       this.toastr.success(
-    //         ' Password has been updated succesfully',
-    //         'Success'
-    //       );
-    //       this.route.navigate(['/dashboard']);
     }
     else{
       this.toastr.error(
         ' Password mismatch',
-        'Success'
+        'error'
       );
     }
-
   }
 }
 function Space(event: JQuery.EventExtensions, any: any) {

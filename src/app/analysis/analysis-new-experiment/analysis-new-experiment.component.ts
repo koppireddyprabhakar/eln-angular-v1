@@ -559,6 +559,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
       label: `Add On - ${length + 1}`,
       isEdit: false,
       value: `newTab-${(length + 1).toString()}`,
+      showDeleteIcon: true,
     });
   }
 
@@ -680,7 +681,14 @@ export class AnalysisNewExperimentComponent implements OnInit {
         console.log(this.experimentId);
         this.getAnalysisById(this.experimentId);
       }
+      this.dummyTabs[index].showDeleteIcon = false;
     });
+  }
+
+   deleteNewTab(index: number, tab: any) {
+    if (index >= 2) {
+      this.dummyTabs.splice(index, 1);
+    }
   }
 
   saveAttachment() { }
