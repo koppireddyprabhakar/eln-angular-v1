@@ -213,6 +213,8 @@
                   <th>Source Name</th>
                   <th>Potency</th>
                   <th>Grade</th>
+                  <th>Quantity</th>
+                  <th>Expiry</th>
                 </tr>
               </thead>
               <tbody>
@@ -224,6 +226,8 @@
                   <td>{{ user.sourceName }}</td>
                   <td>{{ user.potency }}</td>
                   <td>{{ user.grade }}</td>
+                  <td> {{user.quantity }} </td>
+                  <td>{{user.expiryDate | date}}</td>
                 </tr>
               </tbody>
             </table>
@@ -274,8 +278,8 @@
               </div>
               <span style="margin-bottom: 15px">
                 <div><label>Comments:</label>
-                  <textarea class="form-control" style="height: 50px" [(ngModel)]="comments"
-                    name="comments" required #commentsInput="ngModel"></textarea>
+                  <textarea class="form-control" style="height: 50px" [(ngModel)]="comments" name="comments" required
+                    #commentsInput="ngModel"></textarea>
                   <div *ngIf="commentsInput.invalid && commentsInput.errors?.['required'] && submitClicked"
                     class="text-danger">
                     Please enter comments.

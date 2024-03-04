@@ -173,8 +173,15 @@ export class CreateFormulationComponent implements OnInit {
       .subscribe((data) => {
         console.log(data);
         if (data.length > 0) {
-          this.tableData = data;
-          this.selectedItems = data;
+
+          this.tableData = data.map(d => {
+            let inward = this.inwards.find(i => i.excipientId == d.excipientId);
+            return ({ ...d, experimentQuantity: d.quantity, excipientQuantity: inward.remainingQuantity, expiryDate: inward.expiryDate })
+          });
+          this.selectedItems = data.map(d => {
+            let inward = this.inwards.find(i => i.excipientId == d.excipientId);
+            return ({ ...d, experimentQuantity: d.quantity, excipientQuantity: inward.remainingQuantity })
+          });
           // this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
           //   // Destroy the table first
           //   dtInstance.destroy();
@@ -328,7 +335,6 @@ export class CreateFormulationComponent implements OnInit {
       showDeleteIcon: true,
     });
   }
-  
 
   saveSummary() {
     // if () {
@@ -390,17 +396,17 @@ export class CreateFormulationComponent implements OnInit {
   }
 
   onItemSelect(item: any) {
-    this.tableData = this.inwards
-      .filter(({ excipientId: id1 }) =>
-        this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
-      )
-      .map((data) => ({ ...data, experimentId: Number(this.experimentId) }));
-    // this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-    //   // Destroy the table first
-    //   dtInstance.destroy();
-    //   // Call the dtTrigger to rerender again
-    //   this.dtTrigger.next(this.tableData);
-    // });
+
+    this.tableData.push(...this.inwards.filter(i => i.excipientId === item.excipientId)
+      .map((data) => ({ ...data, experimentId: Number(this.experimentId), experimentQuantity: 0, excipientQuantity: data.remainingQuantity })));
+
+    this.tableData.forEach(e => {
+      if (e.excipientId === item.excipientId) {
+        e.quantity = 0;
+        e.errorMessage = "Please enter quantity.";
+      }
+    });
+
     this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
       dtElement.dtInstance.then((dtInstance: any) => {
         if (dtInstance.table().node().id === 'first-table') {
@@ -480,7 +486,7 @@ export class CreateFormulationComponent implements OnInit {
       name: data.label,
       fileContent: this.article[index].text,
     };
-  
+
     tabValue = {
       ...tabValue,
       experimentDetailId:
@@ -488,7 +494,7 @@ export class CreateFormulationComponent implements OnInit {
           ? null
           : this.dummyTabs[index].value.substring(3),
     };
-  
+
     this.experimentService.saveExperimentTabs(tabValue).subscribe((data) => {
       this.toastr.success(
         `Experiment Data ${this.dummyTabs[index].id ? 'updated' : 'Saved'} Successfully`,
@@ -533,19 +539,38 @@ export class CreateFormulationComponent implements OnInit {
     );
   }
 
+  private isEmptyOrUndefined = (value): boolean => {
+    return value === "" || value === undefined;
+  }
+
   saveExcipients() {
     if (this.selectedItems.length === 0) {
       this.toastr.error('Please select at least one excipient', 'Error');
       return;
     }
+
+    if (this.tableData.find(excipient => !this.isEmptyOrUndefined(excipient.errorMessage))) {
+      return;
+    }
+
     const isUpdate = this.tableData.some((data) => data.experimentId);
     if (!isUpdate) {
       this.tableData.forEach(data => {
         data['experimentId'] = this.experimentId;
+        data['experimentQuantity'] = 0;
       })
     }
+
+    this.tableData.forEach(e => {
+      if (e.experimentQuantity >= 0) {
+        e['changedQuantity'] = e.quantity - e.experimentQuantity;
+      }
+    });
+
     this.experimentService.saveExcipient(this.tableData).subscribe((data) => {
       this.toastr.success(data.data, 'Success');
+    }, errors => {
+      this.toastr.error(errors && errors.error, 'Error');
     });
 
   }
@@ -609,6 +634,20 @@ export class CreateFormulationComponent implements OnInit {
     let formulationStatuses = ["Analysis Submitted", "Inreview", "Review Completed", "COA Generated", "Archive"];
 
     return formulationStatuses.find(f => f.toLocaleUpperCase() === status) ? true : false;
+  }
+
+  excipientQuantityChange(result, index) {
+    this.tableData[index]['errorMessage'] = "";
+
+    if ((+result.value - this.tableData[index].experimentQuantity) > this.tableData[index].excipientQuantity) {
+      this.tableData[index]['errorMessage'] = "Please enter <= remaining qty " + (this.tableData[index].excipientQuantity ? this.tableData[index].excipientQuantity : this.tableData[index].experimentQuantity);
+      return;
+    } else if (+result.value <= 0) {
+      this.tableData[index]['errorMessage'] = "Please enter quantity.";
+      return;
+    }
+
+    this.tableData[index].quantity = +result.value;
   }
 
 }

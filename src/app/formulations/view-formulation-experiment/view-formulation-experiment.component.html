@@ -150,6 +150,8 @@
                                     <th>Source Name</th>
                                     <th>Potency</th>
                                     <th>Grade</th>
+                                    <th>Quantity</th>
+                                    <th>Expiry</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -161,6 +163,8 @@
                                     <td>{{ user.sourceName }}</td>
                                     <td>{{ user.potency }}</td>
                                     <td>{{ user.grade }}</td>
+                                    <td> {{user.quantity }} </td>
+                                    <td>{{user.expiryDate | date}}</td>
                                 </tr>
                             </tbody>
                         </table>

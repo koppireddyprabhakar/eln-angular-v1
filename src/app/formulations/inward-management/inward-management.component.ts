@@ -32,6 +32,8 @@ export class InwardManagementComponent implements OnInit {
     sourceName: ['', [Validators.required]],
     potency: ['', [Validators.required]],
     grade: ['', [Validators.required]],
+    quantity: [0, [Validators.required]],
+    expiryDate: ['', [Validators.required]]
   });
 
   dtTrigger: Subject<any> = new Subject<any>();
@@ -91,10 +93,16 @@ export class InwardManagementComponent implements OnInit {
       sourceName: this.inwardForm.get('sourceName')!.value,
       potency: this.inwardForm.get('potency')!.value,
       grade: this.inwardForm.get('grade')!.value,
+      quantity: this.inwardForm.get('quantity')!.value,
+      expiryDate: this.inwardForm.get('expiryDate')!.value,
       creationSource: departmentMapping[1]
       // status: 'New',
     };
-    if (this.inwardForm.valid) {
+
+    let isValid = this.inwardForm.get('quantity') && this.inwardForm.value.quantity != null
+      && this.inwardForm.value.quantity <= 0;
+
+    if (this.inwardForm.valid && !isValid) {
       this.globalService.showLoader();
       if (Object.keys(this.selectedInward).length === 0) {
         this.inwardService
@@ -120,6 +128,8 @@ export class InwardManagementComponent implements OnInit {
           sourceName: this.inwardForm.get('sourceName')!.value,
           potency: this.inwardForm.get('potency')!.value,
           grade: this.inwardForm.get('grade')!.value,
+          changedQuantity: this.inwardForm.get('quantity')!.value,
+          expiryDate: this.inwardForm.get('expiryDate')!.value
         };
         this.inwardService
           .updateInward(this.selectedInward)
@@ -145,6 +155,9 @@ export class InwardManagementComponent implements OnInit {
       this.inwardForm.get('sourceName')?.markAsDirty();
       this.inwardForm.get('potency')?.markAsDirty();
       this.inwardForm.get('grade')?.markAsDirty();
+      this.inwardForm.get('quantity')?.markAsDirty();
+      this.inwardForm.get('expiryDate')?.markAsDirty();
+      this.inwardForm.get('quantity')?.setValue(null);
     }
   }
 
@@ -158,6 +171,8 @@ export class InwardManagementComponent implements OnInit {
       sourceName: inward.sourceName,
       potency: inward.potency,
       grade: inward.grade,
+      quantity: inward.quantity === 0 ? null : inward.quantity,
+      expiryDate: inward.expiryDate
     });
   }
 

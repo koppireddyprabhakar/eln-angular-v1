@@ -19,6 +19,7 @@
               <i class="bi bi-pencil-square" *ngIf="isCreatedExperiment" (click)="editMode(i)"></i>&nbsp;&nbsp;
               <i *ngIf="i >= 2 && dumm.showDeleteIcon" class="bi bi-x ml-2" (click)="deleteNewTab(i, dumm)" style="color: red; font-size: 15px;"></i>
             </button>
+
             <input *ngIf="dumm.isEdit" [(ngModel)]="inputValue" type="text" class="form-control"
               (blur)="resetEditMode(i, dumm.label)" #inputfields autofocus="true" />
           </li>
@@ -50,7 +51,7 @@
             experimentDetails.experimentStatus.toUpperCase() === 'Need Correction'.toUpperCase())">
             <button class="nav-link" id="attachments-tab" [disabled]="!isCreatedExperiment" type="button"
               (click)="addNew()">
-              Add Tab
+              Add New Tab
             </button>
           </li>
         </ul>
@@ -118,7 +119,8 @@
                         <div class="row mb-3">
                           <label for="experimentName" class="col-sm-3 col-form-label">Experiment Name</label>
                           <div class="col-sm-9">
-                            <input type="text" class="form-control" id="experimentName" formControlName="experimentName"/>
+                            <input type="text" class="form-control" id="experimentName"
+                              formControlName="experimentName" />
                             <span *ngIf="
                               summaryForm.controls['experimentName'].invalid &&
                                (summaryForm.controls['experimentName'].dirty ||
@@ -188,7 +190,8 @@
             }" id="contact" role="tabpanel" aria-labelledby="contact-tab">
             <div class="pt-3 pb-3">
               <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="inwards" [(ngModel)]="selectedItems"
-                (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)" (onDeSelectAll)="onDeSelectAll()">
+                (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)"
+                (onDeSelectAll)="onDeSelectAll()">
               </ng-multiselect-dropdown>
             </div>
             <table id="first-table" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
@@ -201,17 +204,25 @@
                   <th>Source Name</th>
                   <th>Potency</th>
                   <th>Grade</th>
+                  <th>Quantity</th>
+                  <th>Expiry</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let user of tableData">
-                  <td>{{ user.excipientsName }}</td>
-                  <td>{{ user.materialName }}</td>
-                  <td>{{ user.materialType }}</td>
-                  <td>{{ user.batchNo }}</td>
-                  <td>{{ user.sourceName }}</td>
-                  <td>{{ user.potency }}</td>
-                  <td>{{ user.grade }}</td>
+                <tr *ngFor="let excipient of tableData; let i = index">
+                  <td>{{ excipient.excipientsName }}</td>
+                  <td>{{ excipient.materialName }}</td>
+                  <td>{{ excipient.materialType }}</td>
+                  <td>{{ excipient.batchNo }}</td>
+                  <td>{{ excipient.sourceName }}</td>
+                  <td>{{ excipient.potency }}</td>
+                  <td>{{ excipient.grade }}</td>
+                  <td>
+                    <input type="number" class="form-control" style="height: 50px" ngModel="{{ excipient.quantity }}"
+                      (change)="excipientQuantityChange($event.target, i)">
+                    <div *ngIf="excipient['errorMessage']" class="text-danger">{{excipient.errorMessage}}</div>
+                  </td>
+                  <td>{{excipient.expiryDate | date}}</td>
                 </tr>
               </tbody>
             </table>
