@@ -17,7 +17,8 @@
               [attr.aria-controls]="dumm.value" aria-selected="true">
               {{ dumm.label }}
               <i class="bi bi-pencil-square" (click)="editMode(i)"></i>&nbsp;&nbsp;
-              <i *ngIf="i >= 2 && dumm.showDeleteIcon" class="bi bi-x ml-2" (click)="deleteNewTab(i, dumm)" style="color: red; font-size: 15px;"></i>
+              <i *ngIf="i >= 2 && dumm.showDeleteIcon" class="bi bi-x ml-2" (click)="deleteNewTab(i, dumm)"
+                style="color: red; font-size: 15px;"></i>
               <!-- <span >Edit</span> -->
             </button>
 
@@ -169,7 +170,8 @@
             }" id="contact" role="tabpanel" aria-labelledby="contact-tab">
             <div class="pt-3 pb-3">
               <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="inwards" [(ngModel)]="selectedItems"
-                (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)"  (onDeSelectAll)="onDeSelectAll()">
+                (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)"
+                (onDeSelectAll)="onDeSelectAll()">
               </ng-multiselect-dropdown>
             </div>
             <table id="first-table" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
@@ -182,17 +184,28 @@
                   <th>Source Name</th>
                   <th>Potency</th>
                   <th>Grade</th>
+                  <th>Quantity</th>
+                  <th>Expiry</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let user of tableData">
-                  <td>{{ user.excipientsName }}</td>
-                  <td>{{ user.materialName }}</td>
-                  <td>{{ user.materialType }}</td>
-                  <td>{{ user.batchNo }}</td>
-                  <td>{{ user.sourceName }}</td>
-                  <td>{{ user.potency }}</td>
-                  <td>{{ user.grade }}</td>
+                <tr *ngFor="let excipient of tableData; let i = index">
+                  <td>{{ excipient.excipientsName }}</td>
+                  <td>{{ excipient.materialName }}</td>
+                  <td>{{ excipient.materialType }}</td>
+                  <td>{{ excipient.batchNo }}</td>
+                  <td>{{ excipient.sourceName }}</td>
+                  <td>{{ excipient.potency }}</td>
+                  <td>{{ excipient.grade }}</td>
+
+                  <td>
+                    <input type="number" class="form-control" style="height: 50px" ngModel="{{ excipient.quantity }}"
+                      (change)="excipientQuantityChange($event.target, i)">
+                    <div *ngIf="excipient['errorMessage']" class="text-danger">{{excipient.errorMessage}}</div>
+                  </td>
+
+
+                  <td>{{excipient.expiryDate | date}}</td>
                 </tr>
               </tbody>
             </table>
@@ -409,17 +422,20 @@
                   Please enter Expiry Date
                 </span>
               </div>
-            <h3 class="mt-4">Lab Tests</h3>
-            <div class="pb-3">
-              <ng-multiselect-dropdown [settings]="dropdownTestSettings" [data]="tests" [(ngModel)]="selectedTestItems"
-                (onSelect)="onTestItemSelect($event)" (onSelectAll)="onTestSelectAll($event)"
-                (onDeSelect)="testdeselect($event)"  (onDeSelectAll)="onTestDeSelectAll($event)" formControlName="labTests">
-              </ng-multiselect-dropdown>
-              <span *ngIf="isSaveClicked && testRequestForm.get('labTests')?.invalid && testRequestForm.get('labTests')?.errors?.['required']" class="text-danger">
-                Please select Lab Tests
-              </span>
-            </div>
-          </form>
+              <h3 class="mt-4">Lab Tests</h3>
+              <div class="pb-3">
+                <ng-multiselect-dropdown [settings]="dropdownTestSettings" [data]="tests"
+                  [(ngModel)]="selectedTestItems" (onSelect)="onTestItemSelect($event)"
+                  (onSelectAll)="onTestSelectAll($event)" (onDeSelect)="testdeselect($event)"
+                  (onDeSelectAll)="onTestDeSelectAll($event)" formControlName="labTests">
+                </ng-multiselect-dropdown>
+                <span
+                  *ngIf="isSaveClicked && testRequestForm.get('labTests')?.invalid && testRequestForm.get('labTests')?.errors?.['required']"
+                  class="text-danger">
+                  Please select Lab Tests
+                </span>
+              </div>
+            </form>
             <table id="second-table" datatable [dtOptions]="dtMyProjectsOptions" [dtTrigger]="dtMyProjectsTrigger"
               class="row-border hover">
               <thead>
@@ -437,7 +453,7 @@
                   <td class="options-width">
                     <textarea class="form-control" style="height: 50px" [(ngModel)]="tableTestData[rowIndex].testResult"
                       (change)="resultChange($event.target, rowIndex)"></textarea>
-                      <div *ngIf="!user.testResult && isSaveClicked" class="text-danger">Please enter details.</div>
+                    <div *ngIf="!user.testResult && isSaveClicked" class="text-danger">Please enter details.</div>
                   </td>
                 </tr>
               </tbody>

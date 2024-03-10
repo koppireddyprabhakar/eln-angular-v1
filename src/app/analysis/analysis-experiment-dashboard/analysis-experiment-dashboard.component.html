@@ -16,7 +16,8 @@
               [ngClass]="{ active: activeTab === dumm.value }" [attr.aria-controls]="dumm.value" aria-selected="true">
               {{ dumm.label }}
               <i class="bi bi-pencil-square" (click)="editMode(i)"></i>&nbsp;&nbsp;
-              <i *ngIf="i >= 2 && dumm.showDeleteIcon" class="bi bi-x ml-2" (click)="deleteNewTab(i, dumm)" style="color: red; font-size: 15px;"></i>
+              <i *ngIf="i >= 2 && dumm.showDeleteIcon" class="bi bi-x ml-2" (click)="deleteNewTab(i, dumm)"
+                style="color: red; font-size: 15px;"></i>
               <!-- <span >Edit</span> -->
             </button>
 
@@ -146,7 +147,7 @@
                           <label for="experimentName" class="col-sm-3 col-form-label">Experiment Name</label>
                           <div class="col-sm-9">
                             <input type="text" class="form-control" id="experimentName" formControlName="experimentName"
-                              [(ngModel)]=" analysisExperimentDetails.analysisName" readonly/>
+                              [(ngModel)]=" analysisExperimentDetails.analysisName" readonly />
                           </div>
                         </div>
                         <!-- <div class="row mb-3">
@@ -159,7 +160,7 @@
                           <label for="batchSize" class="col-sm-3 col-form-label">Batch Size</label>
                           <div class="col-sm-9">
                             <input type="text" class="form-control" id="batchSize" formControlName="batchSize"
-                              [(ngModel)]=" analysisExperimentDetails.batchSize" readonly/>
+                              [(ngModel)]=" analysisExperimentDetails.batchSize" readonly />
                           </div>
                         </div>
                       </form>
@@ -231,7 +232,8 @@
             }" id="contact" role="tabpanel" aria-labelledby="contact-tab">
             <div class="pt-3 pb-3">
               <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="inwards" [(ngModel)]="selectedItems"
-                (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)" (onDeSelectAll)="onDeSelectAll()">
+                (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)"
+                (onDeSelectAll)="onDeSelectAll()">
               </ng-multiselect-dropdown>
             </div>
             <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
@@ -244,17 +246,26 @@
                   <th>Source Name</th>
                   <th>Potency</th>
                   <th>Grade</th>
+                  <th>Quantity</th>
+                  <th>Expiry</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let user of tableData">
-                  <td>{{ user.excipientsName }}</td>
-                  <td>{{ user.materialName }}</td>
-                  <td>{{ user.materialType }}</td>
-                  <td>{{ user.batchNo }}</td>
-                  <td>{{ user.sourceName }}</td>
-                  <td>{{ user.potency }}</td>
-                  <td>{{ user.grade }}</td>
+                <tr *ngFor="let excipient of tableData; let i = index">
+                  <td>{{ excipient.excipientsName }}</td>
+                  <td>{{ excipient.materialName }}</td>
+                  <td>{{ excipient.materialType }}</td>
+                  <td>{{ excipient.batchNo }}</td>
+                  <td>{{ excipient.sourceName }}</td>
+                  <td>{{ excipient.potency }}</td>
+                  <td>{{ excipient.grade }}</td>
+                  <td>
+                    <input type="number" class="form-control" style="height: 50px" ngModel="{{ excipient.quantity }}"
+                      (change)="excipientQuantityChange($event.target, i)">
+                    <div *ngIf="excipient['errorMessage']" class="text-danger">{{excipient.errorMessage}}</div>
+                  </td>
+
+                  <td>{{excipient.expiryDate | date}}</td>
                 </tr>
               </tbody>
             </table>
@@ -292,7 +303,7 @@
                 <div class="col-lg-6">
                   <textarea class="form-control" style="height: 50px" ngModel="{{ result.testResult }}"
                     (change)="trfResultChange($event.target, i)"></textarea>
-                    <div *ngIf="!result.testResult && isSaveClicked" class="text-danger">Please enter details.</div>
+                  <div *ngIf="!result.testResult && isSaveClicked" class="text-danger">Please enter details.</div>
                   <!-- <input type="text" [(ngModel)]="result.testResult" /> -->
                 </div>
               </div>

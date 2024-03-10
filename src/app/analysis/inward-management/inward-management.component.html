@@ -23,10 +23,12 @@
                   <th>Inward Name</th>
                   <th>Material Name</th>
                   <th>Material Type</th>
-                  <th>Batch Number</th>
-                  <th>Source Name</th>
+                  <th>Batch/Lot No</th>
+                  <th>Source/Make</th>
                   <th>Potency</th>
                   <th>Grade</th>
+                  <th>Qunatity</th>
+                  <th>Expiry</th>
                   <th>Options</th>
                 </tr>
               </thead>
@@ -40,6 +42,8 @@
                   <td>{{ inward.sourceName }}</td>
                   <td>{{ inward.potency }}</td>
                   <td>{{ inward.grade }}</td>
+                  <td>{{inward.quantity}}</td>
+                  <td>{{inward.expiryDate | date}}</td>
                   <td>
                     <i data-bs-toggle="modal" data-bs-target="#inwardForms" (click)="selectInward(inward)"
                       class="editIcon ri-edit-2-fill"></i>
@@ -107,7 +111,7 @@
             </span>
           </div>
           <div class="col-6">
-            <label for="batchNumber" class="form-label">Batch Number</label>
+            <label for="batchNumber" class="form-label">Batch/Lot No</label>
             <input type="email" class="form-control" id="batchNumber" formControlName="batchNumber" />
             <span *ngIf="
                 inwardForm.controls['batchNumber'].invalid &&
@@ -116,11 +120,11 @@
                 inwardForm.get('batchNumber')?.errors &&
                 inwardForm.get('batchNumber')?.hasError('required')
               " class="text-danger">
-              Please enter Batch Number
+              Please enter Batch/Lot No
             </span>
           </div>
           <div class="col-6">
-            <label for="sourceName" class="form-label">Source Name</label>
+            <label for="sourceName" class="form-label">Source/Make</label>
             <input type="email" class="form-control" id="sourceName" formControlName="sourceName" />
             <span *ngIf="
                 inwardForm.controls['sourceName'].invalid &&
@@ -129,7 +133,7 @@
                 inwardForm.get('sourceName')?.errors &&
                 inwardForm.get('sourceName')?.hasError('required')
               " class="text-danger">
-              Please enter Source Name
+              Please enter Source/Make
             </span>
           </div>
           <div class="col-6">
@@ -158,6 +162,37 @@
               Please enter Grade
             </span>
           </div>
+
+          <div class="col-6">
+            <label for="quantity" class="form-label">Quantity (mg)</label>
+            <input type="number" class="form-control" id="quantity" formControlName="quantity" />
+            <span *ngIf="
+                inwardForm.controls['quantity'].invalid &&
+                (inwardForm.controls['quantity'].dirty ||
+                  inwardForm.controls['quantity'].touched) &&
+                inwardForm.get('quantity')?.errors &&
+                inwardForm.get('quantity')?.hasError('required')
+              " class="text-danger">
+              Please enter Quantity
+            </span>
+          </div>
+
+          <div class="col-6">
+            <label for="expiryDate" class="form-label">Expiry Date</label>
+            <input type="date" class="form-control" id="expiryDate" formControlName="expiryDate" />
+            <span *ngIf="
+                inwardForm.controls['expiryDate'].invalid &&
+                (inwardForm.controls['expiryDate'].dirty ||
+                  inwardForm.controls['expiryDate'].touched) &&
+                inwardForm.get('expiryDate')?.errors &&
+                inwardForm
+                  .get('expiryDate')
+                  ?.hasError('required')
+              " class="text-danger">
+              Please enter Expiry Date
+            </span>
+          </div>
+
         </form>
       </div>
       <div class="modal-footer">

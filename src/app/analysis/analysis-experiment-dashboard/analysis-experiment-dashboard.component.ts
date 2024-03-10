@@ -82,6 +82,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
 
   public selectedFile: any;
   public startDate = new Date();
+  errorMessage: string = "Please enter details.";
 
   constructor(
     private readonly projectService: ProjectService,
@@ -171,8 +172,16 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       .subscribe((data) => {
         console.log(data);
         if (data.length > 0) {
-          this.tableData = data;
-          this.selectedItems = data;
+
+          this.tableData = data.map(d => {
+            let inward = this.inwards.find(i => i.excipientId == d.excipientId);
+            return ({ ...d, experimentQuantity: d.quantity, excipientQuantity: inward.remainingQuantity, expiryDate: inward.expiryDate })
+          });
+          this.selectedItems = data.map(d => {
+            let inward = this.inwards.find(i => i.excipientId == d.excipientId);
+            return ({ ...d, experimentQuantity: d.quantity, excipientQuantity: inward.remainingQuantity })
+          });
+
           this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
             // Destroy the table first
             dtInstance.destroy();
@@ -200,7 +209,8 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       .subscribe((attachments) => {
         this.files = attachments;
 
-        if (this.analysisExperimentDetails && (this.analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()) ||
+        if (this.analysisExperimentDetails && this.analysisExperimentDetails.status &&
+          (this.analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()) ||
           (this.analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase())
           || (this.analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase())) {
           let userName = this.loginService.userDetails ? this.loginService.userDetails['mailId'] : '';
@@ -318,7 +328,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       label: `Add On - ${length + 1}`,
       isEdit: false,
       value: `newTab-${(length + 1).toString()}`,
-      showDeleteIcon: true,
     });
   }
 
@@ -362,11 +371,17 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   }
 
   onItemSelect(item: any) {
-    this.tableData = this.inwards
-      .filter(({ excipientId: id1 }) =>
-        this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
-      )
-      .map((table) => ({ ...table, analysisId: Number(this.analysisID) }));
+
+    this.tableData.push(...this.inwards.filter(i => i.excipientId === item.excipientId)
+      .map((data) => ({ ...data, analysisId: Number(this.analysisID), experimentQuantity: 0, excipientQuantity: data.remainingQuantity })));
+
+    this.tableData.forEach(e => {
+      if (e.excipientId === item.excipientId) {
+        e.quantity = 0;
+        e.errorMessage = "Please enter quantity.";
+      }
+    });
+
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
       dtInstance.destroy();
@@ -480,15 +495,40 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     console.log(this.resultsData);
   }
 
+  private isEmptyOrUndefined = (value): boolean => {
+    return value === "" || value === undefined;
+  }
+
   saveExcipients() {
     if (this.selectedItems.length === 0) {
       this.toastr.error('Please select at least one excipient', 'Error');
       return;
     }
+    this.isSaveClicked = true;
+
+    if (this.tableData.find(excipient => !this.isEmptyOrUndefined(excipient.errorMessage))) {
+      return;
+    }
+
+    const isUpdate = this.tableData.some((data) => data.analysisId);
+    if (!isUpdate) {
+      this.tableData.forEach(data => {
+        data['experimentId'] = this.analysisID;
+        data['experimentQuantity'] = 0;
+      })
+    }
+
+    this.tableData.forEach(e => {
+      if (e.experimentQuantity >= 0) {
+        e['changedQuantity'] = e.quantity - e.experimentQuantity;
+      }
+    });
+
     this.analysisService
       .saveAnalysisExcipient(this.tableData)
       .subscribe((data) => {
         this.toastr.success('Excipients Updated successfully', 'Success');
+        this.getExcipientDetails();
       });
   }
   saveResults() {
@@ -509,7 +549,8 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       status: status,
       summary: summary ? summary : status
     }
-    if (this.analysisExperimentDetails && (this.analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()) ||
+    if (this.analysisExperimentDetails && this.analysisExperimentDetails.status &&
+      (this.analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()) ||
       (this.analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase())
       || (this.analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase())) {
       if (!this.userValidateForm.invalid) {
@@ -543,4 +584,19 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     }
 
   }
+
+  excipientQuantityChange(result, index) {
+    this.tableData[index]['errorMessage'] = "";
+
+    if ((+result.value - this.tableData[index].experimentQuantity) > this.tableData[index].excipientQuantity) {
+      this.tableData[index]['errorMessage'] = "Please enter <= remaining qty " + (this.tableData[index].excipientQuantity ? this.tableData[index].excipientQuantity : this.tableData[index].experimentQuantity);
+      return;
+    } else if (+result.value <= 0) {
+      this.tableData[index]['errorMessage'] = "Please enter quantity.";
+      return;
+    }
+
+    this.tableData[index].quantity = +result.value;
+  }
+
 }

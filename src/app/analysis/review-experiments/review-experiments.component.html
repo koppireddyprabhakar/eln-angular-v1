@@ -152,6 +152,8 @@
                   <th>Source Name</th>
                   <th>Potency</th>
                   <th>Grade</th>
+                  <th>Quantity</th>
+                  <th>Expiry</th>
                 </tr>
               </thead>
               <tbody>
@@ -163,6 +165,8 @@
                   <td>{{ user.sourceName }}</td>
                   <td>{{ user.potency }}</td>
                   <td>{{ user.grade }}</td>
+                  <td> {{user.quantity }} </td>
+                  <td>{{user.expiryDate | date}}</td>
                 </tr>
               </tbody>
             </table>
@@ -425,8 +429,8 @@
               <h4>Review</h4>
 
               <div style="margin-bottom: 15px">
-                <input type="radio" id="needCorrection" name="review" value="Need Correction"
-                  [(ngModel)]="reviewStatus" (change)="isOptionSelected = true" required>
+                <input type="radio" id="needCorrection" name="review" value="Need Correction" [(ngModel)]="reviewStatus"
+                  (change)="isOptionSelected = true" required>
                 <label for="needCorrection">Need Correction</label><br>
                 <input type="radio" id="reviewCompleted" name="review" value="Review Completed"
                   [(ngModel)]="reviewStatus" (change)="isOptionSelected = true" required>
@@ -435,14 +439,15 @@
               <div *ngIf="!isOptionSelected && submitClicked" class="text-danger">
                 Please select an option.
               </div>
-              
+
               <span style="margin-bottom: 15px">
                 <div><label>Comments:</label>
-                  <textarea class="form-control" label="Comments" style="height: 50px" [(ngModel)]="summary" name="comments" required #commentsInput="ngModel"></textarea>
+                  <textarea class="form-control" label="Comments" style="height: 50px" [(ngModel)]="summary"
+                    name="comments" required #commentsInput="ngModel"></textarea>
                   <div *ngIf="commentsInput.invalid && commentsInput.errors?.['required'] && submitClicked"
-                  class="text-danger">
-                  Please enter comments.
-                </div>
+                    class="text-danger">
+                    Please enter comments.
+                  </div>
                 </div>
               </span>
             </div>

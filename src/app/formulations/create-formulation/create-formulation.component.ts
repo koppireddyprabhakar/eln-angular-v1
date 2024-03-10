@@ -21,6 +21,7 @@ import { LoginserviceService } from '@app/shared/services/login/loginservice.ser
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { environment } from "src/environments/environment";
 import { departmentMapping } from '@app/shared/constants/mappings';
+import { CommonFunctionsService } from '@app/shared/services/common-functions/common-functions.service';
 
 @Component({
   selector: 'app-create-formulation',
@@ -103,6 +104,7 @@ export class CreateFormulationComponent implements OnInit {
     private route: Router,
     private loginService: LoginserviceService,
     private globalService: GlobalService,
+    private commonFunctionsService: CommonFunctionsService
   ) { }
 
   ngOnInit(): void {
@@ -171,7 +173,7 @@ export class CreateFormulationComponent implements OnInit {
     this.experimentService
       .getExcipientDetailsById(this.experimentId)
       .subscribe((data) => {
-        console.log(data);
+
         if (data.length > 0) {
 
           this.tableData = data.map(d => {
@@ -182,12 +184,6 @@ export class CreateFormulationComponent implements OnInit {
             let inward = this.inwards.find(i => i.excipientId == d.excipientId);
             return ({ ...d, experimentQuantity: d.quantity, excipientQuantity: inward.remainingQuantity })
           });
-          // this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          //   // Destroy the table first
-          //   dtInstance.destroy();
-          //   // Call the dtTrigger to rerender again
-          //   this.dtTrigger.next(this.tableData);
-          // });
 
           this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
             dtElement.dtInstance.then((dtInstance: any) => {
@@ -539,17 +535,13 @@ export class CreateFormulationComponent implements OnInit {
     );
   }
 
-  private isEmptyOrUndefined = (value): boolean => {
-    return value === "" || value === undefined;
-  }
-
   saveExcipients() {
     if (this.selectedItems.length === 0) {
       this.toastr.error('Please select at least one excipient', 'Error');
       return;
     }
 
-    if (this.tableData.find(excipient => !this.isEmptyOrUndefined(excipient.errorMessage))) {
+    if (this.tableData.find(excipient => !this.commonFunctionsService.isEmptyOrUndefined(excipient.errorMessage))) {
       return;
     }
 

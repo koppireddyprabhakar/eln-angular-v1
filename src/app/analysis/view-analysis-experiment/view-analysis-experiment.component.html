@@ -154,17 +154,21 @@
                                     <th>Source Name</th>
                                     <th>Potency</th>
                                     <th>Grade</th>
+                                    <th>Quantity</th>
+                                    <th>Expiry</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let user of tableData">
-                                    <td>{{ user.excipientsName }}</td>
-                                    <td>{{ user.materialName }}</td>
-                                    <td>{{ user.materialType }}</td>
-                                    <td>{{ user.batchNo }}</td>
-                                    <td>{{ user.sourceName }}</td>
-                                    <td>{{ user.potency }}</td>
-                                    <td>{{ user.grade }}</td>
+                                <tr *ngFor="let excipient of tableData">
+                                    <td>{{ excipient.excipientsName }}</td>
+                                    <td>{{ excipient.materialName }}</td>
+                                    <td>{{ excipient.materialType }}</td>
+                                    <td>{{ excipient.batchNo }}</td>
+                                    <td>{{ excipient.sourceName }}</td>
+                                    <td>{{ excipient.potency }}</td>
+                                    <td>{{ excipient.grade }}</td>
+                                    <td> {{excipient.quantity }} </td>
+                                    <td>{{excipient.expiryDate | date}}</td>
                                 </tr>
                             </tbody>
                         </table>

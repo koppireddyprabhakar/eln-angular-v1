@@ -23,6 +23,7 @@ import { ProjectService } from '@app/shared/services/project/project.service';
 import { TestService } from '@app/shared/services/test/test.service';
 import { environment } from "src/environments/environment";
 import { departmentMapping } from '@app/shared/constants/mappings';
+import { CommonFunctionsService } from '@app/shared/services/common-functions/common-functions.service';
 
 @Component({
   selector: 'app-analysis-new-experiment',
@@ -110,10 +111,10 @@ export class AnalysisNewExperimentComponent implements OnInit {
   };
 
   public startDate = new Date();
+  errorMessage: string = "Please enter details.";
 
   constructor(
     private readonly projectService: ProjectService,
-    private readonly experimentService: ExperimentService,
     private readonly analysisService: AnalysisService,
     private readonly inwardService: InwardManagementService,
     private readonly testService: TestService,
@@ -123,7 +124,8 @@ export class AnalysisNewExperimentComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private route: Router,
-    private loginService: LoginserviceService
+    private loginService: LoginserviceService,
+    private commonFunctionsService: CommonFunctionsService
   ) { }
 
   ngOnInit(): void {
@@ -271,10 +273,16 @@ export class AnalysisNewExperimentComponent implements OnInit {
     this.analysisService
       .getExcipientDetailsById(this.experimentId)
       .subscribe((data) => {
-        console.log(data);
+
         if (data.length > 0) {
-          this.tableData = data;
-          this.selectedItems = data;
+          this.tableData = data.map(d => {
+            let inward = this.inwards.find(i => i.excipientId == d.excipientId);
+            return ({ ...d, experimentQuantity: d.quantity, excipientQuantity: inward.remainingQuantity, expiryDate: inward.expiryDate })
+          });
+          this.selectedItems = data.map(d => {
+            let inward = this.inwards.find(i => i.excipientId == d.excipientId);
+            return ({ ...d, experimentQuantity: d.quantity, excipientQuantity: inward.remainingQuantity })
+          });
           this.dtElements.forEach(
             (dtElement: DataTableDirective, index: number) => {
               dtElement.dtInstance.then((dtInstance: any) => {
@@ -594,11 +602,17 @@ export class AnalysisNewExperimentComponent implements OnInit {
   }
 
   onItemSelect(item: any) {
-    this.tableData = this.inwards
-      .filter(({ excipientId: id1 }) =>
-        this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
-      )
-      .map((table) => ({ ...table, analysisId: Number(this.experimentId) }));
+
+    this.tableData.push(...this.inwards.filter(i => i.excipientId === item.excipientId)
+      .map((data) => ({ ...data, analysisId: Number(this.experimentId), experimentQuantity: 0, excipientQuantity: data.remainingQuantity })));
+
+    this.tableData.forEach(e => {
+      if (e.excipientId === item.excipientId) {
+        e.quantity = 0;
+        e.errorMessage = "Please enter quantity.";
+      }
+    });
+
     this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
       dtElement.dtInstance.then((dtInstance: any) => {
         if (dtInstance.table().node().id === 'first-table') {
@@ -685,7 +699,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
     });
   }
 
-   deleteNewTab(index: number, tab: any) {
+  deleteNewTab(index: number, tab: any) {
     if (index >= 2) {
       this.dummyTabs.splice(index, 1);
     }
@@ -718,6 +732,25 @@ export class AnalysisNewExperimentComponent implements OnInit {
       this.toastr.error('Please select at least one excipient', 'Error');
       return;
     }
+    this.isSaveClicked = true;
+
+    if (this.tableData.find(excipient => !this.commonFunctionsService.isEmptyOrUndefined(excipient.errorMessage))) {
+      return;
+    }
+
+    const isUpdate = this.tableData.some((data) => data.analysisId);
+    if (!isUpdate) {
+      this.tableData.forEach(data => {
+        data['experimentId'] = this.experimentId;
+        data['experimentQuantity'] = 0;
+      })
+    }
+
+    this.tableData.forEach(e => {
+      if (e.experimentQuantity >= 0) {
+        e['changedQuantity'] = e.quantity - e.experimentQuantity;
+      }
+    });
 
     this.analysisService
       .saveAnalysisExcipient(this.tableData)
@@ -739,4 +772,19 @@ export class AnalysisNewExperimentComponent implements OnInit {
         this.route.navigateByUrl(`/exp-analysis/list`);
       });
   }
+
+  excipientQuantityChange(result, index) {
+    this.tableData[index]['errorMessage'] = "";
+
+    if ((+result.value - this.tableData[index].experimentQuantity) > this.tableData[index].excipientQuantity) {
+      this.tableData[index]['errorMessage'] = "Please enter <= remaining qty " + (this.tableData[index].excipientQuantity ? this.tableData[index].excipientQuantity : this.tableData[index].experimentQuantity);
+      return;
+    } else if (+result.value <= 0) {
+      this.tableData[index]['errorMessage'] = "Please enter quantity.";
+      return;
+    }
+
+    this.tableData[index].quantity = +result.value;
+  }
+
 }
