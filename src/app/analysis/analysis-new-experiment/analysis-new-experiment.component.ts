@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { forkJoin, interval, Subject, Subscription } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
 
@@ -112,6 +112,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
 
   public startDate = new Date();
   errorMessage: string = "Please enter details.";
+  public intervalSubscripton$: Subscription;
 
   constructor(
     private readonly projectService: ProjectService,
@@ -129,6 +130,13 @@ export class AnalysisNewExperimentComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    const saveDataForEveryFiveMinutes = 5 * 60 * 1000;
+    this.intervalSubscripton$ = interval(saveDataForEveryFiveMinutes).subscribe((v) => {
+      if (this.experimentDetails) {
+        this.autoSave();
+      }
+    });
+
     this.selectedTrfs$.subscribe((trfs) => {
       this.selectedTrfs = trfs;
       console.log(trfs);
@@ -188,6 +196,10 @@ export class AnalysisNewExperimentComponent implements OnInit {
   ngAfterViewInit(): void {
     this.dtTrigger.next(null);
     this.dtMyProjectsTrigger.next(null);
+  }
+
+  ngOnDestroy(): void {
+    this.intervalSubscripton$.unsubscribe();
   }
 
   getProjectDetails() {
@@ -697,6 +709,40 @@ export class AnalysisNewExperimentComponent implements OnInit {
       }
       this.dummyTabs[index].showDeleteIcon = false;
     });
+  }
+
+  private autoSave() {
+
+    let saveCalls: any = [];
+
+    for (let index = 0; index < this.dummyTabs.length; index++) {
+
+      if (this.article[index].text && this.article[index].text.trim().length) {
+
+        let tabValue: any = {
+          status: 'Active',
+          analysisId: this.experimentId,
+          name: this.dummyTabs[index].label,
+          fileContent: this.article[index].text,
+        };
+
+        tabValue = {
+          ...tabValue,
+          analysisDetailId:
+            this.dummyTabs[index].value.substring(0, 3) === 'new'
+              ? null
+              : this.dummyTabs[index].value.substring(3),
+        };
+        saveCalls.push(this.analysisService.saveAnalysisDetails(tabValue));
+      }
+    }
+
+    if (saveCalls.length) {
+      forkJoin(saveCalls).subscribe(response => {
+        console.log("Saved Successfully..." + response);
+      })
+    }
+
   }
 
   deleteNewTab(index: number, tab: any) {

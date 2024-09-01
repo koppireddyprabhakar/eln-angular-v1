@@ -6,19 +6,18 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { forkJoin, interval, Subject, Subscription } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
-import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
-import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { environment } from "src/environments/environment";
 import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { departmentMapping } from '@app/shared/constants/mappings';
+import { CommonFunctionsService } from '@app/shared/services/common-functions/common-functions.service';
 
 @Component({
   selector: 'app-analysis-experiment-dashboard',
@@ -83,6 +82,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   public selectedFile: any;
   public startDate = new Date();
   errorMessage: string = "Please enter details.";
+  public intervalSubscripton$: Subscription;
 
   constructor(
     private readonly projectService: ProjectService,
@@ -100,6 +100,15 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.getExcipients();
+
+    const saveDataForEveryFiveMinutes = 5 * 60 * 1000;
+    this.intervalSubscripton$ = interval(saveDataForEveryFiveMinutes).subscribe((v) => {
+      if (this.analysisExperimentDetails) {
+        this.autoSave();
+      }
+    });
+
+
     this.columns = [
       { key: 'excipientsName', title: 'Inward Name' },
       { key: 'materialName', title: 'Material Name' },
@@ -131,6 +140,10 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.dtTrigger.next(null);
+  }
+
+  ngOnDestroy(): void {
+    this.intervalSubscripton$.unsubscribe();
   }
 
   getProjectDetails() {
@@ -170,7 +183,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     this.analysisService
       .getExcipientDetailsById(this.analysisID)
       .subscribe((data) => {
-        console.log(data);
+
         if (data.length > 0) {
 
           this.tableData = data.map(d => {
@@ -448,6 +461,35 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       this.getAnalysisExperimentDetails(this.analysisID);
       this.dummyTabs[index].showDeleteIcon = false;
     });
+  }
+
+  private autoSave() {
+
+    let saveCalls: any = [];
+
+    for (let index = 0; index < this.dummyTabs.length; index++) {
+
+      if (this.article[index].text && this.article[index].text.trim().length) {
+
+        let tabValue: any = {
+          status: 'ACTIVE',
+          analysisId: Number(this.analysisID),
+          analysisDetailId:
+            this.analysisExperimentDetails.analysisDetails[index].analysisDetailId,
+          name: this.dummyTabs[index].label,
+          fileContent: this.article[index].text,
+        };
+
+        saveCalls.push(this.analysisService.saveAnalysisDetails(tabValue));
+      }
+    }
+
+    if (saveCalls.length) {
+      forkJoin(saveCalls).subscribe(response => {
+        console.log("Saved Successfully..." + response);
+      })
+    }
+
   }
 
   deleteNewTab(index: number, tab: any) {

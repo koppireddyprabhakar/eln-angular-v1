@@ -6,10 +6,11 @@ import {
   Renderer2,
   ViewChildren,
   QueryList,
+  OnDestroy,
 } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Route, Router } from '@angular/router';
-import { Subject, takeWhile } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { forkJoin, interval, Observable, of, Subject, Subscription, switchMap, takeWhile } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
 
@@ -28,7 +29,7 @@ import { CommonFunctionsService } from '@app/shared/services/common-functions/co
   templateUrl: './create-formulation.component.html',
   styleUrls: ['./create-formulation.component.scss'],
 })
-export class CreateFormulationComponent implements OnInit {
+export class CreateFormulationComponent implements OnInit, OnDestroy {
   @ViewChildren(DataTableDirective)
   dtElements: QueryList<DataTableDirective>;
 
@@ -91,6 +92,7 @@ export class CreateFormulationComponent implements OnInit {
     userName: [''],
     password: [''],
   });
+  public intervalSubscripton$: Subscription;
 
   constructor(
     private readonly projectService: ProjectService,
@@ -108,6 +110,14 @@ export class CreateFormulationComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    const saveDataForEveryFiveMinutes = 5 * 60 * 1000;
+
+    this.intervalSubscripton$ = interval(saveDataForEveryFiveMinutes).subscribe((v) => {
+      if (this.experimentDetails) {
+        this.autoSave();
+      }
+    });
+
     this.getExcipients();
     this.columns = [
       { key: 'excipientsName', title: 'Inward Name' },
@@ -138,6 +148,10 @@ export class CreateFormulationComponent implements OnInit {
     this.getBatchNumber();
     this.getExperimentDetails(this.experimentId);
     this.getProjectDetails();
+  }
+
+  ngOnDestroy(): void {
+    this.intervalSubscripton$.unsubscribe();
   }
 
   ngAfterViewInit(): void {
@@ -465,6 +479,39 @@ export class CreateFormulationComponent implements OnInit {
     });
   }
 
+  private autoSave() {
+
+    let saveCalls: any = [];
+
+    for (let index = 0; index < this.dummyTabs.length; index++) {
+
+      if (this.article[index].text && this.article[index].text.trim().length) {
+
+        let tabValue: any = {
+          status: 'Active',
+          experimentId: this.experimentId,
+          name: this.dummyTabs[index].label,
+          fileContent: this.article[index].text,
+        };
+
+        tabValue = {
+          ...tabValue,
+          experimentDetailId:
+            this.dummyTabs[index].value.substring(0, 3) === 'new'
+              ? null
+              : this.dummyTabs[index].value.substring(3),
+        };
+        saveCalls.push(this.experimentService.saveExperimentTabs(tabValue));
+      }
+    }
+
+    if (saveCalls.length) {
+      forkJoin(saveCalls).subscribe(response => {
+        console.log("Saved Successfully..." + response);
+      })
+    }
+
+  }
 
   isValid(index: number): boolean {
     return !this.article[index].text || this.article[index].text.trim().length === 0;
@@ -477,7 +524,7 @@ export class CreateFormulationComponent implements OnInit {
     }
     const sss = JSON.stringify(this.article[index].text);
     let tabValue: any = {
-      status: 'string',
+      status: 'Active',
       experimentId: this.experimentId,
       name: data.label,
       fileContent: this.article[index].text,
