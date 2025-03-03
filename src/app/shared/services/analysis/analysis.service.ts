@@ -228,6 +228,13 @@ export class AnalysisService {
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
+  
+  generateUniqueAnalysisExperimentId() {
+    const url = elnEndpointsConfig.endpoints['getUniqeAnalysisExperimentName'];
+    return this.http.get(url, { responseType: 'text' }).pipe(
+      catchError((err: HttpErrorResponse) => this.handleError(err))
+    );
+  }
 
   handleError(error: HttpErrorResponse) {
     const errorDetail = ClientService.formatError(error);

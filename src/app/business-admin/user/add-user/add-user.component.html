@@ -220,6 +220,9 @@
           >
             Please enter Mail Id
           </span>
+          <div *ngIf="showErrorMsg">
+            <span style="color:red">This email is already exist</span>
+          </div>
         </div>
         <div class="col-4">
           <label for="addressLine1" class="form-label">Address Line 1</label>

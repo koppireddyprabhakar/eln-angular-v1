@@ -40,6 +40,7 @@ export class TeamComponent implements OnInit {
   dtOptions = {
     pagingType: 'full_numbers',
   };
+  public showErrorMsg: boolean = false;
 
   @ViewChild('closeButton') closeButton: ElementRef;
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
@@ -64,6 +65,7 @@ export class TeamComponent implements OnInit {
   }
 
   addTeam() {
+    this.showErrorMsg = false;
     this.selectedTeam = {} as TeamsList;
     this.teamForm.reset();
   }
@@ -111,6 +113,16 @@ export class TeamComponent implements OnInit {
   }
 
   saveTeam() {
+    this.showErrorMsg = false;
+    let formTeamName = this.teamForm['controls'] && this.teamForm['controls']['teamName'].value ? this.teamForm['controls']['teamName'].value : '';
+
+    let isObjectExists = this.teams.find(i =>
+      i.teamName === formTeamName && i !== this.selectedTeam
+    );
+    if (isObjectExists && (Object.keys(this.selectedTeam).length === 0 || (this.selectedTeam.teamName !== formTeamName))) {
+      this.showErrorMsg = true;
+      return;
+    }
     const newTeam = {
       teamName: this.teamForm.get('teamName')!.value,
       deptId: this.teamForm.get('deptId')!.value,
@@ -172,6 +184,7 @@ export class TeamComponent implements OnInit {
   }
 
   selectTeam(team) {
+    this.showErrorMsg = false;
     this.selectedTeam = team;
     this.teamForm.patchValue({
       teamName: team.teamName,

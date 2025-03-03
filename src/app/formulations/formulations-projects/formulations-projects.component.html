@@ -35,6 +35,7 @@
                           <th>Product Name</th>
                           <th>Code</th>
                           <th>Dosage</th>
+                          <th>Team Name</th>
                           <th>Formulation</th>
                           <th>Strength</th>
                           <th>Creation Date</th>
@@ -48,6 +49,7 @@
                           <td>{{ project.productName }}</td>
                           <td>{{ project.productCode }}</td>
                           <td>{{ project.dosageName }}</td>
+                          <td>{{ project.teamName }}</td>
                           <td>{{ project.formulationName }}</td>
                           <td>{{ project.strength }}</td>
                           <td>{{ project.insertDate  | date }}</td>
@@ -57,7 +59,7 @@
                     </table>
                   </div>
                   <div class="tab-pane fade pt-4" id="myProjects" role="tabpanel" aria-labelledby="myProjects-tab">
-                    <table id="second-table" datatable [dtOptions]="dtMyProjectsOptions"
+                    <table id="second-table" class="fixed-table" datatable [dtOptions]="dtMyProjectsOptions"
                       [dtTrigger]="dtMyProjectsTrigger" class="row-border hover">
                       <thead>
                         <tr>
@@ -66,6 +68,7 @@
                           <th>Product Name</th>
                           <th>Code</th>
                           <th>Dosage</th>
+                          <th>Team Name</th>
                           <th>Formulation</th>
                           <!-- <th>Strength</th> -->
                           <th>Creation Date</th>
@@ -80,6 +83,7 @@
                           <td>{{ project.productName }}</td>
                           <td>{{ project.productCode }}</td>
                           <td>{{ project.dosageName }}</td>
+                          <td>{{ project.teamName }}</td>
                           <td>{{ project.formulationName }}</td>
                           <!-- <td>{{ project.strength }}</td> -->
                           <td>{{ project.insertDate  | date }}</td>

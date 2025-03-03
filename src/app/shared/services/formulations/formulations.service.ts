@@ -29,6 +29,13 @@ export class FormulationsService {
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
+  generateUniqueExperimentId() {
+    const url = elnEndpointsConfig.endpoints['getUniqeExperimentName'];
+    return this.http.get(url, { responseType: 'text' }).pipe(
+      catchError((err: HttpErrorResponse) => this.handleError(err))
+    );
+  }
+  
   getExperimentsByUserId() {
     const url = `${elnEndpointsConfig.endpoints['getExperimentsById']}?userId=${this.loginService.userDetails.userId}`;
     return this.http

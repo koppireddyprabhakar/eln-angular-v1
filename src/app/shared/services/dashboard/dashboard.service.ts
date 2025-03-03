@@ -47,6 +47,12 @@ export class DashboardService {
         .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
     }
 
+    getAnalysisExperimentStatusCount() {
+      const url = elnEndpointsConfig.endpoints['getAnalysisExperimentsStatusCount'];
+      return this.http
+        .get<any>(url)
+        .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+    }
 
     handleError(error: HttpErrorResponse) {
       const errorDetail = ClientService.formatError(error);

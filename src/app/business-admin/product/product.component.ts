@@ -89,9 +89,9 @@ export class ProductComponent implements OnInit {
   }
 
   saveProduct() {
-    let productName = this.productForm.get('productName')!.value;
+    let productCode = this.productForm.get('productCode')!.value;
 
-    let filteredProducts = this.products.filter(p => p.productName === productName);
+    let filteredProducts = this.products.filter(p => p.productCode === productCode);
 
     if (filteredProducts && filteredProducts.length === 1 && this.selectedProduct && !this.selectedProduct.productId) {
       this.showErrorMsg = true;
@@ -99,7 +99,7 @@ export class ProductComponent implements OnInit {
     } else if (filteredProducts && filteredProducts.length >= 1 && this.selectedProduct && this.selectedProduct.productId) {
       this.showErrorMsg = true;
       return;
-    }
+    }  
 
     const newProduct = {
       productName: this.productForm.get('productName')!.value,
@@ -155,6 +155,7 @@ export class ProductComponent implements OnInit {
   }
 
   selectProduct(product: Products) {
+    this.showErrorMsg = false;
     this.selectedProduct = product;
     this.productForm.patchValue({ productName: product.productName });
     this.productForm.patchValue({ productCode: product.productCode });

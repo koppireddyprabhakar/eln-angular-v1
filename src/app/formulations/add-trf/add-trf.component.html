@@ -31,6 +31,19 @@
           </span>
         </div>
         <div class="col-4">
+          <label for="marketName" class="form-label">Market</label>
+          <input type="text" class="form-control" id="marketName" formControlName="marketName" readonly />
+          <span *ngIf="
+              testRequestForm.controls['marketName'].invalid &&
+              (testRequestForm.controls['marketName'].dirty ||
+                testRequestForm.controls['marketName'].touched) &&
+              testRequestForm.get('marketName')?.errors &&
+              testRequestForm.get('marketName')?.hasError('required')
+            " class="text-danger">
+            Please enter Market Name
+          </span>
+        </div>
+        <div class="col-4">
           <label for="dosageForm" class="form-label">Dosage Form</label>
           <input type="text" class="form-control" id="dosageForm" formControlName="dosageForm" readonly />
           <span *ngIf="
@@ -222,12 +235,14 @@
             <tr>
               <th>Test Id</th>
               <th>Test Name</th>
+              <th>Test Description</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let user of tableData" class="py-2">
               <td>{{ user.testNumber }}</td>
               <td>{{ user.testName }}</td>
+              <td>{{ user.description }}</td>
             </tr>
           </tbody>
         </table>

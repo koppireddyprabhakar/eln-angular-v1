@@ -90,4 +90,8 @@ export class UserService {
   isFromFormulationDept() {
     return this.userDepartment == 'FORMULATION' ? true : false;
   }
+
+  isFromQADepartment() {
+    return this.userDepartment == 'QA DEPARTMENT' ? true : false;
+  }
 }

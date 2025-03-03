@@ -8,5 +8,6 @@ export const roleMapping = {
 export const departmentMapping = {
     1 : "FORMULATION",
     2 : "ANALYSIS",
-    3 : "INWARD MANAGEMENT"
+    3 : "INWARD MANAGEMENT",
+    4 : "QA DEPARTMENT"
 }

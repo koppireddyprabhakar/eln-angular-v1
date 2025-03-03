@@ -29,6 +29,7 @@
                 <th>Product Code</th>
                 <th>Project ID</th>
                 <th>Dosage Name</th>
+                <th>Team Name</th>
                 <th>Creation Date</th>
                 <th>Formulation Type</th>
                 <th>Strength</th>
@@ -44,6 +45,7 @@
                 <td>{{ project.productCode }}</td>
                 <td>{{ project.projectId }}</td>
                 <td>{{ project.dosageName }}</td>
+                <td>{{project.teamName}}</td>
                 <td>{{ project.insertDate  | date }}</td>
                 <td>{{ project.formulationName }}</td>
                 <td>{{ project.strength }}</td>
@@ -63,6 +65,7 @@
                 <th>Product Name</th>
                 <th>Product Code</th>
                 <th>Dosage Name</th>
+                <th>Team Name</th>
                 <th>Creation Date</th>
                 <th>Formulation Type</th>
                 <th>Strength</th>
@@ -77,15 +80,13 @@
                 <td>{{ project.productName }}</td>
                 <td>{{ project.productCode }}</td>
                 <td>{{ project.dosageName }}</td>
+                <td>{{ project.teamName }}</td>
                 <td>{{ project.insertDate  | date }}</td>
                 <td>{{ project.formulationName }}</td>
                 <td>{{ project.strength }}</td>
                 <td>{{ project.status }}</td>
                 <td>
-                  <!-- <button type="button" (click)="createFormulation(project.projectId)" class="btn btn-outline-primary">
-                    Create Experiment
-                  </button> -->
-                  <i class="btn btn-link" (click)="createFormulation(project.projectId)">
+                  <i *ngIf="project.status !== 'OnHold' && project.status !== 'Inactive'" class="btn btn-link" (click)="createFormulation(project.projectId)">
                     Add&nbsp;Experiment
                   </i>
                 </td>

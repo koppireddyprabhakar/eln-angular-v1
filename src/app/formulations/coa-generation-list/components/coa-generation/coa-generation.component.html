@@ -84,6 +84,7 @@
                     <tr>
                         <th>Test Id</th>
                         <th>Test Name</th>
+                        <th>Test description</th>
                         <th>Results</th>
                     </tr>
                 </thead>
@@ -91,6 +92,7 @@
                     <tr *ngFor="let test of tests" class="py-2">
                         <td>{{ test.testNumber }}</td>
                         <td>{{ test.testName }}</td>
+                        <td>{{ test.description }}</td>
                         <td>{{ test.testResult }}</td>
                     </tr>
                 </tbody>

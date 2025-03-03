@@ -17,7 +17,9 @@ import { ProjectService } from '@app/shared/services/project/project.service';
 import { environment } from "src/environments/environment";
 import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { departmentMapping } from '@app/shared/constants/mappings';
-import { CommonFunctionsService } from '@app/shared/services/common-functions/common-functions.service';
+import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
+import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
+//import { CommonFunctionsService } from '@app/shared/services/common-functions/common-functions.service';
 
 @Component({
   selector: 'app-analysis-experiment-dashboard',
@@ -145,6 +147,10 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   ngOnDestroy(): void {
     this.intervalSubscripton$.unsubscribe();
   }
+
+  public editorConfig = {
+    customConfig: '/assets/ckeditor/config.js', // Path to the config.js file
+  };
 
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
@@ -384,7 +390,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   }
 
   onItemSelect(item: any) {
-
     this.tableData.push(...this.inwards.filter(i => i.excipientId === item.excipientId)
       .map((data) => ({ ...data, analysisId: Number(this.analysisID), experimentQuantity: 0, excipientQuantity: data.remainingQuantity })));
 
@@ -589,7 +594,8 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     let analysisRequest = {
       analysisId: this.analysisID,
       status: status,
-      summary: summary ? summary : status
+      summary: summary ? summary : status,
+      userId: this.loginService.userDetails.userId,
     }
     if (this.analysisExperimentDetails && this.analysisExperimentDetails.status &&
       (this.analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()) ||

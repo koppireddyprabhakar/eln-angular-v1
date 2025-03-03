@@ -32,11 +32,16 @@ export class UpdatePasswordComponent implements OnInit {
 
     this.updateForm = this.formBuilder.group({
       'username':[''],
-      'newpassword': ['', [Validators.required]],
+      'newpassword': [
+        '',
+        [
+          Validators.required,
+          Validators.pattern('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{8,}')
+        ]
+      ],      
       'confirmpassword':['',[Validators.required]]
     });
   }
-
 Space(event:any)
 {
   if(event.target.selectionStart === 0 && event.code === "Space"){
@@ -49,6 +54,13 @@ space(event:any)
     event.prevenDefault();
   }
 }
+
+passwordsMatch(formGroup: FormGroup) {
+  const newpassword = formGroup.get('newpassword')?.value;
+  const confirmpassword = formGroup.get('confirmpassword')?.value;
+  return newpassword === confirmpassword ? null : { notSame: true };
+  }
+   
   onSubmit(){
     this.isSubmitted = true;
     const request = {

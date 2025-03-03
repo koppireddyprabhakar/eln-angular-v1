@@ -27,7 +27,7 @@
                   <th>Source/Make</th>
                   <th>Potency</th>
                   <th>Grade</th>
-                  <th>Qunatity</th>
+                  <th>Quantity</th>
                   <th>Expiry</th>
                   <th>Options</th>
                 </tr>
@@ -180,7 +180,7 @@
 
           <div class="col-6">
             <label for="expiryDate" class="form-label">Expiry Date</label>
-            <input type="date" class="form-control" id="expiryDate" formControlName="expiryDate" />
+            <input type="date" class="form-control" id="expiryDate" formControlName="expiryDate" [min]="today" />
             <span *ngIf="
                 inwardForm.controls['expiryDate'].invalid &&
                 (inwardForm.controls['expiryDate'].dirty ||

@@ -34,6 +34,7 @@ export const elnEndpointsConfig: EndpointConfig = {
     createProject: `${environment.API_BASE_PATH}` + '/project/create-project',
     updateProject: `${environment.API_BASE_PATH}` + '/project/update-project',
     deleteProject: `${environment.API_BASE_PATH}` + '/project/delete-project',
+    onHoldProject: `${environment.API_BASE_PATH}` + '/project/on-hold-project',
     getProjects: `${environment.API_BASE_PATH}` + '/project/get-projects',
     getProjectById: `${environment.API_BASE_PATH}` + '/project/get-project-by-id',
     getProjectsTeams: `${environment.API_BASE_PATH}` + '/project/get-formulations-teams',
@@ -43,6 +44,7 @@ export const elnEndpointsConfig: EndpointConfig = {
     deleteFormulationProject: `${environment.API_BASE_PATH}` + '/formulation-dashboard/delete-project',
     getFormulationProjects: `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-projects',
     getFormulationBatchNumber: `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-batch-number',
+    getUniqeExperimentName:`${environment.API_BASE_PATH}` + '/experiment/experiment_unique _id',
     getFormulationProjectById: `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-project-by-id',
     getFormulationProjectsTeams: `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-formulations-teams',
     getFormualtionDashboardExperiments: `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-experiments',
@@ -108,7 +110,9 @@ export const elnEndpointsConfig: EndpointConfig = {
     getExperimentsByMonths: `${environment.API_BASE_PATH}` + '/dashboard/experiments-by-month',
     getAnalysisExperimentByMonths: `${environment.API_BASE_PATH}` + '/dashboard/analysis-experiments-by-month',
     getTrfStatusByMonths: `${environment.API_BASE_PATH}` + '/dashboard/trf-by-status',
-    getExperimentStatusByMonths: `${environment.API_BASE_PATH}` + '/dashboard/experiment-by-status'
+    getExperimentStatusByMonths: `${environment.API_BASE_PATH}` + '/dashboard/experiment-by-status',
+    getAnalysisExperimentsStatusCount: `${environment.API_BASE_PATH}` + '/dashboard/analysis-experiments-by-status',
+    getUniqeAnalysisExperimentName:  `${environment.API_BASE_PATH}` + '/analysis/analysis_experiment_unique_id',
   },
 };
 

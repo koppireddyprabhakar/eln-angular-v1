@@ -116,8 +116,8 @@
                         <div class="row mb-3">
                           <label for="experimentName" class="col-sm-3 col-form-label">Experiment Name</label>
                           <div class="col-sm-9">
-                            <input type="text" class="form-control" id="experimentName" formControlName="experimentName"
-                              [readonly]="experimentId" />
+                            <input type="text" class="form-control" id="experimentName" formControlName="experimentName" readonly
+                            [readonly]="true"  />
                             <span *ngIf="
                               summaryForm.controls['experimentName'].invalid &&
                                (summaryForm.controls['experimentName'].dirty ||
@@ -198,7 +198,7 @@
               active: activeTab === dumm.value,
               show: activeTab === dumm.value
             }" id="{{ dumm.value }}" role="tabpanel" [attr.aria-labelledby]="dumm + '-tab'">
-            <ckeditor required [(ngModel)]="article[i].text" data="" name="text"></ckeditor>
+            <ckeditor [config]="editorConfig" required [(ngModel)]="article[i].text" data="" name="text"></ckeditor>
             <!-- <ckeditor data="<p>Hello, world!</p>"></ckeditor> -->
             <div class="text-center pt-3" *ngIf="
                 experimentDetails && experimentDetails.status === 'Inprogress'
@@ -221,7 +221,7 @@
             </div>
 
             <div class="tableNgx">
-              <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+              <table id = "first-table" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
                 <thead>
                   <tr>
                     <th>Inward Name</th>
@@ -231,6 +231,7 @@
                     <th>Source Name</th>
                     <th>Potency</th>
                     <th>Grade</th>
+                    <th>Quantity</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -242,6 +243,13 @@
                     <td>{{ user.sourceName }}</td>
                     <td>{{ user.potency }}</td>
                     <td>{{ user.grade }}</td>
+                    <td>
+                      <div *ngFor="let user of tableData; let i = index">
+                        <input type="number" class="form-control" style="height: 50px" [(ngModel)]="user.quantity"
+                               (ngModelChange)="excipientQuantityChange($event, i)">
+                        <div *ngIf="user['errorMessage']" class="text-danger">{{ user.errorMessage }}</div>
+                      </div>                      
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -260,24 +268,30 @@
               show: activeTab === 'results'
             }" id="results" role="tabpanel" aria-labelledby="results-tab">
             <div class="row pt-4 px-4 result-tab pb-3">
-              <div class="col-lg-4">
+              <div class="col-lg-3">
                 <div class="col-lg-6 field-label">Test Id</div>
               </div>
-              <div class="col-lg-4">
+              <div class="col-lg-3">
                 <div class="col-lg-6 field-label">Test Name</div>
               </div>
-              <div class="col-lg-4">
+              <div class="col-lg-3">
+                <div class="col-lg-6 field-label">Test Description</div>
+              </div>
+              <div class="col-lg-3">
                 <div class="col-lg-6 field-label">Results</div>
               </div>
             </div>
             <div class="row pt-4 px-4 result-tab pb-3" *ngFor="let trf of selectedTrfs; let i = index">
-              <div class="col-lg-4">
+              <div class="col-lg-3">
                 <div class="col-lg-6">{{ trf.testId }}</div>
               </div>
-              <div class="col-lg-4">
+              <div class="col-lg-3">
                 <div class="col-lg-6">{{ trf.testName }}</div>
               </div>
-              <div class="col-lg-4">
+              <div class="col-lg-3">
+                <div class="col-lg-6">{{ trf.description }}</div>
+              </div>
+              <div class="col-lg-3">
                 <div class="col-lg-6">
                   <!-- <input type="text" ngModel="{{ trf.testResult }}" /> -->
                   <!-- <textarea ngModel="{{ trf.testResult }}"></textarea>

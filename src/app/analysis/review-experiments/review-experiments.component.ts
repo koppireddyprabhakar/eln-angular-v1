@@ -65,7 +65,7 @@ export class ReviewExperimentsComponent implements OnInit {
     expiryDate: ['', [Validators.required]],
     testRequestRow: this.formBuilder.array([this.addTests()]),
   });
-
+  public startDate = new Date();
   inputValue: string;
   projectId: number;
   project: any;
@@ -402,7 +402,8 @@ export class ReviewExperimentsComponent implements OnInit {
         reviewUserId: this.reviewData['reviewUserId'],
         analysisId: this.reviewData['analysisId'],
         comments: this.summary,
-        status: this.reviewStatus
+        status: this.reviewStatus,
+        userId: this.loginService.userDetails.userId,
       };
 
       const request = {

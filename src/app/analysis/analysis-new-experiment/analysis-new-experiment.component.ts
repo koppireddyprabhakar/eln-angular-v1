@@ -113,6 +113,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
   public startDate = new Date();
   errorMessage: string = "Please enter details.";
   public intervalSubscripton$: Subscription;
+  experimentName: string;
 
   constructor(
     private readonly projectService: ProjectService,
@@ -191,6 +192,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
     this.getAnalysisById(this.experimentId);
     this.getProjectDetails();
     this.getTests();
+    this.generateUniqueAnalysisExperimentId();
   }
 
   ngAfterViewInit(): void {
@@ -201,6 +203,11 @@ export class AnalysisNewExperimentComponent implements OnInit {
   ngOnDestroy(): void {
     this.intervalSubscripton$.unsubscribe();
   }
+
+  public editorConfig = {
+    customConfig: '/assets/ckeditor/config.js', // Path to the config.js file
+  };
+ 
 
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
@@ -241,6 +248,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
       testId: [''],
       test: [''],
       results: [null],
+      description:['']
     });
   }
 
@@ -444,6 +452,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
       analysisId: this.experimentId,
       insertUser: this.loginService.userDetails.userId
     };
+    console.log('Table Test Data:', this.tableTestData);
     // if (!this.selectedTestItems || this.selectedTestItems.length === 0) {
     //   this.toastr.error('Please select at least one lab test', 'Error');
     //   return;
@@ -453,6 +462,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
         this.analysisService.updateTestForm(newTestRequest).subscribe(() => {
           this.toastr.success('Test has been added succesfully', 'Success');
           this.getResultsDetailsById();
+          console.log('get Table Test Data:',this.tableTestData);
         });
       } else {
         this.analysisService.createTestForm(newTestRequest).subscribe(() => {
@@ -810,6 +820,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
       analysisId: this.experimentId,
       status: status,
       summary: summary ? summary : status,
+      userId: this.loginService.userDetails.userId,
     };
     this.analysisService
       .updateAnalysisStatus(analysisRequest)
@@ -831,6 +842,15 @@ export class AnalysisNewExperimentComponent implements OnInit {
     }
 
     this.tableData[index].quantity = +result.value;
+  }
+  generateUniqueAnalysisExperimentId() {   
+    debugger
+    this.analysisService.generateUniqueAnalysisExperimentId().subscribe({
+      next: (data) => {
+        this.summaryForm.get('experimentName')?.setValue(data); 
+        this.experimentName = data;
+      }
+    });
   }
 
 }

@@ -1,5 +1,6 @@
 import {
   Component,
+  ElementRef,
   OnInit,
   QueryList,
   TemplateRef,
@@ -10,9 +11,11 @@ import { Router } from '@angular/router';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
+import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { DataTableDirective } from 'angular-datatables';
-import { Subject, takeWhile } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
+import { Subject, finalize, takeWhile } from 'rxjs';
 
 @Component({
   selector: 'app-analysis-projects',
@@ -36,18 +39,24 @@ export class AnalysisProjectsComponent implements OnInit {
   dtMyProjectsOptions = {
     pagingType: 'full_numbers',
   };
+  selectedProject: any;
+  userDetails: any;
+  @ViewChild('confirmOnHoldModal') confirmOnHoldModal: ElementRef;
+
 
   constructor(
     private readonly globalService: GlobalService,
     private readonly projectService: ProjectService,
     private readonly formulationService: FormulationsService,
     private readonly experimentService: ExperimentService,
-    private readonly route: Router
-  ) {}
+    private readonly route: Router,
+    private loginService: LoginserviceService,
+    private readonly toastr: ToastrService) {}
 
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
   ngOnInit(): void {
+    this.userDetails = this.loginService.userDetails
     this.getProjects();
   }
 

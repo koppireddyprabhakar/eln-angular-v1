@@ -18,6 +18,7 @@ export class DashboardComponent implements OnInit {
   ExperimentsStatusCount: any = [];
   TrfStatusCount: any = [];
   analysisexperimentCount: any = [];
+  AnalysisExperimentsStatusCount: any;
   constructor(private dashboardService:DashboardService) {}
 
   ngOnInit(): void {
@@ -26,6 +27,7 @@ export class DashboardComponent implements OnInit {
     this.getAnalsysExperimentsCount();
     this.getExperimentsStatusCount();
     this.getTrfStatusCount();
+    this.getAnalysisExperimetnStatusCount();
   }
 
   getProjectCount() {
@@ -86,6 +88,19 @@ export class DashboardComponent implements OnInit {
         console.error('Error:', error);
         this.createAnalsysBarChart();
       });  
+  }
+
+  getAnalysisExperimetnStatusCount(){
+    this.dashboardService.getAnalysisExperimentStatusCount().subscribe(
+      (data) => {
+         this.AnalysisExperimentsStatusCount = data;
+        // console.log(this.AnalysisExperimentsStatusCount)
+         this.AnalysisPieChart();
+      },
+      (error) => {
+        console.error('Error:', error);
+        this.AnalysisPieChart();
+      });    
   }
   
   createLineChart() {
@@ -233,6 +248,35 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
+  AnalysisPieChart() {
+    console.log(this.AnalysisExperimentsStatusCount);  // Debug line
+    this.pieChart = new Chart('AnalysisPieChart', {
+      type: 'pie',
+      data: {
+        labels: [
+          'Inprogress',
+          'Complete',
+           'Inreview',
+          'TRF Created',
+          'Analysis Submitted',
+          'COA Genarated'
+        ],
+        datasets: [{
+          label: 'AnalysisExperiments',
+          data: this.AnalysisExperimentsStatusCount,
+          backgroundColor: [
+            'rgb(255, 99, 132)',
+            'rgb(300, 159, 64)',
+            'rgb(6, 158, 9)',
+            'rgb(255, 205, 86)',
+            'rgb(75, 192, 192)',
+            'rgb(54, 162, 235)'
+          ],
+          hoverOffset: 4
+        }]
+      }
+    });
+  }
   createDoughnutChart() {
     this.doughnutChart = new Chart('doughnutChart', {
       type: 'doughnut',
@@ -255,4 +299,5 @@ export class DashboardComponent implements OnInit {
       }
     });
   } 
+  
 }

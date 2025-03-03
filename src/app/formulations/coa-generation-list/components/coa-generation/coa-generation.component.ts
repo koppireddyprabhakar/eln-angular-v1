@@ -69,7 +69,7 @@ export class CoaGenerationComponent implements OnInit {
     private formulationService: FormulationsService,
     private experimentService: ExperimentService,
     private toastr: ToastrService,) { }
-
+    
   ngOnInit(): void {
     this.expId = this.activatedRoute.snapshot.queryParams['experimentId'];
     this.dropdownSettings = {
@@ -84,7 +84,9 @@ export class CoaGenerationComponent implements OnInit {
     this.columns = [
       { key: 'testNumber', title: 'Test Id' },
       { key: 'testName', title: 'Test Name' },
-      { key: 'result', title: 'Results' }
+      { key: 'result', title: 'Results' },
+      { key: 'description', title: 'Description' }
+
     ];
     if (this.expId) {
       this.getExperimentDetails();

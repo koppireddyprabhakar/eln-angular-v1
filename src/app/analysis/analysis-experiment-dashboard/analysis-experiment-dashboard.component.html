@@ -215,7 +215,7 @@
               active: activeTab === dumm.value,
               show: activeTab === dumm.value
             }" id="{{ dumm.value }}" role="tabpanel" [attr.aria-labelledby]="dumm + '-tab'">
-            <ckeditor required ngDefaultControl [(ngModel)]="article[i].text" data="" name="text"></ckeditor>
+            <ckeditor  [config]="editorConfig" required ngDefaultControl [(ngModel)]="article[i].text" data="" name="text"></ckeditor>
             <!-- <ckeditor data="<p>Hello, world!</p>"></ckeditor> -->
             <div class="text-center pt-3" *ngIf="analysisExperimentDetails && (analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase() 
               || analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase())">
@@ -282,24 +282,30 @@
               show: activeTab === 'results'
             }" id="results" role="tabpanel" aria-labelledby="results-tab">
             <div class="row pt-4 px-4 result-tab pb-3">
-              <div class="col-lg-4">
+              <div class="col-lg-3">
                 <div class="col-lg-6">Test Id</div>
               </div>
-              <div class="col-lg-4">
+              <div class="col-lg-3">
                 <div class="col-lg-6">Test Name</div>
               </div>
-              <div class="col-lg-4">
+              <div class="col-lg-3">
+                <div class="col-lg-6 field-label">Test Description</div>
+              </div>
+              <div class="col-lg-3">
                 <div class="col-lg-6">Results</div>
               </div>
             </div>
             <div class="row pt-4 px-4 result-tab pb-3" *ngFor="let result of resultsData; let i = index">
-              <div class="col-lg-4">
+              <div class="col-lg-3">
                 <div class="col-lg-6">{{ result.testRequestFormId }}</div>
               </div>
-              <div class="col-lg-4">
+              <div class="col-lg-3">
                 <div class="col-lg-6">{{ result.testName }}</div>
               </div>
-              <div class="col-lg-4">
+              <div class="col-lg-3">
+                <div class="col-lg-6">{{ result.description }}</div>
+              </div>
+              <div class="col-lg-3">
                 <div class="col-lg-6">
                   <textarea class="form-control" style="height: 50px" ngModel="{{ result.testResult }}"
                     (change)="trfResultChange($event.target, i)"></textarea>

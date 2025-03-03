@@ -93,6 +93,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     password: [''],
   });
   public intervalSubscripton$: Subscription;
+  experimentName: any;
 
   constructor(
     private readonly projectService: ProjectService,
@@ -146,6 +147,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     this.projectId = this.activatedRoute.snapshot.queryParams['projectId'];
     this.isCreatedExperiment = this.experimentId ? true : false;
     this.getBatchNumber();
+    this. generateUniqueExperimentId();
     this.getExperimentDetails(this.experimentId);
     this.getProjectDetails();
   }
@@ -158,6 +160,10 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     this.dtTrigger.next(null);
     this.dtResultTrigger.next(null);
   }
+  
+  public editorConfig = {
+    customConfig: '/assets/ckeditor/config.js', // Path to the config.js file
+  };
 
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
@@ -258,6 +264,17 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     });
   }
 
+  
+  generateUniqueExperimentId() {
+    this.formulationService.generateUniqueExperimentId().subscribe({
+      next: (data) => {
+        this.summaryForm.get('experimentName')?.setValue(data); 
+        this.experimentName = data;
+      }
+    });
+  }
+  
+
   getBatchNumber() {
     this.formulationService
       .getFormulationBatchNumber()
@@ -353,7 +370,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
       projectId: this.project.projectId,
       teamId: this.project.teamId,
       userId: this.loginService.userDetails.userId,
-      experimentName: this.summaryForm.get('experimentName')?.value,
+      experimentName: this.experimentName,
       experimentStatus: 'Inprogress',
       summary: 'string',
       batchSize: this.summaryForm.get('batchSize')?.value,
@@ -406,7 +423,6 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
   }
 
   onItemSelect(item: any) {
-
     this.tableData.push(...this.inwards.filter(i => i.excipientId === item.excipientId)
       .map((data) => ({ ...data, experimentId: Number(this.experimentId), experimentQuantity: 0, excipientQuantity: data.remainingQuantity })));
 
@@ -508,6 +524,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     if (saveCalls.length) {
       forkJoin(saveCalls).subscribe(response => {
         console.log("Saved Successfully..." + response);
+        this.toastr.success('Saved Successfully', 'Success');
       })
     }
 

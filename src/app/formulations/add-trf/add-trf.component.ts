@@ -49,6 +49,7 @@ export class AddTrfComponent implements OnInit {
     selectedTests: [[''], Validators.required],
     testRequestId: ['', [Validators.required]],
     department: ['', [Validators.required]],
+    marketName: ['', [Validators.required]],
     dosageForm: ['', [Validators.required]],
     projectName: ['', [Validators.required]],
     productCode: ['', [Validators.required]],
@@ -141,6 +142,7 @@ export class AddTrfComponent implements OnInit {
           batchSize: this.experiment.batchSize,
           testRequestId: this.staticTrfId,
           department: this.experiment.departmentName,
+          marketName: this.experiment.markertName,
           productCode: this.experiment.productCode,
         });
         // this.globalService.hideLoader();
@@ -267,8 +269,6 @@ export class AddTrfComponent implements OnInit {
         trfTestResults: this.tableData,
         insertUser: this.loginservice.userDetails.userId
       };
-     
-
       this.globalService.showLoader();
 
       this.loginservice.login(request).subscribe(response => {
@@ -292,6 +292,7 @@ export class AddTrfComponent implements OnInit {
       this.saveClicked = true;
       this.testRequestForm.get('testRequestId')?.markAsDirty();
       this.testRequestForm.get('department')?.markAsDirty();
+      this.testRequestForm.get('marketName')?.markAsDirty();
       this.testRequestForm.get('dosageForm')?.markAsDirty();
       this.testRequestForm.get('expiryDate')?.markAsDirty();
       this.testRequestForm.get('manufacturingDate')?.markAsDirty();
@@ -326,6 +327,7 @@ export class AddTrfComponent implements OnInit {
       testStatus: ['string'],
       testName: [''],
       testResult: [null],
+      description:['']
     });
   }
 }

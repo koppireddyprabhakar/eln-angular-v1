@@ -29,6 +29,7 @@ export class AddUserComponent implements OnInit {
   dosages: any = [];
   teams: Teams[] = [];
   userId: number;
+  users: any = [];
   editForm = false;
   userForm = this.formBuilder.group({
     firstName: ['', [Validators.required]],
@@ -48,6 +49,7 @@ export class AddUserComponent implements OnInit {
     certifiedReviewer: false,
     coaPermission:false
   });
+  public showErrorMsg: boolean = false;
 
   constructor(
     private readonly userService: UserService,
@@ -74,9 +76,20 @@ export class AddUserComponent implements OnInit {
     this.getUserRoles();
     this.getTeams();
     this.getDosages();
+    this.getUsers();
   }
 
   saveUser() {
+    let formMailId = this.userForm['controls'] && this.userForm['controls']['mailId'].value ? this.userForm['controls']['mailId'].value : '';
+    
+      let isObjectExists = this.users.find(user =>
+        user.mailId === formMailId && user.userId !== this.userId
+      );
+
+    if (isObjectExists && (Object.keys(this.selectedUser).length === 0 || (this.selectedUser.mailId !== formMailId ))) {
+      this.showErrorMsg = true;
+      return;
+    }
     const dob = this.userForm.get('dateOfBirth')?.value || '';
     console.log(this.userForm.get('teamId')?.value);
     const newUser = {
@@ -173,6 +186,12 @@ export class AddUserComponent implements OnInit {
   getTeams() {
     this.teamsService.getTeams().subscribe((teams) => {
       this.teams = teams;
+    });
+  }
+  
+  getUsers(){
+    this.userService.getUsers().subscribe((users) => {
+    this.users=users
     });
   }
 

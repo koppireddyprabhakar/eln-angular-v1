@@ -105,6 +105,9 @@
             >
               Please enter Team Name
             </span>
+            <div *ngIf="showErrorMsg">
+              <span style="color:red">This email is already exist</span>
+            </div>
           </div>
           <div class="col-12">
             <label for="dosageId" class="form-label">Dosage</label>

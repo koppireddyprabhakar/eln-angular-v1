@@ -49,6 +49,11 @@ export class ProjectService {
     return this.http.delete<string>(url, { body: project });
   }
 
+  onHoldproject(project){
+    const url = `${elnEndpointsConfig.endpoints['onHoldProject']}`;
+    return this.http.put<string>(url, project);
+  }
+
   handleError(error: HttpErrorResponse) {
     const errorDetail = ClientService.formatError(error);
     if (errorDetail && (errorDetail.title || errorDetail.errorMessage)) {

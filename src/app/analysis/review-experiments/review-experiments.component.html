@@ -102,6 +102,11 @@
                           <div class="col-sm-9 pt-1">{{ batchNumber }}</div>
                         </div>
                         <div class="row mb-3">
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Start Date</label>
+                          <div class="col-sm-9 pt-1">{{ (experimentDetails && experimentDetails.expStartDate ||
+                            startDate | date:'medium') }}</div>
+                        </div>
+                        <div class="row mb-3">
                           <label for="experimentName" class="col-sm-3 col-form-label">Experiment Name</label>
                           <div class="col-sm-9">
                             <input type="text" class="form-control" id="experimentName" formControlName="experimentName"
@@ -388,6 +393,7 @@
                 <tr>
                   <th>Test Id</th>
                   <th>Test Name</th>
+                  <th>Test Description</th>
                   <th>Results</th>
                 </tr>
               </thead>
@@ -395,7 +401,7 @@
                 <tr *ngFor="let user of tableTestData; let rowIndex = index">
                   <td>{{ user.testNumber }}</td>
                   <td>{{ user.testName }}</td>
-
+                  <td>{{ user.description }}</td>
                   <td class="options-width">
                     <textarea class="form-control" style="height: 50px" [(ngModel)]="tableTestData[rowIndex].testResult"
                       (change)="resultChange($event.target, rowIndex)" [readOnly]="true"></textarea>

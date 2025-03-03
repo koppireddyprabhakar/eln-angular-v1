@@ -110,7 +110,7 @@
                           <label for="experimentName" class="col-sm-3 col-form-label">Experiment Name</label>
                           <div class="col-sm-9">
                             <input type="text" class="form-control" id="experimentName" formControlName="experimentName"
-                              [readonly]="experimentId" />
+                              [readonly]="true" />
                             <span *ngIf="
                               summaryForm.controls['experimentName'].invalid &&
                                (summaryForm.controls['experimentName'].dirty ||
@@ -155,7 +155,7 @@
               active: activeTab === dumm.value,
               show: activeTab === dumm.value
             }" id="{{ dumm.value }}" role="tabpanel" [attr.aria-labelledby]="dumm + '-tab'">
-            <ckeditor required [(ngModel)]="article[i].text" data="" name="text"></ckeditor>
+            <ckeditor [config]="editorConfig" required [(ngModel)]="article[i].text" data="" name="text"></ckeditor>
             <div class="text-center pt-3">
               <button type="submit" class="btn btn-primary" (click)="saveTab(i, dumm)">
                 Submit
@@ -442,6 +442,7 @@
                 <tr>
                   <th>Test Id</th>
                   <th>Test Name</th>
+                  <th>Test description</th>
                   <th>Results</th>
                 </tr>
               </thead>
@@ -449,7 +450,7 @@
                 <tr *ngFor="let user of tableTestData; let rowIndex = index">
                   <td>{{ user.testNumber }}</td>
                   <td>{{ user.testName }}</td>
-
+                  <td>{{ user.description }}</td>
                   <td class="options-width">
                     <textarea class="form-control" style="height: 50px" [(ngModel)]="tableTestData[rowIndex].testResult"
                       (change)="resultChange($event.target, rowIndex)"></textarea>

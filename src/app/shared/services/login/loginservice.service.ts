@@ -27,8 +27,10 @@ export class LoginserviceService {
   handleError(error: HttpErrorResponse) {
     const errorDetail = ClientService.formatError(error);
     console.log(error);
-    if (errorDetail && (errorDetail.title || errorDetail.errorMessage)) {
-      this.toastr.error(errorDetail.errorMessage, errorDetail.title);
+    if (error.status === 401) { // Handle unauthorized errors specifically
+      this.toastr.error(errorDetail.errorMessage || 'Invalid credentials', 'Error');
+    } else {
+      this.toastr.error('An unexpected error occurred.', 'Error');
     }
     return throwError(error);
   }

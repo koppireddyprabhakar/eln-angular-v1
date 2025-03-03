@@ -60,6 +60,7 @@ export class ReviewFormulationsComponent implements OnInit {
     pagingType: 'full_numbers',
   };
 
+  public startDate = new Date();
   inputValue: string;
   projectId: number;
   project: any;

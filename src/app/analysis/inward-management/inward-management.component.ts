@@ -42,6 +42,7 @@ export class InwardManagementComponent implements OnInit {
   };
   @ViewChild('closeButton') closeButton: ElementRef;
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
+  today: string;
 
   constructor(
     private readonly inwardService: InwardManagementService,
@@ -51,6 +52,7 @@ export class InwardManagementComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.today = new Date().toISOString().split('T')[0];
     this.getExcipients();
   }
 

@@ -120,7 +120,7 @@
       </ul>
     </li>
     <!-- COA Generation -->
-    <li class="nav-item">
+    <li class="nav-item" *ngIf="!userService.isFromFormulationDept() && !userService.isFromAnalysisDept()">
       <a class="nav-link collapsed" data-bs-target="#components-coa" data-bs-toggle="collapse" aria-expanded="true">
         <i class="bi bi-menu-button-wide"></i><span>COA Dashboard</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>

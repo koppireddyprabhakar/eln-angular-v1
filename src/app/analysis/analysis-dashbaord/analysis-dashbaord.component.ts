@@ -76,6 +76,8 @@ export class AnalysisDashbaordComponent implements OnInit {
   public startDate = new Date();
   isSaveClicked: boolean = false;
   resultsData: any;
+  dtElements: any;
+  experimentName: string;
 
   constructor(
     private readonly projectService: ProjectService,
@@ -123,11 +125,17 @@ export class AnalysisDashbaordComponent implements OnInit {
     this.getBatchNumber();
     this.getAnalysisById(this.experimentId);
     this.getProjectDetails();
+    this.generateUniqueAnalysisExperimentId();
   }
 
   ngAfterViewInit(): void {
     this.dtTrigger.next(null);
   }
+
+  public editorConfig = {
+    customConfig: '/assets/ckeditor/config.js', // Path to the config.js file
+  };
+ 
 
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
@@ -158,15 +166,35 @@ export class AnalysisDashbaordComponent implements OnInit {
       .subscribe((data) => {
         console.log(data);
         if (data.length > 0) {
-          this.tableData = data;
-          this.selectedItems = data;
-          this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-            // Destroy the table first
-            dtInstance.destroy();
-            // Call the dtTrigger to rerender again
-            this.dtTrigger.next(this.tableData);
+
+          this.tableData = data.map(d => {
+            let inward = this.inwards.find(i => i.excipientId == d.excipientId);
+            return ({ ...d, experimentQuantity: d.quantity, excipientQuantity: inward.remainingQuantity, expiryDate: inward.expiryDate })
+          });
+          this.selectedItems = data.map(d => {
+            let inward = this.inwards.find(i => i.excipientId == d.excipientId);
+            return ({ ...d, experimentQuantity: d.quantity, excipientQuantity: inward.remainingQuantity })
+          });
+
+          this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+            dtElement.dtInstance.then((dtInstance: any) => {
+              if (dtInstance.table().node().id === 'first-table') {
+                dtInstance.destroy();
+                this.dtTrigger.next(this.tableData);
+              }
+            });
           });
         }
+        // if (data.length > 0) {
+        //   this.tableData = data;
+        //   this.selectedItems = data;
+        //   this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        //     // Destroy the table first
+        //     dtInstance.destroy();
+        //     // Call the dtTrigger to rerender again
+        //     this.dtTrigger.next(this.tableData);
+        //   });
+        // }
       });
   }
   getTrfDetailsById() {
@@ -339,18 +367,26 @@ export class AnalysisDashbaordComponent implements OnInit {
   }
 
   onItemSelect(item: any) {
-    this.tableData = this.inwards
-      .filter(({ excipientId: id1 }) =>
-        this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
-      )
-      .map((table) => ({ ...table, analysisId: Number(this.experimentId) }));
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next(this.tableData);
+    this.tableData.push(...this.inwards.filter(i => i.excipientId === item.excipientId)
+      .map((data) => ({ ...data, analysisId: Number(this.experimentId), experimentQuantity: 0, excipientQuantity: data.remainingQuantity })));
+ 
+    this.tableData.forEach(e => {
+      if (e.excipientId === item.excipientId) {
+        e.quantity = 0;
+        e.errorMessage = "Please enter quantity.";
+      }
+    });
+ 
+    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'first-table') {
+          dtInstance.destroy();
+          this.dtTrigger.next(this.tableData);
+        }
+      });
     });
   }
+
   deselect(item: any) {
     // this.tableData = this.inwards.filter(({ excipientId: id1 }) =>
     //   this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
@@ -358,32 +394,36 @@ export class AnalysisDashbaordComponent implements OnInit {
     this.tableData = this.tableData.filter(
       (data) => data.excipientId !== item.excipientId
     );
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next(this.tableData);
+    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'first-table') {
+          dtInstance.destroy();
+          this.dtTrigger.next(this.tableData);
+        }
+      });
     });
   }
   onSelectAll(items: any) {
     this.tableData = this.inwards;
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next(this.tableData);
+    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'first-table') {
+          dtInstance.destroy();
+          this.dtTrigger.next(this.tableData);
+        }
+      });
     });
   }
   onDeSelectAll() {
-    this.deselect
     this.tableData = [];
-
-    if (this.dtElement) {
-      this.dtElement.dtInstance.then((dtInstance: any) => {
-        dtInstance.clear();
-        dtInstance.draw();
+    this.dtElements.forEach((dtElement: DataTableDirective) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'first-table') {
+          dtInstance.clear();
+          dtInstance.draw();
+        }
       });
-    }
+    });
   }
 
 
@@ -466,6 +506,26 @@ export class AnalysisDashbaordComponent implements OnInit {
       this.toastr.error('Please select at least one excipient', 'Error');
       return;
     }
+    this.isSaveClicked = true;
+   
+    // if (this.tableData.find(excipient => !this.commonFunctionsService.isEmptyOrUndefined(excipient.errorMessage))) {
+    //   return;
+    // }
+   
+    const isUpdate = this.tableData.some((data) => data.analysisId);
+    if (!isUpdate) {
+      this.tableData.forEach(data => {
+        data['experimentId'] = this.experimentId;
+        data['experimentQuantity'] = 0;
+      })
+    }
+   
+    this.tableData.forEach(e => {
+      if (e.experimentQuantity >= 0) {
+        e['changedQuantity'] = e.quantity - e.experimentQuantity;
+      }
+    });
+   
     this.analysisService
       .saveAnalysisExcipient(this.tableData)
       .subscribe((data) => {
@@ -480,6 +540,21 @@ export class AnalysisDashbaordComponent implements OnInit {
 
     console.log(this.selectedTrfs);
   }
+
+  excipientQuantityChange(value, index) {
+    this.tableData[index]['errorMessage'] = "";
+  
+    if ((+value - this.tableData[index].experimentQuantity) > this.tableData[index].excipientQuantity) {
+      this.tableData[index]['errorMessage'] = "Please enter <= remaining qty " + (this.tableData[index].excipientQuantity ? this.tableData[index].excipientQuantity : this.tableData[index].experimentQuantity);
+      return;
+    } else if (+value <= 0) {
+      this.tableData[index]['errorMessage'] = "Please enter quantity.";
+      return;
+    }
+  
+    this.tableData[index].quantity = +value;
+  }
+  
 
   saveResults() {
     this.isSaveClicked = true;
@@ -497,7 +572,8 @@ export class AnalysisDashbaordComponent implements OnInit {
     let analysisRequest = {
       analysisId: this.experimentId,
       status: status,
-      summary: summary ? summary : status
+      summary: summary ? summary : status,
+      userId: this.loginService.userDetails.userId,
     }
 
     this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
@@ -505,6 +581,15 @@ export class AnalysisDashbaordComponent implements OnInit {
       this.route.navigateByUrl(`/exp-analysis/list`);
     });
 
+  }
+
+  generateUniqueAnalysisExperimentId() {   
+    this.analysisService.generateUniqueAnalysisExperimentId().subscribe({
+      next: (data) => {
+        this.summaryForm.get('experimentName')?.setValue(data); 
+        this.experimentName = data;
+      }
+    });
   }
 
 }
