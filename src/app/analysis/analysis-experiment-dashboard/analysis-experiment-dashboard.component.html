@@ -147,7 +147,7 @@
                           <label for="experimentName" class="col-sm-3 col-form-label">Experiment Name</label>
                           <div class="col-sm-9">
                             <input type="text" class="form-control" id="experimentName" formControlName="experimentName"
-                              [(ngModel)]=" analysisExperimentDetails.analysisName" readonly />
+                              [(ngModel)]="analysisExperimentDetails && analysisExperimentDetails.analysisName" readonly />
                           </div>
                         </div>
                         <!-- <div class="row mb-3">
@@ -160,7 +160,7 @@
                           <label for="batchSize" class="col-sm-3 col-form-label">Batch Size</label>
                           <div class="col-sm-9">
                             <input type="text" class="form-control" id="batchSize" formControlName="batchSize"
-                              [(ngModel)]=" analysisExperimentDetails.batchSize" readonly />
+                              [(ngModel)]="analysisExperimentDetails && analysisExperimentDetails.batchSize" readonly />
                           </div>
                         </div>
                       </form>
@@ -199,7 +199,8 @@
                       </div>
                       <!-- End-->
 
-                      <div class="text-center" *ngIf="analysisID">
+                      <div class="text-center" *ngIf="analysisExperimentDetails && (analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase() 
+                      || analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase())">
                         <button type="submit" class="btn btn-primary" (click)="saveSummary()">
                           Update Experiment
                         </button>
@@ -337,7 +338,7 @@
             <div class="row mb-3">
               <label *ngIf="files.length > 0">Uploaded Attachements</label>
               <span *ngFor="let file of files">
-                <div class="file-container">
+                <div class="file-container" *ngIf="!file.fromSummary || file.fromSummary === 'N'">
                   <span class="file-list" (click)="getFileContent(file.name, file.experimentId)">{{ file.name |
                     titlecase }}</span>
                   <span class="align-right" (click)="removeAttachment(file)" *ngIf="analysisExperimentDetails && (analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase() 

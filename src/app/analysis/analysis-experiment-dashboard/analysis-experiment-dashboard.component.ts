@@ -178,7 +178,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     this.analysisService
       .getTrfDetailsById(this.analysisID)
       .subscribe((data) => {
-        console.log(data);
         if (data.length > 0) {
           this.resultsData = data;
         }
@@ -216,9 +215,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       .getAnalysisDeatilsById(tabValue.substring(3))
       .subscribe((details) => {
         const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
-        console.log(index);
         this.article[index].text = details.fileContent;
-        console.log(details);
       });
   }
 
@@ -229,9 +226,9 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
         this.files = attachments;
 
         if (this.analysisExperimentDetails && this.analysisExperimentDetails.status &&
-          (this.analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()) ||
+          ((this.analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()) ||
           (this.analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase())
-          || (this.analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase())) {
+          || (this.analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase()))) {
           let userName = this.loginService.userDetails ? this.loginService.userDetails['mailId'] : '';
           this.userValidateForm = this.formBuilder.group({
             userName: [userName, [Validators.required]],
@@ -289,7 +286,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
           //     analysisId: Number(this.analysisID),
           //   })
           // );
-          // console.log(' this.resultsData', this.resultsData);
           this.selectedItems = analysisExperimentDetails.analysisExcipients;
           this.savedSelectedItems =
             analysisExperimentDetails.analysisExcipients;
@@ -508,7 +504,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
 
   attachFile(event) {
     this.selectedFile = event.target.files[0];
-    console.log(this.selectedFile);
   }
 
   onChange(event) {
@@ -522,7 +517,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
         attachedFile,
         this.analysisID.toString(),
         this.analysisExperimentDetails.projectId.toString(),
-        null
+        "N"
       )
       .subscribe((response) => {
         this.files = response;
@@ -538,8 +533,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
 
   trfResultChange(result, index) {
     this.resultsData[index].testResult = result.value;
-
-    console.log(this.resultsData);
   }
 
   private isEmptyOrUndefined = (value): boolean => {

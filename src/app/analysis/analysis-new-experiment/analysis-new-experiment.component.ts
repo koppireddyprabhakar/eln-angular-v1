@@ -140,7 +140,6 @@ export class AnalysisNewExperimentComponent implements OnInit {
 
     this.selectedTrfs$.subscribe((trfs) => {
       this.selectedTrfs = trfs;
-      console.log(trfs);
     });
     this.getExcipients();
     this.columns = [
@@ -211,7 +210,6 @@ export class AnalysisNewExperimentComponent implements OnInit {
 
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
-      console.log(project);
       this.project = project;
       this.testRequestForm.patchValue({
         batchNumber: this.project.batchNumber,
@@ -237,7 +235,6 @@ export class AnalysisNewExperimentComponent implements OnInit {
     if (activeTab === 'results') {
       this.getResultsDetailsById();
     }
-    console.log(activeTab.substring(3));
     if (activeTab.substring(0, 3) === 'tab') {
       this.getAnalysisDetailsById(activeTab);
     }
@@ -256,10 +253,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
     this.analysisService
       .getTestFormResults(this.experimentId)
       .subscribe((data) => {
-        console.log(data);
         this.resultData = data;
-        console.log(data);
-        console.log(this.experimentDetails);
 
         this.testRequestForm.patchValue({
           condition: this.resultData.condition,
@@ -322,9 +316,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
       .getAnalysisDeatilsById(tabValue.substring(3))
       .subscribe((details) => {
         const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
-        console.log(index);
         this.article[index].text = details.fileContent;
-        console.log(details);
       });
   }
 
@@ -347,7 +339,6 @@ export class AnalysisNewExperimentComponent implements OnInit {
   }
 
   onTestItemSelect(item: any) {
-    console.log(item);
     const tableTestData = this.tableTestData;
     const newItem = this.tests.filter((test) => test.testId === item.testId)[0];
     tableTestData.push(newItem);
@@ -366,7 +357,6 @@ export class AnalysisNewExperimentComponent implements OnInit {
     });
   }
   testdeselect(item: any) {
-    console.log(item);
     this.tableTestData = this.tableTestData.filter(
       (data) => data.testId !== item.testId
     );
@@ -386,7 +376,6 @@ export class AnalysisNewExperimentComponent implements OnInit {
     });
   }
   onTestSelectAll(items: any) {
-    console.log(items);
     this.tableTestData = this.tests.map((test, index) => ({
       ...test,
       testStatus: 'string',
@@ -403,7 +392,6 @@ export class AnalysisNewExperimentComponent implements OnInit {
     });
   }
   onTestDeSelectAll(items: any) {
-    console.log(items);
     this.tableTestData = [];
     this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
       dtElement.dtInstance.then((dtInstance: any) => {
@@ -452,7 +440,6 @@ export class AnalysisNewExperimentComponent implements OnInit {
       analysisId: this.experimentId,
       insertUser: this.loginService.userDetails.userId
     };
-    console.log('Table Test Data:', this.tableTestData);
     // if (!this.selectedTestItems || this.selectedTestItems.length === 0) {
     //   this.toastr.error('Please select at least one lab test', 'Error');
     //   return;
@@ -462,7 +449,6 @@ export class AnalysisNewExperimentComponent implements OnInit {
         this.analysisService.updateTestForm(newTestRequest).subscribe(() => {
           this.toastr.success('Test has been added succesfully', 'Success');
           this.getResultsDetailsById();
-          console.log('get Table Test Data:',this.tableTestData);
         });
       } else {
         this.analysisService.createTestForm(newTestRequest).subscribe(() => {
@@ -714,7 +700,6 @@ export class AnalysisNewExperimentComponent implements OnInit {
       );
       if (this.dummyTabs[index].value.substring(0, 3) === 'new') {
         this.activeTab = `${this.dummyTabs[index].value}-tab`;
-        console.log(this.experimentId);
         this.getAnalysisById(this.experimentId);
       }
       this.dummyTabs[index].showDeleteIcon = false;
@@ -770,7 +755,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
   processFile(event) {
     const selectedFile = event.target.files[0];
     this.analysisService
-      .saveAnalysisAttachment(selectedFile, this.experimentId, this.projectId, null)
+      .saveAnalysisAttachment(selectedFile, this.experimentId, this.projectId, "N")
       .subscribe((response) => {
         this.files = response;
         this.toastr.success('File Uploaded Successfully', 'Success');

@@ -96,7 +96,6 @@ export class AnalysisDashbaordComponent implements OnInit {
   ngOnInit(): void {
     this.selectedTrfs$.subscribe((trfs) => {
       this.selectedTrfs = trfs;
-      console.log(trfs);
     });
     this.getExcipients();
     this.columns = [
@@ -148,7 +147,6 @@ export class AnalysisDashbaordComponent implements OnInit {
     if (activeTab === 'attachments') {
       this.getAttachments();
     }
-    console.log(activeTab.substring(3));
     if (activeTab === 'excipients') {
       this.getExcipientDetails();
     }
@@ -164,7 +162,6 @@ export class AnalysisDashbaordComponent implements OnInit {
     this.analysisService
       .getExcipientDetailsById(this.experimentId)
       .subscribe((data) => {
-        console.log(data);
         if (data.length > 0) {
 
           this.tableData = data.map(d => {
@@ -201,7 +198,6 @@ export class AnalysisDashbaordComponent implements OnInit {
     this.analysisService
       .getTrfDetailsById(this.experimentId)
       .subscribe((data) => {
-        console.log(data);
         if (data.length > 0) {
           this.selectedTrfs = data;
         }
@@ -213,9 +209,7 @@ export class AnalysisDashbaordComponent implements OnInit {
       .getAnalysisDeatilsById(tabValue.substring(3))
       .subscribe((details) => {
         const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
-        console.log(index);
         this.article[index].text = details.fileContent;
-        console.log(details);
       });
   }
 
@@ -444,7 +438,6 @@ export class AnalysisDashbaordComponent implements OnInit {
       name: data.label,
       fileContent: this.article[index].text,
     };
-    console.log(this.dummyTabs[index].value.substring(0, 3));
     tabValue = {
       ...tabValue,
       analysisDetailId:
@@ -460,7 +453,6 @@ export class AnalysisDashbaordComponent implements OnInit {
       );
       if (this.dummyTabs[index].value.substring(0, 3) === 'new') {
         this.activeTab = `${this.dummyTabs[index].value}-tab`;
-        console.log(this.experimentId);
         this.getAnalysisById(this.experimentId);
       }
       this.dummyTabs[index].showDeleteIcon = false;
@@ -482,13 +474,12 @@ export class AnalysisDashbaordComponent implements OnInit {
 
   attachFile(event) {
     this.selectedFile = event.target.files[0];
-    console.log(this.selectedFile);
   }
 
   processFile(event) {
     const attachedFile = event.target.files[0];
     this.analysisService
-      .saveAnalysisAttachment(attachedFile, this.experimentId, this.projectId, null)
+      .saveAnalysisAttachment(attachedFile, this.experimentId, this.projectId, "N")
       .subscribe((response) => {
         this.files = response;
         this.toastr.success('File Uploaded Successfully', 'Success');
@@ -534,11 +525,7 @@ export class AnalysisDashbaordComponent implements OnInit {
   }
 
   trfResultChange(result, index) {
-    console.log(this.selectedTrfs);
-    console.log(result.value, index);
-    this.selectedTrfs[index].testResult = result.value;
-
-    console.log(this.selectedTrfs);
+     this.selectedTrfs[index].testResult = result.value;
   }
 
   excipientQuantityChange(value, index) {

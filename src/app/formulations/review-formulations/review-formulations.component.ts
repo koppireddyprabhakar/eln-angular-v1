@@ -130,7 +130,6 @@ export class ReviewFormulationsComponent implements OnInit {
   ngOnInit(): void {
     this.selectedTrfs$.subscribe((trfs) => {
       this.selectedTrfs = trfs;
-      console.log(trfs);
     });
     this.getExcipients();
     this.columns = [
@@ -190,7 +189,6 @@ export class ReviewFormulationsComponent implements OnInit {
 
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
-      console.log(project);
       this.project = project;
       this.testRequestForm.patchValue({
         batchNumber: this.project.batchNumber,
@@ -216,7 +214,6 @@ export class ReviewFormulationsComponent implements OnInit {
     if (activeTab === 'review') {
       this.getExperimentReview()
     }
-    console.log(activeTab.substring(3));
     if (activeTab.substring(0, 3) === 'tab') {
       this.getExperimentDetailsById(activeTab);
     }
@@ -231,7 +228,6 @@ export class ReviewFormulationsComponent implements OnInit {
   }
 
   getExperimentDetailsById(tabValue) {
-    // console.log(id);
     // const expDetailsId = Number(id.slice(-1));
     // this.experimentService
     //   .getExperimentDetailsById(expDetailsId)
@@ -243,9 +239,7 @@ export class ReviewFormulationsComponent implements OnInit {
       .getExperimentDetailsById(tabValue.substring(3))
       .subscribe((details) => {
         const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
-        console.log(index);
         this.article[index].text = details.fileContent;
-        console.log(details);
       });
   }
 
@@ -253,7 +247,6 @@ export class ReviewFormulationsComponent implements OnInit {
     this.experimentService
       .getExcipientDetailsById(this.experimentId)
       .subscribe((data) => {
-        console.log(data);
         if (data.length > 0) {
           this.tableData = data;
           this.selectedItems = data;
@@ -272,9 +265,7 @@ export class ReviewFormulationsComponent implements OnInit {
       .getAnalysisDeatilsById(tabValue.substring(3))
       .subscribe((details) => {
         const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
-        console.log(index);
         this.article[index].text = details.fileContent;
-        console.log(details);
       });
   }
 
@@ -289,7 +280,6 @@ export class ReviewFormulationsComponent implements OnInit {
   }
 
   onTestItemSelect(item: any) {
-    console.log(item);
     const tableTestData = this.tableTestData;
     const newItem = this.tests.filter((test) => test.testId === item.testId)[0];
     tableTestData.push(newItem);
@@ -300,7 +290,6 @@ export class ReviewFormulationsComponent implements OnInit {
     }));
   }
   testdeselect(item: any) {
-    console.log(item);
     this.tableTestData = this.tableTestData.filter(
       (data) => data.testId !== item.testId
     );
@@ -312,7 +301,6 @@ export class ReviewFormulationsComponent implements OnInit {
     }));
   }
   onTestSelectAll(items: any) {
-    console.log(items);
     this.tableTestData = this.tests.map((test, index) => ({
       ...test,
       testStatus: 'string',
@@ -473,7 +461,7 @@ export class ReviewFormulationsComponent implements OnInit {
   processFile(event) {
     const selectedFile = event.target.files[0];
     this.analysisService
-      .saveAnalysisAttachment(selectedFile, this.experimentId, this.projectId, null)
+      .saveAnalysisAttachment(selectedFile, this.experimentId, this.projectId, "N")
       .subscribe((response) => {
         this.files = response;
         this.toastr.success('File Uploaded Successfully', 'Success');
