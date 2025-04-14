@@ -347,7 +347,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   }
 
   saveSummary() {
-    // if () {
     const summary = {
       analysisId: this.analysisExperimentDetails.analysisId,
       analysisName: this.summaryForm.get('experimentName')?.value,
@@ -372,13 +371,13 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
               "Y")
             .subscribe((response) => {
               this.files = response;
-              this.getAnalysisExperimentDetails(experiment.data);
-              this.toastr.success('Updated Analysis Successfully', 'Success');
+              this.getAnalysisExperimentDetails(this.analysisExperimentDetails.analysisId);
+              this.toastr.success(experiment.data, 'Success');
               this.activeTab = this.dummyTabs[0].value;
             });
         } else {
-          this.getAnalysisExperimentDetails(experiment.data);
-          this.toastr.success('Updated Analysis Successfully', 'Success');
+          this.getAnalysisExperimentDetails(this.analysisExperimentDetails.analysisId);
+          this.toastr.success(experiment.data, 'Success');
           this.activeTab = this.dummyTabs[0].value;
         }
 
