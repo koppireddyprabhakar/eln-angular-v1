@@ -113,6 +113,9 @@ export const elnEndpointsConfig: EndpointConfig = {
     getExperimentStatusByMonths: `${environment.API_BASE_PATH}` + '/dashboard/experiment-by-status',
     getAnalysisExperimentsStatusCount: `${environment.API_BASE_PATH}` + '/dashboard/analysis-experiments-by-status',
     getUniqeAnalysisExperimentName:  `${environment.API_BASE_PATH}` + '/analysis/analysis_experiment_unique_id',
+    getExperimentsByProjectId:  `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-experiments-by-project-id',
+    getAnalysisDetailByExperimentId:  `${environment.API_BASE_PATH}` + '/analysis/get_analysis_details_by_experiment_id'
+    
   },
 };
 

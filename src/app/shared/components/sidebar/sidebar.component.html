@@ -28,7 +28,11 @@
             <i class="bi bi-circle"></i><span>Test Management</span>
           </a>
         </li>
-
+        <li>
+          <a routerLink="/business-admin/version-history" routerLinkActive="active">
+            <i class="bi bi-circle"></i><span>Version History</span>
+          </a>
+        </li>
       </ul>
     </li>
     <li class="nav-item" *ngIf="userService.isAdmin()">

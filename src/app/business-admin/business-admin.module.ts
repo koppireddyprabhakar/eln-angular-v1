@@ -15,6 +15,8 @@ import { AddUserComponent } from './user/add-user/add-user.component';
 import { ProjectManagementComponent } from './project-management/project-management.component';
 import { AddProjectManagementComponent } from './project-management/add-project-management/add-project-management.component';
 import { DataTablesModule } from 'angular-datatables';
+import { VersionHistoryComponent } from './version-history/version-history.component';
+import { ProjectExperimentsComponent } from './version-history/components/project-experiments/project-experiments.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +31,8 @@ import { DataTablesModule } from 'angular-datatables';
     AddUserComponent,
     ProjectManagementComponent,
     AddProjectManagementComponent,
+    VersionHistoryComponent,
+    ProjectExperimentsComponent,
   ],
   imports: [
     CommonModule,

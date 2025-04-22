@@ -10,6 +10,8 @@ import { TeamComponent } from './team/team.component';
 import { AddTestComponent } from './test/add-test/add-test.component';
 import { TestComponent } from './test/test.component';
 import { AddUserComponent } from './user/add-user/add-user.component';
+import { VersionHistoryComponent } from './version-history/version-history.component';
+import { ProjectExperimentsComponent } from './version-history/components/project-experiments/project-experiments.component';
 
 const routes: Routes = [
   {
@@ -67,6 +69,19 @@ const routes: Routes = [
           {
             path: 'add-project',
             component: AddProjectManagementComponent,
+          },
+        ],
+      },
+      {
+        path: 'version-history',
+        children: [
+          {
+            path: '',
+            component: VersionHistoryComponent,
+          },
+          {
+            path: 'project-experiments',
+            component: ProjectExperimentsComponent,
           },
         ],
       },

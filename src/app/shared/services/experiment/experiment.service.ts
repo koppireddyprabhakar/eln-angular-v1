@@ -156,6 +156,22 @@ export class ExperimentService {
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
+  getExperimentsByProjectId(projectId) {
+    const url = `${elnEndpointsConfig.endpoints['getExperimentsByProjectId']
+    }?projectId=${projectId}`;
+  return this.http
+    .get<any>(url)
+    .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
+  getAnalysisDetailByExperimentId(experimentId) {
+    const url = `${elnEndpointsConfig.endpoints['getAnalysisDetailByExperimentId']
+    }?experimentId=${experimentId}`;
+  return this.http
+    .get<any>(url)
+    .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
   handleError(error: HttpErrorResponse) {
     const errorDetail = ClientService.formatError(error);
     if (errorDetail && (errorDetail.title || errorDetail.errorMessage)) {
