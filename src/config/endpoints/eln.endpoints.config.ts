@@ -44,7 +44,7 @@ export const elnEndpointsConfig: EndpointConfig = {
     deleteFormulationProject: `${environment.API_BASE_PATH}` + '/formulation-dashboard/delete-project',
     getFormulationProjects: `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-projects',
     getFormulationBatchNumber: `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-batch-number',
-    getUniqeExperimentName:`${environment.API_BASE_PATH}` + '/experiment/experiment_unique _id',
+    getUniqeExperimentName: `${environment.API_BASE_PATH}` + '/experiment/experiment_unique _id',
     getFormulationProjectById: `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-project-by-id',
     getFormulationProjectsTeams: `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-formulations-teams',
     getFormualtionDashboardExperiments: `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-experiments',
@@ -112,10 +112,10 @@ export const elnEndpointsConfig: EndpointConfig = {
     getTrfStatusByMonths: `${environment.API_BASE_PATH}` + '/dashboard/trf-by-status',
     getExperimentStatusByMonths: `${environment.API_BASE_PATH}` + '/dashboard/experiment-by-status',
     getAnalysisExperimentsStatusCount: `${environment.API_BASE_PATH}` + '/dashboard/analysis-experiments-by-status',
-    getUniqeAnalysisExperimentName:  `${environment.API_BASE_PATH}` + '/analysis/analysis_experiment_unique_id',
-    getExperimentsByProjectId:  `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-experiments-by-project-id',
-    getAnalysisDetailByExperimentId:  `${environment.API_BASE_PATH}` + '/analysis/get_analysis_details_by_experiment_id'
-    
+    getUniqeAnalysisExperimentName: `${environment.API_BASE_PATH}` + '/analysis/analysis_experiment_unique_id',
+    getExperimentsByProjectId: `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-experiments-by-project-id',
+    getAnalysisDetailByExperimentId: `${environment.API_BASE_PATH}` + '/analysis/get_analysis_details_by_experiment_id',
+    generateProjectPdf: `${environment.API_BASE_PATH}` + '/pdf/get-project-pdf'
   },
 };
 

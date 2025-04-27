@@ -57,7 +57,7 @@ export class ProjectManagementComponent implements OnInit {
     private toastr: ToastrService,
     private route: Router,
     private loginService: LoginserviceService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.userDetails = this.loginService.userDetails
@@ -120,7 +120,7 @@ export class ProjectManagementComponent implements OnInit {
   confirmOnHoldProject(project) {
     this.selectedProject = project;
   }
-  
+
   OnHoldProject() {
     this.selectedProject = { ...this.selectedProject, status: 'onhold' };
     this.projectService
@@ -136,6 +136,12 @@ export class ProjectManagementComponent implements OnInit {
         this.confirmOnHoldModal.nativeElement.click();
         this.toastr.success('Project has been deleted succesfully', 'Success');
       });
+  }
+
+  generateProjectPdf(projectId) {
+    this.projectService.generateProjectPdf(projectId).subscribe(() => {
+      this.toastr.success('Project Details downloaded', 'Success');
+    });
   }
 
   ngOnDestroy(): void {

@@ -1,7 +1,7 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { elnEndpointsConfig } from '@config/endpoints/eln.endpoints.config';
-import { catchError, throwError } from 'rxjs';
+import { catchError, map, throwError } from 'rxjs';
 import { ClientService } from '../client/client.service';
 
 @Injectable({
@@ -11,7 +11,7 @@ export class ProjectService {
   constructor(
     private readonly http: HttpClient,
     private readonly clientService: ClientService
-  ) {}
+  ) { }
 
   getProjects() {
     const url = elnEndpointsConfig.endpoints['getProjects'];
@@ -49,9 +49,36 @@ export class ProjectService {
     return this.http.delete<string>(url, { body: project });
   }
 
-  onHoldproject(project){
+  onHoldproject(project) {
     const url = `${elnEndpointsConfig.endpoints['onHoldProject']}`;
     return this.http.put<string>(url, project);
+  }
+
+  generateProjectPdf(projectId) {
+    const url = `${elnEndpointsConfig.endpoints['generateProjectPdf']}?projectId=${projectId}`;
+
+    let headerOptions = new HttpHeaders();
+    headerOptions = headerOptions.set('Accept', 'application/pdf');
+
+    const requestOptions = {
+      headers: headerOptions,
+      responseType: 'blob' as 'blob'
+    };
+
+    return this.http.get(url, requestOptions).pipe(
+      map((data: any) => {
+        const blob = new Blob([data], { type: 'application/pdf' });
+        const a = document.createElement('a');
+        const objectUrl = URL.createObjectURL(blob);
+        a.href = objectUrl;
+        a.download = "PROJECT_DETAILS_" + projectId + ".pdf";//'your_pdf_filename.pdf';
+        a.click();
+        URL.revokeObjectURL(objectUrl);
+        return blob;
+      })
+    );
+
+
   }
 
   handleError(error: HttpErrorResponse) {
