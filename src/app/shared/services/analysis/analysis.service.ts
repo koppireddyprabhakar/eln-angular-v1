@@ -235,6 +235,20 @@ export class AnalysisService {
       catchError((err: HttpErrorResponse) => this.handleError(err))
     );
   }
+  getAnalysisByStatusWithoutExpId(status: String) {
+    const url = `${elnEndpointsConfig.endpoints['getAnalysisByStatusWithoutExpId']}?status=${status}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+  downloadCoaPdfAnalysis(analysisId: number): Observable<Blob> {
+    const url = `${elnEndpointsConfig.endpoints['downloadCoaPdfByAnalysisId']
+    }?analysisId=${analysisId}`;
+    console.log(url);
+      return this.http.get(url, { responseType: 'blob' }).pipe(
+      catchError((err: HttpErrorResponse) => this.handleError(err))
+    );
+  }
 
   handleError(error: HttpErrorResponse) {
     const errorDetail = ClientService.formatError(error);

@@ -12,6 +12,7 @@ import { TestComponent } from './test/test.component';
 import { AddUserComponent } from './user/add-user/add-user.component';
 import { VersionHistoryComponent } from './version-history/version-history.component';
 import { ProjectExperimentsComponent } from './version-history/components/project-experiments/project-experiments.component';
+import { AuditlogsComponent } from '@app/auditlogs/auditlogs.component';
 
 const routes: Routes = [
   {
@@ -29,6 +30,10 @@ const routes: Routes = [
             component: AddUserComponent,
           },
         ],
+      },
+      {
+        path: 'auditlogs',
+        component: AuditlogsComponent,
       },
       {
         path: 'products',
@@ -82,7 +87,7 @@ const routes: Routes = [
           {
             path: 'project-experiments',
             component: ProjectExperimentsComponent,
-          },
+          }
         ],
       },
     ],

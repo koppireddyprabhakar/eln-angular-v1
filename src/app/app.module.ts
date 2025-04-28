@@ -27,6 +27,13 @@ import { ForgetComponent } from './forget/forget.component';
 import { UpdatePasswordComponent } from './update-password/update-password.component';
 import { OtpVerificationComponent } from './otp-verification/otp-verification.component';
 import { AuthGuardGuard } from './shared/auth-guard/auth-guard.guard';
+import { QaDashboardComponent } from './qa-dashboard/qa-dashboard.component';
+import { DataTablesModule } from 'angular-datatables';
+import { CoaReviewComponent } from './coa-review/coa-review.component';
+import { CoaApprovalFormulationComponent } from './coa-review/coa-approval-formulation/coa-approval-formulation.component';
+import { CoaApprovalAnalysisComponent } from './coa-review/coa-approval-analysis/coa-approval-analysis.component';
+import { QaAnalysisApprovalComponent } from './qa-dashboard/qa-analysis-approval/qa-analysis-approval.component';
+import { QaFormulationApprovalComponent } from './qa-dashboard/qa-formulation-approval/qa-formulation-approval.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +50,13 @@ import { AuthGuardGuard } from './shared/auth-guard/auth-guard.guard';
     ElnLoginComponent,
     ForgetComponent,
     UpdatePasswordComponent,
-    OtpVerificationComponent
+    OtpVerificationComponent,
+    QaDashboardComponent,
+    CoaReviewComponent,
+    CoaApprovalFormulationComponent,
+    CoaApprovalAnalysisComponent,
+    QaAnalysisApprovalComponent,
+    QaFormulationApprovalComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,6 +72,7 @@ import { AuthGuardGuard } from './shared/auth-guard/auth-guard.guard';
     ReactiveFormsModule,
     ToastrModule.forRoot(),
     NgMultiSelectDropDownModule.forRoot(),
+    DataTablesModule
   ],
   providers: [AuthGuardGuard],
   bootstrap: [AppComponent],

@@ -218,7 +218,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
         strength: this.project.strength,
         batchSize: this.project.batchSize,
         testRequestId: this.staticTrfId,
-        department: 'string',
+        department: "ANALYSIS",
         projectCode: 'string',
       });
     });
@@ -438,7 +438,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
       expireDate: expiryDate,
       trfTestResults: this.tableTestData,
       analysisId: this.experimentId,
-      insertUser: this.loginService.userDetails.userId
+      insertUser: this.loginService.userDetails.userId,
     };
     // if (!this.selectedTestItems || this.selectedTestItems.length === 0) {
     //   this.toastr.error('Please select at least one lab test', 'Error');
@@ -580,6 +580,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
   }
 
   saveSummary() {
+    debugger
     // if () {
     const summary = {
       status: 'Active',
@@ -594,6 +595,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
       experimentDetailsList: [],
       excipients: [],
       testRequestFormList: [],
+      insertUser: this.loginService.userDetails.firstName
     };
 
     if (!this.summaryForm.invalid) {
@@ -698,9 +700,13 @@ export class AnalysisNewExperimentComponent implements OnInit {
         } successfully`,
         'Success'
       );
-      if (this.dummyTabs[index].value.substring(0, 3) === 'new') {
-        this.activeTab = `${this.dummyTabs[index].value}-tab`;
-        this.getAnalysisById(this.experimentId);
+      // if (this.dummyTabs[index].value.substring(0, 3) === 'new') {
+      //   this.activeTab = `${this.dummyTabs[index].value}-tab`;
+      //   this.getAnalysisById(this.experimentId);
+      // }
+      if (this.dummyTabs[index].value.startsWith('new') && data?.analysisDetailId) {
+        this.dummyTabs[index].value = `id${data.analysisDetailId}`;
+        this.activeTab = `id${data.analysisDetailId}-tab`;
       }
       this.dummyTabs[index].showDeleteIcon = false;
     });

@@ -20,6 +20,13 @@ import { ForgetComponent } from './forget/forget.component';
 import { UpdatePasswordComponent } from './update-password/update-password.component';
 import { OtpVerificationComponent } from './otp-verification/otp-verification.component';
 import { AuthGuardGuard } from './shared/auth-guard/auth-guard.guard';
+import { QaDashboardComponent } from './qa-dashboard/qa-dashboard.component';
+import { CoaReviewComponent } from './coa-review/coa-review.component';
+import { CoaApprovalFormulationComponent } from './coa-review/coa-approval-formulation/coa-approval-formulation.component';
+import { CoaApprovalAnalysisComponent } from './coa-review/coa-approval-analysis/coa-approval-analysis.component';
+import { QaFormulationApprovalComponent } from './qa-dashboard/qa-formulation-approval/qa-formulation-approval.component';
+import { QaAnalysisApprovalComponent } from './qa-dashboard/qa-analysis-approval/qa-analysis-approval.component';
+import { AuditlogsComponent } from './auditlogs/auditlogs.component';
 
 // const routes: Routes = [
 //   { path: '', component: DashboardComponent },
@@ -115,10 +122,38 @@ const routes: Routes = [
     component: UsersProfileComponent,
     canLoad: [AuthGuardGuard]
   },
-  // {
-  //   path: 'test-request-form',
-  //   component: CreateTrfComponent,
-  // },
+  {
+    path: 'coareviewcomponent',
+    component: CoaReviewComponent,
+    canLoad: [AuthGuardGuard],
+  },
+  {
+    path: 'coa-approval-formulation',
+    component: CoaApprovalFormulationComponent,
+  },
+  {
+    path: 'coa-approval-analysis',
+    component: CoaApprovalAnalysisComponent,
+  },
+  { 
+    path: 'forms-page/qadashboard',
+     component: QaDashboardComponent 
+  },
+
+  { 
+    path: 'qa-approval',
+     component: QaFormulationApprovalComponent 
+  },
+
+  { 
+    path: 'qa-analysis-approval',
+     component: QaAnalysisApprovalComponent 
+  },
+  { 
+    path: 'auditlogs',
+     component:  AuditlogsComponent
+  },
+
 ];
 
 @NgModule({

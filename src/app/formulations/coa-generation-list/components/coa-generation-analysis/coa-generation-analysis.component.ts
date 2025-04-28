@@ -1,26 +1,25 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, finalize, takeWhile } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
-import { DataTableDirective } from 'angular-datatables';
-
-import { GlobalService } from '@app/shared/services/global/global.service';
-import { TrfService } from '@app/shared/services/test-request-form/trf.service';
-import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
-import { TestService } from '@app/shared/services/test/test.service';
-import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
-import { Dosages } from '@app/business-admin/dosage/dosage.interface';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Validators, FormBuilder } from '@angular/forms';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Dosages } from '@app/business-admin/dosage/dosage.interface';
+import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
+import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
+import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
+import { GlobalService } from '@app/shared/services/global/global.service';
 import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { UserService } from '@app/shared/services/user/user.service';
+import { DataTableDirective } from 'angular-datatables';
+import { ToastrService } from 'ngx-toastr';
+import { Subject, takeWhile } from 'rxjs';
 
 @Component({
-  selector: 'app-coa-generation',
-  templateUrl: './coa-generation.component.html',
-  styleUrls: ['./coa-generation.component.css']
+  selector: 'app-coa-generation-analysis',
+  templateUrl: './coa-generation-analysis.component.html',
+  styleUrls: ['./coa-generation-analysis.component.css']
 })
-export class CoaGenerationComponent implements OnInit {
+export class CoaGenerationAnalysisComponent implements OnInit {
+
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
 
@@ -29,11 +28,14 @@ export class CoaGenerationComponent implements OnInit {
   dtOptions = {
     pagingType: 'full_numbers',
   };
+  analysisId: any;
 
   expId: number;
   experiment: any;
   staticTrfId = 'TRF123';
-
+  department = 'ANALYSIS'
+  complianceStatus: boolean = false;
+  nonComplianceStatus: boolean = false;
   tests: any = [];
   dropdownList: any = [];
   selectedItems: any = [];
@@ -42,8 +44,6 @@ export class CoaGenerationComponent implements OnInit {
   columns: any = [];
   options: any = {};
   tableData: any = [];
-  complianceStatus: boolean = false;
-  nonComplianceStatus: boolean = false;
 
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
@@ -60,52 +60,49 @@ export class CoaGenerationComponent implements OnInit {
     packaging: '',
     batchSize: '',
     quantity: '',
-    market: '',
     labelClaim: '',
     manufacturingDate: '',
+    market: '',
     expiryDate: '',
-    preparedByName: '',
-    preparedByDesignation: '',
-    preparedByDate: '',
-    reviewedByName: '',
-    reviewedByDesignation: '',
-    reviewedByDate: '',
     approvedByName: '',
     approvedByDesignation: '',
-    approvedByDate: ''
-   
-  };
+    approvedByDate: '',
+    preparedByName: '',
+    reviewedByName: '' , 
+    preparedByDesignation: '',
+    reviewedByDesignation: '',
+    preparedByDate: '',
+    reviewedByDate: '',
 
+  };
+  
+  userValidateForm = this.formBuilder.group({
+    userName: [''],
+    password: ['',[Validators.required]],
+  });
+  
   testId = 0;
   userRole: string;
   userDetails: any;
   currentDate: string;
-  analysisSubmitDate: string;
+  analysisexperiment: any;
   UserDetailsbyAnalysisId: any;
-
-  userValidateForm = this.formBuilder.group({
-      userName: [''],
-      password: ['',[Validators.required]],
-    });
-
   constructor(private globalService: GlobalService,
     private route: Router,
     private activatedRoute: ActivatedRoute,
+    private readonly analysisService: AnalysisService,
     private formulationService: FormulationsService,
-    private experimentService: ExperimentService,
     private userService: UserService, // Inject UserService
     private loginService: LoginserviceService ,// Inject LoginserviceService
     private toastr: ToastrService,
-    private formBuilder: FormBuilder) { }
+  private formBuilder: FormBuilder,
+  private experimentService: ExperimentService) { }
 
   ngOnInit(): void {
-     // Fetch user details and role directly
      this.userDetails = this.loginService.userDetails;
      this.userRole = this.userService.userRole || 'N/A';
      this.userValidateForm.get('userName')?.setValue(this.userDetails.mailId);
-    //  this.currentDate = new Date().toISOString();
-    this.expId = this.activatedRoute.snapshot.queryParams['experimentId'];
-    this.currentDate = new Date().toLocaleString('en-US', { 
+     this.currentDate = new Date().toLocaleString('en-US', { 
       year: 'numeric', 
       month: '2-digit', 
       day: '2-digit', 
@@ -113,7 +110,7 @@ export class CoaGenerationComponent implements OnInit {
       minute: '2-digit', 
       hour12: true 
     });
-    
+    this.analysisId = this.activatedRoute.snapshot.queryParams['analysisId'];
     this.dropdownSettings = {
       singleSelection: false,
       idField: 'testId',
@@ -128,22 +125,11 @@ export class CoaGenerationComponent implements OnInit {
       { key: 'testName', title: 'Test Name' },
       { key: 'result', title: 'Results' },
       { key: 'description', title: 'Description' }
-
     ];
-    if (this.expId) {
-      this.getExperimentDetails();
-    }
-
-    this.getTestResults();
-   
-    // this.testRequest.preparedByName = this.userDetails.name;
-    // this.testRequest.preparedByDesignation = this.userDetails.designation;
-    // this.testRequest.reviewedByName = this.userDetails.name;
-    // this.testRequest.reviewedByDate = this.currentDate;
-
-    // this.testRequest.approvedByName = this.userDetails.name;
-    // this.testRequest.approvedByDate = this.currentDate;
-
+    if (this.analysisId) {
+        this.getAnalysisExperimentsById();
+        this.getTestResultsByAnalysisId();
+      }
   }
 
   ngAfterViewInit(): void {
@@ -159,8 +145,8 @@ export class CoaGenerationComponent implements OnInit {
       this.nonComplianceStatus = true;
     }
   }
-
-  getExperimentDetails() {
+  getAnalysisExperimentsById() {
+    debugger
     const flatten = (object) => {
       let value = {};
       for (var property in object) {
@@ -174,21 +160,26 @@ export class CoaGenerationComponent implements OnInit {
       }
       return value;
     };
-    this.formulationService
-      .getExperimentsById(this.expId)
-      .pipe(takeWhile(() => this.subscribeFlag))
-      .subscribe((experiment) => {
-        this.experiment = experiment.map((trf) => flatten(trf))[0];
-        this.getTestResults();
-        // this.globalService.hideLoader();
-      });
+    this.experimentService
+    .getAnalysisExperimentsById(this.analysisId)
+    .pipe(takeWhile(() => this.subscribeFlag))
+    .subscribe((analysisexperiment) => {
+      this.analysisexperiment = flatten(analysisexperiment);
+      console.log('Analysis Experiment:', this.analysisexperiment.batchNumber);
+      this.getTestResultsByAnalysisId();
+    });
+
   }
+  
+ 
+  
 
   redirectToExperiments() {
     this.route.navigate(['/forms-page/coa-generation-list/']);
   }
 
-  getTestResults() {
+  getTestResultsByAnalysisId() {
+     
     this.globalService.showLoader();
     const flatten = (object) => {
       let value = {};
@@ -203,26 +194,26 @@ export class CoaGenerationComponent implements OnInit {
       }
       return value;
     };
-    this.formulationService
-      .getTrfResultsByExperimentId(this.expId)
+    this.analysisService
+      . getTrfDetailsById(this.analysisId)
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((tests) => {
         this.tests = tests;
         let test = tests.map((trf) => flatten(trf))[0];
+        console.log('Analysis Experiment:', this.analysisexperiment);
+        console.log('Analysis Experiment:', this.tests);
 
-       
-       // console.log('Test Results:', tests);
-        this.testRequest['batchNumber'] = this.experiment.batchNumber;
-        this.testRequest['dosageForm'] = this.experiment.dosageName;
-        this.testRequest['projectName'] = this.experiment.projectName;
-        this.testRequest['strength'] = this.experiment.strength;
-        this.testRequest['batchSize'] = this.experiment.batchSize;
-        this.testRequest['preparedByDate'] = this.experiment.analysisSubmitDate;
+        console.log('Analysis Experiment:', this.analysisexperiment.batchNumber);
+        console.log('Test Results:', tests);
+        this.testRequest['batchNumber'] = this.analysisexperiment.batchNumber;
+        this.testRequest['dosageForm'] = this.analysisexperiment.dosageName;
+        this.testRequest['projectName'] = this.analysisexperiment.projectName;
+        this.testRequest['strength'] = this.analysisexperiment.strength;
+        this.testRequest['batchSize'] = this.analysisexperiment.batchSize;
         this.testRequest['testRequestId'] = this.staticTrfId;
-        this.testRequest['department'] = this.experiment.departmentName;
-        this.testRequest['productCode'] = this.experiment.productCode;
-        this.testRequest['market'] = this.experiment.markertName;
-
+        this.testRequest['productCode'] = this.analysisexperiment.productCode;
+        this.testRequest['department'] = this.department;
+        this.testRequest['market'] = this.analysisexperiment.markertName;
 
         this.testRequest['expiryDate'] = test.expireDate;
         this.testRequest['manufacturingDate'] = test.manufacturingDate;
@@ -231,24 +222,25 @@ export class CoaGenerationComponent implements OnInit {
         this.testRequest['packaging'] = test.packaging;
         this.testRequest['labelClaim'] = test.labelClaim;
         this.testRequest['quantity'] = test.quantity;
+
         this.testRequest['preparedByName'] = this.userDetails.firstName;
         this.testRequest['preparedByDesignation'] = this.userRole;
         this.testRequest['preparedByDate'] = this.currentDate;
-
+ 
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
           // Destroy the table first
           dtInstance.destroy();
           // Call the dtTrigger to rerender again
           this.dtTrigger.next(this.tests);
         });
-
+ 
         this.globalService.hideLoader();
       });
   }
 
   saveCoaReviewDetails() {
     const coareviewdetails = {
-      experimentId: this.expId,
+        analysisExpId: this.analysisId,
         preparedByUserId: this.userDetails.userId,
         preparedByDate: new Date(),  
         complianceStatus: this.complianceStatus ? 1 : 0,
@@ -261,36 +253,42 @@ export class CoaGenerationComponent implements OnInit {
 }
 
 
-updateExperimentStatus() {
-  if (!this.userValidateForm.invalid) {
-    const request = {
-      mailId: this.userValidateForm.value.userName || '',
-      password: this.userValidateForm.value.password || ''
-    };
-    this.loginService.login(request).subscribe(
-      (response) => {
-        console.log('user details', response);
-        if (response) {  //  Corrected comparison
-          this.experimentService.updateExperimentStatus(this.experiment.expId, 'COA Generated').subscribe((data) => {
+  updateAnalysisStatus() {
+     ;
+    let analysisRequest = {
+      analysisId: this.analysisId,
+      status: 'COA Generated',
+      summary: this.analysisexperiment.summary,
+      userId: this.loginService.userDetails.userId,
+    }
+    if (!this.userValidateForm.invalid) {
+      const request = {
+        mailId: this.userValidateForm.value.userName || '',
+        password: this.userValidateForm.value.password || ''
+      };
+      this.loginService.login(request).subscribe(response => {
+        console.log('usersdeatils', response);        if (response.status=200) {
+          this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
             this.saveCoaReviewDetails();
-            this.toastr.success(data['data'], 'Success');
-            this.redirectToExperiments();
+            this.toastr.success('Analysis Details Submitted successfully', 'Success');
+            this.route.navigate(['/coa-generation-list']);
           });
         } else {
-          this.toastr.error('Invalid credentials', 'Error');  //  Executes when login fails
+          this.toastr.error('Invalid credentials', 'Error');
         }
       },
-      (error: HttpErrorResponse) => {
-        this.toastr.error('Invalid credentials', 'Error'); // Executes when login API fails
-      }
-    );
-  } else {
-    this.userValidateForm.get('userName')?.markAsDirty();
-    this.userValidateForm.get('password')?.markAsDirty();
-  }
-}
+      (error: HttpErrorResponse) => {       
+          this.toastr.error('Invalid credentials', 'Error');
+         });
+    } else {
+      this.userValidateForm.get('userName')?.markAsDirty();
+      this.userValidateForm.get('password')?.markAsDirty();
+    }
+  }  
 
   ngOnDestroy(): void {
     this.subscribeFlag = false;
   }
+
+
 }

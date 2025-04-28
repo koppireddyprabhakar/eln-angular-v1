@@ -4,14 +4,14 @@
             <div class="d-flex justify-content-between">
                 <h5 class="card-title">COA GENERATION FORM</h5>
                 <h5 class="card-title text-end">ANALYSIS</h5>
-            </div> 
+            </div>        
             <div class="row g-3">
                 <div class="col-4">
                     <label for="testRequestId" class="form-label">Test Request ID</label>
                     <input type="text" class="form-control" id="testRequestId" [ngModel]="testRequest.testRequestId"
                         readonly />
                 </div>
- 
+
                 <div class="col-4">
                     <label for="department" class="form-label">Department</label>
                     <input type="text" class="form-control" id="department" [ngModel]="testRequest.department"
@@ -19,10 +19,10 @@
                 </div>
                 <div class="col-4">
                     <label for="dosageForm" class="form-label">Dosage Form</label>
-                    <input type="text" class="form-control" id="dosageForm" [ngModel]="testRequest.dosageForm"
+                    <input type="text" class="form-control" id="dosageForm" [ngModel]="analysisexperiment?.dosageName"
                         readonly />
                 </div>
- 
+
                 <div class="col-4">
                     <label for="projectName" class="form-label">Project Name</label>
                     <input type="text" class="form-control" id="projectName" [ngModel]="testRequest.projectName"
@@ -77,16 +77,16 @@
                     <input type="date" class="form-control" id="manufacturingDate"
                         [ngModel]="testRequest.manufacturingDate" readonly />
                 </div>
- 
+
                 <div class="col-4">
                     <label for="expiryDate" class="form-label">Expiry Date</label>
                     <input type="date" class="form-control" id="expiryDate" [ngModel]="testRequest.expiryDate"
                         readonly />
                 </div>
             </div>
- 
+
             <h3>RESULTS</h3>
- 
+
             <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover pt-4">
                 <thead>
                     <tr>
@@ -104,8 +104,8 @@
                         <td>{{ test.testResult }}</td>
                     </tr>
                 </tbody>
-            </table>   &nbsp;&nbsp;
- 
+            </table>
+            
             <table class="coa-table">
                 <thead>
                     <tr>
@@ -135,16 +135,23 @@
                         <td>{{ testRequest.approvedByDate }}</td>
                     </tr>
                 </tbody>
-            </table>  &nbsp;&nbsp;&nbsp;
+            </table>&nbsp;&nbsp;&nbsp;
+
+          
+ 
             <div class="col-4">
-                <label class="form-label">Compliance Status</label><br>
-                   <input class="form-check-input" type="checkbox" id="compliance"
-                   [(ngModel)]="complianceStatus" (change)="onComplianceChange(true)">
-                  <label for="compliance" class="form-check-label me-3">Compliance</label>
-                  <input class="form-check-input" type="checkbox" id="nonCompliance"
-                   [(ngModel)]="nonComplianceStatus" (change)="onComplianceChange(false)">
-                   <label for="nonCompliance" class="form-check-label">Non-Compliance</label>
-             </div>
+                <label class="form-label fw-bold">Compliance Status</label><br>          
+                <input class="form-check-input" type="checkbox" id="compliance"
+                       [checked]="testRequest.complianceStatus === true"
+                       disabled>
+                <label for="compliance" class="form-check-label me-3">Compliance</label>
+           
+                <input class="form-check-input" type="checkbox" id="nonCompliance"
+                       [checked]="testRequest.complianceStatus === false"
+                       disabled>
+                <label for="nonCompliance" class="form-check-label">Non-Compliance</label>        
+            </div>      
+            &nbsp;&nbsp;
             <div class="text-center pt-3">
                 <form class="row g-3" [formGroup]="userValidateForm">
                   <div class="row mb-3">
@@ -173,12 +180,10 @@
                 </button>
                 &nbsp;&nbsp;&nbsp;
                 <!-- COA Generated Button -->
-                <button type="submit" class="btn btn-primary mt-3" (click)="updateExperimentStatus()">
-                  COA Generated
+                <button type="submit" class="btn btn-primary mt-3" (click)="updateAnalysisStatus()">
+                  COA Reviewed
                 </button>
               </div>
         </div>
- 
     </div>
 </main>
- 

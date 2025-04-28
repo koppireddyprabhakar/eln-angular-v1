@@ -137,14 +137,16 @@
                 </tbody>
             </table>  &nbsp;&nbsp;&nbsp;
             <div class="col-4">
-                <label class="form-label">Compliance Status</label><br>
-                   <input class="form-check-input" type="checkbox" id="compliance"
-                   [(ngModel)]="complianceStatus" (change)="onComplianceChange(true)">
-                  <label for="compliance" class="form-check-label me-3">Compliance</label>
-                  <input class="form-check-input" type="checkbox" id="nonCompliance"
-                   [(ngModel)]="nonComplianceStatus" (change)="onComplianceChange(false)">
-                   <label for="nonCompliance" class="form-check-label">Non-Compliance</label>
-             </div>
+                <label class="form-label fw-bold">Compliance Status</label><br>          
+                <input class="form-check-input" type="checkbox" id="compliance"
+                       [checked]="testRequest.complianceStatus === true"
+                       disabled>
+                <label for="compliance" class="form-check-label me-3">Compliance</label>
+                <input class="form-check-input" type="checkbox" id="nonCompliance"
+                       [checked]="testRequest.complianceStatus === false"
+                       disabled>
+                <label for="nonCompliance" class="form-check-label">Non-Compliance</label>        
+            </div>              
             <div class="text-center pt-3">
                 <form class="row g-3" [formGroup]="userValidateForm">
                   <div class="row mb-3">
@@ -174,7 +176,7 @@
                 &nbsp;&nbsp;&nbsp;
                 <!-- COA Generated Button -->
                 <button type="submit" class="btn btn-primary mt-3" (click)="updateExperimentStatus()">
-                  COA Generated
+                  COA Reviewed
                 </button>
               </div>
         </div>

@@ -44,7 +44,7 @@ export const elnEndpointsConfig: EndpointConfig = {
     deleteFormulationProject: `${environment.API_BASE_PATH}` + '/formulation-dashboard/delete-project',
     getFormulationProjects: `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-projects',
     getFormulationBatchNumber: `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-batch-number',
-    getUniqeExperimentName: `${environment.API_BASE_PATH}` + '/experiment/experiment_unique _id',
+    getUniqeExperimentName:`${environment.API_BASE_PATH}` + '/experiment/experiment_unique _id',
     getFormulationProjectById: `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-project-by-id',
     getFormulationProjectsTeams: `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-formulations-teams',
     getFormualtionDashboardExperiments: `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-experiments',
@@ -115,7 +115,18 @@ export const elnEndpointsConfig: EndpointConfig = {
     getUniqeAnalysisExperimentName: `${environment.API_BASE_PATH}` + '/analysis/analysis_experiment_unique_id',
     getExperimentsByProjectId: `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-experiments-by-project-id',
     getAnalysisDetailByExperimentId: `${environment.API_BASE_PATH}` + '/analysis/get_analysis_details_by_experiment_id',
-    generateProjectPdf: `${environment.API_BASE_PATH}` + '/pdf/get-project-pdf'
+    generateProjectPdf: `${environment.API_BASE_PATH}` + '/pdf/get-project-pdf',
+    getAnalysisExperimentsForCoaDetails: `${environment.API_BASE_PATH}` + '/analysis/get-analysis-by-analysis-experiment-id',
+    saveCoaReviewDetails:  `${environment.API_BASE_PATH}` + '/coa/create-coa-details',
+    getCoaUserDetailsById:`${environment.API_BASE_PATH}` + '/coa/get-Coa-Review-formulation-Details',
+    getCoaUserDetailsByAnalysisId:`${environment.API_BASE_PATH}` + '/coa/get-analysis-coa-review-details',
+    UpdateFormulationcoareview:`${environment.API_BASE_PATH}` + '/coa/update-coa-formulation-review',
+    UpdateAnalysisCoareview: `${environment.API_BASE_PATH}` + '/coa/update-coa-analysis-review',
+    UpdateformulationcoaApproval:`${environment.API_BASE_PATH}` + '/coa/update-coa-formulation-approval',
+    UpdateAnalysisCoaApproval: `${environment.API_BASE_PATH}` + '/coa/update-coa-analysis-approval',
+    downloadCoaPdf: `${environment.API_BASE_PATH}` + '/pdf/generate-coa-pdf-and-download',
+    getAuditLogs: `${environment.API_BASE_PATH}` + '/audit/get-audit-logs',
+    downloadCoaPdfByAnalysisId: `${environment.API_BASE_PATH}` + '/pdf/generate-coa-pdf-and-download-by-analysisId',
   },
 };
 

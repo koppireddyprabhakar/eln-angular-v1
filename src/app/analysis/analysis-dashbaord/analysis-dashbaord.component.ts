@@ -451,9 +451,13 @@ export class AnalysisDashbaordComponent implements OnInit {
         } successfully`,
         'Success'
       );
-      if (this.dummyTabs[index].value.substring(0, 3) === 'new') {
-        this.activeTab = `${this.dummyTabs[index].value}-tab`;
-        this.getAnalysisById(this.experimentId);
+      // if (this.dummyTabs[index].value.substring(0, 3) === 'new') {
+      //   this.activeTab = `${this.dummyTabs[index].value}-tab`;
+      //   this.getAnalysisById(this.experimentId);
+      // }
+      if (this.dummyTabs[index].value.startsWith('new') && data?.analysisDetailId) {
+        this.dummyTabs[index].value = `id${data.analysisDetailId}`;
+        this.activeTab = `id${data.analysisDetailId}-tab`;
       }
       this.dummyTabs[index].showDeleteIcon = false;
     });

@@ -13,6 +13,7 @@ import { CoaGenerationListComponent } from './coa-generation-list/coa-generation
 import { CoaGenerationComponent } from './coa-generation-list/components/coa-generation/coa-generation.component';
 import { ViewFormulationExperimentComponent } from './view-formulation-experiment/view-formulation-experiment.component';
 import { InwardManagementComponent } from './inward-management/inward-management.component';
+import { CoaGenerationAnalysisComponent } from './coa-generation-list/components/coa-generation-analysis/coa-generation-analysis.component';
 
 const routes: Routes = [
   {
@@ -61,7 +62,11 @@ const routes: Routes = [
       {
         path: 'formulation-inward-management',
         component: InwardManagementComponent
-      }
+      },
+      {
+        path: 'coa-generation-analysis',
+        component: CoaGenerationAnalysisComponent
+      },
     ],
   },
 ];

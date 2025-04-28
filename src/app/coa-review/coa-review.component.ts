@@ -1,23 +1,22 @@
 import { Component, OnInit, QueryList, TemplateRef, ViewChild, ViewChildren } from '@angular/core';
-import { Router } from '@angular/router';
-import { Subject, takeWhile } from 'rxjs';
-import { DataTableDirective } from 'angular-datatables';
-
-import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
-import { GlobalService } from '@app/shared/services/global/global.service';
-import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
 import { Validators, FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
+import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
+import { GlobalService } from '@app/shared/services/global/global.service';
 import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { UserService } from '@app/shared/services/user/user.service';
+import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
+import { Subject, takeWhile } from 'rxjs';
 
 @Component({
-  selector: 'app-coa-generation-list',
-  templateUrl: './coa-generation-list.component.html',
-  styleUrls: ['./coa-generation-list.component.css']
+  selector: 'app-coa-review',
+  templateUrl: './coa-review.component.html',
+  styleUrls: ['./coa-review.component.css']
 })
-export class CoaGenerationListComponent implements OnInit {
+export class CoaReviewComponent implements OnInit {
 
   
     @ViewChildren(DataTableDirective)
@@ -65,7 +64,7 @@ export class CoaGenerationListComponent implements OnInit {
     ngOnInit(): void {
       this.getFormulationExperiments();
       this.getAnalysisExperiments();
-      // this.getUsers();
+      this.getUsers();
       this.expColumns = [
         { key: 'experimentName', title: 'Analysis Name' },
         { key: 'projectId', title: 'Project Id' },
@@ -106,7 +105,7 @@ export class CoaGenerationListComponent implements OnInit {
     getFormulationExperiments() {
       this.globalService.showLoader();
       this.experimentService
-        .getExperimentsByStatus('Analysis Submitted')
+        .getExperimentsByStatus('COA Generated')
         .pipe(takeWhile(() => this.subscribeFlag))
         .subscribe((experiments) => {
           this.experiments = experiments;
@@ -123,32 +122,10 @@ export class CoaGenerationListComponent implements OnInit {
           this.globalService.hideLoader();
         });
     }
-  
-    // getAnalysisExperiments() {
-       
-    //   // this.globalService.showLoader();
-    //   this.analysisService
-    //     .getAnalysisByStatus('Analysis Submitted')
-    //     .pipe(takeWhile(() => this.subscribeFlag))
-    //     .subscribe((myExperiments) => {
-    //       this.myExperiments = myExperiments;
-    //       this.dtElements.forEach(
-    //         (dtElement: DataTableDirective, index: number) => {
-    //           dtElement.dtInstance.then((dtInstance: any) => {
-    //             if (dtInstance.table().node().id === 'second-table') {
-    //               dtInstance.destroy();
-    //               this.dtMyProjectsTrigger.next(this.myExperiments);
-    //             }
-    //           });
-    //         }
-    //       );
-    //       this.globalService.hideLoader();
-    //     });
-    // }
     getAnalysisExperiments() {
       debugger
       // this.globalService.showLoader();
-      this.analysisService.getAnalysisByStatusWithoutExpId('Analysis Submitted')
+      this.analysisService.getAnalysisByStatusWithoutExpId('COA Generated')
         .pipe(takeWhile(() => this.subscribeFlag))
         .subscribe((myExperiments) => {
           this.myExperiments = myExperiments;
@@ -165,33 +142,66 @@ export class CoaGenerationListComponent implements OnInit {
           this.globalService.hideLoader();
         });
     }
-    onRowClickForFormulation(event) {
-      this.route.navigateByUrl(
-        `/forms-page/coa-generation?projectId=${event.projectId}&experimentId=${event.expId}`
-      );
-    }
-    
-    // For analysis experiments:
-    onRowClickForAnalysis(event) {
-    this.route.navigateByUrl(
-        `/forms-page/coa-generation-analysis?projectId=${event.projectId}&analysisId=${event.analysisId}`
-      );
-    }
-
-    // getUsers() {
-    //   this.globalService.showLoader();
-    //   this.userService
-    //     .getCustomRoles('ANALYSIS')
+    // getAnalysisExperiments() {
+    //   // this.globalService.showLoader();
+    //   this.analysisService
+    //     .getAnalysisByStatus('COA Generated')
     //     .pipe(takeWhile(() => this.subscribeFlag))
-    //     .subscribe((users) => {
-    //       const usersList = users.map((user: any) => ({
-    //         ...user,
-    //         status: 'str',
-    //       }));
-    //       this.users = usersList;
+    //     .subscribe((myExperiments) => {
+    //       this.myExperiments = myExperiments;
+    //       this.dtElements.forEach(
+    //         (dtElement: DataTableDirective, index: number) => {
+    //           dtElement.dtInstance.then((dtInstance: any) => {
+    //             if (dtInstance.table().node().id === 'second-table') {
+    //               dtInstance.destroy();
+    //               this.dtMyProjectsTrigger.next(this.myExperiments);
+    //             }
+    //           });
+    //         }
+    //       );
     //       this.globalService.hideLoader();
     //     });
     // }
+  
+    // onRowClickForFormulation(event) {
+    //   this.route.navigateByUrl(
+    //     `coa-approval-formulation?projectId=${event.projectId}&experimentId=${event.expId}`
+    //   );
+    // }
+    
+    // onRowClickForAnalysis(event) {
+    //   this.route.navigateByUrl(
+    //     `coa-approval-analysis?projectId=${event.projectId}&analysisId=${event.analysisId}`
+    //   );
+    // }
+    onRowClickForFormulation(event) {
+      this.route.navigateByUrl(
+        `coa-approval-formulation?projectId=${event.projectId}&experimentId=${event.expId}`
+      );
+    }
+    
+   
+    onRowClickForAnalysis(event) {
+      this.route.navigateByUrl(
+        `coa-approval-analysis?projectId=${event.projectId}&analysisId=${event.analysisId}`
+      );
+    }
+    
+    
+    getUsers() {
+      this.globalService.showLoader();
+      this.userService
+        .getCustomRoles('ANALYSIS')
+        .pipe(takeWhile(() => this.subscribeFlag))
+        .subscribe((users) => {
+          const usersList = users.map((user: any) => ({
+            ...user,
+            status: 'str',
+          }));
+          this.users = usersList;
+          this.globalService.hideLoader();
+        });
+    }
 
     viewAnalysisExperiments(event) {
       this.route.navigateByUrl(

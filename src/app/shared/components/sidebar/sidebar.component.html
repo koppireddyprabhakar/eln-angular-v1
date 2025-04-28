@@ -51,7 +51,11 @@
             <i class="bi bi-circle"></i><span>Team Management</span>
           </a>
         </li>
-
+        <li>
+          <a routerLink="/business-admin/auditlogs" routerLinkActive="active">
+            <i class="bi bi-circle"></i><span>Audit Logs</span>
+          </a>
+        </li>
       </ul>
     </li>
       <li class="nav-item" *ngIf="!userService.isAdmin() && userService.isFromFormulationDept()">
@@ -124,7 +128,7 @@
       </ul>
     </li>
     <!-- COA Generation -->
-    <li class="nav-item" *ngIf="!userService.isFromFormulationDept() && !userService.isFromAnalysisDept()">
+    <!-- <li class="nav-item" *ngIf="!userService.isFromFormulationDept() && !userService.isFromAnalysisDept()">
       <a class="nav-link collapsed" data-bs-target="#components-coa" data-bs-toggle="collapse" aria-expanded="true">
         <i class="bi bi-menu-button-wide"></i><span>COA Dashboard</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
@@ -135,7 +139,35 @@
           </a>
         </li>
       </ul>
+    </li> -->
+    <li class="nav-item" *ngIf="!userService.isAdmin() && userService.isFromAnalysisDept()">
+      <a class="nav-link collapsed" data-bs-target="#components-coa" data-bs-toggle="collapse" aria-expanded="true">
+        <i class="bi bi-menu-button-wide"></i><span>Coa Dashboard</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="components-coa" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+        <li>
+          <a routerLink="/coa-generation-list" routerLinkActive="active">
+            <i class="bi bi-circle"></i><span>Coa Generation</span>
+          </a>
+        </li>
+        <li *ngIf="userService.isHod()">
+          <a routerLink="/coareviewcomponent" routerLinkActive="active">
+            <i class="bi bi-circle"></i><span>Coa Review</span>
+          </a>
+        </li>
+      </ul>
     </li>
-
+    <li class="nav-item" *ngIf="!userService.isAdmin() && userService.isFromQADepartment()">
+      <a class="nav-link collapsed" data-bs-target="#components-coa" data-bs-toggle="collapse" aria-expanded="true">
+        <i class="bi bi-menu-button-wide"></i><span>QA Dashboard</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="components-coa" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+        <li>
+          <a routerLink="forms-page/qadashboard" routerLinkActive="active">
+            <i class="bi bi-circle"></i><span>Qa Approval</span>
+          </a>
+        </li>
+      </ul>
+    </li>
   </ul>
 </aside>

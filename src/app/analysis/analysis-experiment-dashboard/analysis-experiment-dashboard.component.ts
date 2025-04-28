@@ -385,8 +385,14 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   }
 
   onItemSelect(item: any) {
+    debugger
+    if (!this.tableData) {
+      this.tableData = [];  // Initialize tableData if it's null/undefined
+    }
+    // const selectedData = this.inwards
     this.tableData.push(...this.inwards.filter(i => i.excipientId === item.excipientId)
-      .map((data) => ({ ...data, analysisId: Number(this.analysisID), experimentQuantity: 0, excipientQuantity: data.remainingQuantity })));
+      .map((data) => ({ ...data, analysisId: Number(this.analysisID), 
+      experimentQuantity: 0, excipientQuantity: data.remainingQuantity })));
 
     this.tableData.forEach(e => {
       if (e.excipientId === item.excipientId) {

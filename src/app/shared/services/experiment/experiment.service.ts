@@ -172,6 +172,56 @@ export class ExperimentService {
     .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
+  saveCoaReviewDetails(coareviewdetails: any) {
+    const url = elnEndpointsConfig.endpoints['saveCoaReviewDetails'];
+    return this.http.post<any>(url, coareviewdetails);
+  }
+  getCoaUserDetailsById(id) {
+    const url = `${elnEndpointsConfig.endpoints['getCoaUserDetailsById']}?experimentId=${id}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
+  getCoaUserDetailsByAnalysisId(id) {
+    const url = `${elnEndpointsConfig.endpoints['getCoaUserDetailsByAnalysisId']}?analysisId=${id}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
+  updateFormulationCoaReviewDetails(coareviewdetails) {
+    const url = elnEndpointsConfig.endpoints['UpdateFormulationcoareview'];
+    return this.http.put<string>(url, coareviewdetails);
+  }
+
+  updateAnalysisCoaReviewDetails(coareviewdetails) {
+    const url = elnEndpointsConfig.endpoints['UpdateAnalysisCoareview'];
+    return this.http.put<string>(url, coareviewdetails);
+  }
+  updateAnalysisCoaAprovalDetails(coareviewdetails) {
+    const url = elnEndpointsConfig.endpoints['UpdateAnalysisCoaApproval'];
+    return this.http.put<string>(url, coareviewdetails);
+  }
+  updateformulationCoaAprovalDetails(coareviewdetails) {
+    const url = elnEndpointsConfig.endpoints['UpdateformulationcoaApproval'];
+    return this.http.put<string>(url, coareviewdetails);
+  }
+  getAnalysisExperimentsById(id) {
+    const url = `${elnEndpointsConfig.endpoints['getAnalysisExperimentsForCoaDetails']}?analysisId=${id}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+  downloadCoaPdf(experimentId: number): Observable<Blob> {
+    const url = `${elnEndpointsConfig.endpoints['downloadCoaPdf']
+    }?experimentId=${experimentId}`;
+ 
+    return this.http.get(url, { responseType: 'blob' }).pipe(
+      catchError((err: HttpErrorResponse) => this.handleError(err))
+    );
+  }
+
   handleError(error: HttpErrorResponse) {
     const errorDetail = ClientService.formatError(error);
     if (errorDetail && (errorDetail.title || errorDetail.errorMessage)) {

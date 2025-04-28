@@ -22,6 +22,7 @@ import { TestReqFormsComponent } from './test-req-forms/test-req-forms.component
 import { CoaGenerationListComponent } from './coa-generation-list/coa-generation-list.component';
 import { CoaGenerationComponent } from './coa-generation-list/components/coa-generation/coa-generation.component';
 import { ViewFormulationExperimentComponent } from './view-formulation-experiment/view-formulation-experiment.component';
+import { CoaGenerationAnalysisComponent } from './coa-generation-list/components/coa-generation-analysis/coa-generation-analysis.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { ViewFormulationExperimentComponent } from './view-formulation-experimen
     CoaGenerationListComponent,
     CoaGenerationComponent,
     ViewFormulationExperimentComponent,
+    CoaGenerationAnalysisComponent,
   ],
   imports: [
     CommonModule,

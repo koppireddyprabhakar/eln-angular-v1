@@ -17,6 +17,7 @@ import { AddProjectManagementComponent } from './project-management/add-project-
 import { DataTablesModule } from 'angular-datatables';
 import { VersionHistoryComponent } from './version-history/version-history.component';
 import { ProjectExperimentsComponent } from './version-history/components/project-experiments/project-experiments.component';
+import { AuditlogsComponent } from '@app/auditlogs/auditlogs.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { ProjectExperimentsComponent } from './version-history/components/projec
     AddProjectManagementComponent,
     VersionHistoryComponent,
     ProjectExperimentsComponent,
+    AuditlogsComponent
   ],
   imports: [
     CommonModule,
