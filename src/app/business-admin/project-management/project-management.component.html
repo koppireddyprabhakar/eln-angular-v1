@@ -71,8 +71,15 @@
                         On Hold
                       </i>
 
-                      <i type="button" (click)="generateProjectPdf(project.projectId)" class="pdf-icon">
+                      <i type="button" (click)="generateProjectPdf(project.projectId)"
+                        class="coaIcon bi-file-earmark-text-fill ms-2 text-primary">
+                        <!-- class="pdf-icon"> -->
                       </i>
+                      <i *ngIf="(userDetails.roleId === 4 || userDetails.roleId === 1) && project.status === 'OnHold'"
+                        type="button" class="btn btn-link p-0" (click)="OnReactivateProject(project)">
+                        Reactivate
+                      </i>
+
                     </div>
                   </td>
 

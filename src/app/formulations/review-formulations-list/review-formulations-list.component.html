@@ -25,19 +25,21 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let user of myExperiments; let i = index">
+                <tr *ngFor="let experiment of myExperiments; let i = index">
                   <td>{{i + 1}}</td>
                   <td>
-                    {{ user.experimentName | titlecase }}
+                    {{ experiment.experimentName | titlecase }}
                   </td>
-                  <td>{{ user.batchNumber }}</td>
-                  <td>{{ user.batchSize }}</td>
-                  <td>{{ user.projectId }}</td>
-                  <td>{{ user.project.formulationName}}</td>
-                  <td>{{ user.project.strength}}</td>
-                  <td>{{ user.status }}</td>
+                  <td>{{ experiment.batchNumber }}</td>
+                  <td>{{ experiment.batchSize }}</td>
+                  <td>{{ experiment.projectId }}</td>
+                  <td>{{ experiment.project.formulationName}}</td>
+                  <td>{{ experiment.project.strength}}</td>
+                  <td>{{ experiment.project && experiment.project.status === 'OnHold' ? experiment.project.status
+                    : experiment.experimentStatus }}</td>
                   <td>
-                    <i class="btn btn-link" (click)="onRowClick(user)">
+                    <i class="btn btn-link" *ngIf="experiment.project && experiment.project.status !== 'OnHold'"
+                      (click)="onRowClick(experiment)">
                       Review
                     </i>
                   </td>

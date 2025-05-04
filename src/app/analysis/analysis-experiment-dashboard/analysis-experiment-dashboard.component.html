@@ -373,9 +373,8 @@
                 </div>
               </form>
 
-              <button type="submit" class="btn btn-primary mt-3"
-                *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()"
-                (click)="updateAnalysisStatus('Analysis Submitted')">
+              <button type="submit" class="btn btn-primary mt-3" *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase() &&
+                (project && project.status !== 'OnHold')" (click)="updateAnalysisStatus('Analysis Submitted')">
                 Submit Analysis
               </button>
 

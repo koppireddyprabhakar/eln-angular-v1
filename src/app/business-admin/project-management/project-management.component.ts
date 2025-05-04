@@ -122,7 +122,31 @@ export class ProjectManagementComponent implements OnInit {
   }
 
   OnHoldProject() {
-    this.selectedProject = { ...this.selectedProject, status: 'onhold' };
+
+    this.selectedProject['previousStatus'] = this.selectedProject['status'];
+    this.selectedProject['status'] = "OnHold";
+
+    this.projectService
+      .onHoldproject(this.selectedProject)
+      .pipe(
+        takeWhile(() => this.subscribeFlag),
+        finalize(() => {
+          this.globalService.hideLoader();
+        })
+      )
+      .subscribe(() => {
+        this.getProjects();
+        this.confirmOnHoldModal.nativeElement.click();
+        this.toastr.success('Project has been deleted succesfully', 'Success');
+      });
+  }
+
+  OnReactivateProject(project) {
+    this.selectedProject = project;
+
+    this.selectedProject['status'] = this.selectedProject['previousStatus'];
+    this.selectedProject['previousStatus'] = null;
+
     this.projectService
       .onHoldproject(this.selectedProject)
       .pipe(
