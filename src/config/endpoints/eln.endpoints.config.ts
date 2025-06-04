@@ -127,6 +127,13 @@ export const elnEndpointsConfig: EndpointConfig = {
     downloadCoaPdf: `${environment.API_BASE_PATH}` + '/pdf/generate-coa-pdf-and-download',
     getAuditLogs: `${environment.API_BASE_PATH}` + '/audit/get-audit-logs',
     downloadCoaPdfByAnalysisId: `${environment.API_BASE_PATH}` + '/pdf/generate-coa-pdf-and-download-by-analysisId',
+    getAnalysisByStatusWithoutExpId:`${environment.API_BASE_PATH}` +'/analysis/get-analysis-by-status-without-expid',
+    createControlPanel: `${environment.API_BASE_PATH}` +'/controlpanel/create',
+    getControlPanel:   `${environment.API_BASE_PATH}` +'/controlpanel/get-control-panel',
+    updateControlPanel: `${environment.API_BASE_PATH}` +'/controlpanel/update',
+    getNumberOfUsers:`${environment.API_BASE_PATH}` +'/controlpanel/get-number-of-users',
+    downloadAuditPdf: `${environment.API_BASE_PATH}` +'/audit/audit-report/download',
+
   },
 };
 

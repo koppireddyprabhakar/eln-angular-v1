@@ -198,8 +198,7 @@
               active: activeTab === dumm.value,
               show: activeTab === dumm.value
             }" id="{{ dumm.value }}" role="tabpanel" [attr.aria-labelledby]="dumm + '-tab'">
-            <ckeditor [config]="editorConfig" required [(ngModel)]="article[i].text" data="" name="text"></ckeditor>
-            <!-- <ckeditor data="<p>Hello, world!</p>"></ckeditor> -->
+            <ckeditor [config]="editorConfig" required [(ngModel)]="article[i].text" data="" name="text"></ckeditor>         
             <div class="text-center pt-3" *ngIf="
                 experimentDetails && experimentDetails.status === 'Inprogress'
               ">

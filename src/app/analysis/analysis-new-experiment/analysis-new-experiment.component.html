@@ -275,16 +275,29 @@
                 </span>
               </div>
               <div class="col-4">
-                <label for="projectCode" class="form-label">Project Code</label>
-                <input type="text" class="form-control" id="projectCode" formControlName="projectCode" readonly />
+                <label for="market" class="form-label">Market</label>
+                <input type="text" class="form-control" id="market" formControlName="market" readonly/>
                 <span *ngIf="
-                    testRequestForm.controls['projectCode'].invalid &&
-                    (testRequestForm.controls['projectCode'].dirty ||
-                      testRequestForm.controls['projectCode'].touched) &&
-                    testRequestForm.get('projectCode')?.errors &&
-                    testRequestForm.get('projectCode')?.hasError('required')
+                    testRequestForm.controls['market'].invalid &&
+                    (testRequestForm.controls['market'].dirty ||
+                      testRequestForm.controls['market'].touched) &&
+                    testRequestForm.get('market')?.errors &&
+                    testRequestForm.get('market')?.hasError('required')
                   " class="text-danger">
-                  Please enter Project Code
+                  Please enter Market Name
+                </span>
+              </div> 
+              <div class="col-4">
+                <label for="productCode" class="form-label">Product Code</label>
+                <input type="text" class="form-control" id="productCode" formControlName="productCode" readonly />
+                <span *ngIf="
+                    testRequestForm.controls['productCode'].invalid &&
+                    (testRequestForm.controls['productCode'].dirty ||
+                      testRequestForm.controls['productCode'].touched) &&
+                    testRequestForm.get('productCode')?.errors &&
+                    testRequestForm.get('productCode')?.hasError('required')
+                  " class="text-danger">
+                  Please enter Product Code
                 </span>
               </div>
               <div class="col-4">

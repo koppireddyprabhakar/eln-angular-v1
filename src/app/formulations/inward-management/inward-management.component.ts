@@ -76,6 +76,7 @@ export class InwardManagementComponent implements OnInit {
           // status: inward.status.toLowerCase() === 'act' ? 'Active' : 'InActive', // change later
         }));
         this.inwards = [...newInwardsList];
+        this.checkExpiringInwards();
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
           // Destroy the table first
           dtInstance.destroy();
@@ -201,4 +202,38 @@ export class InwardManagementComponent implements OnInit {
   ngOnDestroy(): void {
     this.subscribeFlag = false;
   }
+
+      
+checkExpiringInwards() {
+  const currentDate = new Date();
+  const expiryDateLimit = new Date();
+  expiryDateLimit.setDate(currentDate.getDate() + 45); // 45 days from today
+
+  this.inwards.forEach(inward => {
+    if (!inward.expiryDate) {
+      // Skip null or undefined expiryDate
+      return;
+    }
+
+    const expiryDate = new Date(inward.expiryDate);
+    
+    //  Debug log for expiry date parsing
+    console.log('Raw expiryDate:', inward.expiryDate, '| Parsed Date:', expiryDate);
+
+    // Skip if invalid or not within 45 days range
+    if (
+      expiryDate.toString() === 'Invalid Date' ||
+      expiryDate <= currentDate ||
+      expiryDate > expiryDateLimit
+    ) {
+      return;
+    }
+
+    this.toastr.warning(
+      `Your inward ${inward.excipientsName} of batch/lot no: ${inward.batchNo} is going to expire soon.`,
+      'Expiry Alert'
+    );
+  });
+}
+
 }

@@ -154,6 +154,10 @@ export class ViewFormulationExperimentComponent implements OnInit {
     this.dtResultTrigger.next(null);
   }
 
+   public editorConfig = {
+    customConfig: '/assets/ckeditor/config.js', // Path to the config.js file
+  };
+
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
       this.project = project;

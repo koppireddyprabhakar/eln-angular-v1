@@ -214,8 +214,7 @@
               active: activeTab === dumm.value,
               show: activeTab === dumm.value
             }" id="{{ dumm.value }}" role="tabpanel" [attr.aria-labelledby]="dumm + '-tab'">
-            <ckeditor  [config]="editorConfig" required ngDefaultControl [(ngModel)]="article[i].text" data="" name="text"></ckeditor>
-            <!-- <ckeditor data="<p>Hello, world!</p>"></ckeditor> -->
+            <ckeditor required ngDefaultControl [(ngModel)]="article[i].text" data="" name="text"></ckeditor>        
             <div class="text-center pt-3" *ngIf="analysisExperimentDetails && (analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase() 
               || analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase())">
               <button type="submit" class="btn btn-primary" (click)="saveTab(i, dumm.label)">

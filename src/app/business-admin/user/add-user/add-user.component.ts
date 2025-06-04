@@ -47,7 +47,9 @@ export class AddUserComponent implements OnInit {
     zipCode: [''],
     teamId: ['', [Validators.required]],
     certifiedReviewer: false,
-    coaPermission:false
+    coaPermission:false,
+    accountLocked: false
+
   });
   public showErrorMsg: boolean = false;
 
@@ -109,7 +111,7 @@ export class AddUserComponent implements OnInit {
       userTeams: [{ teamId: this.userForm.get('teamId')?.value, userId: this.userId ? this.userId : null }],
       certifiedReviewer: this.userForm.get('certifiedReviewer')?.value,
       coaPermission: this.userForm.get('coaPermission')?.value,
-
+      accountLocked: this.userForm.get('accountLocked')?.value,
     };
     console.log("newUser=", newUser);
     if (!this.userForm.invalid) {
@@ -177,6 +179,7 @@ export class AddUserComponent implements OnInit {
     });
   }
 
+  
   getUserRoles() {
     this.userRoleService.getUserRoles().subscribe((userRoles) => {
       this.userRoles = userRoles;
@@ -219,7 +222,7 @@ export class AddUserComponent implements OnInit {
           teamId: selectedUser.teamId,
           certifiedReviewer: selectedUser.certifiedReviewer,
           coaPermission: selectedUser.coaPermission,
-
+          accountLocked: selectedUser.accountLocked,
         });
       });
   }

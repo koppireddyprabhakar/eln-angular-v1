@@ -111,18 +111,21 @@ export class DosageComponent implements OnInit {
   saveDosage() {
     this.showErrorMsg = false;
     this.saveButtonClicked = true;
+    let dosageName = this.dosageForm.get('dosageName')?.value;
 
-    let dosageName = this.dosageForm.get('dosageName')!.value;
-
-    let filteredDosages = this.dosages.filter(p => p.dosageName === dosageName);
-
-    if (filteredDosages && filteredDosages.length === 1 && this.selectedDosage && !this.selectedDosage.dosageId) {
-      this.showErrorMsg = true;
-      return;
-    } else if (filteredDosages && filteredDosages.length > 1 && this.selectedDosage && this.selectedDosage.dosageId) {
-      this.showErrorMsg = true;
-      return;
-    }
+if (!dosageName || typeof dosageName !== 'string') {
+  this.dosageForm.get('dosageName')?.markAsDirty();
+  return;
+}
+dosageName = dosageName.trim();
+// Check for case-insensitive duplicate (excluding the one being edited)
+const isDuplicate = this.dosages.some(d =>
+  d.dosageName?.trim().toLowerCase() === dosageName!.toLowerCase() &&
+  d.dosageId !== this.selectedDosage?.dosageId );
+if (isDuplicate) {
+  this.showErrorMsg = true;
+  return;
+}
     let allFormulationsValid = false;
     this.formulations.controls.forEach(formulationGroup => {
       const formulationControl = formulationGroup.get('formulationName');

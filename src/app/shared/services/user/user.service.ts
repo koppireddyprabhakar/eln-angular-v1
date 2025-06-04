@@ -94,4 +94,9 @@ export class UserService {
   isFromQADepartment() {
     return this.userDepartment == 'QA DEPARTMENT' ? true : false;
   }
+
+  isFromAdminManagement(){
+    return this.userDepartment == 'ADMIN MANAGEMENT' ? true : false;
+
+  }
 }

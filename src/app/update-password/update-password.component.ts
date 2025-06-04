@@ -60,39 +60,40 @@ passwordsMatch(formGroup: FormGroup) {
   const confirmpassword = formGroup.get('confirmpassword')?.value;
   return newpassword === confirmpassword ? null : { notSame: true };
   }
-   
-  onSubmit(){
-    this.isSubmitted = true;
-    const request = {
-      mailId: this.username,
-      password: this.newpassword
-    };
-    if(this.confirmpassword == this.newpassword && this.confirmpassword != '' ){
-      this.updatePasswordService.Update(request).subscribe((response)=>{
-        if(response.status=200)
-        {
-          this.route.navigate(['/dashboard']);
-          this.toastr.success(
-            ' Password has been updated succesfully',
-            'Success'
-          );
+
+
+onSubmit() {
+  this.isSubmitted = true;
+  const request = {
+    mailId: this.username,
+    password: this.newpassword
+  };
+
+  if (this.confirmpassword === this.newpassword && this.confirmpassword !== '') {
+    this.updatePasswordService.Update(request).subscribe({
+      next: (response) => {
+        console.log("Update Response:", response);
+
+        // Check for response content instead of status
+        if (response && response.data && response.data.includes('Successfully')) {
+          this.toastr.success('Password has been updated successfully', 'Success');
+          this.route.navigate(['/']);
+        } else {
+          this.toastr.error('Password update failed', 'Error');
         }
-        else{
-          this.toastr.error(
-            ' Password has been updated UNsuccesfully',
-            'error'
-          );
-        }
-      })  
-    }
-    else{
-      this.toastr.error(
-        ' Password mismatch',
-        'error'
-      );
-    }
+      },
+      error: (err) => {
+        console.error("Update error:", err);
+        this.toastr.error('Something went wrong. Try again later.', 'Error');
+      }
+    });
+  } else {
+    this.toastr.error('Password mismatch', 'Error');
   }
 }
+}
+
+
 function Space(event: JQuery.EventExtensions, any: any) {
   throw new Error('Function not implemented.');
 }

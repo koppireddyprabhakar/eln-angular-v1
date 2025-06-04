@@ -7,8 +7,10 @@ import {
 } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ControlPanelService } from '@app/shared/services/control-panel/control-panel.service';
 import { DosageService } from '@app/shared/services/dosage/dosage.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
+import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { UserService } from '@app/shared/services/user/user.service';
 import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
@@ -36,6 +38,7 @@ export class UserComponent implements OnInit {
 
   constructor(
     private readonly userService: UserService,
+     private loginService: LoginserviceService ,
     private readonly dosageService: DosageService,
     private readonly formBuilder: FormBuilder,
     private readonly globalService: GlobalService,

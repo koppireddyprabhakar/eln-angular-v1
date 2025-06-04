@@ -187,6 +187,10 @@ export class ReviewFormulationsComponent implements OnInit {
     this.dtTrigger.next(null);
   }
 
+   public editorConfig = {
+    customConfig: '/assets/ckeditor/config.js', // Path to the config.js file
+  };
+
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
       this.project = project;
@@ -247,6 +251,7 @@ export class ReviewFormulationsComponent implements OnInit {
     this.experimentService
       .getExcipientDetailsById(this.experimentId)
       .subscribe((data) => {
+        console.log('Excipient Details:', data);
         if (data.length > 0) {
           this.tableData = data;
           this.selectedItems = data;

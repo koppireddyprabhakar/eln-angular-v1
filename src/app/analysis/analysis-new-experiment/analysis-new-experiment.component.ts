@@ -45,7 +45,8 @@ export class AnalysisNewExperimentComponent implements OnInit {
     department: ['', [Validators.required]],
     dosageForm: ['', [Validators.required]],
     projectName: ['', [Validators.required]],
-    projectCode: ['', [Validators.required]],
+    productCode: ['', [Validators.required]],
+    market: ['', Validators.required],
     strength: ['', [Validators.required]],
     batchNumber: [''],
     condition: ['', [Validators.required]],
@@ -219,7 +220,8 @@ export class AnalysisNewExperimentComponent implements OnInit {
         batchSize: this.project.batchSize,
         testRequestId: this.staticTrfId,
         department: "ANALYSIS",
-        projectCode: 'string',
+        productCode:  this.project.productCode,
+        market: this.project.markertName
       });
     });
   }
@@ -470,9 +472,10 @@ export class AnalysisNewExperimentComponent implements OnInit {
       this.testRequestForm.get('stage')?.markAsDirty();
       this.testRequestForm.get('batchNumber')?.markAsDirty();
       this.testRequestForm.get('projectName')?.markAsDirty();
-      this.testRequestForm.get('strength')?.markAsDirty();
-      this.testRequestForm.get('projectCode')?.markAsDirty();
+      this.testRequestForm.get('strength')?.markAsDirty();  
+      this.testRequestForm.get('productCode')?.markAsDirty();
       this.testRequestForm.get('condition')?.markAsDirty();
+      this.testRequestForm.get('market')?.markAsDirty();
     }
   }
 

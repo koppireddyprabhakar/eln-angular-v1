@@ -103,14 +103,7 @@ export class CoaApprovalFormulationComponent implements OnInit {
      // Fetch user details and role directly
      this.userDetails = this.loginService.userDetails;
      this.userRole = this.userService.userRole || 'N/A';
-     this.currentDate = new Date().toLocaleString('en-US', { 
-      year: 'numeric', 
-      month: '2-digit', 
-      day: '2-digit', 
-      hour: '2-digit', 
-      minute: '2-digit', 
-      hour12: true 
-    });
+     this.currentDate = new Date().toISOString();
      this.userValidateForm.get('userName')?.setValue(this.userDetails.mailId);
      console.log('User Details:', this.userDetails);
      console.log('User Role:', this.userRole);
@@ -227,7 +220,7 @@ export class CoaApprovalFormulationComponent implements OnInit {
         this.testRequest['packaging'] = test.packaging;
         this.testRequest['labelClaim'] = test.labelClaim;
         this.testRequest['quantity'] = test.quantity;
-        this.testRequest['market'] = test.markertName;
+        this.testRequest['market'] = this.experiment.markertName;
         this.testRequest['preparedByName'] = this.coadetails.preparedName;
         this.testRequest['preparedByDesignation'] = this.coadetails.preparedDesignation;
         this.testRequest['preparedByDate'] = this.coadetails.preparedDate;

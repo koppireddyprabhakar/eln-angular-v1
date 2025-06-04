@@ -102,14 +102,7 @@ export class CoaGenerationAnalysisComponent implements OnInit {
      this.userDetails = this.loginService.userDetails;
      this.userRole = this.userService.userRole || 'N/A';
      this.userValidateForm.get('userName')?.setValue(this.userDetails.mailId);
-     this.currentDate = new Date().toLocaleString('en-US', { 
-      year: 'numeric', 
-      month: '2-digit', 
-      day: '2-digit', 
-      hour: '2-digit', 
-      minute: '2-digit', 
-      hour12: true 
-    });
+     this.currentDate = new Date().toISOString();
     this.analysisId = this.activatedRoute.snapshot.queryParams['analysisId'];
     this.dropdownSettings = {
       singleSelection: false,

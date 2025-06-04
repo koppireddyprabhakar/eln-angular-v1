@@ -52,7 +52,8 @@ export class ReviewExperimentsComponent implements OnInit {
     department: ['', [Validators.required]],
     dosageForm: ['', [Validators.required]],
     projectName: ['', [Validators.required]],
-    projectCode: ['', [Validators.required]],
+    productCode: ['', [Validators.required]],
+    market: ['', [Validators.required]],
     strength: ['', [Validators.required]],
     batchNumber: [''],
     condition: ['', [Validators.required]],
@@ -194,6 +195,10 @@ export class ReviewExperimentsComponent implements OnInit {
     this.dtMyProjectsTrigger.next(null);
   }
 
+   public editorConfig = {
+    customConfig: '/assets/ckeditor/config.js', // Path to the config.js file
+  };
+
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
       console.log(project);
@@ -205,8 +210,9 @@ export class ReviewExperimentsComponent implements OnInit {
         strength: this.project.strength,
         batchSize: this.project.batchSize,
         testRequestId: this.staticTrfId,
-        department: 'string',
-        projectCode: 'string',
+       // department: 'string',
+        productCode:  this.project.productCode,
+        market: this.project.markertName
       });
     });
   }
@@ -258,6 +264,7 @@ export class ReviewExperimentsComponent implements OnInit {
           expiryDate: this.resultData.expireDate,
           batchNumber: this.experimentDetails.batchNumber,
           batchSize: this.experimentDetails.batchSize,
+          department: (this.resultData.expId == null || this.resultData.expId === 0) ? 'Analysis' : 'Formulation',    
         });
         if (this.resultData.analysisId) {
           this.tableTestData = this.resultData.trfTestResults;
