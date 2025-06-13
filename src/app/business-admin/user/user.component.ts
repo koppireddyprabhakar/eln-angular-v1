@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ControlPanelService } from '@app/shared/services/control-panel/control-panel.service';
 import { DosageService } from '@app/shared/services/dosage/dosage.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { LoginserviceService } from '@app/shared/services/login/loginservice.service';

@@ -59,7 +59,7 @@ export class ProjectExperimentsComponent implements OnInit {
   getExperimentsByProjectId() {
     this.globalService.showLoader();
     this.experimentService
-      .getExperimentsByProjectId(this.projectId)
+      .getExperimentHistory(this.projectId)
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((experiments) => {
         this.experiments = experiments;
@@ -75,11 +75,31 @@ export class ProjectExperimentsComponent implements OnInit {
         );
         this.globalService.hideLoader();
       });
+
+
+    // this.globalService.showLoader();
+    // this.experimentService
+    //   .getExperimentsByProjectId(this.projectId)
+    //   .pipe(takeWhile(() => this.subscribeFlag))
+    //   .subscribe((experiments) => {
+    //     this.experiments = experiments;
+    //     this.dtElements.forEach(
+    //       (dtElement: DataTableDirective, index: number) => {
+    //         dtElement.dtInstance.then((dtInstance: any) => {
+    //           if (dtInstance.table().node().id === 'first-table') {
+    //             dtInstance.destroy();
+    //             this.dtTrigger.next(this.experiments);
+    //           }
+    //         });
+    //       }
+    //     );
+    //     this.globalService.hideLoader();
+    //   });
   }
 
   viewExperiment(event) {
     this.route.navigateByUrl(
-      `/view-formulation-experiment?projectId=${event.projectId}&experimentId=${event.expId}`
+      `/view-formulation-experiment?projectId=${event.projectId}&experimentId=${event.experimentHistoryId}&status=${event.experimentStatus}`
     );
   }
 

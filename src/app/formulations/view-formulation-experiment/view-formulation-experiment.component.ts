@@ -103,6 +103,9 @@ export class ViewFormulationExperimentComponent implements OnInit {
     pagingType: 'full_numbers',
   };
 
+  experimentStatus: string;
+  expId: string;
+
   constructor(
     private readonly projectService: ProjectService,
     private readonly experimentService: ExperimentService,
@@ -144,6 +147,7 @@ export class ViewFormulationExperimentComponent implements OnInit {
     this.editExperiment =
       (this.activatedRoute.snapshot.queryParams['edit'] && this.activatedRoute.snapshot.queryParams['edit'] === "true" ? true : false) || false;
     this.projectId = this.activatedRoute.snapshot.queryParams['projectId'];
+    this.experimentStatus = this.activatedRoute.snapshot.queryParams['status'];
     this.isCreatedExperiment = this.experimentId ? true : false;
     this.getExperimentDetails(this.experimentId);
     this.getProjectDetails();
@@ -154,7 +158,7 @@ export class ViewFormulationExperimentComponent implements OnInit {
     this.dtResultTrigger.next(null);
   }
 
-   public editorConfig = {
+  public editorConfig = {
     customConfig: '/assets/ckeditor/config.js', // Path to the config.js file
   };
 
@@ -184,49 +188,78 @@ export class ViewFormulationExperimentComponent implements OnInit {
   }
 
   getExcipientDetails() {
-    this.experimentService
-      .getExcipientDetailsById(this.experimentId)
-      .subscribe((data) => {
-        console.log(data);
-        if (data.length > 0) {
-          this.tableData = data;
-          this.selectedItems = data;
 
-          this.dtElements.forEach(
-            (dtElement: DataTableDirective, index: number) => {
-              dtElement.dtInstance.then((dtInstance: any) => {
-                if (dtInstance.table().node().id === 'first-table') {
-                  dtInstance.destroy();
-                  this.dtTrigger.next(this.tableData);
-                }
-              });
-            }
-          );
+    if (this.experimentStatus) {
+      this.experimentService
+        .getExcipientHistoryByExperimentId(this.experimentId)
+        .subscribe((data) => {
+          console.log(data);
+          if (data.length > 0) {
+            this.tableData = data;
+            this.selectedItems = data;
 
-          // this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          //   // Destroy the table first
-          //   dtInstance.destroy();
-          //   // Call the dtTrigger to rerender again
-          //   this.dtTrigger.next(this.tableData);
-          // });
-        }
-      });
+            this.dtElements.forEach(
+              (dtElement: DataTableDirective, index: number) => {
+                dtElement.dtInstance.then((dtInstance: any) => {
+                  if (dtInstance.table().node().id === 'first-table') {
+                    dtInstance.destroy();
+                    this.dtTrigger.next(this.tableData);
+                  }
+                });
+              }
+            );
+          }
+        });
+    } else {
+      this.experimentService
+        .getExcipientDetailsById(this.experimentId)
+        .subscribe((data) => {
+          console.log(data);
+          if (data.length > 0) {
+            this.tableData = data;
+            this.selectedItems = data;
+
+            this.dtElements.forEach(
+              (dtElement: DataTableDirective, index: number) => {
+                dtElement.dtInstance.then((dtInstance: any) => {
+                  if (dtInstance.table().node().id === 'first-table') {
+                    dtInstance.destroy();
+                    this.dtTrigger.next(this.tableData);
+                  }
+                });
+              }
+            );
+          }
+        });
+    }
   }
 
   getExperimentDetailsById(tabValue) {
-    this.experimentService
-      .getExperimentDetailsById(tabValue.substring(3))
-      .subscribe((details) => {
-        const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
-        console.log(index);
-        this.article[index].text = details.fileContent;
-        console.log(details);
-      });
+
+    if (this.experimentStatus) {
+      setTimeout(() => {
+        this.experimentService
+          .getExperimentDetailsHistoryById(tabValue.substring(3))
+          .subscribe((details) => {
+            const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
+            this.article[index].text = details.fileContent;
+          });
+      }, 1000);
+    } else {
+      this.experimentService
+        .getExperimentDetailsById(tabValue.substring(3))
+        .subscribe((details) => {
+          const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
+          console.log(index);
+          this.article[index].text = details.fileContent;
+          console.log(details);
+        });
+    }
   }
 
   getAttachments() {
     this.experimentService
-      .getAttachmentsById(this.experimentId)
+      .getAttachmentsById(this.expId ? this.expId : this.experimentId)
       .subscribe((attachments) => {
         this.files = attachments;
       });
@@ -247,33 +280,68 @@ export class ViewFormulationExperimentComponent implements OnInit {
           `/view-formulation-experiment?projectId=${this.projectId}&experimentId=${this.experimentId}`
         );
       }
-      this.experimentService
-        .getIndvExperimentById(this.experimentId)
-        .subscribe((experimentDetails) => {
-          this.experimentDetails = experimentDetails;
-          // if (this.editExperiment) {
 
-          this.article = experimentDetails.experimentDetails.map((exp) => ({
-            title: '',
-            text: '',
-          }));
-          this.dummyTabs = experimentDetails.experimentDetails.map((exp) => ({
-            label: exp.name,
-            isEdit: false,
-            value: 'tab' + exp.experimentDetailId,
-          }));
-          if (firstLoad === 'firstLoad') {
-            this.activeTab = this.dummyTabs[0].value;
-          }
+      if (this.experimentStatus) {
+        this.experimentService
+          .getExperimentHistoryById(this.experimentId)
+          .subscribe((experimentDetails) => {
+            this.experimentDetails = experimentDetails;
 
-          this.tableData = experimentDetails.experimentExcipients;
+            if (this.experimentStatus) {
+              this.expId = this.experimentDetails['expId'];
+            }
 
-          // }
-          this.summaryForm.patchValue({
-            experimentName: experimentDetails?.experimentName,
-            batchSize: experimentDetails?.batchSize,
+            this.article = experimentDetails.experimentDetails.map((exp) => ({
+              title: '',
+              text: '',
+            }));
+            this.dummyTabs = experimentDetails.experimentDetails.map((exp) => ({
+              label: exp.name,
+              isEdit: false,
+              value: 'tab' + exp.experimentDetailHistoryId,
+            }));
+            if (firstLoad === 'firstLoad') {
+              this.activeTab = this.dummyTabs[0].value;
+            }
+
+            this.tableData = experimentDetails.experimentExcipients;
+
+            // }
+            this.summaryForm.patchValue({
+              experimentName: experimentDetails?.experimentName,
+              batchSize: experimentDetails?.batchSize,
+            });
           });
-        });
+      } else {
+
+        this.experimentService
+          .getIndvExperimentById(this.experimentId)
+          .subscribe((experimentDetails) => {
+            this.experimentDetails = experimentDetails;
+            // if (this.editExperiment) {
+
+            this.article = experimentDetails.experimentDetails.map((exp) => ({
+              title: '',
+              text: '',
+            }));
+            this.dummyTabs = experimentDetails.experimentDetails.map((exp) => ({
+              label: exp.name,
+              isEdit: false,
+              value: 'tab' + exp.experimentDetailId,
+            }));
+            if (firstLoad === 'firstLoad') {
+              this.activeTab = this.dummyTabs[0].value;
+            }
+
+            this.tableData = experimentDetails.experimentExcipients;
+
+            // }
+            this.summaryForm.patchValue({
+              experimentName: experimentDetails?.experimentName,
+              batchSize: experimentDetails?.batchSize,
+            });
+          });
+      }
     }
   }
 

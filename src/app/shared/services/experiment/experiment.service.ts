@@ -158,18 +158,18 @@ export class ExperimentService {
 
   getExperimentsByProjectId(projectId) {
     const url = `${elnEndpointsConfig.endpoints['getExperimentsByProjectId']
-    }?projectId=${projectId}`;
-  return this.http
-    .get<any>(url)
-    .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+      }?projectId=${projectId}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
   getAnalysisDetailByExperimentId(experimentId) {
     const url = `${elnEndpointsConfig.endpoints['getAnalysisDetailByExperimentId']
-    }?experimentId=${experimentId}`;
-  return this.http
-    .get<any>(url)
-    .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+      }?experimentId=${experimentId}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
   saveCoaReviewDetails(coareviewdetails: any) {
@@ -215,12 +215,43 @@ export class ExperimentService {
   }
   downloadCoaPdf(experimentId: number): Observable<Blob> {
     const url = `${elnEndpointsConfig.endpoints['downloadCoaPdf']
-    }?experimentId=${experimentId}`;
- 
+      }?experimentId=${experimentId}`;
+
     return this.http.get(url, { responseType: 'blob' }).pipe(
       catchError((err: HttpErrorResponse) => this.handleError(err))
     );
   }
+
+  getExperimentHistory(projectId) {
+    const url = `${elnEndpointsConfig.endpoints['getExperimentHistory']
+      }?projectId=${projectId}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
+  getExperimentHistoryById(id) {
+    const url = `${elnEndpointsConfig.endpoints['getExperimentHistoryById']}?experimentHistoryId=${id}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
+  getExperimentDetailsHistoryById(id) {
+    const url = `${elnEndpointsConfig.endpoints['getExperimentDetailsHistoryById']}?experimentDetailsHistoryId=${id}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
+
+  getExcipientHistoryByExperimentId(id) {
+    const url = `${elnEndpointsConfig.endpoints['getExcipientHistoryByExperimentId']}?experimentHistoryId=${id}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
 
   handleError(error: HttpErrorResponse) {
     const errorDetail = ClientService.formatError(error);

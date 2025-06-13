@@ -131,7 +131,9 @@
                 active: activeTab === dumm.value,
                 show: activeTab === dumm.value
               }" id="{{ dumm.value }}" role="tabpanel" [attr.aria-labelledby]="dumm + '-tab'">
-                        <ckeditor [config]="editorConfig" required [(ngModel)]="article[i].text" data="" name="text"></ckeditor>
+                        <h1></h1>
+                        <ckeditor [config]="editorConfig" required [(ngModel)]="article[i].text" data="" name="text">
+                        </ckeditor>
                     </div>
 
                     <!-- </section> -->
