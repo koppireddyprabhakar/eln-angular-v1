@@ -164,8 +164,8 @@ export class ExperimentService {
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
-  getAnalysisDetailByExperimentId(experimentId) {
-    const url = `${elnEndpointsConfig.endpoints['getAnalysisDetailByExperimentId']
+  getAnalysisDetailHistoryByExperimentId(experimentId) {
+    const url = `${elnEndpointsConfig.endpoints['getAnalysisDetailHistoryByExperimentId']
       }?experimentId=${experimentId}`;
     return this.http
       .get<any>(url)

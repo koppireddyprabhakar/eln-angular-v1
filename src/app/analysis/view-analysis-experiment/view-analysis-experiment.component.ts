@@ -76,6 +76,9 @@ export class ViewAnalysisExperimentComponent implements OnInit {
     pagingType: 'full_numbers',
   };
 
+  isVersionHistory: boolean;
+  analysisExpId: number;
+
   constructor(
     private readonly projectService: ProjectService,
     private readonly experimentService: ExperimentService,
@@ -115,6 +118,7 @@ export class ViewAnalysisExperimentComponent implements OnInit {
     this.analysisID = this.activatedRoute.snapshot.queryParams['analysisId'];
     this.projectId = this.activatedRoute.snapshot.queryParams['projectId'];
     // this.isCreatedExperiment = this.analysisID ? true : false;
+    this.isVersionHistory = this.activatedRoute.snapshot.queryParams['isVersionHistory'];
     this.getAnalysisExperimentDetails(this.analysisID);
     this.getProjectDetails();
   }
@@ -147,7 +151,7 @@ export class ViewAnalysisExperimentComponent implements OnInit {
 
   getTrfDetailsById() {
     this.analysisService
-      .getTrfDetailsById(this.analysisID)
+      .getTrfDetailsById(this.analysisExpId ? this.analysisExpId : this.analysisID)
       .subscribe((data) => {
         console.log(data);
         if (data.length > 0) {
@@ -157,37 +161,69 @@ export class ViewAnalysisExperimentComponent implements OnInit {
   }
 
   getExcipientDetails() {
-    this.analysisService
-      .getExcipientDetailsById(this.analysisID)
-      .subscribe((data) => {
-        console.log(data);
-        if (data.length > 0) {
-          this.tableData = data;
-          this.selectedItems = data;
-          this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-            // Destroy the table first
-            dtInstance.destroy();
-            // Call the dtTrigger to rerender again
-            this.dtTrigger.next(this.tableData);
-          });
-        }
-      });
+    if (this.isVersionHistory) {
+      this.analysisService
+        .getExcipientHistoryByAnalysisHistoryId(this.analysisID)
+        .subscribe((data) => {
+          console.log(data);
+          if (data.length > 0) {
+            this.tableData = data;
+            this.selectedItems = data;
+            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+              // Destroy the table first
+              dtInstance.destroy();
+              // Call the dtTrigger to rerender again
+              this.dtTrigger.next(this.tableData);
+            });
+          }
+        });
+
+    } else {
+      this.analysisService
+        .getExcipientDetailsById(this.analysisID)
+        .subscribe((data) => {
+          console.log(data);
+          if (data.length > 0) {
+            this.tableData = data;
+            this.selectedItems = data;
+            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+              // Destroy the table first
+              dtInstance.destroy();
+              // Call the dtTrigger to rerender again
+              this.dtTrigger.next(this.tableData);
+            });
+          }
+        });
+    }
   }
 
   getAnalysisDetailsById(tabValue) {
-    this.analysisService
-      .getAnalysisDeatilsById(tabValue.substring(3))
-      .subscribe((details) => {
-        const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
-        console.log(index);
-        this.article[index].text = details.fileContent;
-        console.log(details);
-      });
+
+    if (this.isVersionHistory) {
+      this.analysisService
+        .getAnalysisDetailsHistoryById(tabValue.substring(3))
+        .subscribe((details) => {
+          const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
+          console.log(index);
+          this.article[index].text = details.fileContent;
+          console.log(details);
+        });
+    } else {
+
+      this.analysisService
+        .getAnalysisDeatilsById(tabValue.substring(3))
+        .subscribe((details) => {
+          const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
+          console.log(index);
+          this.article[index].text = details.fileContent;
+          console.log(details);
+        });
+    }
   }
 
   getAttachments() {
     this.analysisService
-      .getAttachmentsById(this.analysisID)
+      .getAttachmentsById(this.analysisExpId ? this.analysisExpId : this.analysisID)
       .subscribe((attachments) => {
         this.files = attachments;
       });
@@ -204,50 +240,97 @@ export class ViewAnalysisExperimentComponent implements OnInit {
 
   getAnalysisExperimentDetails(id) {
     this.analysisID = id;
-    if (this.analysisID) {
-      this.analysisService
-        .getAnalysisById(this.analysisID)
-        .subscribe((analysisExperimentDetails) => {
-          this.analysisExperimentDetails = analysisExperimentDetails;
-          this.article = analysisExperimentDetails.analysisDetails.map(
-            (exp) => ({
-              title: '',
-              text: '',
-            })
-          );
-          this.dummyTabs = analysisExperimentDetails.analysisDetails.map(
-            (exp) => ({
-              label: exp.name,
-              isEdit: false,
-              value: 'tab' + exp.analysisDetailId,
-            })
-          );
-          // this.resultsData = analysisExperimentDetails.testRequestForms.map(
-          //   (result) => ({
-          //     ...result,
-          //     testRequestFormStatus: 'active',
-          //     analysisId: Number(this.analysisID),
-          //   })
-          // );
-          // console.log(' this.resultsData', this.resultsData);
-          this.selectedItems = analysisExperimentDetails.analysisExcipients;
-          this.savedSelectedItems =
-            analysisExperimentDetails.analysisExcipients;
-          this.tableData = analysisExperimentDetails.analysisExcipients;
-          this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-            // Destroy the table first
-            dtInstance.destroy();
-            // Call the dtTrigger to rerender again
-            this.dtTrigger.next(this.tableData);
+    if (this.isVersionHistory) {
+      if (this.analysisID) {
+        this.analysisService
+          .getAnalysisHistoryById(this.analysisID)
+          .subscribe((analysisExperimentDetails) => {
+            this.analysisExperimentDetails = analysisExperimentDetails;
+            this.article = analysisExperimentDetails.analysisDetails.map(
+              (exp) => ({
+                title: '',
+                text: '',
+              })
+            );
+            this.dummyTabs = analysisExperimentDetails.analysisDetails.map(
+              (exp) => ({
+                label: exp.name,
+                isEdit: false,
+                value: 'tab' + exp.analysisHistoryDetailId,
+              })
+            );
+
+            if (this.isVersionHistory) {
+              this.analysisExpId = this.analysisExperimentDetails['analysisId'];
+            }
+
+            this.selectedItems = analysisExperimentDetails.analysisExcipients;
+            this.savedSelectedItems =
+              analysisExperimentDetails.analysisExcipients;
+            this.tableData = analysisExperimentDetails.analysisExcipients;
+            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+              // Destroy the table first
+              dtInstance.destroy();
+              // Call the dtTrigger to rerender again
+              this.dtTrigger.next(this.tableData);
+            });
+            // this.experimentDetails = experimentDetails;
+            this.batchNumber = analysisExperimentDetails.batchNumber;
+            this.summaryForm.patchValue({
+              experimentName: analysisExperimentDetails.analysisName,
+              batchSize: analysisExperimentDetails.batchSize,
+            });
           });
-          // this.experimentDetails = experimentDetails;
-          this.batchNumber = analysisExperimentDetails.batchNumber;
-          this.summaryForm.patchValue({
-            experimentName: analysisExperimentDetails.analysisName,
-            batchSize: analysisExperimentDetails.batchSize,
+      }
+
+    } else {
+      if (this.analysisID) {
+        this.analysisService
+          .getAnalysisById(this.analysisID)
+          .subscribe((analysisExperimentDetails) => {
+            this.analysisExperimentDetails = analysisExperimentDetails;
+            this.article = analysisExperimentDetails.analysisDetails.map(
+              (exp) => ({
+                title: '',
+                text: '',
+              })
+            );
+            this.dummyTabs = analysisExperimentDetails.analysisDetails.map(
+              (exp) => ({
+                label: exp.name,
+                isEdit: false,
+                value: 'tab' + exp.analysisDetailId,
+              })
+            );
+            // this.resultsData = analysisExperimentDetails.testRequestForms.map(
+            //   (result) => ({
+            //     ...result,
+            //     testRequestFormStatus: 'active',
+            //     analysisId: Number(this.analysisID),
+            //   })
+            // );
+            // console.log(' this.resultsData', this.resultsData);
+            this.selectedItems = analysisExperimentDetails.analysisExcipients;
+            this.savedSelectedItems =
+              analysisExperimentDetails.analysisExcipients;
+            this.tableData = analysisExperimentDetails.analysisExcipients;
+            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+              // Destroy the table first
+              dtInstance.destroy();
+              // Call the dtTrigger to rerender again
+              this.dtTrigger.next(this.tableData);
+            });
+            // this.experimentDetails = experimentDetails;
+            this.batchNumber = analysisExperimentDetails.batchNumber;
+            this.summaryForm.patchValue({
+              experimentName: analysisExperimentDetails.analysisName,
+              batchSize: analysisExperimentDetails.batchSize,
+            });
           });
-        });
+      }
     }
+
+
   }
 
   editMode(index) {

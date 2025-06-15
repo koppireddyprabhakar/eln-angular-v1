@@ -99,14 +99,14 @@ export class ProjectExperimentsComponent implements OnInit {
 
   viewExperiment(event) {
     this.route.navigateByUrl(
-      `/view-formulation-experiment?projectId=${event.projectId}&experimentId=${event.experimentHistoryId}&status=${event.experimentStatus}`
+      `/view-formulation-experiment?projectId=${event.projectId}&experimentId=${event.experimentHistoryId}&isVersionHistory=true`
     );
   }
 
-  getAnalysisDetailByExperimentId(experimentId) {
+  getAnalysisDetailHistoryByExperimentId(experimentId) {
     this.globalService.showLoader();
     this.experimentService
-      .getAnalysisDetailByExperimentId(experimentId)
+      .getAnalysisDetailHistoryByExperimentId(experimentId)
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((analysisDetails) => {
         this.analysisDetails = analysisDetails;
@@ -128,7 +128,7 @@ export class ProjectExperimentsComponent implements OnInit {
 
   viewAnalysisExperiment(event) {
     this.route.navigateByUrl(
-      `/exp-analysis/view-analysis-experiment?projectId=${event.projectId}&analysisId=${event.analysisId}`
+      `/exp-analysis/view-analysis-experiment?projectId=${event.projectId}&analysisId=${event.analysisHistoryId}&isVersionHistory=true`
     );
   }
 

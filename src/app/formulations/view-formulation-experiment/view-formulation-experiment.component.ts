@@ -103,7 +103,7 @@ export class ViewFormulationExperimentComponent implements OnInit {
     pagingType: 'full_numbers',
   };
 
-  experimentStatus: string;
+  isVersionHistory: boolean;
   expId: string;
 
   constructor(
@@ -147,7 +147,7 @@ export class ViewFormulationExperimentComponent implements OnInit {
     this.editExperiment =
       (this.activatedRoute.snapshot.queryParams['edit'] && this.activatedRoute.snapshot.queryParams['edit'] === "true" ? true : false) || false;
     this.projectId = this.activatedRoute.snapshot.queryParams['projectId'];
-    this.experimentStatus = this.activatedRoute.snapshot.queryParams['status'];
+    this.isVersionHistory = this.activatedRoute.snapshot.queryParams['isVersionHistory'];
     this.isCreatedExperiment = this.experimentId ? true : false;
     this.getExperimentDetails(this.experimentId);
     this.getProjectDetails();
@@ -189,7 +189,7 @@ export class ViewFormulationExperimentComponent implements OnInit {
 
   getExcipientDetails() {
 
-    if (this.experimentStatus) {
+    if (this.isVersionHistory) {
       this.experimentService
         .getExcipientHistoryByExperimentId(this.experimentId)
         .subscribe((data) => {
@@ -236,7 +236,7 @@ export class ViewFormulationExperimentComponent implements OnInit {
 
   getExperimentDetailsById(tabValue) {
 
-    if (this.experimentStatus) {
+    if (this.isVersionHistory) {
       setTimeout(() => {
         this.experimentService
           .getExperimentDetailsHistoryById(tabValue.substring(3))
@@ -281,13 +281,13 @@ export class ViewFormulationExperimentComponent implements OnInit {
         );
       }
 
-      if (this.experimentStatus) {
+      if (this.isVersionHistory) {
         this.experimentService
           .getExperimentHistoryById(this.experimentId)
           .subscribe((experimentDetails) => {
             this.experimentDetails = experimentDetails;
 
-            if (this.experimentStatus) {
+            if (this.isVersionHistory) {
               this.expId = this.experimentDetails['expId'];
             }
 

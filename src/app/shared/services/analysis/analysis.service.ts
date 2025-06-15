@@ -57,6 +57,13 @@ export class AnalysisService {
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
+  getAnalysisHistoryById(id) {
+    const url = `${elnEndpointsConfig.endpoints['getAnalysisHistoryById']}?analysisHistoryId=${id}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
   getAnalysisDeatilsById(id) {
     const url = `${elnEndpointsConfig.endpoints['getAnalysisDetailsById']}?analysisDetailsId=${id}`;
     return this.http
@@ -64,8 +71,22 @@ export class AnalysisService {
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
+  getAnalysisDetailsHistoryById(id) {
+    const url = `${elnEndpointsConfig.endpoints['getAnalysisDetailsHistoryById']}?analysisDetailHistoryId=${id}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
   getExcipientDetailsById(id) {
     const url = `${elnEndpointsConfig.endpoints['getExcipientAnalysisDetailsById']}?analysisId=${id}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
+  getExcipientHistoryByAnalysisHistoryId(id) {
+    const url = `${elnEndpointsConfig.endpoints['getExcipientHistoryByAnalysisHistoryId']}?analysisHistoryId=${id}`;
     return this.http
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
@@ -228,7 +249,7 @@ export class AnalysisService {
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
-  
+
   generateUniqueAnalysisExperimentId() {
     const url = elnEndpointsConfig.endpoints['getUniqeAnalysisExperimentName'];
     return this.http.get(url, { responseType: 'text' }).pipe(
@@ -243,9 +264,9 @@ export class AnalysisService {
   }
   downloadCoaPdfAnalysis(analysisId: number): Observable<Blob> {
     const url = `${elnEndpointsConfig.endpoints['downloadCoaPdfByAnalysisId']
-    }?analysisId=${analysisId}`;
+      }?analysisId=${analysisId}`;
     console.log(url);
-      return this.http.get(url, { responseType: 'blob' }).pipe(
+    return this.http.get(url, { responseType: 'blob' }).pipe(
       catchError((err: HttpErrorResponse) => this.handleError(err))
     );
   }
