@@ -114,7 +114,7 @@ export const elnEndpointsConfig: EndpointConfig = {
     getAnalysisExperimentsStatusCount: `${environment.API_BASE_PATH}` + '/dashboard/analysis-experiments-by-status',
     getUniqeAnalysisExperimentName: `${environment.API_BASE_PATH}` + '/analysis/analysis_experiment_unique_id',
     getExperimentsByProjectId: `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-experiments-by-project-id',
-    getAnalysisDetailByExperimentId: `${environment.API_BASE_PATH}` + '/analysis/get_analysis_details_by_experiment_id',
+    getAnalysisDetailHistoryByExperimentId: `${environment.API_BASE_PATH}` + '/analysis/get_analysis_details_history_by_experiment_id',
     generateProjectPdf: `${environment.API_BASE_PATH}` + '/pdf/get-project-pdf',
     getAnalysisExperimentsForCoaDetails: `${environment.API_BASE_PATH}` + '/analysis/get-analysis-by-analysis-experiment-id',
     saveCoaReviewDetails: `${environment.API_BASE_PATH}` + '/coa/create-coa-details',
@@ -138,7 +138,13 @@ export const elnEndpointsConfig: EndpointConfig = {
     getExperimentHistory: `${environment.API_BASE_PATH}` + '/experiment/get-experiment-history',
     getExperimentHistoryById: `${environment.API_BASE_PATH}` + '/experiment/get-experiment-history-by-id',
     getExperimentDetailsHistoryById: `${environment.API_BASE_PATH}` + '/experiment/get-experiment-details-history-by-id',
-    getExcipientHistoryByExperimentId: `${environment.API_BASE_PATH}` + '/experiment/get-excipient-history-by-experimentId'
+    getExcipientHistoryByExperimentId: `${environment.API_BASE_PATH}` + '/experiment/get-excipient-history-by-experimentId',
+
+    //Analysis
+    getAnalysisHistoryById: `${environment.API_BASE_PATH}` + '/analysis/get-analysis-history-by-id',
+    getAnalysisDetailsHistoryById: `${environment.API_BASE_PATH}` + '/analysis/get-analysis-details-history-by-id',
+    getExcipientHistoryByAnalysisHistoryId: `${environment.API_BASE_PATH}` + '/analysis/get-excipient-history-by-analysis-historyId'
+
   },
 };
 
