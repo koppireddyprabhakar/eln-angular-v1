@@ -183,7 +183,6 @@ export class CoaApprovalAnalysisComponent implements OnInit {
   }
 
   getTestResultsByAnalysisId() {
-     debugger
     this.globalService.showLoader();
     const flatten = (object) => {
       let value = {};
@@ -245,7 +244,6 @@ export class CoaApprovalAnalysisComponent implements OnInit {
   }
      
   updateCoaReviewDetails() {
-    debugger
     const coareviewdetails = {
         analysisExpId: this.analysisId,
         reviewedByUserId: this.userDetails.userId,

@@ -55,12 +55,10 @@
                            <div class="col-lg-3 col-md-4 label">Zip Code</div>
                            <div class="col-lg-9 col-md-8">{{userDetails.zipCode}}</div>
                         </div>
-                     </div>
+           </div>
                    
-                    
 <div class="tab-pane fade pt-3" id="profile-change-password">
    <form [formGroup]="changePasswordForm">
-
  <!-- Current Password -->
 <div class="row mb-3">
   <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
@@ -84,53 +82,58 @@
     </div>
   </div>
 </div>
-
-
 <!-- New Password -->
 <div class="row mb-3">
    <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
    <div class="col-md-8 col-lg-9">
+     <div class="input-group">
      <input
        id="newPassword"
-       type="password"
+        [type]="showNewPassword ? 'text' : 'password'"
        class="form-control"
        formControlName="newPassword"
        [ngClass]="{'is-invalid': changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.invalid}"
      />
+      <span class="input-group-text" (click)="toggleNewPassword()" style="cursor: pointer;">
+        <i class="bi" [ngClass]="showNewPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+      </span>
      <div *ngIf="changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.hasError('required')" class="invalid-feedback">
        New password is required.
      </div>
      <div *ngIf="changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.hasError('pattern')" class="invalid-feedback">
        New password must include 8-16 characters & at least one uppercase letter, one lowercase letter, one number, and one special character.
      </div>
-   </div>
- </div>
- 
+     </div>
+    </div>
+  </div>
  <!-- Re-enter New Password -->
  <div class="row mb-3">
    <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New Password</label>
    <div class="col-md-8 col-lg-9">
+    <div class="input-group">
      <input
        id="renewPassword"
-       type="password"
+       [type]="showRenewPassword ? 'text' : 'password'"
        class="form-control"
        formControlName="renewPassword"
        [ngClass]="{'is-invalid': changePasswordForm.get('renewPassword')?.touched && changePasswordForm.get('renewPassword')?.invalid}"
      />
+     <span class="input-group-text" (click)="toggleRenewPassword()" style="cursor: pointer;">
+        <i class="bi" [ngClass]="showRenewPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+      </span>
      <div *ngIf="changePasswordForm.get('renewPassword')?.touched && changePasswordForm.get('renewPassword')?.hasError('required')" class="invalid-feedback">
        Re-entered password is required.
      </div>
      <div *ngIf="changePasswordForm.get('renewPassword')?.touched && changePasswordForm.get('renewPassword')?.hasError('pattern')" class="invalid-feedback">
        Re-entered password must include at least one uppercase letter, one lowercase letter, one number, and one special character.
      </div>
-     <!-- <div *ngIf="changePasswordForm.get('renewPassword')?.touched && changePasswordForm.get('renewPassword')?.hasError('notSame')" class="invalid-feedback">
-       Passwords do not match.
-     </div> -->
      <div *ngIf="changePasswordForm.hasError('notSame') && (changePasswordForm.get('renewPassword')?.touched || changePasswordForm.get('newPassword')?.touched)" class="invalid-feedback d-block">
   Passwords do not match.
 </div>
 
    </div>
+ </div>
+
  </div>
       <!-- Change Password Button -->
       <div class="text-center">
@@ -138,7 +141,6 @@
       </div>
     </form> 
  </div>
- 
 </div>
 </div>
 </div>

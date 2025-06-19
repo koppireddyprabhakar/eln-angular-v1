@@ -46,39 +46,18 @@
             </button>
           </li>
           <li class="nav-item" role="presentation">
+            <button class="nav-link" id="review-tab" data-bs-toggle="tab" data-bs-target="#review-comments"
+              (click)="search('review')" [ngClass]="{ active: activeTab === 'review-comments' }" type="button" role="tab"
+              aria-controls="review-comments" aria-selected="false">
+              Review Comments
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
             <button class="nav-link" id="attachments-tab" [disabled]="!isCreatedExperiment" type="button"
               (click)="addNew()">
               Add New
             </button>
           </li>
-          <!-- <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="profile-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#profile"
-              type="button"
-              role="tab"
-              aria-controls="profile"
-              aria-selected="false"
-            >
-              Profile
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="contact-tab"
-              data-bs-toggle="tab"
-              data-bs-target="#contact"
-              type="button"
-              role="tab"
-              aria-controls="contact"
-              aria-selected="false"
-            >
-              Contact
-            </button>
-          </li> -->
         </ul>
         <div class="tab-content pt-2" id="myTabContent">
           <div class="tab-pane fade show" [ngClass]="{
@@ -137,12 +116,6 @@
                             startDate.toLocaleDateString())
                             | date:'medium' }}</div>
                         </div>
-
-                        <!-- <div class="row mb-3">
-                          <label for="inputEmail3" class="col-sm-3 col-form-label">Analysis Submitted Date</label>
-                          <div class="col-sm-9 pt-1">{{ analysisExperimentDetails.analysisSubmitDate | date }}</div>
-                        </div> -->
-
                         <div class="row mb-3">
                           <label for="experimentName" class="col-sm-3 col-form-label">Experiment Name</label>
                           <div class="col-sm-9">
@@ -150,12 +123,6 @@
                               [(ngModel)]="analysisExperimentDetails && analysisExperimentDetails.analysisName" readonly />
                           </div>
                         </div>
-                        <!-- <div class="row mb-3">
-                        <label for="inputEmail3" class="col-sm-3 col-form-label"
-                          >Product Name</label
-                        >
-                        <div class="col-sm-9 pt-1">Random Name</div>
-                      </div> -->
                         <div class="row mb-3">
                           <label for="batchSize" class="col-sm-3 col-form-label">Batch Size</label>
                           <div class="col-sm-9">
@@ -214,7 +181,7 @@
               active: activeTab === dumm.value,
               show: activeTab === dumm.value
             }" id="{{ dumm.value }}" role="tabpanel" [attr.aria-labelledby]="dumm + '-tab'">
-            <ckeditor required ngDefaultControl [(ngModel)]="article[i].text" data="" name="text"></ckeditor>        
+            <ckeditor [config]="editorConfig" required ngDefaultControl [(ngModel)]="article[i].text" data="" name="text"></ckeditor>        
             <div class="text-center pt-3" *ngIf="analysisExperimentDetails && (analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase() 
               || analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase())">
               <button type="submit" class="btn btn-primary" (click)="saveTab(i, dumm.label)">
@@ -386,6 +353,15 @@
               </div>
             </div>
           </div>
+          <div class="tab-content pt-3">
+            <div class="tab-pane fade" id="review-comments" role="tabpanel" aria-labelledby="review-comments-tab"
+               [ngClass]="{ active: activeTab === 'review-comments', show: activeTab === 'review-comments' }">
+                <div class="pt-3">
+                <h5>Review Comments</h5>
+                  <textarea class="form-control" rows="5" readonly>{{ reviewData?.comments }}</textarea>
+              </div>
+             </div>
+           </div>
         </div>
       </div>
     </div>

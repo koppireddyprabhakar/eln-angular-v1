@@ -139,7 +139,6 @@ export class CoaGenerationAnalysisComponent implements OnInit {
     }
   }
   getAnalysisExperimentsById() {
-    debugger
     const flatten = (object) => {
       let value = {};
       for (var property in object) {

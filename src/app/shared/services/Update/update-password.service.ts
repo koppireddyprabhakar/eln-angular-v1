@@ -13,9 +13,14 @@ export class UpdatePasswordService {
   constructor(private http: HttpClient,private toastr: ToastrService) { }
 
   Update(request: {mailId: string, password: string}): Observable<any> {
-   const url = elnEndpointsConfig.endpoints['update'];
+   const url = elnEndpointsConfig.endpoints['updatePassword'];
     return this.http.put(url, request);
   }
+ resetPassword(request: { mailId: string; currentPassword: string; password: string }): Observable<any> {
+   const url = elnEndpointsConfig.endpoints['resetPassword'];
+    return this.http.put(url, request);
+  }
+
   handleError(error: HttpErrorResponse) {
     const errorDetail = ClientService.formatError(error);
     console.log(error);

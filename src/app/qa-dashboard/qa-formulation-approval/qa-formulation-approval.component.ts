@@ -104,7 +104,14 @@ export class QaFormulationApprovalComponent implements OnInit {
      // Fetch user details and role directly
      this.userDetails = this.loginService.userDetails;
      this.userRole = this.userService.userRole || 'N/A';
-     this.currentDate = new Date().toISOString();
+     this.currentDate = new Date().toLocaleString('en-US', { 
+      year: 'numeric', 
+      month: '2-digit', 
+      day: '2-digit', 
+      hour: '2-digit', 
+      minute: '2-digit', 
+      hour12: true 
+    });
      this.userValidateForm.get('userName')?.setValue(this.userDetails.mailId);
      console.log('User Details:', this.userDetails);
      console.log('User Role:', this.userRole);
@@ -164,7 +171,6 @@ export class QaFormulationApprovalComponent implements OnInit {
   }
 
   getCoaUserDetailsById(){
-    debugger
     this.experimentService.getCoaUserDetailsById(this.expId)
      .subscribe((data) => {
       if (data && data.length > 0) {
@@ -219,7 +225,7 @@ export class QaFormulationApprovalComponent implements OnInit {
         this.testRequest['packaging'] = test.packaging;
         this.testRequest['labelClaim'] = test.labelClaim;
         this.testRequest['quantity'] = test.quantity;
-        this.testRequest['market'] = this.experiment.markertName;
+        this.testRequest['market'] = test.markertName;
         this.testRequest['preparedByName'] = this.coadetails.preparedName;
         this.testRequest['preparedByDesignation'] = this.coadetails.preparedDesignation;
         this.testRequest['preparedByDate'] = this.coadetails.preparedDate;
@@ -289,7 +295,6 @@ updateExperimentStatus() {
 }
 
 downloadCoaPdf(experimentId: number) {
-  debugger
   this.experimentService.downloadCoaPdf(experimentId).subscribe(
     (response) => {
       const blob = new Blob([response], { type: 'application/pdf' });

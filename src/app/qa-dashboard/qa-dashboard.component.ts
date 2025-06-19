@@ -18,8 +18,7 @@ import { Subject, takeWhile } from 'rxjs';
   styleUrls: ['./qa-dashboard.component.css']
 })
 export class QaDashboardComponent implements OnInit {
-  
-  
+
   @ViewChildren(DataTableDirective)
   dtElements: QueryList<DataTableDirective>;
   experiments: any = [];
@@ -46,8 +45,9 @@ export class QaDashboardComponent implements OnInit {
   });
 
   @ViewChild('expActionTpl', { static: true }) expActionTpl: TemplateRef<any>;
-expId: any;
-analysisId: any;
+  expId: any;
+  analysisId: any;
+  analysisDetails: any;
 
   constructor(
     private readonly globalService: GlobalService,
@@ -66,18 +66,11 @@ analysisId: any;
     this.getFormulationExperiments();
     this.getAnalysisExperiments();
     this.getUsers();
+    this.viewTrfAnalysisExperiments(this.expId);
     this.expColumns = [
       { key: 'experimentName', title: 'Analysis Name' },
       { key: 'projectId', title: 'Project Id' },
-      { key: 'status', title: 'Status' },
-      // {
-      //   key: 'options',
-      //   title: '<div class="blue">Options</div>',
-      //   align: { head: 'center', body: 'center' },
-      //   sorting: false,
-      //   width: 150,
-      //   cellTemplate: this.actionTpl,
-      // },
+      { key: 'status', title: 'Status' }
     ];
     this.myExpColumns = [
       { key: 'analysisName', title: 'Experiment Name' },
@@ -91,7 +84,7 @@ analysisId: any;
         key: 'options',
         title: '<div class="blue">Options</div>',
         align: { head: 'center', body: 'center' },
-        sorting: false,   
+        sorting: false,
         width: 150,
         cellTemplate: this.expActionTpl,
       },
@@ -125,7 +118,6 @@ analysisId: any;
   }
 
   getAnalysisExperiments() {
-    debugger
     // this.globalService.showLoader();
     this.analysisService.getAnalysisByStatusWithoutExpId('COA Reviewed')
       .pipe(takeWhile(() => this.subscribeFlag))
@@ -150,15 +142,13 @@ analysisId: any;
       `qa-approval?projectId=${event.projectId}&experimentId=${event.expId}`
     );
   }
-  
+
   onRowClickForAnalysis(event) {
     this.route.navigateByUrl(
       `qa-analysis-approval?projectId=${event.projectId}&analysisId=${event.analysisId}`
     );
   }
 
-  
-  
   getUsers() {
     this.globalService.showLoader();
     this.userService
@@ -186,20 +176,21 @@ analysisId: any;
     );
   }
 
-  // viewTrfAnalysisExperiments(event) {
-  //   this.analysisService.getAnalysisIdByExpId(event.expId).subscribe(
-  //     (analysisId) => {
-  //       if (analysisId) {
-  //         this.route.navigateByUrl(
-  //           `/exp-analysis/view-analysis-experiment?projectId=${event.projectId}&analysisId=${analysisId}`
-  //         );
-  //       } else {
-  //         console.error('No analysis ID found for the given experiment ID');
-  //       }
-  //     },
-  //     (error) => {
-  //       console.error('Error fetching analysis ID:', error);
-  //     }
-  //   );
-  // }
+viewTrfAnalysisExperiments(event) {
+  this.globalService.showLoader();
+  this.analysisService
+    .getAnalysisIdByExperimentId(event.expId)
+    .pipe(takeWhile(() => this.subscribeFlag))
+    .subscribe((analysisDetails) => {
+      this.globalService.hideLoader();
+      if (analysisDetails && analysisDetails.length > 0) {
+        const analysisId = analysisDetails[0].analysisId;
+        this.route.navigateByUrl(
+          `/exp-analysis/view-analysis-experiment?projectId=${event.projectId}&analysisId=${analysisId}`
+        );
+      } else {
+        this.toastr.warning('No analysis found for this experiment');
+      }
+    });
+  }
 }

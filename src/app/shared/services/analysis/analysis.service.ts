@@ -105,6 +105,12 @@ export class AnalysisService {
       .get<any>(url)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
+getAnalysisIdByExperimentId(expId) {
+  const url = `${elnEndpointsConfig.endpoints['getAnalysisIdByExperimentid']}?experimentId=${expId}`;
+  return this.http
+    .get<any>(url)
+    .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+}
 
   saveAnalysisDetails(experiment) {
     const url = elnEndpointsConfig.endpoints['saveAnalysisDetails'];

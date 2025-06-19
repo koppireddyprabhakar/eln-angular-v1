@@ -47,6 +47,12 @@
               Attachments
             </button>
           </li>
+          <li class="nav-item" role="presentation">
+           <button class="nav-link" id="review-comments-tab" data-bs-toggle="tab" data-bs-target="#review-comments"
+            (click)="search('review-comments', -1)" [ngClass]="{ active: activeTab === 'review-comments' }" type="button" role="tab" aria-controls="review-comments" aria-selected="false">
+             Review Comments
+           </button>
+          </li>
           <li class="nav-item" role="presentation" *ngIf="experimentDetails && (experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase() ||
             experimentDetails.experimentStatus.toUpperCase() === 'Need Correction'.toUpperCase())">
             <button class="nav-link" id="attachments-tab" [disabled]="!isCreatedExperiment" type="button"
@@ -312,21 +318,20 @@
                   </div>
                 </div>
               </form>
-
               <button type="submit" class="btn btn-primary mt-3" (click)="updateExperimentStatus()">
                 Complete Formulation
               </button>
             </div>
-
-            <!-- <div class="text-center pt-3">
-              <button type="submit"
-                *ngIf="experimentDetails && (experimentDetails.experimentStatus.toUpperCase() === 'Complete'.toUpperCase())"
-                class="btn btn-primary mt-3" (click)="updateExperimentStatus()">
-                Submit
-              </button>
-            </div> -->
-
           </div>
+          <div class="tab-content pt-3">
+            <div class="tab-pane fade" id="review-comments" role="tabpanel" aria-labelledby="review-comments-tab"
+               [ngClass]="{ active: activeTab === 'review-comments', show: activeTab === 'review-comments' }">
+                <div class="pt-3">
+                <h5>Review Comments</h5>
+                  <textarea class="form-control" rows="5" readonly>{{ reviewData?.comments }}</textarea>
+              </div>
+             </div>
+           </div>
         </div>
       </div>
     </div>

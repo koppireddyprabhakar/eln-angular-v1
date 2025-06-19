@@ -66,7 +66,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
   selectedItems: any = [];
   dropdownSettings: any = {};
   public files: any = [];
-
+ comments: string;
   activeTab = 'summary';
   isNewTabDataSaved: boolean = false;
 
@@ -94,6 +94,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
   });
   public intervalSubscripton$: Subscription;
   experimentName: any;
+  reviewData: any = {};
 
   constructor(
     private readonly projectService: ProjectService,
@@ -150,6 +151,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     this. generateUniqueExperimentId();
     this.getExperimentDetails(this.experimentId);
     this.getProjectDetails();
+    this.getExperimentReview();
   }
 
   ngOnDestroy(): void {
@@ -174,6 +176,10 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
   search(activeTab, index: number) {
     this.activeTab = activeTab;
     this.activeTabIndex = index;
+    
+     if (activeTab === 'review-comments') {
+     this.getExperimentReview();
+     }
 
     if (activeTab === 'attachments') {
       this.getAttachments();
@@ -187,6 +193,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     if (activeTab === 'results') {
       this.getTestResults();
     }
+    
   }
 
   getExcipientDetails() {
@@ -704,6 +711,14 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     }
 
     this.tableData[index].quantity = +result.value;
+  }
+
+    getExperimentReview() {
+    this.experimentService
+      .getExperimentReviewByExperimentId(this.experimentId)
+      .subscribe((details) => {
+        this.reviewData = details;
+      });
   }
 
 }

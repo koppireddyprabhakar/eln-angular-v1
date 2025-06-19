@@ -146,7 +146,6 @@ export class CoaGenerationListComponent implements OnInit {
     //     });
     // }
     getAnalysisExperiments() {
-      debugger
       // this.globalService.showLoader();
       this.analysisService.getAnalysisByStatusWithoutExpId('Analysis Submitted')
         .pipe(takeWhile(() => this.subscribeFlag))

@@ -37,6 +37,11 @@ export class TestService {
     return this.http.put<string>(url, product);
   }
 
+   updateTests(product: { productName: string | null }) {
+    const url = elnEndpointsConfig.endpoints['updateTests'];
+    return this.http.put<string>(url, product);
+  }
+
   deleteTest(testId: number) {
     const url = `${elnEndpointsConfig.endpoints['deleteTest']}?testId=${testId}`;
     return this.http.delete<string>(url);

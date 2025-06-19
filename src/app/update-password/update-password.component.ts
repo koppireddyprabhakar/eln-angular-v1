@@ -17,6 +17,8 @@ export class UpdatePasswordComponent implements OnInit {
   newpassword: string;
   confirmpassword: string;
   isSubmitted: boolean = false;
+  showNewPassword: boolean = false;
+  showConfirmPassword: boolean = false;
    constructor(private route:Router,
     private activatedRoute:ActivatedRoute,
     private formBuilder:FormBuilder,
@@ -54,7 +56,13 @@ space(event:any)
     event.prevenDefault();
   }
 }
+toggleNewPassword() {
+  this.showNewPassword = !this.showNewPassword;
+}
 
+toggleConfirmPassword() {
+  this.showConfirmPassword = !this.showConfirmPassword;
+}
 passwordsMatch(formGroup: FormGroup) {
   const newpassword = formGroup.get('newpassword')?.value;
   const confirmpassword = formGroup.get('confirmpassword')?.value;

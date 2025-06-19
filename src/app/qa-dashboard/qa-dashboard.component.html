@@ -49,13 +49,11 @@
                   <td>{{ experiment.insertDate}}</td>
                   <td>{{ experiment.project && experiment.project.strength }}</td>
                   <td>{{ experiment.status }}</td>
-                  <td>
-                    <div class="dropdown">
-                      <i (click)="viewFormulationExperiments(experiment)" class="viewIcon bi-eye-fill"></i>&nbsp;&nbsp;
-                      <i *ngIf="experiment.status === 'COA Reviewed'" (click)="onRowClickForFormulation(experiment)" 
+                  <td><i (click)="viewFormulationExperiments(experiment)" class="viewIcon bi-eye-fill"></i>
+                     <i (click)="viewTrfAnalysisExperiments(experiment)"class="btn btn-link">View Analysis</i>
+                    <i *ngIf="experiment.status === 'COA Reviewed'" (click)="onRowClickForFormulation(experiment)" 
                       class="coaIcon bi-file-earmark-text-fill ms-2 text-primary" title="Generate COA"></i>
-                    </div>
-                  </td>                
+                  </td>
                 </tr>
               </tbody>
             </table>

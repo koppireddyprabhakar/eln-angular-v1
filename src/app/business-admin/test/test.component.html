@@ -28,8 +28,8 @@
                 <tr>
                   <th>S.no</th>
                   <th>Test Name</th>
-                  <th>Dosages</th>
                   <th>Test Description</th>
+                  <th>Dosages</th>
                   <!-- <th>Status</th> -->
                   <th>Options</th>
                 </tr>
@@ -38,8 +38,8 @@
                 <tr *ngFor="let test of tests; let i = index">
                   <td>{{i + 1}}</td>
                   <td>{{ test.testName }}</td>
-                  <td>{{ test.dosageTest.dosageName }}</td>
                   <td>{{ test.description }}</td>
+                  <td>{{ test.dosageTest.dosageName }}</td>
                   <!-- <td>{{ test.status }}</td> -->
                   <td class="options-width">
                     <i

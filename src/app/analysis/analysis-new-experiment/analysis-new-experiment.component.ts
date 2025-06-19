@@ -583,7 +583,6 @@ export class AnalysisNewExperimentComponent implements OnInit {
   }
 
   saveSummary() {
-    debugger
     // if () {
     const summary = {
       status: 'Active',
@@ -838,7 +837,6 @@ export class AnalysisNewExperimentComponent implements OnInit {
     this.tableData[index].quantity = +result.value;
   }
   generateUniqueAnalysisExperimentId() {   
-    debugger
     this.analysisService.generateUniqueAnalysisExperimentId().subscribe({
       next: (data) => {
         this.summaryForm.get('experimentName')?.setValue(data); 

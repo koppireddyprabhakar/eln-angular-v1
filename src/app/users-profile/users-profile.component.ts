@@ -12,103 +12,93 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class UsersProfileComponent implements OnInit {
 
-  userDetails:any;
-  userRole:string ='';
-  userDepartment:string = '';
-  changePasswordForm: FormGroup; 
-  isSubmitted: boolean = false; 
-   showCurrentPassword: boolean = false;
-
-
+  userDetails: any;
+  userRole: string = '';
+  userDepartment: string = '';
+  changePasswordForm: FormGroup;
+  isSubmitted: boolean = false;
+  showCurrentPassword: boolean = false;
+  showNewPassword: boolean = false;
+  showRenewPassword: boolean = false;
   constructor(
-    private loginService:LoginserviceService, 
-    private userService:UserService,
+    private loginService: LoginserviceService,
+    private userService: UserService,
     private fb: FormBuilder,
-      private updatePasswordService: UpdatePasswordService,
+    private updatePasswordService: UpdatePasswordService,
     private toastr: ToastrService
   ) { }
 
-   toggleCurrentPassword() {
+
+  toggleCurrentPassword() {
     this.showCurrentPassword = !this.showCurrentPassword;
   }
- 
+  toggleNewPassword() {
+    this.showNewPassword = !this.showNewPassword;
+  }
+
+  toggleRenewPassword() {
+    this.showRenewPassword = !this.showRenewPassword;
+  }
   ngOnInit(): void {
     this.userDetails = this.loginService.userDetails;
     this.userRole = this.userService.userRole;
     this.userDepartment = this.userService.userDepartment;
-
-    // Initialize change password form with updated password validators
     this.changePasswordForm = this.fb.group({
       currentPassword: ['', Validators.required],
       newPassword: [
-        '', 
+        '',
         [
           Validators.required,
           Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,16}$')
         ]
       ],
-      renewPassword: [
-        '', 
-        [
-          Validators.required,
-          Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,16}$')
-        ]
-      ]
+      renewPassword: ['', Validators.required]
     }, {
       validators: this.passwordsMatchValidator
     });
   }
 
   private passwordsMatchValidator(formGroup: FormGroup): { [key: string]: boolean } | null {
-  const newPassword = formGroup.get('newPassword')?.value;
-  const renewPassword = formGroup.get('renewPassword')?.value;
-
-  if (newPassword && renewPassword && newPassword !== renewPassword) {
-    return { notSame: true };  
-  }
-  return null;
-}
-
-onChangePassword(): void {
-  this.isSubmitted = true;
-
-  if (this.changePasswordForm.invalid) {
-    Object.keys(this.changePasswordForm.controls).forEach(field => {
-      const control = this.changePasswordForm.get(field);
-      control?.markAsTouched({ onlySelf: true });
-    });
-    return;
+    const newPassword = formGroup.get('newPassword')?.value;
+    const renewPassword = formGroup.get('renewPassword')?.value;
+    return newPassword !== renewPassword ? { notSame: true } : null;
   }
 
-  const { currentPassword, newPassword, renewPassword } = this.changePasswordForm.value;
+  onChangePassword(): void {
+    this.isSubmitted = true;
 
-  // Extra safety check — match confirm password
-  if (newPassword !== renewPassword) {
-   
-    return;
-  }
-
-  const request = {
-    mailId: this.userDetails.mailId,
-    password: newPassword
-  };
-
-  this.updatePasswordService.Update(request).subscribe({
-    next: (response) => {
-      console.log('Update response:', response);
-
-      if (response && response.data && response.data.includes('Successfully')) {
-        this.toastr.success('Password has been updated successfully', 'Success');
-        this.changePasswordForm.reset();
-        this.isSubmitted = false;
-      } else {
-        this.toastr.error('Password update failed', 'Error');
-      }
-    },
-    error: (err) => {
-      console.error("Update error:", err);
-      this.toastr.error('Something went wrong. Try again later.', 'Error');
+    if (this.changePasswordForm.invalid) {
+      Object.values(this.changePasswordForm.controls).forEach(control => {
+        control.markAsTouched();
+      });
+      return;
     }
-  });
-}
+
+    const { currentPassword, newPassword } = this.changePasswordForm.value;
+    const request = {
+      mailId: this.userDetails.mailId,
+      currentPassword,
+      password: newPassword
+    };
+
+    this.updatePasswordService.resetPassword(request).subscribe({
+      next: (response) => {
+        const msg = response?.data || 'Something went wrong';
+
+        // Convert to lowercase and check for success keyword
+        if (msg.toLowerCase().includes('success')) {
+          this.toastr.success(msg, 'Success');
+          this.changePasswordForm.reset();
+          this.isSubmitted = false;
+        } else {
+          this.toastr.error(msg, 'Error');
+        }
+      },
+      error: (err) => {
+        const errorMessage = err?.error?.data || err?.error || 'Something went wrong. Try again later.';
+        this.toastr.error(errorMessage, 'Error');
+        console.error("Reset error:", err);
+      }
+    });
+  }
 }

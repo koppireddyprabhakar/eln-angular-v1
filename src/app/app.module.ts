@@ -34,6 +34,8 @@ import { CoaApprovalFormulationComponent } from './coa-review/coa-approval-formu
 import { CoaApprovalAnalysisComponent } from './coa-review/coa-approval-analysis/coa-approval-analysis.component';
 import { QaAnalysisApprovalComponent } from './qa-dashboard/qa-analysis-approval/qa-analysis-approval.component';
 import { QaFormulationApprovalComponent } from './qa-dashboard/qa-formulation-approval/qa-formulation-approval.component';
+import { HashLocationStrategy,LocationStrategy } from '@angular/common';
+
 
 @NgModule({
   declarations: [
@@ -74,7 +76,7 @@ import { QaFormulationApprovalComponent } from './qa-dashboard/qa-formulation-ap
     NgMultiSelectDropDownModule.forRoot(),
     DataTablesModule
   ],
-  providers: [AuthGuardGuard],
+  providers: [AuthGuardGuard, { provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

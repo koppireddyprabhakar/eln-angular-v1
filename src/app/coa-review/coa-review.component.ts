@@ -123,7 +123,6 @@ export class CoaReviewComponent implements OnInit {
         });
     }
     getAnalysisExperiments() {
-      debugger
       // this.globalService.showLoader();
       this.analysisService.getAnalysisByStatusWithoutExpId('COA Generated')
         .pipe(takeWhile(() => this.subscribeFlag))

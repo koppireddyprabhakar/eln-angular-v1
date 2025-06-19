@@ -143,7 +143,8 @@ export const elnEndpointsConfig: EndpointConfig = {
     //Analysis
     getAnalysisHistoryById: `${environment.API_BASE_PATH}` + '/analysis/get-analysis-history-by-id',
     getAnalysisDetailsHistoryById: `${environment.API_BASE_PATH}` + '/analysis/get-analysis-details-history-by-id',
-    getExcipientHistoryByAnalysisHistoryId: `${environment.API_BASE_PATH}` + '/analysis/get-excipient-history-by-analysis-historyId'
+    getExcipientHistoryByAnalysisHistoryId: `${environment.API_BASE_PATH}` + '/analysis/get-excipient-history-by-analysis-historyId',
+    getAnalysisIdByExperimentid: `${environment.API_BASE_PATH}` + '/analysis/get_analysis_details_by_experiment_id'
 
   },
 };

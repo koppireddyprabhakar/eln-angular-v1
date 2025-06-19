@@ -143,7 +143,6 @@ export class QaAnalysisApprovalComponent implements OnInit {
 
 
   getAnalysisExperimentsById() {
-    debugger
     const flatten = (object) => {
       let value = {};
       for (var property in object) {
@@ -297,7 +296,6 @@ export class QaAnalysisApprovalComponent implements OnInit {
     }
   }  
   downloadCoaPdfAnalysis(analysisId: number) {
-    debugger
     this.analysisService.downloadCoaPdfAnalysis(analysisId).subscribe(
       (response) => {
         const blob = new Blob([response], { type: 'application/pdf' });

@@ -70,7 +70,8 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     batchSize: ['' as any, [Validators.required]],
   });
   isSaveClicked: boolean = false;
-
+  reviewData: any = {};
+  experimentId: string;
   userValidateForm = this.formBuilder.group({
     userName: [''],
     password: [''],
@@ -138,6 +139,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     this.getAnalysisExperimentDetails(this.analysisID);
     this.getProjectDetails();
     this.getAttachments();
+    this.getAnalysisReview();
   }
 
   ngAfterViewInit(): void {
@@ -171,6 +173,9 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     }
     if (activeTab === 'results') {
       this.getTrfDetailsById();
+    }
+    if (activeTab === 'review-comments') {
+      this.getAnalysisReview();
     }
   }
 
@@ -385,7 +390,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   }
 
   onItemSelect(item: any) {
-    debugger
     if (!this.tableData) {
       this.tableData = [];  // Initialize tableData if it's null/undefined
     }
@@ -587,6 +591,14 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       this.toastr.success(data.data, 'Success');
     });
   }
+
+ getAnalysisReview() {
+    this.analysisService
+      .getAnalysisReview(this.analysisID)
+      .subscribe((details) => {
+        this.reviewData = details;
+      });
+}
 
   updateAnalysisStatus(status: string, summary?: string) {
     let analysisRequest = {
