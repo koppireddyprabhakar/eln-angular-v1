@@ -4,8 +4,9 @@ import {
   OnInit,
   Renderer2,
   ViewChild,
+  QueryList
 } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { forkJoin, interval, Subject, Subscription } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
@@ -19,6 +20,7 @@ import { LoginserviceService } from '@app/shared/services/login/loginservice.ser
 import { departmentMapping } from '@app/shared/constants/mappings';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
+import { TestService } from '@app/shared/services/test/test.service';
 //import { CommonFunctionsService } from '@app/shared/services/common-functions/common-functions.service';
 
 @Component({
@@ -86,6 +88,38 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   errorMessage: string = "Please enter details.";
   public intervalSubscripton$: Subscription;
 
+  testRequestForm = this.formBuilder.group({
+    testRequestId: ['', [Validators.required]],
+    department: ['', [Validators.required]],
+    dosageForm: ['', [Validators.required]],
+    projectName: ['', [Validators.required]],
+    productCode: ['', [Validators.required]],
+    market: ['', Validators.required],
+    strength: ['', [Validators.required]],
+    batchNumber: [''],
+    condition: ['', [Validators.required]],
+    stage: ['', [Validators.required]],
+    packaging: ['', [Validators.required]],
+    batchSize: [''],
+    quantity: ['', [Validators.required]],
+    labelClaim: ['', [Validators.required]],
+    manufacturingDate: ['', [Validators.required]],
+    expiryDate: ['', [Validators.required]],
+    testRequestRow: this.formBuilder.array([this.addTests()]),
+    labTests: [[], Validators.required],
+  });
+
+  dtMyProjectsTrigger: Subject<any> = new Subject<any>();
+  dtMyProjectsOptions: DataTables.Settings = {
+    pagingType: 'full_numbers',
+  };
+  tableTestData: any = [];
+  dropdownTestSettings: any = {};
+  tests: any = [];
+  staticTrfId = 'TRF123';
+  dtElements: QueryList<DataTableDirective>;
+  selectedTestItems: any = [];
+
   constructor(
     private readonly projectService: ProjectService,
     private readonly experimentService: ExperimentService,
@@ -97,7 +131,8 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private route: Router,
-    private loginService: LoginserviceService
+    private loginService: LoginserviceService,
+    private readonly testService: TestService,
   ) { }
 
   ngOnInit(): void {
@@ -132,12 +167,24 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       itemsShowLimit: 3,
       allowSearchFilter: true,
     };
+
+    this.dropdownTestSettings = {
+      singleSelection: false,
+      idField: 'testId',
+      textField: 'testName',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 3,
+      allowSearchFilter: true,
+    };
+
     this.analysisID = this.activatedRoute.snapshot.queryParams['analysisId'];
     this.projectId = this.activatedRoute.snapshot.queryParams['projectId'];
     this.isCreatedExperiment = this.analysisID ? true : false;
     this.getAnalysisExperimentDetails(this.analysisID);
     this.getProjectDetails();
     this.getAttachments();
+    this.getTests();
   }
 
   ngAfterViewInit(): void {
@@ -155,8 +202,180 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
       this.project = project;
+      this.testRequestForm.patchValue({
+        batchNumber: this.project.batchNumber,
+        dosageForm: this.project.dosageName,
+        projectName: this.project.projectName,
+        strength: this.project.strength,
+        batchSize: this.project.batchSize,
+        testRequestId: this.staticTrfId,
+        department: "ANALYSIS",
+        productCode: this.project.productCode,
+        market: this.project.markertName
+      });
     });
   }
+
+  //Start
+
+  addTests(): FormGroup {
+    return this.formBuilder.group({
+      testId: [''],
+      test: [''],
+      results: [null],
+      description: ['']
+    });
+  }
+
+  onTestSelectAll(items: any) {
+    this.tableTestData = this.tests.map((test, index) => ({
+      ...test,
+      testStatus: 'string',
+      testNumber: `${this.staticTrfId}-A${index}`,
+      testResult: '',
+    }));
+    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'second-table') {
+          dtInstance.destroy();
+          this.dtMyProjectsTrigger.next(this.tableTestData);
+        }
+      });
+    });
+  }
+
+  testdeselect(item: any) {
+    this.tableTestData = this.tableTestData.filter(
+      (data) => data.testId !== item.testId
+    );
+    this.tableTestData = this.tableTestData.map((test, index) => ({
+      ...test,
+      testStatus: 'string',
+      testNumber: `${this.staticTrfId}-A${index}`,
+      testResult: '',
+    }));
+    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'second-table') {
+          dtInstance.destroy();
+          this.dtMyProjectsTrigger.next(this.tableTestData);
+        }
+      });
+    });
+  }
+
+  onTestDeSelectAll(items: any) {
+    this.tableTestData = [];
+    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'second-table') {
+          dtInstance.destroy();
+          this.dtMyProjectsTrigger.next(this.tableTestData);
+        }
+      });
+    });
+  }
+
+  resultChange(event, index) {
+    this.tableTestData[index].testResult = event.value;
+    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'second-table') {
+          dtInstance.destroy();
+          this.dtMyProjectsTrigger.next(this.tableTestData);
+        }
+      });
+    });
+  }
+
+  getTests() {
+    this.testService.getTests().subscribe((tests) => {
+      this.tests = tests;
+    });
+  }
+
+  saveTestRequestForm() {
+    const manDate = this.testRequestForm.get('manufacturingDate')?.value || '';
+    const expiryDate = this.testRequestForm.get('expiryDate')?.value || '';
+    const hasEmptyResults = this.tableTestData.some(user => !user.testResult);
+
+    if (hasEmptyResults) {
+      this.isSaveClicked = true;
+      this.toastr.error('Please enter details in results', 'Error');
+      return;
+    }
+
+    let newTestRequest = {
+      status: 'string',
+      testRequestFormStatus: 'active',
+      condition: this.testRequestForm.get('condition')?.value || '',
+      stage: this.testRequestForm.get('stage')?.value || '',
+      packaging: this.testRequestForm.get('packaging')?.value || '',
+      labelClaim: this.testRequestForm.get('labelClaim')?.value || '',
+      quantity: this.testRequestForm.get('quantity')?.value || 0,
+      manufacturingDate: manDate,
+      expireDate: expiryDate,
+      trfTestResults: this.tableTestData,
+      analysisId: this.analysisID,
+      insertUser: this.loginService.userDetails.userId,
+    };
+    // if (!this.selectedTestItems || this.selectedTestItems.length === 0) {
+    //   this.toastr.error('Please select at least one lab test', 'Error');
+    //   return;
+    // }
+    if (!this.testRequestForm.invalid) {
+      // if (this.resultData.analysisId) { // check
+      //   this.analysisService.updateTestForm(newTestRequest).subscribe(() => {
+      //     this.toastr.success('Test has been added succesfully', 'Success');
+      //     this.getTrfDetailsById();
+      //   });
+      // } else {
+      this.analysisService.createTestForm(newTestRequest).subscribe(() => {
+        this.toastr.success('Test has been added succesfully', 'Success');
+        this.getTrfDetailsById();
+      });
+      // }
+    } else {
+      this.isSaveClicked = true;
+      this.testRequestForm.get('testRequestId')?.markAsDirty();
+      this.testRequestForm.get('department')?.markAsDirty();
+      this.testRequestForm.get('dosageForm')?.markAsDirty();
+      this.testRequestForm.get('expiryDate')?.markAsDirty();
+      this.testRequestForm.get('manufacturingDate')?.markAsDirty();
+      this.testRequestForm.get('labelClaim')?.markAsDirty();
+      this.testRequestForm.get('quantity')?.markAsDirty();
+      this.testRequestForm.get('batchSize')?.markAsDirty();
+      this.testRequestForm.get('packaging')?.markAsDirty();
+      this.testRequestForm.get('stage')?.markAsDirty();
+      this.testRequestForm.get('batchNumber')?.markAsDirty();
+      this.testRequestForm.get('projectName')?.markAsDirty();
+      this.testRequestForm.get('strength')?.markAsDirty();
+      this.testRequestForm.get('productCode')?.markAsDirty();
+      this.testRequestForm.get('condition')?.markAsDirty();
+      this.testRequestForm.get('market')?.markAsDirty();
+    }
+  }
+
+  onTestItemSelect(item: any) {
+    const tableTestData = this.tableTestData;
+    const newItem = this.tests.filter((test) => test.testId === item.testId)[0];
+    tableTestData.push(newItem);
+    this.tableTestData = this.tableTestData.map((test, index) => ({
+      ...test,
+      testStatus: 'string',
+      testNumber: `${this.staticTrfId}-A${index}`,
+    }));
+    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'second-table') {
+          dtInstance.destroy();
+          this.dtMyProjectsTrigger.next(this.tableTestData);
+        }
+      });
+    });
+  }
+
+  //Ending
 
   search(activeTab) {
     this.activeTab = activeTab;
@@ -180,6 +399,8 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       .subscribe((data) => {
         if (data.length > 0) {
           this.resultsData = data;
+          this.tableTestData = !data[0].trfTestResults ? [] : data[0].trfTestResults;//check
+          this.selectedTestItems = !data[0].trfTestResults ? [] : data[0].trfTestResults;
         }
       });
   }
@@ -227,8 +448,8 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
 
         if (this.analysisExperimentDetails && this.analysisExperimentDetails.status &&
           ((this.analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()) ||
-          (this.analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase())
-          || (this.analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase()))) {
+            (this.analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase())
+            || (this.analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase()))) {
           let userName = this.loginService.userDetails ? this.loginService.userDetails['mailId'] : '';
           this.userValidateForm = this.formBuilder.group({
             userName: [userName, [Validators.required]],
@@ -391,8 +612,10 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     }
     // const selectedData = this.inwards
     this.tableData.push(...this.inwards.filter(i => i.excipientId === item.excipientId)
-      .map((data) => ({ ...data, analysisId: Number(this.analysisID), 
-      experimentQuantity: 0, excipientQuantity: data.remainingQuantity })));
+      .map((data) => ({
+        ...data, analysisId: Number(this.analysisID),
+        experimentQuantity: 0, excipientQuantity: data.remainingQuantity
+      })));
 
     this.tableData.forEach(e => {
       if (e.excipientId === item.excipientId) {

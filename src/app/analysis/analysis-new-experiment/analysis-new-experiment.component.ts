@@ -255,7 +255,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
     this.analysisService
       .getTestFormResults(this.experimentId)
       .subscribe((data) => {
-        this.resultData = data;
+        this.resultData = data.get(0);
 
         this.testRequestForm.patchValue({
           condition: this.resultData.condition,
@@ -472,7 +472,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
       this.testRequestForm.get('stage')?.markAsDirty();
       this.testRequestForm.get('batchNumber')?.markAsDirty();
       this.testRequestForm.get('projectName')?.markAsDirty();
-      this.testRequestForm.get('strength')?.markAsDirty();  
+      this.testRequestForm.get('strength')?.markAsDirty();
       this.testRequestForm.get('productCode')?.markAsDirty();
       this.testRequestForm.get('condition')?.markAsDirty();
       this.testRequestForm.get('market')?.markAsDirty();
