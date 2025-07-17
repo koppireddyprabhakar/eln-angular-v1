@@ -72,6 +72,12 @@ export class AnalysisDashbaordComponent implements OnInit {
     batchSize: ['' as any, [Validators.required]],
   });
 
+ showPassword: boolean = false;
+ userValidateForm = this.formBuilder.group({
+    userName: [''],
+     password: ['', Validators.required]
+  });
+
   public selectedFile: any;
   public startDate = new Date();
   isSaveClicked: boolean = false;
@@ -218,6 +224,14 @@ export class AnalysisDashbaordComponent implements OnInit {
       .getAttachmentsById(this.experimentId)
       .subscribe((attachments) => {
         this.files = attachments;
+
+         if (this.experimentDetails?.status === 'Inprogress') {
+          let userName = this.loginService.userDetails ? this.loginService.userDetails['mailId'] : '';
+          this.userValidateForm = this.formBuilder.group({
+            userName: [userName, [Validators.required]],
+            password: ['', [Validators.required]],
+          });
+        }
       });
   }
 
@@ -564,15 +578,40 @@ export class AnalysisDashbaordComponent implements OnInit {
       analysisId: this.experimentId,
       status: status,
       summary: summary ? summary : status,
-      userId: this.loginService.userDetails.userId,
+      userId: this.loginService.userDetails.userId
     }
+if (this.experimentDetails?.status === 'Inprogress') {
+    if (this.userValidateForm.valid) {
+      const request = {
+        mailId: this.userValidateForm.value.userName ?? '',
+        password: this.userValidateForm.value.password ?? ''
+      };
 
+      this.loginService.login(request).subscribe(
+        (response) => {
+          if (response) {
+            this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
+              this.toastr.success('Analysis Details Submitted successfully', 'Success');
+              this.route.navigateByUrl(`/exp-analysis/analysis-experiments`);
+            });
+          }
+        },
+        (error) => {
+          this.toastr.error('Invalid password or account locked', 'Electronic Signature Failed');
+        }
+      );
+    } else {
+      this.userValidateForm.get('userName')?.markAsDirty();
+      this.userValidateForm.get('password')?.markAsDirty();
+    }
+  } else {
+    // If status is not "Inprogress", proceed without e-sign
     this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
       this.toastr.success(data['data'], 'Success');
       this.route.navigateByUrl(`/exp-analysis/list`);
     });
-
   }
+}
 
   generateUniqueAnalysisExperimentId() {   
     this.analysisService.generateUniqueAnalysisExperimentId().subscribe({

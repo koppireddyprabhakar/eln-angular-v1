@@ -117,6 +117,7 @@ export class ReviewExperimentsComponent implements OnInit {
   });
   submitClicked: boolean = false;
   isOptionSelected: boolean = false;
+  showPassword: boolean = false;
 
   constructor(
     private readonly projectService: ProjectService,
@@ -387,11 +388,6 @@ export class ReviewExperimentsComponent implements OnInit {
   }
 
   updateAnalysisStatus(status: string) {
-    // let analysisRequest = {
-    //   analysisId: this.experimentId,
-    //   status: status,
-    //   summary: this.summary ? this.summary : status
-    // }
     this.submitClicked = true;
     if (!this.isOptionSelected) {
       return;
@@ -403,7 +399,6 @@ export class ReviewExperimentsComponent implements OnInit {
     }
 
     if (!this.userValidateForm.invalid) {
-
       const reviewRequest = {
         analysisReviewId: this.reviewData['analysisReviewId'],
         reviewUserId: this.reviewData['reviewUserId'],
@@ -412,27 +407,27 @@ export class ReviewExperimentsComponent implements OnInit {
         status: this.reviewStatus,
         userId: this.loginService.userDetails.userId,
       };
-
       const request = {
         mailId: this.userValidateForm.value.userName || '',
         password: this.userValidateForm.value.password || ''
       };
-
-      this.loginService.login(request).subscribe(response => {
+       this.loginService.login(request).subscribe({
+         next: (response) => {
         if (response) {
           this.analysisService.updateAnalysisReview(reviewRequest).subscribe((data) => {
             this.toastr.success(data['data'], 'Success');
             this.route.navigateByUrl(`/exp-analysis/review-list`);
           });
         }
-      });
-    } else {
-      this.userValidateForm.get('userName')?.markAsDirty();
-      this.userValidateForm.get('password')?.markAsDirty();
-    }
-
-
-
+      },
+      error: () => {
+        this.toastr.error("Invalid password or account locked", "Electronic Signature Failed");
+      }
+    });
+      } else {
+        this.userValidateForm.get('userName')?.markAsDirty();
+        this.userValidateForm.get('password')?.markAsDirty();
+     }
   }
 
   getAttachments() {

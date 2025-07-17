@@ -24,7 +24,7 @@
             <input *ngIf="dumm.isEdit" [(ngModel)]="inputValue" type="text" class="form-control"
               (blur)="resetEditMode(i, dumm.label)" #inputfields autofocus="true" />
           </li>
-          <li class="nav-item" role="presentation">
+          <li class="nav-item" role="presentation" >
             <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact"
               (click)="search('excipients')" [ngClass]="{ active: activeTab === 'contact' }" type="button" role="tab"
               aria-controls="contact" aria-selected="false">
@@ -195,10 +195,10 @@
               active: activeTab === 'contact',
               show: activeTab === 'contact'
             }" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-            <div class="pt-3 pb-3">
-              <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="inwards" [(ngModel)]="selectedItems"
+            <div class="pt-3 pb-3" >
+              <ng-multiselect-dropdown  *ngIf="!isDropdownDisabled()" [settings]="dropdownSettings" [data]="inwards" [(ngModel)]="selectedItems"
                 (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)"
-                (onDeSelectAll)="onDeSelectAll()">
+                (onDeSelectAll)="onDeSelectAll()"  >
               </ng-multiselect-dropdown>
             </div>
             <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
@@ -323,22 +323,24 @@
                     <input type="text" class="form-control" id="userName" formControlName="userName" readonly />
                   </div>
                 </div>
-
                 <div class="row mb-3">
-                  <label for="password" class="col-sm-2 col-form-label" style="width: 11% !important;">Password</label>
-                  <div class="col-sm-3">
-                    <input type="password" class="form-control" id="password" formControlName="password" />
-                    <span *ngIf="userValidateForm.controls['password'].invalid &&
-                               (userValidateForm.controls['password'].dirty ||
-                               userValidateForm.controls['password'].touched) &&
-                               userValidateForm.get('password')?.errors &&
-                               userValidateForm.get('password')?.hasError('required')" class="text-danger">
-                      Please enter Password
-                    </span>
+                 <label for="yourPassword" class="col-sm-2 col-form-label" style="width: 11% !important;">Password</label>
+                 <div class="col-sm-3">
+                  <div class="input-group has-validation">
+                   <input type="{{ showPassword ? 'text' : 'password' }}" class="form-control" id="password" formControlName="password" required />
+                      <button  type="button" class="input-group-text" (mousedown)="showPassword = true" (mouseup)="showPassword = false" (mouseleave)="showPassword = false" >
+                      <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                      </button>
                   </div>
-                </div>
-              </form>
-
+                  <div *ngIf="userValidateForm.controls['password'].invalid &&
+                    (userValidateForm.controls['password'].dirty || userValidateForm.controls['password'].touched) &&
+                   userValidateForm.get('password')?.errors?.['required']"
+                  class="text-danger mt-1">
+               Please enter Password
+              </div>
+             </div>
+            </div>   
+           </form>
               <button type="submit" class="btn btn-primary mt-3" *ngIf="analysisExperimentDetails && analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase() &&
                 (project && project.status !== 'OnHold')" (click)="updateAnalysisStatus('Analysis Submitted')">
                 Submit Analysis

@@ -22,12 +22,12 @@ export class ProductService {
 
   saveProduct(product: { productName: string | null }) {
     const url = elnEndpointsConfig.endpoints['postProduct'];
-    return this.http.post<string>(url, product);
+    return this.http.post<string>(url, product, );
   }
 
   updateProduct(product: { productName: string | null }) {
     const url = elnEndpointsConfig.endpoints['updateProduct'];
-    return this.http.put<string>(url, product);
+    return this.http.put<string>(url, product,{withCredentials: true});
   }
 
   deleteProduct(product) {

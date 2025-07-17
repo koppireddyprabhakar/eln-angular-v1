@@ -66,10 +66,10 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
   selectedItems: any = [];
   dropdownSettings: any = {};
   public files: any = [];
- comments: string;
+  comments: string;
   activeTab = 'summary';
   isNewTabDataSaved: boolean = false;
-
+  reviewData: any = {};
   summaryForm = this.formBuilder.group({
     experimentName: ['', [Validators.required]],
     batchSize: ['' as any, [Validators.required]],
@@ -94,7 +94,6 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
   });
   public intervalSubscripton$: Subscription;
   experimentName: any;
-  reviewData: any = {};
 
   constructor(
     private readonly projectService: ProjectService,
@@ -193,7 +192,6 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     if (activeTab === 'results') {
       this.getTestResults();
     }
-    
   }
 
   getExcipientDetails() {
@@ -232,6 +230,14 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
         console.log(index);
         this.article[index].text = details.fileContent;
         console.log(details);
+      });
+  }
+
+  getExperimentReview() {
+    this.experimentService
+      .getExperimentReviewByExperimentId(this.experimentId)
+      .subscribe((details) => {
+        this.reviewData = details;
       });
   }
 
@@ -713,12 +719,11 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     this.tableData[index].quantity = +result.value;
   }
 
-    getExperimentReview() {
-    this.experimentService
-      .getExperimentReviewByExperimentId(this.experimentId)
-      .subscribe((details) => {
-        this.reviewData = details;
-      });
-  }
+
+
+isDropdownDisabled(): boolean {
+  const status = this.experimentDetails?.status?.toUpperCase();
+  return !(status === 'INPROGRESS' || status === 'NEED CORRECTION');
+}
 
 }

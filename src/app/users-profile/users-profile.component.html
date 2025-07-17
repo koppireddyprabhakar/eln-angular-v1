@@ -86,7 +86,7 @@
 <div class="row mb-3">
    <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
    <div class="col-md-8 col-lg-9">
-     <div class="input-group">
+    <div class="input-group">
      <input
        id="newPassword"
         [type]="showNewPassword ? 'text' : 'password'"
@@ -130,10 +130,8 @@
      <div *ngIf="changePasswordForm.hasError('notSame') && (changePasswordForm.get('renewPassword')?.touched || changePasswordForm.get('newPassword')?.touched)" class="invalid-feedback d-block">
   Passwords do not match.
 </div>
-
    </div>
- </div>
-
+</div>
  </div>
       <!-- Change Password Button -->
       <div class="text-center">

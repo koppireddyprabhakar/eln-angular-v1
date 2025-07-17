@@ -381,7 +381,7 @@ export class ViewFormulationExperimentComponent implements OnInit {
   }
 
   checkStatus(status: string) {
-    let formulationStatuses = ["Analysis Submitted", "Inreview", "Review Completed", "COA Generated", "Archive"];
+    let formulationStatuses = ["Analysis Submitted",  "Review Completed", "COA Generated", "Archive"];
 
     let obj = formulationStatuses.find(f => f.toLocaleUpperCase() === status);
 

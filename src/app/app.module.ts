@@ -13,7 +13,7 @@ import { PagesError404Component } from './pages/pages-error404/pages-error404.co
 import { PagesBlankComponent } from './pages/pages-blank/pages-blank.component';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { BusinessAdminModule } from './business-admin/business-admin.module';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { SharedModule } from './shared/shared.module';
@@ -35,7 +35,7 @@ import { CoaApprovalAnalysisComponent } from './coa-review/coa-approval-analysis
 import { QaAnalysisApprovalComponent } from './qa-dashboard/qa-analysis-approval/qa-analysis-approval.component';
 import { QaFormulationApprovalComponent } from './qa-dashboard/qa-formulation-approval/qa-formulation-approval.component';
 import { HashLocationStrategy,LocationStrategy } from '@angular/common';
-
+import { UserInterceptor } from './shared/services/UserInterceptor/user-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -76,7 +76,13 @@ import { HashLocationStrategy,LocationStrategy } from '@angular/common';
     NgMultiSelectDropDownModule.forRoot(),
     DataTablesModule
   ],
-  providers: [AuthGuardGuard, { provide: LocationStrategy, useClass: HashLocationStrategy }],
+  
+  providers: [AuthGuardGuard,  {
+      provide: HTTP_INTERCEPTORS,
+      useClass: UserInterceptor,
+      multi: true
+    }, { provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent],
+  
 })
 export class AppModule { }

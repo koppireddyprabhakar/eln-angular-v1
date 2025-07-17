@@ -176,7 +176,26 @@ export class QaDashboardComponent implements OnInit {
     );
   }
 
-viewTrfAnalysisExperiments(event) {
+// viewTrfAnalysisExperiments(event) {
+
+  // viewTrfAnalysisExperiments(event) {
+  //   this.analysisService.getAnalysisIdByExpId(event.expId).subscribe(
+  //     (analysisId) => {
+  //       if (analysisId) {
+  //         this.route.navigateByUrl(
+  //           `/exp-analysis/view-analysis-experiment?projectId=${event.projectId}&analysisId=${analysisId}`
+  //         );
+  //       } else {
+  //         console.error('No analysis ID found for the given experiment ID');
+  //       }
+  //     },
+  //     (error) => {
+  //       console.error('Error fetching analysis ID:', error);
+  //     }
+  //   );
+  // }
+
+  viewTrfAnalysisExperiments(event) {
   this.globalService.showLoader();
   this.analysisService
     .getAnalysisIdByExperimentId(event.expId)

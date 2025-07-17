@@ -35,10 +35,10 @@ export class UsersProfileComponent implements OnInit {
   toggleNewPassword() {
     this.showNewPassword = !this.showNewPassword;
   }
-
   toggleRenewPassword() {
     this.showRenewPassword = !this.showRenewPassword;
   }
+
   ngOnInit(): void {
     this.userDetails = this.loginService.userDetails;
     this.userRole = this.userService.userRole;
@@ -61,10 +61,12 @@ export class UsersProfileComponent implements OnInit {
   private passwordsMatchValidator(formGroup: FormGroup): { [key: string]: boolean } | null {
     const newPassword = formGroup.get('newPassword')?.value;
     const renewPassword = formGroup.get('renewPassword')?.value;
-    return newPassword !== renewPassword ? { notSame: true } : null;
+  if (newPassword && renewPassword && newPassword !== renewPassword) {
+    return { notSame: true };  
   }
-
-  onChangePassword(): void {
+  return null;
+}
+onChangePassword(): void {
     this.isSubmitted = true;
 
     if (this.changePasswordForm.invalid) {
@@ -76,7 +78,7 @@ export class UsersProfileComponent implements OnInit {
 
     const { currentPassword, newPassword } = this.changePasswordForm.value;
     const request = {
-      mailId: this.userDetails.mailId,
+      mailId: this.userDetails?.mailId,
       currentPassword,
       password: newPassword
     };
@@ -84,8 +86,6 @@ export class UsersProfileComponent implements OnInit {
     this.updatePasswordService.resetPassword(request).subscribe({
       next: (response) => {
         const msg = response?.data || 'Something went wrong';
-
-        // Convert to lowercase and check for success keyword
         if (msg.toLowerCase().includes('success')) {
           this.toastr.success(msg, 'Success');
           this.changePasswordForm.reset();

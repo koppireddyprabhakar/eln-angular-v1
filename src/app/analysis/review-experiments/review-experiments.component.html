@@ -146,7 +146,7 @@
               active: activeTab === 'contact',
               show: activeTab === 'contact'
             }" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-            <table id="first-table" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+            <table id="first-table" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover"  style="table-layout: fixed; width: 100%;">
               <thead>
                 <tr>
                   <th>Inward Name</th>
@@ -474,14 +474,20 @@
                 <label for="userName" class="col-sm-2 col-form-label" style="width: 11% !important;">User
                   Name</label>
                 <div class="col-sm-3">
+                   <div class="input-group has-validation">
                   <input type="text" class="form-control" id="userName" formControlName="userName" readonly />
                 </div>
               </div>
-
+              </div>
               <div class="row mb-3">
                 <label for="password" class="col-sm-2 col-form-label" style="width: 11% !important;">Password</label>
                 <div class="col-sm-3">
-                  <input type="password" class="form-control" id="password" formControlName="password" />
+                   <div class="input-group has-validation">
+                  <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="password" formControlName="password" />
+                    <button  type="button" class="input-group-text" (mousedown)="showPassword = true" (mouseup)="showPassword = false" (mouseleave)="showPassword = false" >
+                      <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                      </button>
+                </div>
                   <span *ngIf="userValidateForm.controls['password'].invalid &&
                            (userValidateForm.controls['password'].dirty ||
                            userValidateForm.controls['password'].touched) &&
@@ -492,7 +498,6 @@
                 </div>
               </div>
             </form>
-
             <div class="text-center pt-2">
               <button type="button" class="btn btn-primary mt-4" (click)="updateAnalysisStatus('Review Completed')">
                 Save
