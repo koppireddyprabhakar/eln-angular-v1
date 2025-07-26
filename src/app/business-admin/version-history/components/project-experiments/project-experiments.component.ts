@@ -2,8 +2,6 @@ import {
   Component,
   OnInit,
   QueryList,
-  TemplateRef,
-  ViewChild,
   ViewChildren
 } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -11,9 +9,6 @@ import { ExperimentService } from '@app/shared/services/experiment/experiment.se
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject, takeWhile } from 'rxjs';
-import { FormBuilder, Validators } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
-import { TrfService } from '@app/shared/services/test-request-form/trf.service';
 
 @Component({
   selector: 'app-project-experiments',
@@ -63,7 +58,7 @@ export class ProjectExperimentsComponent implements OnInit {
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((experiments) => {
         this.experiments = experiments;
-        this.dtElements.forEach(
+        /*this.dtElements.forEach(
           (dtElement: DataTableDirective, index: number) => {
             dtElement.dtInstance.then((dtInstance: any) => {
               if (dtInstance.table().node().id === 'first-table') {
@@ -72,7 +67,7 @@ export class ProjectExperimentsComponent implements OnInit {
               }
             });
           }
-        );
+        );*/
         this.globalService.hideLoader();
       });
 

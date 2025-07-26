@@ -27,8 +27,9 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr *ngFor="let experiment of experiments; let i = index">
-                          <td>{{i + 1}}</td>
+                        <tr *ngFor="let experiment of experiments; let isFirst = first; let i = index">
+                          <td *ngIf="isFirst">Latest</td>
+                          <td *ngIf="!isFirst">V{{experiments.length - i}}</td>
                           <td>{{ experiment.experimentName }}</td>
                           <td>{{ experiment.project.projectName }}</td>
                           <td>{{ experiment.batchSize }}</td>
