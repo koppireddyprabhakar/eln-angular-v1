@@ -707,6 +707,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
             this.analysisExperimentDetails.analysisDetails[index].analysisDetailId,
           name: this.dummyTabs[index].label,
           fileContent: this.article[index].text,
+          autoSave: 'Y'
         };
 
         saveCalls.push(this.analysisService.saveAnalysisDetails(tabValue));

@@ -147,7 +147,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     this.projectId = this.activatedRoute.snapshot.queryParams['projectId'];
     this.isCreatedExperiment = this.experimentId ? true : false;
     this.getBatchNumber();
-    this. generateUniqueExperimentId();
+    this.generateUniqueExperimentId();
     this.getExperimentDetails(this.experimentId);
     this.getProjectDetails();
   }
@@ -160,7 +160,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     this.dtTrigger.next(null);
     this.dtResultTrigger.next(null);
   }
-  
+
   public editorConfig = {
     customConfig: '/assets/ckeditor/config.js', // Path to the config.js file
   };
@@ -264,16 +264,16 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     });
   }
 
-  
+
   generateUniqueExperimentId() {
     this.formulationService.generateUniqueExperimentId().subscribe({
       next: (data) => {
-        this.summaryForm.get('experimentName')?.setValue(data); 
+        this.summaryForm.get('experimentName')?.setValue(data);
         this.experimentName = data;
       }
     });
   }
-  
+
 
   getBatchNumber() {
     this.formulationService
@@ -508,6 +508,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
           experimentId: this.experimentId,
           name: this.dummyTabs[index].label,
           fileContent: this.article[index].text,
+          autoSave: 'Y'
         };
 
         tabValue = {
@@ -560,17 +561,17 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
         `Experiment Data ${this.dummyTabs[index].id ? 'updated' : 'Saved'} Successfully`,
         'Success'
       );
-  
+
       if (this.dummyTabs[index].value.substring(0, 3) === 'new') {
         console.log('to summary');
         this.activeTab = `${this.dummyTabs[index].value}-tab`;
         this.getExperimentDetails(this.experimentId);
       }
-        this.dummyTabs[index].showDeleteIcon = false;
+      this.dummyTabs[index].showDeleteIcon = false;
     });
   }
-  
-  
+
+
   deleteNewTab(index: number, tab: any) {
     if (index >= 2) {
       this.dummyTabs.splice(index, 1);

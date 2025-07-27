@@ -247,7 +247,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
       testId: [''],
       test: [''],
       results: [null],
-      description:['']
+      description: ['']
     });
   }
 
@@ -728,6 +728,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
           analysisId: this.experimentId,
           name: this.dummyTabs[index].label,
           fileContent: this.article[index].text,
+          autoSave: 'Y'
         };
 
         tabValue = {
@@ -837,11 +838,11 @@ export class AnalysisNewExperimentComponent implements OnInit {
 
     this.tableData[index].quantity = +result.value;
   }
-  generateUniqueAnalysisExperimentId() {   
+  generateUniqueAnalysisExperimentId() {
     debugger
     this.analysisService.generateUniqueAnalysisExperimentId().subscribe({
       next: (data) => {
-        this.summaryForm.get('experimentName')?.setValue(data); 
+        this.summaryForm.get('experimentName')?.setValue(data);
         this.experimentName = data;
       }
     });
