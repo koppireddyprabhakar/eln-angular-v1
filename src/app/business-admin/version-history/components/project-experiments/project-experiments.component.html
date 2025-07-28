@@ -36,7 +36,7 @@
                           <!-- <td>{{ experiment.projectId }}</td> -->
                           <td>{{ experiment.project.formulationName }}</td>
                           <td>{{ experiment.project.strength }}</td>
-                          <td>{{ experiment.insertDate}}</td>
+                          <td>{{ experiment.insertDate | date:'yyyy-MM-dd HH:mm'}}</td>
                           <td>{{ experiment.experimentStatus }}</td>
                           <td><i (click)="viewExperiment(experiment)" class="viewIcon bi-eye-fill">
                             </i>
