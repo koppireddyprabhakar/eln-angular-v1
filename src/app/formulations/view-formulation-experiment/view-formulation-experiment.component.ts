@@ -388,4 +388,10 @@ export class ViewFormulationExperimentComponent implements OnInit {
     return formulationStatuses.find(f => f.toLocaleUpperCase() === status) ? true : false;
   }
 
+  onArrowClick() {
+    this.route.navigateByUrl(
+      `/business-admin/version-history/project-experiments?projectId=${this.projectId}`
+    );
+  }
+
 }
