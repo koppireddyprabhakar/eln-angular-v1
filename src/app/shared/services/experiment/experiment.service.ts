@@ -172,6 +172,14 @@ export class ExperimentService {
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
+  getAnalysisHistoryByProjectId(projectId) {
+    const url = `${elnEndpointsConfig.endpoints['getAnalysisHistoryByProjectId']
+      }?projectId=${projectId}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
+
   saveCoaReviewDetails(coareviewdetails: any) {
     const url = elnEndpointsConfig.endpoints['saveCoaReviewDetails'];
     return this.http.post<any>(url, coareviewdetails);

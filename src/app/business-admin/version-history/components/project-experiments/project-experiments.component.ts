@@ -58,6 +58,11 @@ export class ProjectExperimentsComponent implements OnInit {
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((experiments) => {
         this.experiments = experiments;
+
+        if (this.experiments && this.experiments.length === 0) {
+          this.getAnalysisHistoryByProjectId(this.projectId);
+        }
+
         /*this.dtElements.forEach(
           (dtElement: DataTableDirective, index: number) => {
             dtElement.dtInstance.then((dtInstance: any) => {
@@ -102,6 +107,29 @@ export class ProjectExperimentsComponent implements OnInit {
     this.globalService.showLoader();
     this.experimentService
       .getAnalysisDetailHistoryByExperimentId(experimentId)
+      .pipe(takeWhile(() => this.subscribeFlag))
+      .subscribe((analysisDetails) => {
+        this.analysisDetails = analysisDetails;
+
+        this.dtElementsForAnalysis.forEach(
+          (dtElement: DataTableDirective, index: number) => {
+            dtElement.dtInstance.then((dtInstance: any) => {
+              if (dtInstance.table().node().id === 'second-table') {
+                dtInstance.destroy();
+                this.dtTriggerForAnalysis.next(this.analysisDetails);
+              }
+            });
+          }
+        );
+        this.globalService.hideLoader();
+      });
+
+  }
+
+  getAnalysisHistoryByProjectId(proejctId) {
+    this.globalService.showLoader();
+    this.experimentService
+      .getAnalysisHistoryByProjectId(proejctId)
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((analysisDetails) => {
         this.analysisDetails = analysisDetails;

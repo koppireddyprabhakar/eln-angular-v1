@@ -115,6 +115,7 @@ export const elnEndpointsConfig: EndpointConfig = {
     getUniqeAnalysisExperimentName: `${environment.API_BASE_PATH}` + '/analysis/analysis_experiment_unique_id',
     getExperimentsByProjectId: `${environment.API_BASE_PATH}` + '/formulation-dashboard/get-experiments-by-project-id',
     getAnalysisDetailHistoryByExperimentId: `${environment.API_BASE_PATH}` + '/analysis/get_analysis_details_history_by_experiment_id',
+    getAnalysisHistoryByProjectId: `${environment.API_BASE_PATH}` + '/analysis/get-analysis-history-by-project-id',
     generateProjectPdf: `${environment.API_BASE_PATH}` + '/pdf/get-project-pdf',
     getAnalysisExperimentsForCoaDetails: `${environment.API_BASE_PATH}` + '/analysis/get-analysis-by-analysis-experiment-id',
     saveCoaReviewDetails: `${environment.API_BASE_PATH}` + '/coa/create-coa-details',
