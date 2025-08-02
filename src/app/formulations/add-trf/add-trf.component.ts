@@ -33,7 +33,7 @@ export class AddTrfComponent implements OnInit {
   expId: number;
   experiment: any;
   staticTrfId = 'TRF123';
-
+  showPassword: boolean = false;
   tests: any = [];
   dropdownList: any = [];
   selectedItems: any = [];

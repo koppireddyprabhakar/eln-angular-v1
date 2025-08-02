@@ -13,14 +13,14 @@ import { PagesError404Component } from './pages/pages-error404/pages-error404.co
 import { PagesBlankComponent } from './pages/pages-blank/pages-blank.component';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { BusinessAdminModule } from './business-admin/business-admin.module';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { SharedModule } from './shared/shared.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormulationsModule } from './formulations/formulations.module';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-import { CommonModule } from '@angular/common';
+import { CommonModule, HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { CreateTrfComponent } from './test-request-form/create-trf/create-trf.component';
 import { ElnLoginComponent } from './eln-login/eln-login.component';
 import { ForgetComponent } from './forget/forget.component';
@@ -34,6 +34,8 @@ import { CoaApprovalFormulationComponent } from './coa-review/coa-approval-formu
 import { CoaApprovalAnalysisComponent } from './coa-review/coa-approval-analysis/coa-approval-analysis.component';
 import { QaAnalysisApprovalComponent } from './qa-dashboard/qa-analysis-approval/qa-analysis-approval.component';
 import { QaFormulationApprovalComponent } from './qa-dashboard/qa-formulation-approval/qa-formulation-approval.component';
+import { SuperadminComponent } from './superadmin/superadmin.component';
+import {  UserInterceptorService } from './shared/services/UserInterceptor/user-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -57,6 +59,7 @@ import { QaFormulationApprovalComponent } from './qa-dashboard/qa-formulation-ap
     CoaApprovalAnalysisComponent,
     QaAnalysisApprovalComponent,
     QaFormulationApprovalComponent,
+    SuperadminComponent,
   ],
   imports: [
     BrowserModule,
@@ -74,7 +77,11 @@ import { QaFormulationApprovalComponent } from './qa-dashboard/qa-formulation-ap
     NgMultiSelectDropDownModule.forRoot(),
     DataTablesModule
   ],
-  providers: [AuthGuardGuard],
+providers: [AuthGuardGuard,  {
+      provide: HTTP_INTERCEPTORS,
+      useClass: UserInterceptorService,
+      multi: true
+    }, { provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

@@ -43,6 +43,7 @@ export class InwardManagementComponent implements OnInit {
   @ViewChild('closeButton') closeButton: ElementRef;
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
   today: string;
+  public showBatchError: boolean = false;
 
   constructor(
     private readonly inwardService: InwardManagementService,
@@ -63,6 +64,7 @@ export class InwardManagementComponent implements OnInit {
   addInward() {
     this.selectedInward = {};
     this.inwardForm.reset();
+    this.showBatchError = false;
   }
 
   getExcipients() {
@@ -100,6 +102,18 @@ export class InwardManagementComponent implements OnInit {
       expiryDate: this.inwardForm.get('expiryDate')!.value
       // status: 'New',
     };
+    const currentBatchNo = newInward.batchNo;
+    const isDuplicate = this.inwards?.some(inward =>
+      inward.batchNo === currentBatchNo &&
+      inward.excipientId !== this.selectedInward?.excipientId
+    );
+    if (isDuplicate) {
+      this.showBatchError = true;
+      return;
+    } else {
+      this.showBatchError = false;
+    }
+
     if (this.inwardForm.valid) {
       this.globalService.showLoader();
       if (Object.keys(this.selectedInward).length === 0) {
@@ -171,6 +185,7 @@ export class InwardManagementComponent implements OnInit {
       quantity: inward.quantity,
       expiryDate: inward.expiryDate
     });
+     this.showBatchError = false;
   }
 
   confirmInwardDeletetion(inward) {
@@ -197,29 +212,29 @@ export class InwardManagementComponent implements OnInit {
     this.subscribeFlag = false;
   }
 
-checkExpiringInwards() {
-  const currentDate = new Date();
-  const expiryDateLimit = new Date();
-  expiryDateLimit.setDate(currentDate.getDate() + 45); // 45 days from today
+  checkExpiringInwards() {
+    const currentDate = new Date();
+    const expiryDateLimit = new Date();
+    expiryDateLimit.setDate(currentDate.getDate() + 45); // 45 days from today
 
-  this.inwards.forEach(inward => {
-    if (!inward.expiryDate) {
-      return;
-    }
-    const expiryDate = new Date(inward.expiryDate);
+    this.inwards.forEach(inward => {
+      if (!inward.expiryDate) {
+        return;
+      }
+      const expiryDate = new Date(inward.expiryDate);
 
-    if (
-      expiryDate.toString() === 'Invalid Date' ||
-      expiryDate <= currentDate ||
-      expiryDate > expiryDateLimit
-    ) {
-      return;
-    }
-    this.toastr.warning(
-      `Your inward ${inward.excipientsName} of batch/lot no: ${inward.batchNo} is going to expire soon.`,
-      'Expiry Alert'
-    );
-  });
- }
+      if (
+        expiryDate.toString() === 'Invalid Date' ||
+        expiryDate <= currentDate ||
+        expiryDate > expiryDateLimit
+      ) {
+        return;
+      }
+      this.toastr.warning(
+        `Your inward ${inward.excipientsName} of batch/lot no: ${inward.batchNo} is going to expire soon.`,
+        'Expiry Alert'
+      );
+    });
+  }
 
 }

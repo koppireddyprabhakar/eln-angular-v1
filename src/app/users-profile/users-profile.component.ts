@@ -95,8 +95,6 @@ onChangePassword(): void {
 
   this.updatePasswordService.Update(request).subscribe({
     next: (response) => {
-      console.log('Update response:', response);
-
       if (response && response.data && response.data.includes('Successfully')) {
         this.toastr.success('Password has been updated successfully', 'Success');
         this.changePasswordForm.reset();

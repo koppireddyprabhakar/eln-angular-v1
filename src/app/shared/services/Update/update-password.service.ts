@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { elnEndpointsConfig } from '@config/endpoints/eln.endpoints.config';
 import { ToastrService } from 'ngx-toastr';
@@ -16,9 +16,14 @@ export class UpdatePasswordService {
    const url = elnEndpointsConfig.endpoints['update'];
     return this.http.put(url, request);
   }
+
+  reset(request: { mailId: string; currentPassword: string; password: string }): Observable<any> {
+  const url = elnEndpointsConfig.endpoints['resetPassword'];
+  return this.http.put(url, request);
+}
+
   handleError(error: HttpErrorResponse) {
     const errorDetail = ClientService.formatError(error);
-    console.log(error);
     if (errorDetail && (errorDetail.title || errorDetail.errorMessage)) {
       this.toastr.error(errorDetail.errorMessage, errorDetail.title);
     }

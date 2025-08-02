@@ -19,6 +19,8 @@ export class DashboardComponent implements OnInit {
   TrfStatusCount: any = [];
   analysisexperimentCount: any = [];
   AnalysisExperimentsStatusCount: any;
+   pieChartFormulation: any = null;
+  pieChartAnalysis: any = null;
   constructor(private dashboardService:DashboardService) {}
 
   ngOnInit(): void {
@@ -94,7 +96,6 @@ export class DashboardComponent implements OnInit {
     this.dashboardService.getAnalysisExperimentStatusCount().subscribe(
       (data) => {
          this.AnalysisExperimentsStatusCount = data;
-        // console.log(this.AnalysisExperimentsStatusCount)
          this.AnalysisPieChart();
       },
       (error) => {
@@ -222,82 +223,121 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
-  createPieChart() {
-    this.pieChart =new Chart('pieChart', {
+   createPieChart() {
+    if (this.pieChartFormulation instanceof Chart) {
+      this.pieChartFormulation.destroy();
+    }  
+    // Define labels and colors inline
+    const statusLabels = [
+      'Inprogress', 'Complete', 'Created TRF', 'Analysis Submitted',
+      'COA Approved', 'COA Reviewed', 'COA Generated'
+    ];
+    const backgroundColors = [
+      'rgb(12, 23, 12)', 'rgb(255, 159, 64)', 'rgb(255, 205, 86)',
+      'rgb(75, 192, 192)', 'rgb(153, 102, 255)', 'rgb(201, 203, 207)',
+      'rgb(54, 162, 235)'
+    ];
+ 
+    // Backend may return data in a different order, so we map it correctly
+    const experimentStatusData: { [key: string]: number } = {};
+    statusLabels.forEach((label, index) => {
+      experimentStatusData[label] = this.ExperimentsStatusCount[index] || 0;
+    });
+ 
+    // Filter out zero values
+    const filteredData = statusLabels
+      .map((label, index) => ({
+        label,
+        value: experimentStatusData[label],
+        color: backgroundColors[index]
+      }))
+      .filter(item => item.value > 0);
+ 
+    // Extract filtered labels, data, and colors
+    const filteredLabels = filteredData.map(item => item.label);
+    const filteredValues = filteredData.map(item => item.value);
+    const filteredColors = filteredData.map(item => item.color);
+    this.pieChartFormulation = new Chart('pieChart', {
       type: 'pie',
       data: {
-        labels: [
-          'Inprogress',
-          'Complete',
-          'TRF Created',
-          'Analysis Submitted',
-          'COA Genarated'
-        ],
+        labels: filteredLabels,
         datasets: [{
           label: 'Experiments',
-          data: this.ExperimentsStatusCount,
-          backgroundColor: [
-            'rgb(255, 99, 132)',
-            'rgb(255, 159, 64)',
-            'rgb(255, 205, 86)',
-            'rgb(75, 192, 192)',
-            'rgb(54, 162, 235)',
-          ],
+          data: filteredValues,
+          backgroundColor: filteredColors,
           hoverOffset: 4
         }]
       }
     });
   }
-  AnalysisPieChart() {
-    console.log(this.AnalysisExperimentsStatusCount);  // Debug line
-    this.pieChart = new Chart('AnalysisPieChart', {
+
+   AnalysisPieChart() {
+    if (this.pieChartAnalysis instanceof Chart) {
+      this.pieChartAnalysis.destroy(); // Destroy only the formulation chart
+    }  
+    this.pieChartAnalysis = new Chart('AnalysisPieChart', {
       type: 'pie',
       data: {
         labels: [
-          'Inprogress',
-          'Complete',
-           'Inreview',
-          'TRF Created',
+          'In Progress',
+          'Review Completed',
           'Analysis Submitted',
-          'COA Genarated'
+          'COA Generated',
+          'COA Reviewed',
+          'COA Approved'
         ],
         datasets: [{
           label: 'AnalysisExperiments',
           data: this.AnalysisExperimentsStatusCount,
           backgroundColor: [
-            'rgb(255, 99, 132)',
-            'rgb(300, 159, 64)',
-            'rgb(6, 158, 9)',
-            'rgb(255, 205, 86)',
-            'rgb(75, 192, 192)',
-            'rgb(54, 162, 235)'
+
+            'rgb(255, 99, 132)',   // In Progress
+            'rgb(54, 162, 235)',   // Review Completed
+            'rgb(75, 192, 192)',   // Analysis Submitted
+            'rgb(255, 205, 86)',   // COA Generated
+            'rgb(153, 102, 255)',  // COA Reviewed
+            'rgb(201, 203, 207)'   // COA Approved
           ],
           hoverOffset: 4
         }]
       }
     });
   }
+ 
   createDoughnutChart() {
     this.doughnutChart = new Chart('doughnutChart', {
       type: 'doughnut',
       data: {
         labels: [
-          'New',
-          'Inprogress',
-          'Analysis Submitted'
-        ],
+                  'New',
+                   'Inprogress',
+                  'Analysis Submitted'
+                ],
         datasets: [{
-          label: 'trf ',
+          label: 'TRF Status',
           data: this.TrfStatusCount,
           backgroundColor: [
-            'rgb(255, 99, 132)',
-            'rgb(54, 162, 235)',
-            'rgb(255, 205, 86)'
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)'
           ],
-          hoverOffset: 4
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)'
+          ],
+          borderWidth: 1
         }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top',
+          }
+        }
       }
     });
-  } 
-  
+  }
 }

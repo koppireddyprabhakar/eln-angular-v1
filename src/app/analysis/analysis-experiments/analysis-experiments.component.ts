@@ -1,5 +1,6 @@
 import {
   Component,
+  ElementRef,
   OnInit,
   QueryList,
   TemplateRef,
@@ -51,6 +52,7 @@ export class AnalysisExperimentsComponent implements OnInit {
   });
 
   @ViewChild('expActionTpl', { static: true }) expActionTpl: TemplateRef<any>;
+  @ViewChild('closeReviewModal') closeReviewModal!: ElementRef;
 
   constructor(
     private readonly globalService: GlobalService,
@@ -159,7 +161,7 @@ export class AnalysisExperimentsComponent implements OnInit {
 
   submitReview() {
     if (this.reviewSubmitForm.invalid) {
-      this.toastr.error('Experiment has to be assigned to reviewer.');
+      this.reviewSubmitForm.markAllAsTouched();
       return;
     }
     const reviewObj = {
@@ -174,6 +176,7 @@ export class AnalysisExperimentsComponent implements OnInit {
         .createAnalysisReview(reviewObj)
         .subscribe((data) => {
           this.toastr.success(data['data'], 'Success');
+          this.closeReviewModal.nativeElement.click();
           this.globalService.hideLoader();
           this.getMyExperiments();
           // this.route.navigateByUrl(

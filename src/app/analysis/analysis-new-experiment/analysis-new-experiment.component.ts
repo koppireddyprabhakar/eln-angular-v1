@@ -115,6 +115,11 @@ export class AnalysisNewExperimentComponent implements OnInit {
   errorMessage: string = "Please enter details.";
   public intervalSubscripton$: Subscription;
   experimentName: string;
+    showPassword: boolean = false;
+  userValidateForm = this.formBuilder.group({
+    userName: [''],
+     password: ['', Validators.required]
+  });
 
   constructor(
     private readonly projectService: ProjectService,
@@ -255,8 +260,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
     this.analysisService
       .getTestFormResults(this.experimentId)
       .subscribe((data) => {
-        this.resultData = data.get(0);
-
+       this.resultData = Array.isArray(data) && data.length ? data[0] : null;
         this.testRequestForm.patchValue({
           condition: this.resultData.condition,
           stage: this.resultData.stage,
@@ -484,8 +488,16 @@ export class AnalysisNewExperimentComponent implements OnInit {
       .getAttachmentsById(this.experimentId)
       .subscribe((attachments) => {
         this.files = attachments;
+      if (this.experimentDetails?.status === 'Inprogress') {
+          let userName = this.loginService.userDetails ? this.loginService.userDetails['mailId'] : '';
+          this.userValidateForm = this.formBuilder.group({
+            userName: [userName, [Validators.required]],
+            password: ['', [Validators.required]],
+          });
+        }
       });
   }
+
 
   removeAttachment(file) {
     const fileData = { ...file, analysisAttachmentId: file.attachmentId, projectId: this.projectId };
@@ -583,7 +595,6 @@ export class AnalysisNewExperimentComponent implements OnInit {
   }
 
   saveSummary() {
-    debugger
     // if () {
     const summary = {
       status: 'Active',
@@ -652,8 +663,19 @@ export class AnalysisNewExperimentComponent implements OnInit {
     });
   }
   onSelectAll(items: any) {
-    this.tableData = this.inwards;
-    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+    this.tableData = this.inwards.map((inward) => {
+    // Try to find matching row in existing tableData
+    const existing = this.tableData.find(t => t.excipientId === inward.excipientId);
+    return {
+      ...inward,
+      analysisId: Number(this.experimentId),
+      experimentQuantity: existing?.experimentQuantity ?? 0,
+      excipientQuantity: inward.remainingQuantity,
+      quantity: existing?.quantity ?? 0,
+      errorMessage: existing?.errorMessage ?? "Please enter quantity."
+    };
+  });
+    this.dtElements.forEach((dtElement: DataTableDirective) => {
       dtElement.dtInstance.then((dtInstance: any) => {
         if (dtInstance.table().node().id === 'first-table') {
           dtInstance.destroy();
@@ -744,7 +766,6 @@ export class AnalysisNewExperimentComponent implements OnInit {
 
     if (saveCalls.length) {
       forkJoin(saveCalls).subscribe(response => {
-        console.log("Saved Successfully..." + response);
       })
     }
 
@@ -817,13 +838,30 @@ export class AnalysisNewExperimentComponent implements OnInit {
       summary: summary ? summary : status,
       userId: this.loginService.userDetails.userId,
     };
-    this.analysisService
-      .updateAnalysisStatus(analysisRequest)
-      .subscribe((data) => {
-        this.toastr.success('Experiment Completed Successfully', 'Success');
-        this.route.navigateByUrl(`/exp-analysis/list`);
-      });
+   if (this.userValidateForm.valid) {
+    const request = {
+      mailId: this.userValidateForm.value.userName ?? '',
+      password: this.userValidateForm.value.password ?? ''
+    };
+    this.loginService.login(request).subscribe(
+      (response) => {
+        if (response) {
+          this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
+            this.toastr.success('Experiment Completed Successfully', 'Success');
+            this.route.navigateByUrl('/exp-analysis/list');
+          });
+        }
+      },
+      (error) => {
+        this.toastr.error('Invalid password', 'Electronic Signature Failed');
+      }
+    );
+  } else {
+    this.userValidateForm.get('userName')?.markAsDirty();
+    this.userValidateForm.get('password')?.markAsDirty();
   }
+  }
+
 
   excipientQuantityChange(result, index) {
     this.tableData[index]['errorMessage'] = "";
@@ -839,7 +877,6 @@ export class AnalysisNewExperimentComponent implements OnInit {
     this.tableData[index].quantity = +result.value;
   }
   generateUniqueAnalysisExperimentId() {
-    debugger
     this.analysisService.generateUniqueAnalysisExperimentId().subscribe({
       next: (data) => {
         this.summaryForm.get('experimentName')?.setValue(data);

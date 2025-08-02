@@ -21,6 +21,7 @@ import { departmentMapping } from '@app/shared/constants/mappings';
 export class InwardManagementComponent implements OnInit {
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
+  public showBatchError: boolean = false;
   inwards: any = [];
   selectedInward: any = {};
   subscribeFlag = true;
@@ -63,6 +64,7 @@ export class InwardManagementComponent implements OnInit {
   addInward() {
     this.selectedInward = {};
     this.inwardForm.reset();
+    this.showBatchError = false;
   }
 
   getExcipients() {
@@ -101,10 +103,19 @@ export class InwardManagementComponent implements OnInit {
       creationSource: departmentMapping[1]
       // status: 'New',
     };
-
+    const currentBatchNo = newInward.batchNo;
+    const isDuplicate = this.inwards?.some(inward =>
+      inward.batchNo === currentBatchNo &&
+      inward.excipientId !== this.selectedInward?.excipientId
+    );
+    if (isDuplicate) {
+      this.showBatchError = true;
+      return;
+    } else {
+      this.showBatchError = false;
+    }
     let isValid = this.inwardForm.get('quantity') && this.inwardForm.value.quantity != null
       && this.inwardForm.value.quantity <= 0;
-
     if (this.inwardForm.valid && !isValid) {
       this.globalService.showLoader();
       if (Object.keys(this.selectedInward).length === 0) {
@@ -177,6 +188,7 @@ export class InwardManagementComponent implements OnInit {
       quantity: inward.quantity === 0 ? null : inward.quantity,
       expiryDate: inward.expiryDate
     });
+    this.showBatchError = false;
   }
 
   confirmInwardDeletetion(inward) {
@@ -203,37 +215,31 @@ export class InwardManagementComponent implements OnInit {
     this.subscribeFlag = false;
   }
 
-      
-checkExpiringInwards() {
-  const currentDate = new Date();
-  const expiryDateLimit = new Date();
-  expiryDateLimit.setDate(currentDate.getDate() + 45); // 45 days from today
 
-  this.inwards.forEach(inward => {
-    if (!inward.expiryDate) {
-      // Skip null or undefined expiryDate
-      return;
-    }
+  checkExpiringInwards() {
+    const currentDate = new Date();
+    const expiryDateLimit = new Date();
+    expiryDateLimit.setDate(currentDate.getDate() + 45); // 45 days from today
 
-    const expiryDate = new Date(inward.expiryDate);
-    
-    //  Debug log for expiry date parsing
-    console.log('Raw expiryDate:', inward.expiryDate, '| Parsed Date:', expiryDate);
-
-    // Skip if invalid or not within 45 days range
-    if (
-      expiryDate.toString() === 'Invalid Date' ||
-      expiryDate <= currentDate ||
-      expiryDate > expiryDateLimit
-    ) {
-      return;
-    }
-
-    this.toastr.warning(
-      `Your inward ${inward.excipientsName} of batch/lot no: ${inward.batchNo} is going to expire soon.`,
-      'Expiry Alert'
-    );
-  });
-}
+    this.inwards.forEach(inward => {
+      if (!inward.expiryDate) {
+        // Skip null or undefined expiryDate
+        return;
+      }
+      const expiryDate = new Date(inward.expiryDate);
+      // Skip if invalid or not within 45 days range
+      if (
+        expiryDate.toString() === 'Invalid Date' ||
+        expiryDate <= currentDate ||
+        expiryDate > expiryDateLimit
+      ) {
+        return;
+      }
+      this.toastr.warning(
+        `Your inward ${inward.excipientsName} of batch/lot no: ${inward.batchNo} is going to expire soon.`,
+        'Expiry Alert'
+      );
+    });
+  }
 
 }

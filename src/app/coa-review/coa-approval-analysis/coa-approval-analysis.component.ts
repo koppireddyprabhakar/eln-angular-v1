@@ -30,12 +30,12 @@ export class CoaApprovalAnalysisComponent implements OnInit {
     pagingType: 'full_numbers',
   };
   analysisId: any;
-
+  reviewPwdErrorMessage: string = '';
   expId: number;
   experiment: any;
   staticTrfId = 'TRF123';
   department = 'ANALYSIS'
-
+  showPassword: boolean = false;
   tests: any = [];
   dropdownList: any = [];
   selectedItems: any = [];
@@ -144,10 +144,8 @@ export class CoaApprovalAnalysisComponent implements OnInit {
     this.experimentService
     .getCoaUserDetailsByAnalysisId(this.analysisId)
     .subscribe((data) => {
-      console.log(data);
       if (data.length > 0) {
         this.coadetails = data[0]; // Taking the first entry from the response array
-        console.log("COA Details:", this.coadetails);
       }
     });
   }
@@ -183,7 +181,6 @@ export class CoaApprovalAnalysisComponent implements OnInit {
   }
 
   getTestResultsByAnalysisId() {
-     debugger
     this.globalService.showLoader();
     const flatten = (object) => {
       let value = {};
@@ -204,10 +201,6 @@ export class CoaApprovalAnalysisComponent implements OnInit {
       .subscribe((tests) => {
         this.tests = tests;
         let test = tests.map((trf) => flatten(trf))[0];
-        console.log('Analysis Experiment:', this.analysisexperiment);
-        console.log('Test Request:', this.testRequest);
-        
-        console.log('Test Results:', tests);
         this.testRequest['batchNumber'] = this.analysisexperiment.batchNumber;
         this.testRequest['dosageForm'] = this.analysisexperiment.dosageName;
         this.testRequest['projectName'] = this.analysisexperiment.projectName;
@@ -216,7 +209,6 @@ export class CoaApprovalAnalysisComponent implements OnInit {
         this.testRequest['testRequestId'] = test.testRequestFormId;
         this.testRequest['productCode'] = this.analysisexperiment.productCode;
         this.testRequest['department'] = this.department;
-
         this.testRequest['expiryDate'] = test.expireDate;
         this.testRequest['manufacturingDate'] = test.manufacturingDate;
         this.testRequest['condition'] = test.condition;
@@ -245,7 +237,6 @@ export class CoaApprovalAnalysisComponent implements OnInit {
   }
      
   updateCoaReviewDetails() {
-    debugger
     const coareviewdetails = {
         analysisExpId: this.analysisId,
         reviewedByUserId: this.userDetails.userId,
@@ -271,20 +262,22 @@ updateAnalysisStatus() {
         password: this.userValidateForm.value.password || ''
       };
       this.loginService.login(request).subscribe(response => {
-        console.log('usersdeatils', response);       
          if (response.status=200) {
           this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
             this.updateCoaReviewDetails();
             this.toastr.success('Analysis Details Submitted successfully', 'Success');
             this.route.navigate(['/coa-generation-list']);
           });
-        } else {
-          this.toastr.error('Invalid credentials', 'Error');
         }
       },
-      (error: HttpErrorResponse) => {       
-          this.toastr.error('Invalid credentials', 'Error');
-         });
+       (err: HttpErrorResponse) => {
+        const errorMessage =
+          typeof err.error === 'string'
+            ? err.error
+            : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+
+        this.reviewPwdErrorMessage = errorMessage;
+      });  
     } else {
       this.userValidateForm.get('userName')?.markAsDirty();
       this.userValidateForm.get('password')?.markAsDirty();

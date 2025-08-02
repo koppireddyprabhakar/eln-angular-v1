@@ -98,7 +98,6 @@ export class AnalysisProjectsComponent implements OnInit {
             dtElement.dtInstance.then((dtInstance: any) => {
               if (dtInstance.table().node().id === 'second-table') {
                 dtInstance.destroy();
-                console.log(this.myProjects);
                 this.dtMyProjectsTrigger.next(this.myProjects);
               }
             });

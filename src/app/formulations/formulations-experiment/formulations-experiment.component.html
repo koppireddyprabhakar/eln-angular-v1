@@ -173,11 +173,12 @@
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           Close
         </button>
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="submitReview()" id="closeModal">
+        <button type="button" class="btn btn-primary" (click)="submitReview()" id="closeModal">
           {{selectedUser && selectedUser['experimentStatus'].toUpperCase() ===
           'Complete'.toUpperCase() ? 'Submit PreReview' : 'Submit Review'}}
         </button>
       </div>
+          <button #closeReviewModal type="button" class="d-none" data-bs-dismiss="modal"></button>
     </div>
   </div>
 </div>

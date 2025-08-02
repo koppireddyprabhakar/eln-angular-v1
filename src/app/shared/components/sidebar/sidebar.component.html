@@ -1,8 +1,8 @@
 <aside id="sidebar" class="sidebar">
   <ul class="sidebar-nav" id="sidebar-nav">
     <li class="nav-item" *ngIf="userService.isAdmin()">
-      <a class="nav-link collapsed" data-bs-target="#components-projectDash" data-bs-toggle="collapse" aria-expanded="true"
-         routerLinkActive="active">
+      <a class="nav-link collapsed" data-bs-target="#components-projectDash" data-bs-toggle="collapse"
+        aria-expanded="true" routerLinkActive="active">
         <i class="bi bi-grid"></i> <span>Project Dashboard</span>
         <i class="bi bi-chevron-down ms-auto"></i>
       </a>
@@ -58,7 +58,7 @@
         </li>
       </ul>
     </li>
-      <li class="nav-item" *ngIf="!userService.isAdmin() && userService.isFromFormulationDept()">
+    <li class="nav-item" *ngIf="!userService.isAdmin() && userService.isFromFormulationDept()">
       <a class="nav-link collapsed" data-bs-target="#components-formulations" data-bs-toggle="collapse"
         aria-expanded="true">
         <i class="bi bi-menu-button-wide"></i><span>Formulations Dashboard</span><i
@@ -123,6 +123,33 @@
         <li *ngIf="!userService.isExec()">
           <a routerLink="/exp-analysis/review-list" routerLinkActive="active">
             <i class="bi bi-circle"></i><span>Review Experiments</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <li class="nav-item" *ngIf="userService.isSuperAdmin()">
+      <a class="nav-link collapsed" data-bs-target="#components-control-panel" data-bs-toggle="collapse"
+        aria-expanded="true">
+        <i class="bi bi-tools"></i><span>Admin Management</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="components-control-panel" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+
+        <li>
+          <a routerLink="/business-admin/users" routerLinkActive="active">
+            <i class="bi bi-circle"></i><span>User Management</span>
+          </a>
+        </li>
+        <!--Team Management-->
+        <li>
+          <a routerLink="/business-admin/team" routerLinkActive="active">
+            <i class="bi bi-circle"></i><span>Team Management</span>
+          </a>
+        </li>
+        <!-- Control Panel -->
+        <li>
+          <a routerLink="/superadmin" routerLinkActive="active">
+            <i class="bi bi-circle"></i><span>Control Panel</span>
           </a>
         </li>
       </ul>

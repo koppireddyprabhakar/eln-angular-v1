@@ -106,13 +106,6 @@
                           <div class="col-sm-9 pt-1">{{ (experimentDetails &&experimentDetails.insertDate ||
                             startDate | date:'medium') }}</div>
                         </div>
-
-                        <!-- <div class="row mb-3">
-                          <label for="inputEmail3" class="col-sm-3 col-form-label">Analysis Submitted Date</label>
-                          <div class="col-sm-9 pt-1">{{ (experimentDetails && experimentDetails.analysisSubmitDate) |
-                            date }}</div>
-                        </div> -->
-
                         <div class="row mb-3">
                           <label for="experimentName" class="col-sm-3 col-form-label">Experiment Name</label>
                           <div class="col-sm-9">
@@ -231,10 +224,11 @@
                     <th>Potency</th>
                     <th>Grade</th>
                     <th>Quantity</th>
+                    <th>Expiry</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let user of tableData">
+                  <tr *ngFor="let user of tableData; let i = index">
                     <td>{{ user.excipientsName }}</td>
                     <td>{{ user.materialName }}</td>
                     <td>{{ user.materialType }}</td>
@@ -243,12 +237,11 @@
                     <td>{{ user.potency }}</td>
                     <td>{{ user.grade }}</td>
                     <td>
-                      <div *ngFor="let user of tableData; let i = index">
                         <input type="number" class="form-control" style="height: 50px" [(ngModel)]="user.quantity"
                                (ngModelChange)="excipientQuantityChange($event, i)">
                         <div *ngIf="user['errorMessage']" class="text-danger">{{ user.errorMessage }}</div>
-                      </div>                      
                     </td>
+                    <td>{{user.expiryDate | date}}</td>
                   </tr>
                 </tbody>
               </table>
@@ -292,9 +285,6 @@
               </div>
               <div class="col-lg-3">
                 <div class="col-lg-6">
-                  <!-- <input type="text" ngModel="{{ trf.testResult }}" /> -->
-                  <!-- <textarea ngModel="{{ trf.testResult }}"></textarea>
-                  <label for="inputPassword" class="col-sm-2 col-form-label">Textarea</label> -->
                   <textarea class="form-control" style="height: 50px" ngModel="{{ trf.testResult }}"
                     (change)="trfResultChange($event.target, i)"></textarea>
                     <div *ngIf="!trf.testResult && isSaveClicked" class="text-danger">Please enter details.</div>
@@ -333,6 +323,35 @@
                 </div>
               </span>
             </div>
+             <form class="row g-3" [formGroup]="userValidateForm">
+              <div class="row mb-3">
+                <label for="userName" class="col-sm-2 col-form-label" style="width: 11% !important;">User
+                  Name</label>
+                <div class="col-sm-3">
+                   <div class="input-group has-validation">
+                  <input type="text" class="form-control" id="userName" formControlName="userName" readonly />
+                </div>
+              </div>
+              </div>
+              <div class="row mb-3">
+                <label for="password" class="col-sm-2 col-form-label" style="width: 11% !important;">Password</label>
+                <div class="col-sm-3">
+                   <div class="input-group has-validation">
+                  <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="password" formControlName="password" />
+                    <button  type="button" class="input-group-text" (mousedown)="showPassword = true" (mouseup)="showPassword = false" (mouseleave)="showPassword = false" >
+                      <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                      </button>
+                </div>
+                  <span *ngIf="userValidateForm.controls['password'].invalid &&
+                           (userValidateForm.controls['password'].dirty ||
+                           userValidateForm.controls['password'].touched) &&
+                           userValidateForm.get('password')?.errors &&
+                           userValidateForm.get('password')?.hasError('required')" class="text-danger">
+                    Please enter Password
+                  </span>
+                </div>
+              </div>
+            </form>
 
             <div class="text-center pt-3" *ngIf="
                 experimentDetails && experimentDetails.status === 'Inprogress'

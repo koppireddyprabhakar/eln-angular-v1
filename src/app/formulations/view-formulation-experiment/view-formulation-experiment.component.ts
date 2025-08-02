@@ -188,16 +188,19 @@ export class ViewFormulationExperimentComponent implements OnInit {
   }
 
   getExcipientDetails() {
-
     if (this.isVersionHistory) {
       this.experimentService
         .getExcipientHistoryByExperimentId(this.experimentId)
         .subscribe((data) => {
-          console.log(data);
           if (data.length > 0) {
-            this.tableData = data;
-            this.selectedItems = data;
-
+            this.tableData = data.map(d => {
+            const inward = this.inwards.find(i => i.excipientId == d.excipientId);
+            return {
+              ...d,
+              expiryDate: inward?.expiryDate ?? null
+            };
+          });
+           this.selectedItems = this.tableData;
             this.dtElements.forEach(
               (dtElement: DataTableDirective, index: number) => {
                 dtElement.dtInstance.then((dtInstance: any) => {
@@ -214,11 +217,15 @@ export class ViewFormulationExperimentComponent implements OnInit {
       this.experimentService
         .getExcipientDetailsById(this.experimentId)
         .subscribe((data) => {
-          console.log(data);
           if (data.length > 0) {
-            this.tableData = data;
-            this.selectedItems = data;
-
+           this.tableData = data.map(d => {
+            const inward = this.inwards.find(i => i.excipientId == d.excipientId);
+            return {
+              ...d,
+              expiryDate: inward?.expiryDate ?? null
+            };
+          });
+           this.selectedItems = this.tableData;
             this.dtElements.forEach(
               (dtElement: DataTableDirective, index: number) => {
                 dtElement.dtInstance.then((dtInstance: any) => {
@@ -250,9 +257,7 @@ export class ViewFormulationExperimentComponent implements OnInit {
         .getExperimentDetailsById(tabValue.substring(3))
         .subscribe((details) => {
           const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
-          console.log(index);
           this.article[index].text = details.fileContent;
-          console.log(details);
         });
     }
   }

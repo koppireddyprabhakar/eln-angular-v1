@@ -29,11 +29,11 @@ export class CoaApprovalFormulationComponent implements OnInit {
   dtOptions = {
     pagingType: 'full_numbers',
   };
-
+  reviewPwdErrorMessage: string = '';
   expId: number;
   experiment: any;
   staticTrfId = 'TRF123';
-
+  showPassword: boolean = false;
   tests: any = [];
   dropdownList: any = [];
   selectedItems: any = [];
@@ -105,9 +105,6 @@ export class CoaApprovalFormulationComponent implements OnInit {
      this.userRole = this.userService.userRole || 'N/A';
      this.currentDate = new Date().toISOString();
      this.userValidateForm.get('userName')?.setValue(this.userDetails.mailId);
-     console.log('User Details:', this.userDetails);
-     console.log('User Role:', this.userRole);
-
     this.expId = this.activatedRoute.snapshot.queryParams['experimentId'];
     this.dropdownSettings = {
       singleSelection: false,
@@ -168,10 +165,8 @@ export class CoaApprovalFormulationComponent implements OnInit {
     this.experimentService
     .getCoaUserDetailsById(this.expId)
     .subscribe((data) => {
-      console.log(data);
       if (data.length > 0) {
         this.coadetails = data[0]; // Taking the first entry from the response array
-        console.log("COA Details:", this.coadetails);
       }
     });
   }
@@ -202,7 +197,6 @@ export class CoaApprovalFormulationComponent implements OnInit {
       .subscribe((tests) => {
         this.tests = tests;
         this.tableData = tests.map((trf) => flatten(trf));  // Update tableData here
-        console.log('Test Results:', this.tableData);  // Check if the data is populated
   
         let test = this.tableData[0];  // Assuming the first test entry is used
         this.testRequest['batchNumber'] = this.experiment.batchNumber;
@@ -259,21 +253,22 @@ updateExperimentStatus() {
  
     this.loginService.login(request).subscribe(
       (response) => {
-        console.log('user details', response);
         if (response) {  //  Corrected comparison
           this.experimentService.updateExperimentStatus(this.experiment.expId, 'COA Reviewed').subscribe((data) => {
             this.updateCoaReviewDetails();
             this.toastr.success(data['data'], 'Success');
             this.redirectToExperiments();
           });
-        } else {
-          this.toastr.error('Invalid credentials', 'Error');  //  Executes when login fails
-        }
+        } 
       },
-      (error: HttpErrorResponse) => {
-        this.toastr.error('Invalid credentials', 'Error'); // Executes when login API fails
-      }
-    );
+       (err: HttpErrorResponse) => {
+        const errorMessage =
+          typeof err.error === 'string'
+            ? err.error
+            : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+
+        this.reviewPwdErrorMessage = errorMessage;
+      });  
   } else {
     this.userValidateForm.get('userName')?.markAsDirty();
     this.userValidateForm.get('password')?.markAsDirty();

@@ -117,6 +117,8 @@ export class ReviewExperimentsComponent implements OnInit {
   });
   submitClicked: boolean = false;
   isOptionSelected: boolean = false;
+  showPassword: boolean = false;
+  reviewPwdErrorMessage: string = '';
 
   constructor(
     private readonly projectService: ProjectService,
@@ -136,7 +138,6 @@ export class ReviewExperimentsComponent implements OnInit {
   ngOnInit(): void {
     this.selectedTrfs$.subscribe((trfs) => {
       this.selectedTrfs = trfs;
-      console.log(trfs);
     });
     this.getExcipients();
     this.columns = [
@@ -201,7 +202,6 @@ export class ReviewExperimentsComponent implements OnInit {
 
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
-      console.log(project);
       this.project = project;
       this.testRequestForm.patchValue({
         batchNumber: this.project.batchNumber,
@@ -231,7 +231,6 @@ export class ReviewExperimentsComponent implements OnInit {
     if (activeTab === 'review') {
       this.getAnalysisReview();
     }
-    console.log(activeTab.substring(3));
     if (activeTab.substring(0, 3) === 'tab') {
       this.getAnalysisDetailsById(activeTab);
     }
@@ -249,11 +248,8 @@ export class ReviewExperimentsComponent implements OnInit {
     this.analysisService
       .getTestFormResults(this.experimentId)
       .subscribe((data) => {
-        console.log(data);
-        this.resultData = data.get(0);
-        console.log(data);
-        console.log(this.experimentDetails);
-
+        //this.resultData = data.get(0);
+       this.resultData = Array.isArray(data) && data.length ? data[0] : null;
         this.testRequestForm.patchValue({
           condition: this.resultData.condition,
           stage: this.resultData.stage,
@@ -318,9 +314,7 @@ export class ReviewExperimentsComponent implements OnInit {
       .getAnalysisDeatilsById(tabValue.substring(3))
       .subscribe((details) => {
         const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
-        console.log(index);
         this.article[index].text = details.fileContent;
-        console.log(details);
       });
   }
 
@@ -350,7 +344,6 @@ export class ReviewExperimentsComponent implements OnInit {
   }
 
   onTestItemSelect(item: any) {
-    console.log(item);
     const tableTestData = this.tableTestData;
     const newItem = this.tests.filter((test) => test.testId === item.testId)[0];
     tableTestData.push(newItem);
@@ -361,7 +354,6 @@ export class ReviewExperimentsComponent implements OnInit {
     }));
   }
   testdeselect(item: any) {
-    console.log(item);
     this.tableTestData = this.tableTestData.filter(
       (data) => data.testId !== item.testId
     );
@@ -373,7 +365,6 @@ export class ReviewExperimentsComponent implements OnInit {
     }));
   }
   onTestSelectAll(items: any) {
-    console.log(items);
     this.tableTestData = this.tests.map((test, index) => ({
       ...test,
       testStatus: 'string',
@@ -392,6 +383,7 @@ export class ReviewExperimentsComponent implements OnInit {
     //   status: status,
     //   summary: this.summary ? this.summary : status
     // }
+   // this.reviewPwdErrorMessage = ''; //clear previous error
     this.submitClicked = true;
     if (!this.isOptionSelected) {
       return;
@@ -425,14 +417,19 @@ export class ReviewExperimentsComponent implements OnInit {
             this.route.navigateByUrl(`/exp-analysis/review-list`);
           });
         }
-      });
+         },
+   (err) => {
+  const errorMessage =
+    typeof err.error === 'string'
+      ? err.error
+      : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+
+  this.reviewPwdErrorMessage = errorMessage;
+});
     } else {
       this.userValidateForm.get('userName')?.markAsDirty();
       this.userValidateForm.get('password')?.markAsDirty();
     }
-
-
-
   }
 
   getAttachments() {
@@ -467,7 +464,6 @@ export class ReviewExperimentsComponent implements OnInit {
   getAnalysisById(id, is?: any) {
     this.experimentId = id;
     this.isCreatedExperiment = this.experimentId ? true : false;
-    console.log(this.experimentId);
     if (this.experimentId) {
       this.analysisService
         .getAnalysisById(this.experimentId)
@@ -580,7 +576,6 @@ export class ReviewExperimentsComponent implements OnInit {
       );
       if (this.dummyTabs[index].value.substring(0, 3) === 'new') {
         this.activeTab = 'summary';
-        console.log(this.experimentId);
         this.getAnalysisById(this.experimentId);
       }
     });

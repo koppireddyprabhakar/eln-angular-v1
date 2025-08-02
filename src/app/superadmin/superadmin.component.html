@@ -1,0 +1,79 @@
+<main id="main" class="main">
+    <div class="pagetitle">
+      <h1>Control Panel</h1>
+    </div>
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="align-header">
+                <h5 class="card-title">Manage Licence Details</h5>
+              </div>
+  
+              <form [formGroup]="controlPanelForm" class="row g-3">
+                <!-- Field: User Limit -->
+                <div class="col-md-4">
+                  <label for="userLimit" class="form-label">Users Limit</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="userLimit"
+                    formControlName="usersLimit"
+                  />
+                </div>
+              
+                <!-- <div class="col-md-4">
+                  <label for="numUsers" class="form-label">Number of Users</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="numUsers"
+                    formControlName="numberOfUsers"
+                    readonly
+                  />
+                </div> -->
+                
+              
+                <!-- Field: Licence Start Date -->
+                <div class="col-md-4">
+                  <label for="startDate" class="form-label">Licence Start Date</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="startDate"
+                    formControlName="licenceStartDate"
+                  />
+                </div>
+              
+                <!-- Field: Licence End Date -->
+                <div class="col-md-4">
+                  <label for="endDate" class="form-label">Licence Expiry Date</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="endDate"
+                    formControlName="licenceExpiryDate"
+                  />
+                </div>
+              
+                <!-- Save Button -->
+                <div class="col-12 text-center mt-3">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="saveControlPanelData()"
+                  >
+                    Save
+                  </button>
+                </div>
+              </form>
+              
+  
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  

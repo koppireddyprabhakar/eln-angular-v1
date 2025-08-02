@@ -153,7 +153,6 @@ export class ViewAnalysisExperimentComponent implements OnInit {
     this.analysisService
       .getTrfDetailsById(this.analysisExpId ? this.analysisExpId : this.analysisID)
       .subscribe((data) => {
-        console.log(data);
         if (data.length > 0) {
           this.resultsData = data;
         }
@@ -165,7 +164,6 @@ export class ViewAnalysisExperimentComponent implements OnInit {
       this.analysisService
         .getExcipientHistoryByAnalysisHistoryId(this.analysisID)
         .subscribe((data) => {
-          console.log(data);
           if (data.length > 0) {
             this.tableData = data;
             this.selectedItems = data;
@@ -182,7 +180,6 @@ export class ViewAnalysisExperimentComponent implements OnInit {
       this.analysisService
         .getExcipientDetailsById(this.analysisID)
         .subscribe((data) => {
-          console.log(data);
           if (data.length > 0) {
             this.tableData = data;
             this.selectedItems = data;
@@ -204,9 +201,7 @@ export class ViewAnalysisExperimentComponent implements OnInit {
         .getAnalysisDetailsHistoryById(tabValue.substring(3))
         .subscribe((details) => {
           const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
-          console.log(index);
           this.article[index].text = details.fileContent;
-          console.log(details);
         });
     } else {
 
@@ -214,9 +209,7 @@ export class ViewAnalysisExperimentComponent implements OnInit {
         .getAnalysisDeatilsById(tabValue.substring(3))
         .subscribe((details) => {
           const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
-          console.log(index);
           this.article[index].text = details.fileContent;
-          console.log(details);
         });
     }
   }
@@ -309,7 +302,6 @@ export class ViewAnalysisExperimentComponent implements OnInit {
             //     analysisId: Number(this.analysisID),
             //   })
             // );
-            // console.log(' this.resultsData', this.resultsData);
             this.selectedItems = analysisExperimentDetails.analysisExcipients;
             this.savedSelectedItems =
               analysisExperimentDetails.analysisExcipients;
@@ -422,8 +414,6 @@ export class ViewAnalysisExperimentComponent implements OnInit {
 
   trfResultChange(result, index) {
     this.resultsData[index].testResult = result.value;
-
-    console.log(this.resultsData);
   }
 
 }

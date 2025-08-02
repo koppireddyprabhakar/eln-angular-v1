@@ -21,12 +21,11 @@ export class LoginserviceService {
 
   login(request:{mailId: string, password: string}): Observable<any> {
     const url = elnEndpointsConfig.endpoints['login'];
-   return this.http.post<{ firstLogin: boolean }>(url,request);
+   return this.http.post<{ firstLogin: boolean }>(url,request,{withCredentials: true });
   }
 
   handleError(error: HttpErrorResponse) {
     const errorDetail = ClientService.formatError(error);
-    console.log(error);
     if (error.status === 401) { // Handle unauthorized errors specifically
       this.toastr.error(errorDetail.errorMessage || 'Invalid credentials', 'Error');
     } else {
@@ -35,14 +34,35 @@ export class LoginserviceService {
     return throwError(error);
   }
 
-  validateUserSession() {
-    if(!this.userDetails) {
-      this.router.navigate(['']);
-    } else {
-      return true;
-    }
-    return false;
+  getUserDetails(): any {
+  if (this.userDetails) {
+    return this.userDetails;
   }
+  const storedUser = localStorage.getItem('userDetails');
+  if (storedUser) {
+    try {
+      this.userDetails = JSON.parse(storedUser);
+      return this.userDetails;
+    } catch (e) {
+      console.error('Error parsing userDetails from localStorage', e);
+      this.clearUserDetails();
+      return null;
+    }
+  }
+  return null;
+}
+
+setUserDetails(user: any) {
+  this.userDetails = user;
+  localStorage.setItem('userDetails', JSON.stringify(user));
+}
+
+
+clearUserDetails() {
+  this.userDetails = null;
+  localStorage.removeItem('userDetails');
+}
+
 
 }
   

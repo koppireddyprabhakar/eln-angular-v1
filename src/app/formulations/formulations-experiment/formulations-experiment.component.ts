@@ -1,5 +1,6 @@
 import {
   Component,
+  ElementRef,
   OnInit,
   QueryList,
   TemplateRef,
@@ -44,6 +45,8 @@ export class FormulationsExperimentComponent implements OnInit {
 
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
   @ViewChild('expActionTpl', { static: true }) expActionTpl: TemplateRef<any>;
+  @ViewChild('closeReviewModal') closeReviewModal!: ElementRef;
+
 
   constructor(
     private readonly globalService: GlobalService,
@@ -136,6 +139,7 @@ export class FormulationsExperimentComponent implements OnInit {
   }
 
   submitReview() {
+       if (this.reviewSubmitForm.valid) {
     const reviewObj = {
       reviewUserId: this.reviewSubmitForm.get('userId')!.value,
       experimentId: this.selectedUser['expId'],
@@ -149,16 +153,18 @@ export class FormulationsExperimentComponent implements OnInit {
         .subscribe((data) => {
           if (reviewObj.reviewType === 'PreReview') {
             this.toastr.success('PreReview form submit successfully', 'Success');
+             this.closeReviewModal.nativeElement.click();
           } else {
             this.toastr.success('Experiment review created successfully', 'Success');
           }
           this.globalService.hideLoader();
           this.getMyExperiments();
-          // this.route.navigateByUrl(
+       // this.route.navigateByUrl(
           //   `/forms-page/experiments`
           // );
         });
-    } else {
+    } 
+  }else {
       this.reviewSubmitForm.get('userId')?.markAsDirty();
     }
   }

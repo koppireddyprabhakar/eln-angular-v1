@@ -47,6 +47,12 @@
               Attachments
             </button>
           </li>
+          <li class="nav-item" role="presentation">
+           <button class="nav-link" id="review-comments-tab" data-bs-toggle="tab" data-bs-target="#review-comments"
+            (click)="search('review-comments', -1)" [ngClass]="{ active: activeTab === 'review-comments' }" type="button" role="tab" aria-controls="review-comments" aria-selected="false">
+             Review Comments
+           </button>
+          </li>
           <li class="nav-item" role="presentation" *ngIf="experimentDetails && (experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase() ||
             experimentDetails.experimentStatus.toUpperCase() === 'Need Correction'.toUpperCase())">
             <button class="nav-link" id="attachments-tab" [disabled]="!isCreatedExperiment" type="button"
@@ -301,7 +307,12 @@
                 <div class="row mb-3">
                   <label for="password" class="col-sm-2 col-form-label" style="width: 11% !important;">Password</label>
                   <div class="col-sm-3">
-                    <input type="password" class="form-control" id="password" formControlName="password" />
+                      <div class="input-group has-validation">
+                    <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="password" formControlName="password" />
+                              <button type="button" class="input-group-text"(mousedown)="showPassword = true"(mouseup)="showPassword = false"(mouseleave)="showPassword = false">
+                   <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                  </button>
+                  </div>
                     <span *ngIf="userValidateForm.controls['password'].invalid &&
                              (userValidateForm.controls['password'].dirty ||
                              userValidateForm.controls['password'].touched) &&
@@ -317,16 +328,16 @@
                 Complete Formulation
               </button>
             </div>
-
-            <!-- <div class="text-center pt-3">
-              <button type="submit"
-                *ngIf="experimentDetails && (experimentDetails.experimentStatus.toUpperCase() === 'Complete'.toUpperCase())"
-                class="btn btn-primary mt-3" (click)="updateExperimentStatus()">
-                Submit
-              </button>
-            </div> -->
-
           </div>
+          <div class="tab-content pt-3">
+            <div class="tab-pane fade" id="review-comments" role="tabpanel" aria-labelledby="review-comments-tab"
+               [ngClass]="{ active: activeTab === 'review-comments', show: activeTab === 'review-comments' }">
+                <div class="pt-3">
+                <h5>Review Comments</h5>
+                  <textarea class="form-control" rows="5" readonly>{{ reviewData?.comments }}</textarea>
+              </div>
+             </div>
+           </div>
         </div>
       </div>
     </div>

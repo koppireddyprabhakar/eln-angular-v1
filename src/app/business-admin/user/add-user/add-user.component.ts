@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Validators, FormBuilder } from '@angular/forms';
+import { Validators, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DepartmentService } from '@app/shared/services/department/department.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
@@ -11,6 +11,8 @@ import { finalize, takeWhile } from 'rxjs';
 import { Departments, Teams, UserRoles } from '../user.interface';
 import { DosageService } from '@app/shared/services/dosage/dosage.service';
 import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
+import { departmentMapping } from 'src/app/shared/constants/mappings'; 
+
 
 @Component({
   selector: 'app-add-user',
@@ -38,7 +40,8 @@ export class AddUserComponent implements OnInit {
     gender: ['', [Validators.required]],
     deptId: ['', [Validators.required]],
     dosageId: [''],
-    roleId: ['', [Validators.required]],
+    // roleId: ['', [Validators.required]],
+    roleId: new FormControl<number | null>(null, Validators.required),
     contactNo: ['', [Validators.required]],
     mailId: ['', [Validators.email, Validators.required]],
     addressLine1: [''],
@@ -47,7 +50,7 @@ export class AddUserComponent implements OnInit {
     zipCode: [''],
     teamId: ['', [Validators.required]],
     certifiedReviewer: false,
-    coaPermission:false,
+    coaPermission: false,
     accountLocked: false
 
   });
@@ -64,7 +67,7 @@ export class AddUserComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private toastr: ToastrService,
     private dosageService: DosageService,
-    private loginService: LoginserviceService 
+    private loginService: LoginserviceService
 
   ) { }
 
@@ -83,17 +86,16 @@ export class AddUserComponent implements OnInit {
 
   saveUser() {
     let formMailId = this.userForm['controls'] && this.userForm['controls']['mailId'].value ? this.userForm['controls']['mailId'].value : '';
-    
-      let isObjectExists = this.users.find(user =>
-        user.mailId === formMailId && user.userId !== this.userId
-      );
 
-    if (isObjectExists && (Object.keys(this.selectedUser).length === 0 || (this.selectedUser.mailId !== formMailId ))) {
+    let isObjectExists = this.users.find(user =>
+      user.mailId === formMailId && user.userId !== this.userId
+    );
+
+    if (isObjectExists && (Object.keys(this.selectedUser).length === 0 || (this.selectedUser.mailId !== formMailId))) {
       this.showErrorMsg = true;
       return;
     }
     const dob = this.userForm.get('dateOfBirth')?.value || '';
-    console.log(this.userForm.get('teamId')?.value);
     const newUser = {
       firstName: this.userForm.get('firstName')?.value,
       lastName: this.userForm.get('lastName')?.value,
@@ -113,7 +115,6 @@ export class AddUserComponent implements OnInit {
       coaPermission: this.userForm.get('coaPermission')?.value,
       accountLocked: this.userForm.get('accountLocked')?.value,
     };
-    console.log("newUser=", newUser);
     if (!this.userForm.invalid) {
       this.globalService.showLoader();
       if (Object.keys(this.selectedUser).length === 0) {
@@ -178,11 +179,30 @@ export class AddUserComponent implements OnInit {
       this.departmentList = department;
     });
   }
+  /*
+    getUserRoles() {
+      this.userRoleService.getUserRoles().subscribe((userRoles) => {
+        this.userRoles = userRoles;
+      });
+    }
+  */
 
-  
   getUserRoles() {
-    this.userRoleService.getUserRoles().subscribe((userRoles) => {
-      this.userRoles = userRoles;
+    this.globalService.showLoader();
+    // Use the login service's userDetails (make sure it's populated)
+    const loggedInUser = this.loginService.userDetails;
+    this.userRoleService.getUserRoles().subscribe((roles) => {
+      if (loggedInUser && loggedInUser.roleId !== 5) {
+        // If the logged-in user is NOT SuperAdmin, filter out the SuperAdmin role (assuming roleId 5)
+        this.userRoles = roles.filter(role => role.roleId !== 5);
+      } else {
+        // If the user is a SuperAdmin or no user is available, show all roles
+        this.userRoles = roles;
+      }
+      this.globalService.hideLoader();
+    }, err => {
+      this.globalService.hideLoader();
+      console.error('Error fetching roles:', err);
     });
   }
 
@@ -191,7 +211,7 @@ export class AddUserComponent implements OnInit {
       this.teams = teams;
     });
   }
-  
+
   getUsers(){
     this.userService.getUsers().subscribe((users) => {
     this.users=users
@@ -226,6 +246,7 @@ export class AddUserComponent implements OnInit {
         });
       });
   }
+
   depChange() {
     const values = Object.values(this.teams);
     const team: any = values.filter(
@@ -233,6 +254,28 @@ export class AddUserComponent implements OnInit {
     )[0];
     this.teams = team;
   }
+
+  assignAdminRoleIfNeeded(): void {
+    const deptControl = this.userForm.get('deptId');
+    const roleControl = this.userForm.get('roleId');
+    if (!deptControl || !roleControl) {
+      console.warn('Form controls missing: deptId or roleId');
+      return;
+    }
+    const selectedDeptId = deptControl.value;
+    // Check for null or undefined deptId
+    if (selectedDeptId == null) {
+      roleControl.setValue(null); 
+      return;
+    }
+    const selectedDeptName = departmentMapping[+selectedDeptId];
+    if (selectedDeptName === 'ADMIN MANAGEMENT') {
+      roleControl.setValue(4); 
+    } else {
+      roleControl.setValue(null);
+    }
+  }
+
 
   ngOnDestroy(): void {
     this.subscribeFlag = false;

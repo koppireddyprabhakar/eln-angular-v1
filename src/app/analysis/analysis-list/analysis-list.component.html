@@ -17,9 +17,9 @@
                     <th></th>
                     <th>TRF ID</th>
                     <th>Test Name</th>
-                    <th>Test ID</th>
-                    <th>Formulation Exp Name</th>
+                    <th>Test ID</th>                   
                     <th>Project Name</th>
+                     <th>Formulation Exp Name</th>
                     <th>Product Name</th>
                     <th>Batch Number</th>
                     <th>Created Date</th>
@@ -33,9 +33,9 @@
                     </td>
                     <td>{{trf.trfNumber}}</td>
                     <td>{{trf.testName}}</td>
-                    <td>{{ trf.testNumber }}</td>
-                    <td>{{ trf.experiment.experimentName }}</td>
+                    <td>{{ trf.testNumber }}</td>                   
                     <td>{{ trf.project.projectName | titlecase }}</td>
+                    <td>{{ trf.experiment.experimentName }}</td>
                     <td>{{ trf.project.productName }}</td>
                     <td>{{ trf.experiment.batchNumber }}</td>
                     <td>{{ trf.insertDate }}</td>

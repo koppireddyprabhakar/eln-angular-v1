@@ -502,6 +502,35 @@
                 </div>
               </span>
             </div>
+             <form class="row g-3" [formGroup]="userValidateForm">
+              <div class="row mb-3">
+                <label for="userName" class="col-sm-2 col-form-label" style="width: 11% !important;">User
+                  Name</label>
+                <div class="col-sm-3">
+                   <div class="input-group has-validation">
+                  <input type="text" class="form-control" id="userName" formControlName="userName" readonly />
+                </div>
+              </div>
+              </div>
+              <div class="row mb-3">
+                <label for="password" class="col-sm-2 col-form-label" style="width: 11% !important;">Password</label>
+                <div class="col-sm-3">
+                   <div class="input-group has-validation">
+                  <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="password" formControlName="password" />
+                    <button  type="button" class="input-group-text" (mousedown)="showPassword = true" (mouseup)="showPassword = false" (mouseleave)="showPassword = false" >
+                      <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                      </button>
+                </div>
+                  <span *ngIf="userValidateForm.controls['password'].invalid &&
+                           (userValidateForm.controls['password'].dirty ||
+                           userValidateForm.controls['password'].touched) &&
+                           userValidateForm.get('password')?.errors &&
+                           userValidateForm.get('password')?.hasError('required')" class="text-danger">
+                    Please enter Password
+                  </span>
+                </div>
+              </div>
+            </form>
 
             <div class="text-center pt-3" *ngIf="experimentDetails && experimentDetails.status === 'Inprogress'">
               <button type="submit" class="btn btn-primary mt-3" (click)="updateAnalysisStatus('Complete')">

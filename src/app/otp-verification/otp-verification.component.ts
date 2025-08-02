@@ -26,7 +26,6 @@ export class OtpVerificationComponent implements OnInit {
 
     this.activatedRoute.queryParams.subscribe((params)=>{
      this.username=params['email'];
-     console.log(params);
     })
 
     this.OtpForm = this.formBuilder.group({
@@ -42,7 +41,6 @@ export class OtpVerificationComponent implements OnInit {
       };
         this.otpServiceService.verifyOtp(request) .subscribe(
            (response) => {
-           console.log(response);
         if(response.status == 200 ) {
             this.route.navigate(['/app-update-password'],{
             queryParams:{email:this.username}
@@ -59,7 +57,6 @@ export class OtpVerificationComponent implements OnInit {
         this.otpServiceService.ResendOtp({mailId: this.username})
         .subscribe(
         (response) => {
-         console.log(response);
          if (response.status == 200 ) {
           this.toastr.success(
             ' OTP has been sent succesfully',

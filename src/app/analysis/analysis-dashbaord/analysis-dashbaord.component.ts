@@ -10,7 +10,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subject, tap } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
-
 import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
@@ -70,6 +69,12 @@ export class AnalysisDashbaordComponent implements OnInit {
   summaryForm = this.formBuilder.group({
     experimentName: ['', [Validators.required]],
     batchSize: ['' as any, [Validators.required]],
+  });
+
+   showPassword: boolean = false;
+ userValidateForm = this.formBuilder.group({
+    userName: [''],
+     password: ['', Validators.required]
   });
 
   public selectedFile: any;
@@ -132,7 +137,7 @@ export class AnalysisDashbaordComponent implements OnInit {
   }
 
   public editorConfig = {
-    customConfig: '/assets/ckeditor/config.js', // Path to the config.js file
+    customConfig: '/assets/ckeditor/config.js', 
   };
  
 
@@ -182,16 +187,6 @@ export class AnalysisDashbaordComponent implements OnInit {
             });
           });
         }
-        // if (data.length > 0) {
-        //   this.tableData = data;
-        //   this.selectedItems = data;
-        //   this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-        //     // Destroy the table first
-        //     dtInstance.destroy();
-        //     // Call the dtTrigger to rerender again
-        //     this.dtTrigger.next(this.tableData);
-        //   });
-        // }
       });
   }
   getTrfDetailsById() {
@@ -213,11 +208,20 @@ export class AnalysisDashbaordComponent implements OnInit {
       });
   }
 
+
   getAttachments() {
     this.analysisService
       .getAttachmentsById(this.experimentId)
       .subscribe((attachments) => {
         this.files = attachments;
+ 
+         if (this.experimentDetails?.status === 'Inprogress') {
+          let userName = this.loginService.userDetails ? this.loginService.userDetails['mailId'] : '';
+          this.userValidateForm = this.formBuilder.group({
+            userName: [userName, [Validators.required]],
+            password: ['', [Validators.required]],
+          });
+        }
       });
   }
 
@@ -268,12 +272,7 @@ export class AnalysisDashbaordComponent implements OnInit {
           }));
           if (firstLoad === 'firstLoad') {
             this.activeTab = this.dummyTabs[0].value;
-          }
-          // Commented becaise of no resonse
-          // this.summaryForm.patchValue({
-          //   experimentName: experimentDetails.experimentName,
-          //   batchSize: experimentDetails.batchSize,
-          // });
+          }       
         });
     }
   }
@@ -320,7 +319,6 @@ export class AnalysisDashbaordComponent implements OnInit {
   }
 
   saveSummary() {
-    // if () {
     const summary = {
       status: 'Active',
       projectId: this.project.projectId,
@@ -348,9 +346,6 @@ export class AnalysisDashbaordComponent implements OnInit {
         } else {
           this.getAnalysisById(experiment.data, 'firstLoad');
         }
-
-
-        // this.activeTab = this.dummyTabs[0].value;
         this.toastr.success('Experiment Started Successfully', 'Success');
       });
     }
@@ -382,9 +377,6 @@ export class AnalysisDashbaordComponent implements OnInit {
   }
 
   deselect(item: any) {
-    // this.tableData = this.inwards.filter(({ excipientId: id1 }) =>
-    //   this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
-    // );
     this.tableData = this.tableData.filter(
       (data) => data.excipientId !== item.excipientId
     );
@@ -397,6 +389,7 @@ export class AnalysisDashbaordComponent implements OnInit {
       });
     });
   }
+
   onSelectAll(items: any) {
     this.tableData = this.inwards;
     this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
@@ -408,6 +401,7 @@ export class AnalysisDashbaordComponent implements OnInit {
       });
     });
   }
+
   onDeSelectAll() {
     this.tableData = [];
     this.dtElements.forEach((dtElement: DataTableDirective) => {
@@ -451,10 +445,6 @@ export class AnalysisDashbaordComponent implements OnInit {
         } successfully`,
         'Success'
       );
-      // if (this.dummyTabs[index].value.substring(0, 3) === 'new') {
-      //   this.activeTab = `${this.dummyTabs[index].value}-tab`;
-      //   this.getAnalysisById(this.experimentId);
-      // }
       if (this.dummyTabs[index].value.startsWith('new') && data?.analysisDetailId) {
         this.dummyTabs[index].value = `id${data.analysisDetailId}`;
         this.activeTab = `id${data.analysisDetailId}-tab`;
@@ -502,11 +492,6 @@ export class AnalysisDashbaordComponent implements OnInit {
       return;
     }
     this.isSaveClicked = true;
-   
-    // if (this.tableData.find(excipient => !this.commonFunctionsService.isEmptyOrUndefined(excipient.errorMessage))) {
-    //   return;
-    // }
-   
     const isUpdate = this.tableData.some((data) => data.analysisId);
     if (!isUpdate) {
       this.tableData.forEach(data => {
@@ -552,13 +537,13 @@ export class AnalysisDashbaordComponent implements OnInit {
     const hasEmptyResults = this.selectedTrfs.some(result => !result.testResult);
     if (hasEmptyResults) {
       this.toastr.error('Please enter a value for all resultsss.', 'Error');
-      return; // Stop further execution
+      return;
     }
     this.analysisService.saveTrfResults(this.selectedTrfs).subscribe((data) => {
       this.toastr.success(data.data, 'Success');
     });
   }
-
+  
   updateAnalysisStatus(status: string, summary?: string) {
     let analysisRequest = {
       analysisId: this.experimentId,
@@ -566,14 +551,39 @@ export class AnalysisDashbaordComponent implements OnInit {
       summary: summary ? summary : status,
       userId: this.loginService.userDetails.userId,
     }
-
+      if (this.experimentDetails?.status === 'Inprogress') {
+    if (this.userValidateForm.valid) {
+      const request = {
+        mailId: this.userValidateForm.value.userName ?? '',
+        password: this.userValidateForm.value.password ?? ''
+      };
+ 
+      this.loginService.login(request).subscribe(
+        (response) => {
+          if (response) {
+            this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
+              this.toastr.success('Analysis Details Submitted successfully', 'Success');
+              this.route.navigateByUrl(`/exp-analysis/analysis-experiments`);
+            });
+          }
+        },
+        (error) => {
+          this.toastr.error('Invalid password', 'Electronic Signature Failed');
+        }
+      );
+    } else {
+      this.userValidateForm.get('userName')?.markAsDirty();
+      this.userValidateForm.get('password')?.markAsDirty();
+    }
+  } else {
     this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
       this.toastr.success(data['data'], 'Success');
       this.route.navigateByUrl(`/exp-analysis/list`);
     });
-
   }
 
+  }
+ 
   generateUniqueAnalysisExperimentId() {   
     this.analysisService.generateUniqueAnalysisExperimentId().subscribe({
       next: (data) => {

@@ -40,10 +40,11 @@ export class CoaGenerationAnalysisComponent implements OnInit {
   dropdownList: any = [];
   selectedItems: any = [];
   dropdownSettings: any = {};
-
+  showPassword: boolean = false;
   columns: any = [];
   options: any = {};
   tableData: any = [];
+  reviewPwdErrorMessage: string = '';
 
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
@@ -158,7 +159,6 @@ export class CoaGenerationAnalysisComponent implements OnInit {
     .pipe(takeWhile(() => this.subscribeFlag))
     .subscribe((analysisexperiment) => {
       this.analysisexperiment = flatten(analysisexperiment);
-      console.log('Analysis Experiment:', this.analysisexperiment.batchNumber);
       this.getTestResultsByAnalysisId();
     });
 
@@ -193,11 +193,6 @@ export class CoaGenerationAnalysisComponent implements OnInit {
       .subscribe((tests) => {
         this.tests = tests;
         let test = tests.map((trf) => flatten(trf))[0];
-        console.log('Analysis Experiment:', this.analysisexperiment);
-        console.log('Analysis Experiment:', this.tests);
-
-        console.log('Analysis Experiment:', this.analysisexperiment.batchNumber);
-        console.log('Test Results:', tests);
         this.testRequest['batchNumber'] = this.analysisexperiment.batchNumber;
         this.testRequest['dosageForm'] = this.analysisexperiment.dosageName;
         this.testRequest['projectName'] = this.analysisexperiment.projectName;
@@ -260,19 +255,22 @@ export class CoaGenerationAnalysisComponent implements OnInit {
         password: this.userValidateForm.value.password || ''
       };
       this.loginService.login(request).subscribe(response => {
-        console.log('usersdeatils', response);        if (response.status=200) {
+              if (response.status=200) {
           this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
             this.saveCoaReviewDetails();
             this.toastr.success('Analysis Details Submitted successfully', 'Success');
             this.route.navigate(['/coa-generation-list']);
           });
-        } else {
-          this.toastr.error('Invalid credentials', 'Error');
-        }
+        } 
       },
-      (error: HttpErrorResponse) => {       
-          this.toastr.error('Invalid credentials', 'Error');
-         });
+      (err: HttpErrorResponse) => {
+        const errorMessage =
+          typeof err.error === 'string'
+            ? err.error
+            : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+
+        this.reviewPwdErrorMessage = errorMessage;
+      });   
     } else {
       this.userValidateForm.get('userName')?.markAsDirty();
       this.userValidateForm.get('password')?.markAsDirty();

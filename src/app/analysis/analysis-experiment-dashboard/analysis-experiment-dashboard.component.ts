@@ -10,7 +10,6 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { forkJoin, interval, Subject, Subscription } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
-
 import { ActivatedRoute, Router } from '@angular/router';
 import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
@@ -72,7 +71,9 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     batchSize: ['' as any, [Validators.required]],
   });
   isSaveClicked: boolean = false;
-
+  experimentId: string;
+  showPassword: boolean = false;
+  reviewData: any = {};
   userValidateForm = this.formBuilder.group({
     userName: [''],
     password: [''],
@@ -143,6 +144,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       if (this.analysisExperimentDetails) {
         this.autoSave();
       }
+       this.getAnalysisReview();
     });
 
 
@@ -177,12 +179,11 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       itemsShowLimit: 3,
       allowSearchFilter: true,
     };
-
-    this.analysisID = this.activatedRoute.snapshot.queryParams['analysisId'];
     this.projectId = this.activatedRoute.snapshot.queryParams['projectId'];
+    this.analysisID = this.activatedRoute.snapshot.queryParams['analysisId'];
     this.isCreatedExperiment = this.analysisID ? true : false;
-    this.getAnalysisExperimentDetails(this.analysisID);
     this.getProjectDetails();
+    this.getAnalysisExperimentDetails(this.analysisID);
     this.getAttachments();
     this.getTests();
   }
@@ -196,18 +197,16 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   }
 
   public editorConfig = {
-    customConfig: '/assets/ckeditor/config.js', // Path to the config.js file
+    customConfig: '/assets/ckeditor/config.js',
   };
 
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
       this.project = project;
-      this.testRequestForm.patchValue({
-        batchNumber: this.project.batchNumber,
+      this.testRequestForm.patchValue({   
         dosageForm: this.project.dosageName,
         projectName: this.project.projectName,
-        strength: this.project.strength,
-        batchSize: this.project.batchSize,
+        strength: this.project.strength, 
         testRequestId: this.staticTrfId,
         department: "ANALYSIS",
         productCode: this.project.productCode,
@@ -216,7 +215,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     });
   }
 
-  //Start
 
   addTests(): FormGroup {
     return this.formBuilder.group({
@@ -319,22 +317,12 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       analysisId: this.analysisID,
       insertUser: this.loginService.userDetails.userId,
     };
-    // if (!this.selectedTestItems || this.selectedTestItems.length === 0) {
-    //   this.toastr.error('Please select at least one lab test', 'Error');
-    //   return;
-    // }
+    
     if (!this.testRequestForm.invalid) {
-      // if (this.resultData.analysisId) { // check
-      //   this.analysisService.updateTestForm(newTestRequest).subscribe(() => {
-      //     this.toastr.success('Test has been added succesfully', 'Success');
-      //     this.getTrfDetailsById();
-      //   });
-      // } else {
       this.analysisService.createTestForm(newTestRequest).subscribe(() => {
         this.toastr.success('Test has been added succesfully', 'Success');
         this.getTrfDetailsById();
       });
-      // }
     } else {
       this.isSaveClicked = true;
       this.testRequestForm.get('testRequestId')?.markAsDirty();
@@ -375,7 +363,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     });
   }
 
-  //Ending
 
   search(activeTab) {
     this.activeTab = activeTab;
@@ -390,6 +377,9 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     }
     if (activeTab === 'results') {
       this.getTrfDetailsById();
+    }
+     if (activeTab === 'review-comments') {
+      this.getAnalysisReview();
     }
   }
 
@@ -409,9 +399,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     this.analysisService
       .getExcipientDetailsById(this.analysisID)
       .subscribe((data) => {
-
         if (data.length > 0) {
-
           this.tableData = data.map(d => {
             let inward = this.inwards.find(i => i.excipientId == d.excipientId);
             return ({ ...d, experimentQuantity: d.quantity, excipientQuantity: inward.remainingQuantity, expiryDate: inward.expiryDate })
@@ -420,11 +408,8 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
             let inward = this.inwards.find(i => i.excipientId == d.excipientId);
             return ({ ...d, experimentQuantity: d.quantity, excipientQuantity: inward.remainingQuantity })
           });
-
-          this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-            // Destroy the table first
-            dtInstance.destroy();
-            // Call the dtTrigger to rerender again
+          this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {         
+            dtInstance.destroy();         
             this.dtTrigger.next(this.tableData);
           });
         }
@@ -445,7 +430,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       .getAttachmentsById(this.analysisID)
       .subscribe((attachments) => {
         this.files = attachments;
-
         if (this.analysisExperimentDetails && this.analysisExperimentDetails.status &&
           ((this.analysisExperimentDetails.status.toUpperCase() === 'Review Completed'.toUpperCase()) ||
             (this.analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase())
@@ -499,26 +483,20 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
               isEdit: false,
               value: 'tab' + exp.analysisDetailId,
             })
-          );
-          // this.resultsData = analysisExperimentDetails.testRequestForms.map(
-          //   (result) => ({
-          //     ...result,
-          //     testRequestFormStatus: 'active',
-          //     analysisId: Number(this.analysisID),
-          //   })
-          // );
+          ); 
           this.selectedItems = analysisExperimentDetails.analysisExcipients;
           this.savedSelectedItems =
             analysisExperimentDetails.analysisExcipients;
           this.tableData = analysisExperimentDetails.analysisExcipients;
           this.dtElement && this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-            // Destroy the table first
             dtInstance.destroy();
-            // Call the dtTrigger to rerender again
             this.dtTrigger.next(this.tableData);
           });
-          // this.experimentDetails = experimentDetails;
           this.batchNumber = analysisExperimentDetails.batchNumber;
+          this.testRequestForm.patchValue({
+              batchNumber: analysisExperimentDetails.batchNumber,
+              batchSize: analysisExperimentDetails.batchSize
+      });
           this.summaryForm.patchValue({
             experimentName: analysisExperimentDetails.analysisName,
             batchSize: analysisExperimentDetails.batchSize,
@@ -564,6 +542,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       label: `Add On - ${length + 1}`,
       isEdit: false,
       value: `newTab-${(length + 1).toString()}`,
+       showDeleteIcon: true,
     });
   }
 
@@ -585,7 +564,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     this.analysisService
       .updateAnalysis(summary)
       .subscribe((experiment: any) => {
-
         if (this.selectedFile) {
           this.analysisService
             .saveAnalysisAttachment(this.selectedFile, this.analysisExperimentDetails.analysisId, this.projectId,
@@ -601,62 +579,69 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
           this.toastr.success(experiment.data, 'Success');
           this.activeTab = this.dummyTabs[0].value;
         }
-
       });
   }
 
   onItemSelect(item: any) {
-    debugger
     if (!this.tableData) {
-      this.tableData = [];  // Initialize tableData if it's null/undefined
+      this.tableData = [];  
     }
-    // const selectedData = this.inwards
     this.tableData.push(...this.inwards.filter(i => i.excipientId === item.excipientId)
       .map((data) => ({
         ...data, analysisId: Number(this.analysisID),
         experimentQuantity: 0, excipientQuantity: data.remainingQuantity
       })));
-
     this.tableData.forEach(e => {
       if (e.excipientId === item.excipientId) {
         e.quantity = 0;
         e.errorMessage = "Please enter quantity.";
       }
     });
-
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {   
       dtInstance.destroy();
-      // Call the dtTrigger to rerender again
       this.dtTrigger.next(this.tableData);
     });
   }
   deselect(item: any) {
-    // this.tableData = this.inwards.filter(({ excipientId: id1 }) =>
-    //   this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
-    // );
     this.tableData = this.tableData.filter(
       (data) => data.excipientId !== item.excipientId
     );
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
       dtInstance.destroy();
-      // Call the dtTrigger to rerender again
       this.dtTrigger.next(this.tableData);
     });
   }
   onSelectAll(items: any) {
     this.tableData = this.inwards;
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
       dtInstance.destroy();
-      // Call the dtTrigger to rerender again
       this.dtTrigger.next(this.tableData);
+       });
+       const existingData = this.tableData || [];
+
+  this.tableData = this.inwards.map((inward) => {
+    const existing = existingData.find(t => t.excipientId === inward.excipientId);
+    return {
+      ...inward,
+      analysisId: Number(this.experimentId),
+      experimentQuantity: existing?.experimentQuantity ?? 0,
+      excipientQuantity: inward.remainingQuantity,
+      quantity: existing?.quantity ?? 0,
+      errorMessage: existing?.errorMessage ?? "Please enter quantity."
+    };
+  });
+  this.dtElements.forEach((dtElement: DataTableDirective) => {
+    dtElement.dtInstance.then((dtInstance: any) => {
+      if (dtInstance.table().node().id === 'first-table') {
+        dtInstance.destroy();
+        this.dtTrigger.next(this.tableData);
+      }
     });
+     });
   }
+
   onDeSelectAll() {
     this.tableData = [];
-
     if (this.dtElement) {
       this.dtElement.dtInstance.then((dtInstance: any) => {
         dtInstance.clear();
@@ -693,13 +678,9 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   }
 
   private autoSave() {
-
     let saveCalls: any = [];
-
     for (let index = 0; index < this.dummyTabs.length; index++) {
-
       if (this.article[index].text && this.article[index].text.trim().length) {
-
         let tabValue: any = {
           status: 'ACTIVE',
           analysisId: Number(this.analysisID),
@@ -709,14 +690,12 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
           fileContent: this.article[index].text,
           autoSave: 'Y'
         };
-
         saveCalls.push(this.analysisService.saveAnalysisDetails(tabValue));
       }
     }
 
     if (saveCalls.length) {
-      forkJoin(saveCalls).subscribe(response => {
-        console.log("Saved Successfully..." + response);
+      forkJoin(saveCalls).subscribe(response => { 
       })
     }
 
@@ -805,7 +784,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     const hasEmptyResults = this.resultsData.some(result => !result.testResult);
     if (hasEmptyResults) {
       this.toastr.error('Please enter a value for all results.', 'Error');
-      return; // Stop further execution
+      return; 
     }
     this.analysisService.saveTrfResults(this.resultsData).subscribe((data) => {
       this.toastr.success(data.data, 'Success');
@@ -839,7 +818,9 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
               );
             });
           }
-        });
+           },(error) => {
+          this.toastr.error('Invalid password', 'Electronic Signature Failed');
+        });    
       } else {
         this.userValidateForm.get('userName')?.markAsDirty();
         this.userValidateForm.get('password')?.markAsDirty();
@@ -868,5 +849,13 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
 
     this.tableData[index].quantity = +result.value;
   }
+
+  getAnalysisReview() {
+    this.analysisService
+      .getAnalysisReview(this.analysisID)
+      .subscribe((details) => {
+        this.reviewData = details;
+      });
+    }
 
 }

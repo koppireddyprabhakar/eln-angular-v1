@@ -9,6 +9,8 @@ import { ExperimentService } from '@app/shared/services/experiment/experiment.se
 import { GlobalService } from '@app/shared/services/global/global.service';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject, takeWhile } from 'rxjs';
+import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
+import { departmentMapping } from '@app/shared/constants/mappings';
 
 @Component({
   selector: 'app-project-experiments',
@@ -33,12 +35,13 @@ export class ProjectExperimentsComponent implements OnInit {
     pagingType: 'full_numbers',
   };
   projectId: number;
-
+  inwards: any = [];
   constructor(
     private readonly globalService: GlobalService,
     private readonly experimentService: ExperimentService,
     private route: Router,
     private activatedRoute: ActivatedRoute,
+    private readonly inwardService: InwardManagementService,
   ) { }
 
   ngOnInit(): void {
@@ -58,11 +61,9 @@ export class ProjectExperimentsComponent implements OnInit {
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((experiments) => {
         this.experiments = experiments;
-
         if (this.experiments && this.experiments.length === 0) {
           this.getAnalysisHistoryByProjectId(this.projectId);
         }
-
         /*this.dtElements.forEach(
           (dtElement: DataTableDirective, index: number) => {
             dtElement.dtInstance.then((dtInstance: any) => {
@@ -110,7 +111,6 @@ export class ProjectExperimentsComponent implements OnInit {
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((analysisDetails) => {
         this.analysisDetails = analysisDetails;
-
         this.dtElementsForAnalysis.forEach(
           (dtElement: DataTableDirective, index: number) => {
             dtElement.dtInstance.then((dtInstance: any) => {
@@ -133,7 +133,6 @@ export class ProjectExperimentsComponent implements OnInit {
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((analysisDetails) => {
         this.analysisDetails = analysisDetails;
-
         this.dtElementsForAnalysis.forEach(
           (dtElement: DataTableDirective, index: number) => {
             dtElement.dtInstance.then((dtInstance: any) => {
@@ -146,7 +145,6 @@ export class ProjectExperimentsComponent implements OnInit {
         );
         this.globalService.hideLoader();
       });
-
   }
 
   viewAnalysisExperiment(event) {

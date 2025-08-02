@@ -85,6 +85,7 @@
             class="form-select"
             aria-label="Department Id"
             formControlName="deptId"
+           (change)="assignAdminRoleIfNeeded()"
           >
             <option *ngFor="let dept of departmentList" [ngValue]="dept.deptId">
               {{ dept.departmentName | titlecase }}

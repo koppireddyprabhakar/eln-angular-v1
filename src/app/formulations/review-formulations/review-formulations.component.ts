@@ -66,6 +66,7 @@ export class ReviewFormulationsComponent implements OnInit {
   project: any;
   batchNumber: any;
   result: any = '';
+  reviewPwdErrorMessage: string = '';
   article = [
     {
       title: '',
@@ -77,6 +78,7 @@ export class ReviewFormulationsComponent implements OnInit {
     },
   ];
   columns: any;
+  showPassword: boolean = false;
   testColumns: any;
   options: any = {};
   inwards: any = [];
@@ -190,6 +192,7 @@ export class ReviewFormulationsComponent implements OnInit {
    public editorConfig = {
     customConfig: '/assets/ckeditor/config.js', // Path to the config.js file
   };
+   
 
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
@@ -247,12 +250,22 @@ export class ReviewFormulationsComponent implements OnInit {
       });
   }
 
+
   getExcipientDetails() {
     this.experimentService
       .getExcipientDetailsById(this.experimentId)
       .subscribe((data) => {
-        console.log('Excipient Details:', data);
-        if (data.length > 0) {
+        data.forEach((excipient) => {
+        const match = this.inwards.find(
+          (inward) =>
+            inward.excipientId === excipient.excipientId &&
+            inward.materialName === excipient.materialName &&
+            inward.batchNo === excipient.batchNo
+        );
+        if (match) {
+          excipient.expiryDate = match.expiryDate;
+        }
+      });
           this.tableData = data;
           this.selectedItems = data;
           this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
@@ -261,9 +274,10 @@ export class ReviewFormulationsComponent implements OnInit {
             // Call the dtTrigger to rerender again
             this.dtTrigger.next(this.tableData);
           });
-        }
       });
   }
+
+
 
   getAnalysisDetailsById(tabValue) {
     this.analysisService
@@ -510,7 +524,6 @@ export class ReviewFormulationsComponent implements OnInit {
 
   updateExperimentReview() {
     this.submitClicked = true;
-
     if (this.reviewData['reviewType'] !== "FinalReview" && !this.isOptionSelected) {
       if (this.reviewData['reviewType'] === "Review") {
         // Handle the logic for the review phase without the need for correction or TRF
@@ -554,8 +567,18 @@ export class ReviewFormulationsComponent implements OnInit {
             }
             this.route.navigateByUrl(`/forms-page/review-formulations`);
           });
-        }
-      });
+        } 
+      },
+   (err) => {
+  const errorMessage =
+    typeof err.error === 'string'
+      ? err.error
+      : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+
+  this.reviewPwdErrorMessage = errorMessage;
+}
+
+);
     } else {
       this.userValidateForm.get('userName')?.markAsDirty();
       this.userValidateForm.get('password')?.markAsDirty();

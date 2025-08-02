@@ -1084,10 +1084,14 @@ h6 {
   transition: all 0.3s;
   border-top: 1px solid #cddfff;
 }
+
 .footer .copyright {
-  text-align: center;
+  position: relative;
+  left: 28%; /* 🔁 Adjust this value to center manually */
   color: #012970;
+  display: inline-block;
 }
+
 .footer .credits {
   padding-top: 5px;
   text-align: center;

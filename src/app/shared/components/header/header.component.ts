@@ -8,13 +8,28 @@ import { LoginserviceService } from '@app/shared/services/login/loginservice.ser
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
+  router: any;
   constructor(@Inject(DOCUMENT) private document: Document, private loginService: LoginserviceService) {}
 
   userName: string = '';
 
-  ngOnInit(): void {
-    this.userName = this.loginService.userDetails ? (this.loginService.userDetails['firstName'] + ' ' + this.loginService.userDetails['lastName']) : '';
+
+
+
+ngOnInit(): void {
+  const userDetails = this.loginService.getUserDetails();
+  if (userDetails) {
+    this.userName = (userDetails.firstName || '') + ' ' + (userDetails.lastName || '');
+  } else {
+    this.userName = '';
   }
+}
+
+logout() {
+  this.loginService.clearUserDetails();
+  this.router.navigate(['/']);  // navigate to login page or home
+}
+
 
   sidebarToggle() {
     //toggle sidebar function

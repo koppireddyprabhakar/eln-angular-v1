@@ -13,7 +13,7 @@ export const elnEndpointsConfig: EndpointConfig = {
     getTests: `${environment.API_BASE_PATH}` + '/lab-test/get-lab-tests',
     getTestByID: `${environment.API_BASE_PATH}` + '/lab-test/get-lab-test-by-id',
     createTest: `${environment.API_BASE_PATH}` + '/lab-test/create-tests',
-    updateTest: `${environment.API_BASE_PATH}` + '/lab-test/update-lab-test',
+    updateTest: `${environment.API_BASE_PATH}` + '/lab-test/update-tests',
     deleteTest: `${environment.API_BASE_PATH}` + '/lab-test/delete-lab-test',
     getTeams: `${environment.API_BASE_PATH}` + '/teams/get-teams',
     createTeam: `${environment.API_BASE_PATH}` + '/teams/create-team',
@@ -134,18 +134,14 @@ export const elnEndpointsConfig: EndpointConfig = {
     updateControlPanel: `${environment.API_BASE_PATH}` + '/controlpanel/update',
     getNumberOfUsers: `${environment.API_BASE_PATH}` + '/controlpanel/get-number-of-users',
     downloadAuditPdf: `${environment.API_BASE_PATH}` + '/audit/audit-report/download',
-
-
     getExperimentHistory: `${environment.API_BASE_PATH}` + '/experiment/get-experiment-history',
     getExperimentHistoryById: `${environment.API_BASE_PATH}` + '/experiment/get-experiment-history-by-id',
     getExperimentDetailsHistoryById: `${environment.API_BASE_PATH}` + '/experiment/get-experiment-details-history-by-id',
     getExcipientHistoryByExperimentId: `${environment.API_BASE_PATH}` + '/experiment/get-excipient-history-by-experimentId',
-
     //Analysis
     getAnalysisHistoryById: `${environment.API_BASE_PATH}` + '/analysis/get-analysis-history-by-id',
     getAnalysisDetailsHistoryById: `${environment.API_BASE_PATH}` + '/analysis/get-analysis-details-history-by-id',
     getExcipientHistoryByAnalysisHistoryId: `${environment.API_BASE_PATH}` + '/analysis/get-excipient-history-by-analysis-historyId'
-
   },
 };
 

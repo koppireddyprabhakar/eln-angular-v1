@@ -250,7 +250,7 @@
               <h4 class="mt-3">Uploaded Attachments</h4>
               <span *ngFor="let file of files">
                 <div class="file-container">
-                  <span class="file-list" (click)="getFileContent(file.name, file.experimentId)">{{ file.name |
+                  <span class="file-list text-primary pointer" (click)="getFileContent(file.name, file.experimentId)">{{ file.name |
                     titlecase }}</span>
                   <!-- <span class="align-right" (click)="removeAttachment(file)">Remove <i
                       class="bi bi-trash-fill pointer"></i></span> -->
@@ -304,14 +304,23 @@
               <div class="row mb-3">
                 <label for="password" class="col-sm-2 col-form-label" style="width: 11% !important;">Password</label>
                 <div class="col-sm-3">
-                  <input type="password" class="form-control" id="password" formControlName="password" />
+                  <div class="input-group has-validation">
+                    <input [type]="showPassword ? 'text' : 'password'"  class="form-control" id="password" formControlName="password"  (input)="reviewPwdErrorMessage = ''" />
+                   <button type="button" class="input-group-text"(mousedown)="showPassword = true"(mouseup)="showPassword = false"(mouseleave)="showPassword = false">
+                   <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                  </button>
+                  </div>
                   <span *ngIf="userValidateForm.controls['password'].invalid &&
                            (userValidateForm.controls['password'].dirty ||
                            userValidateForm.controls['password'].touched) &&
                            userValidateForm.get('password')?.errors &&
                            userValidateForm.get('password')?.hasError('required')" class="text-danger">
                     Please enter Password
-                  </span>
+                  </span>   
+                   <!-- Backend login error -->
+    <span *ngIf="reviewPwdErrorMessage" class="text-danger">
+      {{ reviewPwdErrorMessage }}
+    </span>             
                 </div>
               </div>
             </form>

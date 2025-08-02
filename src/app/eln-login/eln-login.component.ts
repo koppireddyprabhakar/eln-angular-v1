@@ -61,6 +61,7 @@ onSubmit() {
           });
         } else {
           this.loginService.userDetails = data;
+          this.loginService.setUserDetails(data);
           this.getUserRoleAndDepartment(this.loginService.userDetails);
           this.route.navigate(['/dashboard']).then(() => {
             if (data.passwordExpiryWarning) {

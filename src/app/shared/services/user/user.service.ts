@@ -99,4 +99,8 @@ export class UserService {
     return this.userDepartment == 'ADMIN MANAGEMENT' ? true : false;
 
   }
+
+   isSuperAdmin(){
+    return this.userRole == 'SuperAdmin' ? true : false;
+  }
 }

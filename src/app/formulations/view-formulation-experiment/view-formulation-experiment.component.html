@@ -212,7 +212,7 @@
                             <label *ngIf="files.length > 0">Uploaded Attachements</label>
                             <span *ngFor="let file of files">
                                 <div class="file-container">
-                                    <span class="file-list" (click)="getFileContent(file.name, file.experimentId)">{{
+                                    <span class="file-list text-primary pointer" (click)="getFileContent(file.name, file.experimentId)">{{
                                         file.name |
                                         titlecase }}</span>
                                 </div>

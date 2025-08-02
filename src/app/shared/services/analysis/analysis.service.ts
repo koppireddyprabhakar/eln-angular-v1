@@ -250,6 +250,7 @@ export class AnalysisService {
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
+
   generateUniqueAnalysisExperimentId() {
     const url = elnEndpointsConfig.endpoints['getUniqeAnalysisExperimentName'];
     return this.http.get(url, { responseType: 'text' }).pipe(
@@ -265,7 +266,6 @@ export class AnalysisService {
   downloadCoaPdfAnalysis(analysisId: number): Observable<Blob> {
     const url = `${elnEndpointsConfig.endpoints['downloadCoaPdfByAnalysisId']
       }?analysisId=${analysisId}`;
-    console.log(url);
     return this.http.get(url, { responseType: 'blob' }).pipe(
       catchError((err: HttpErrorResponse) => this.handleError(err))
     );

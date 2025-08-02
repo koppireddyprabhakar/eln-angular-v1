@@ -74,7 +74,6 @@ export class TestReqFormsComponent implements OnInit {
       this.unchangedTrfList = data;
       this.trfList = data;
       this.trfList = this.trfList.map((trf) => flatten(trf));
-      console.log(this.trfList);
       this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
         // Destroy the table first
         dtInstance.destroy();
@@ -98,13 +97,10 @@ export class TestReqFormsComponent implements OnInit {
         (e) => e.testRequestFormId !== selectCheckBoxArr.testRequestFormId
       );
     }
-    console.log(this.selectedRows);
     var valueArr = this.selectedRows.map((item) => item.projectName);
-    console.log(valueArr[0]);
     const selectedTrfList = this.unchangedTrfList.filter(
       (list) => list.project.projectName === valueArr[0]
     );
-    console.log(selectedTrfList[0].project.projectId);
     this.projectId = selectedTrfList[0].project.projectId;
     this.isDuplicate = valueArr.every((arr) => valueArr[0] === arr);
     this.analysisService.syncTrf(this.selectedRows);

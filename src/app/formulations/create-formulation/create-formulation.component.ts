@@ -66,7 +66,8 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
   selectedItems: any = [];
   dropdownSettings: any = {};
   public files: any = [];
-
+  showPassword: boolean = false;
+ reviewData: any = {};
   activeTab = 'summary';
   isNewTabDataSaved: boolean = false;
 
@@ -171,6 +172,14 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     });
   }
 
+  getExperimentReview() {
+    this.experimentService
+      .getExperimentReviewByExperimentId(this.experimentId)
+      .subscribe((details) => {
+        this.reviewData = details;
+      });
+  }
+
   search(activeTab, index: number) {
     this.activeTab = activeTab;
     this.activeTabIndex = index;
@@ -186,6 +195,9 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     }
     if (activeTab === 'results') {
       this.getTestResults();
+    }
+    if (activeTab === 'review-comments') {
+      this.getExperimentReview();
     }
   }
 
@@ -222,9 +234,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
       .getExperimentDetailsById(tabValue.substring(3))
       .subscribe((details) => {
         const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
-        console.log(index);
         this.article[index].text = details.fileContent;
-        console.log(details);
       });
   }
 
@@ -467,14 +477,15 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     });
   }
   onSelectAll(items: any) {
-    this.tableData = this.inwards;
-    // this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-    //   // Destroy the table first
-    //   dtInstance.destroy();
-    //   // Call the dtTrigger to rerender again
-    //   this.dtTrigger.next(this.tableData);
-    // });
-    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+    this.tableData = this.inwards.map((data) => ({
+    ...data,
+    experimentId: Number(this.experimentId),
+    experimentQuantity: 0,
+    excipientQuantity: data.remainingQuantity,
+    quantity: 0,
+    errorMessage: 'Please enter quantity.'
+  }));
+    this.dtElements.forEach((dtElement: DataTableDirective) => {
       dtElement.dtInstance.then((dtInstance: any) => {
         if (dtInstance.table().node().id === 'first-table') {
           dtInstance.destroy();
@@ -524,7 +535,6 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
 
     if (saveCalls.length) {
       forkJoin(saveCalls).subscribe(response => {
-        console.log("Saved Successfully..." + response);
         this.toastr.success('Saved Successfully', 'Success');
       })
     }
@@ -540,7 +550,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
       this.toastr.error('Please enter some content before attempting to save.', 'Error');
       return;
     }
-    const sss = JSON.stringify(this.article[index].text);
+    
     let tabValue: any = {
       status: 'Active',
       experimentId: this.experimentId,
@@ -562,10 +572,9 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
         'Success'
       );
 
-      if (this.dummyTabs[index].value.substring(0, 3) === 'new') {
-        console.log('to summary');
-        this.activeTab = `${this.dummyTabs[index].value}-tab`;
-        this.getExperimentDetails(this.experimentId);
+     if (this.dummyTabs[index].value.startsWith('new') && data?.experimentDetailId) {
+       this.dummyTabs[index].value = `tab${data.experimentDetailId}`;
+      this.activeTab = `tab${data.experimentDetailId}`;
       }
       this.dummyTabs[index].showDeleteIcon = false;
     });

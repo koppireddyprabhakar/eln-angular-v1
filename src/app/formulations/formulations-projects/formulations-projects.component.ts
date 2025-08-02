@@ -106,13 +106,8 @@ export class FormulationsProjectsComponent implements OnInit {
         this.dtElements.forEach(
           (dtElement: DataTableDirective, index: number) => {
             dtElement.dtInstance.then((dtInstance: any) => {
-              if (dtInstance.table().node().id === 'second-table') {
-                console.log(
-                  `The DataTable ${index} instance ID is: ${dtInstance.table().node().id
-                  }`
-                );
+              if (dtInstance.table().node().id === 'second-table') {           
                 dtInstance.destroy();
-                console.log(this.myProjects);
                 this.dtMyProjectsTrigger.next(this.myProjects);
               }
             });

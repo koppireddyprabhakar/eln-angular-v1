@@ -28,6 +28,7 @@
                   <th>Potency</th>
                   <th>Grade</th>
                   <th>Quantity</th>
+                  <th>Remaining Quantity</th>
                   <th>Expiry</th>
                   <th>Options</th>
                 </tr>
@@ -43,6 +44,7 @@
                   <td>{{ inward.potency }}</td>
                   <td>{{ inward.grade }}</td>
                   <td>{{inward.quantity}}</td>
+                  <td class="text-center">{{inward.remainingQuantity}}</td> 
                   <td>{{inward.expiryDate | date}}</td>
                   <td>
                     <i data-bs-toggle="modal" data-bs-target="#inwardForms" (click)="selectInward(inward)"
@@ -122,6 +124,9 @@
               " class="text-danger">
               Please enter Batch/Lot No
             </span>
+             <div *ngIf="showBatchError">
+                <span class="text-danger">This Batch/Lot No already exists</span>
+            </div>
           </div>
           <div class="col-6">
             <label for="sourceName" class="form-label">Source/Make</label>

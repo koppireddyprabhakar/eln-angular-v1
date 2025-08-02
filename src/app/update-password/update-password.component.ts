@@ -26,8 +26,6 @@ export class UpdatePasswordComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe((params)=>{
      this.username=params['email'];
-     console.log(params);
-     
     })
 
     this.updateForm = this.formBuilder.group({
@@ -72,8 +70,6 @@ onSubmit() {
   if (this.confirmpassword === this.newpassword && this.confirmpassword !== '') {
     this.updatePasswordService.Update(request).subscribe({
       next: (response) => {
-        console.log("Update Response:", response);
-
         // Check for response content instead of status
         if (response && response.data && response.data.includes('Successfully')) {
           this.toastr.success('Password has been updated successfully', 'Success');

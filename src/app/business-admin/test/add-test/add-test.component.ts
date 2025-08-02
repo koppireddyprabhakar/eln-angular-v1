@@ -114,23 +114,19 @@ export class AddTestComponent implements OnInit, OnDestroy {
 
   saveTest() {
     const newTests: any = this.testForm.value.testRow?.map((val: any) => ({
-      testName: val.testName,
-      description: val.description,
+      testName: val.testName?.trim(),
+      description: val.description?.trim(),
       dosageTests: [{ dosageId: val.dosageId || null }],
       insertUser: this.loginService.userDetails.userId
     }));
-
     const isInvalidForm = this.testForm.value.testRow?.some(
-      (row) => !row.testName
-    );
-
+  (row) => !row.testName?.trim() || !row.description?.trim() || !row.dosageId
+);
     if (!isInvalidForm) {
       if (!this.editForm) {
-
         if (this.isTestExist(newTests)) {
           return;
         }
-
         this.testService
           .saveTest(newTests)
           .pipe(takeWhile(() => this.subscribeFlag))
@@ -139,14 +135,15 @@ export class AddTestComponent implements OnInit, OnDestroy {
             this.toastr.success('Test has been added succesfully', 'Success');
           });
       } else {
+        
         const existingDosage: any = this.testForm.value.testRow?.map(
           (val: any) => ({
             ...this.selectedTest,
-            testName: val.testName,
-            description: val.description,
-            dosageTests: [{ dosageId: val.dosageId || null }],
+            testName: val.testName.trim(),
+            description: val.description.trim(),
+            dosageTests: [{ dosageId: val.dosageId || null,testId: this.selectedTest.testId}],
           })
-        );
+        );       
         this.testService
           .updateTest(existingDosage[0])
           .pipe(takeWhile(() => this.subscribeFlag))
@@ -166,13 +163,10 @@ export class AddTestComponent implements OnInit, OnDestroy {
   }
 
   isTestExist(newTests) {
-
     for (let i = 0; i < this.tests.length; i++) {
       for (let j = 0; j < newTests.length; j++) {
         if (this.tests[i].testName === newTests[j].testName) {
-
           this.toastr.error('Same name -' + newTests[j].testName + '- already exist.', 'Error');
-
           return true;
         }
       }

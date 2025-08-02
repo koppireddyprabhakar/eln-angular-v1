@@ -3,6 +3,7 @@ export const roleMapping = {
     2 : "Lead",
     3 : "Executive",
     4 : "Admin",
+     5 : "SuperAdmin"
 }
 
 export const departmentMapping = {

@@ -33,7 +33,7 @@ export class CoaGenerationComponent implements OnInit {
   expId: number;
   experiment: any;
   staticTrfId = 'TRF123';
-
+   showPassword: boolean = false;
   tests: any = [];
   dropdownList: any = [];
   selectedItems: any = [];
@@ -75,7 +75,7 @@ export class CoaGenerationComponent implements OnInit {
     approvedByDate: ''
    
   };
-
+  reviewPwdErrorMessage: string = '';
   testId = 0;
   userRole: string;
   userDetails: any;
@@ -199,10 +199,7 @@ export class CoaGenerationComponent implements OnInit {
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((tests) => {
         this.tests = tests;
-        let test = tests.map((trf) => flatten(trf))[0];
-
-       
-       // console.log('Test Results:', tests);
+        let test = tests.map((trf) => flatten(trf))[0];    
         this.testRequest['batchNumber'] = this.experiment.batchNumber;
         this.testRequest['dosageForm'] = this.experiment.dosageName;
         this.testRequest['projectName'] = this.experiment.projectName;
@@ -260,21 +257,22 @@ updateExperimentStatus() {
     };
     this.loginService.login(request).subscribe(
       (response) => {
-        console.log('user details', response);
-        if (response) {  //  Corrected comparison
+        if (response) { 
           this.experimentService.updateExperimentStatus(this.experiment.expId, 'COA Generated').subscribe((data) => {
             this.saveCoaReviewDetails();
             this.toastr.success(data['data'], 'Success');
             this.redirectToExperiments();
           });
-        } else {
-          this.toastr.error('Invalid credentials', 'Error');  //  Executes when login fails
         }
       },
-      (error: HttpErrorResponse) => {
-        this.toastr.error('Invalid credentials', 'Error'); // Executes when login API fails
-      }
-    );
+      (err: HttpErrorResponse) => {
+        const errorMessage =
+          typeof err.error === 'string'
+            ? err.error
+            : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+
+        this.reviewPwdErrorMessage = errorMessage;
+      });
   } else {
     this.userValidateForm.get('userName')?.markAsDirty();
     this.userValidateForm.get('password')?.markAsDirty();

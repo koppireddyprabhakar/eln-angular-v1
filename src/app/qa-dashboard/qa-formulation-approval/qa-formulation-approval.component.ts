@@ -35,12 +35,12 @@ export class QaFormulationApprovalComponent implements OnInit {
   expId: number;
   experiment: any;
   staticTrfId = 'TRF123';
-
+  showPassword: boolean = false;
   tests: any = [];
   dropdownList: any = [];
   selectedItems: any = [];
   dropdownSettings: any = {};
-
+  reviewPwdErrorMessage: string = '';
   columns: any = [];
   options: any = {};
   tableData: any = [];
@@ -106,9 +106,6 @@ export class QaFormulationApprovalComponent implements OnInit {
      this.userRole = this.userService.userRole || 'N/A';
      this.currentDate = new Date().toISOString();
      this.userValidateForm.get('userName')?.setValue(this.userDetails.mailId);
-     console.log('User Details:', this.userDetails);
-     console.log('User Role:', this.userRole);
-
     this.expId = this.activatedRoute.snapshot.queryParams['experimentId'];
     this.dropdownSettings = {
       singleSelection: false,
@@ -156,7 +153,6 @@ export class QaFormulationApprovalComponent implements OnInit {
       .getExperimentsById(this.expId)
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((experiment) => {
-        console.log('Experiment Details:', experiment);
         this.experiment = experiment.map((trf) => flatten(trf))[0];
         this.getTestResults();
         // this.globalService.hideLoader();
@@ -164,14 +160,11 @@ export class QaFormulationApprovalComponent implements OnInit {
   }
 
   getCoaUserDetailsById(){
-    debugger
     this.experimentService.getCoaUserDetailsById(this.expId)
      .subscribe((data) => {
       if (data && data.length > 0) {
         this.coadetails = data[0];
-        console.log("COA Details:", this.coadetails);
       } else {
-        console.log("No COA details found.");
         this.coadetails = {};
       }
     });
@@ -202,7 +195,6 @@ export class QaFormulationApprovalComponent implements OnInit {
       .subscribe((tests) => {
         this.tests = tests;
         let test = tests.map((trf) => flatten(trf))[0];
-       console.log('Test Results:', tests);
         this.testRequest['batchNumber'] = this.experiment.batchNumber;
         this.testRequest['dosageForm'] = this.experiment.dosageName;
         this.testRequest['projectName'] = this.experiment.projectName;
@@ -230,7 +222,6 @@ export class QaFormulationApprovalComponent implements OnInit {
         this.testRequest['approvedByDesignation'] = this.userRole;
         this.testRequest['approvedByDate'] = this.currentDate;
         this.testRequest['complianceStatus'] = this.coadetails.complianceStatus;
-        console.log('dtElement:', this.dtElement);
 
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
           // Destroy the table first
@@ -238,7 +229,6 @@ export class QaFormulationApprovalComponent implements OnInit {
           // Call the dtTrigger to rerender again
           this.dtTrigger.next(this.tests);
         });
-        console.log('dtElement:', this.dtElement);
 
         this.globalService.hideLoader();
       });
@@ -266,7 +256,6 @@ updateExperimentStatus() {
  
     this.loginService.login(request).subscribe(
       (response) => {
-        console.log('user details', response);
         if (response) {  //  Corrected comparison
           this.experimentService.updateExperimentStatus(this.experiment.expId, 'COA Approved').subscribe((data) => {
             this.updateCoaReviewDetails();
@@ -274,14 +263,16 @@ updateExperimentStatus() {
             this.downloadCoaPdf(this.experiment.expId);
             this.redirectToExperiments();
           });
-        } else {
-          this.toastr.error('Invalid credentials', 'Error');  //  Executes when login fails
-        }
+        } 
       },
-      (error: HttpErrorResponse) => {
-        this.toastr.error('Invalid credentials', 'Error'); // Executes when login API fails
-      }
-    );
+       (err: HttpErrorResponse) => {
+        const errorMessage =
+          typeof err.error === 'string'
+            ? err.error
+            : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+
+        this.reviewPwdErrorMessage = errorMessage;
+      });  
   } else {
     this.userValidateForm.get('userName')?.markAsDirty();
     this.userValidateForm.get('password')?.markAsDirty();
@@ -289,7 +280,6 @@ updateExperimentStatus() {
 }
 
 downloadCoaPdf(experimentId: number) {
-  debugger
   this.experimentService.downloadCoaPdf(experimentId).subscribe(
     (response) => {
       const blob = new Blob([response], { type: 'application/pdf' });

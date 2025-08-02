@@ -73,7 +73,6 @@ export class AnalysisListComponent implements OnInit {
       this.unchangedTrfList = data;
       this.trfList = data;
       this.trfList = this.trfList.map((trf) => flatten(trf));
-      console.log(this.trfList);
       this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
         // Destroy the table first
         dtInstance.destroy();
@@ -85,13 +84,11 @@ export class AnalysisListComponent implements OnInit {
   }
 
   onCheckboxClick(selectCheckBoxArr) {
-    console.log(selectCheckBoxArr.testRequestFormId);
     if (!this.selectedRows.some((e) => e.testRequestFormId === selectCheckBoxArr.testRequestFormId)) {
       this.selectedRows.push(selectCheckBoxArr);
        
       /* same result as above, but a different function return type */
     } else {
-      console.log("Else Exp");
       this.selectedRows = this.selectedRows.filter(
         (e) => e.testRequestFormId !== selectCheckBoxArr.testRequestFormId
       );

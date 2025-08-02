@@ -260,7 +260,12 @@
         <div class="row mb-3">
           <label for="password" class="col-sm-2 col-form-label" style="width: 11% !important;">Password</label>
           <div class="col-sm-3">
-            <input type="password" class="form-control" id="password" formControlName="password" />
+             <div class="input-group has-validation">
+              <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="password" formControlName="password" />
+                <button type="button" class="input-group-text"(mousedown)="showPassword = true"(mouseup)="showPassword = false"(mouseleave)="showPassword = false">
+                   <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                  </button>
+                  </div>
             <span *ngIf="userValidateForm.controls['password'].invalid &&
                      (userValidateForm.controls['password'].dirty ||
                      userValidateForm.controls['password'].touched) &&

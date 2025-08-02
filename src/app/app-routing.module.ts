@@ -27,6 +27,7 @@ import { CoaApprovalAnalysisComponent } from './coa-review/coa-approval-analysis
 import { QaFormulationApprovalComponent } from './qa-dashboard/qa-formulation-approval/qa-formulation-approval.component';
 import { QaAnalysisApprovalComponent } from './qa-dashboard/qa-analysis-approval/qa-analysis-approval.component';
 import { AuditlogsComponent } from './auditlogs/auditlogs.component';
+import { SuperadminComponent } from './superadmin/superadmin.component';
 
 // const routes: Routes = [
 //   { path: '', component: DashboardComponent },
@@ -39,7 +40,6 @@ import { AuditlogsComponent } from './auditlogs/auditlogs.component';
 //   { path: 'pages-register', component: PagesRegisterComponent },
 //   { path: 'user-profile', component: UsersProfileComponent },
 // ];
-
 const routes: Routes = [
   {
     path: "",
@@ -57,6 +57,7 @@ const routes: Routes = [
     path: "app-otp-verification",
     component: OtpVerificationComponent
   },
+  
   {
     path: '',
     redirectTo: '/business-admin/users',
@@ -70,7 +71,8 @@ const routes: Routes = [
       import('@app/dashboard/dashboard-routing.module').then(
         (route) => route.DashboardRoutingModule
       ),
-      canLoad: [AuthGuardGuard]
+    canActivate: [AuthGuardGuard],
+    canLoad: [AuthGuardGuard]
   },
   {
     path: 'business-admin',
@@ -79,7 +81,8 @@ const routes: Routes = [
       import('@app/business-admin/business-admin.module').then(
         (route) => route.BusinessAdminModule
       ),
-      canLoad: [AuthGuardGuard]
+    canActivate: [AuthGuardGuard],
+    canLoad: [AuthGuardGuard]
   },
   {
     path: 'test-request-form',
@@ -88,7 +91,8 @@ const routes: Routes = [
       import('@app/trf-dashboard/trf-dashboard.module').then(
         (route) => route.TrfDashboardModule
       ),
-      canLoad: [AuthGuardGuard]
+    canActivate: [AuthGuardGuard],
+    canLoad: [AuthGuardGuard]
   },
   {
     path: 'forms-page',
@@ -97,7 +101,8 @@ const routes: Routes = [
       import('@app/formulations/formulations.module').then(
         (route) => route.FormulationsModule
       ),
-      canLoad: [AuthGuardGuard]
+    canActivate: [AuthGuardGuard],
+    canLoad: [AuthGuardGuard]
   },
   {
     path: 'exp-analysis',
@@ -106,58 +111,74 @@ const routes: Routes = [
       import('@app/analysis/analysis.module').then(
         (route) => route.AnalysisModule
       ),
-      canLoad: [AuthGuardGuard]
+    canActivate: [AuthGuardGuard],
+    canLoad: [AuthGuardGuard]
   },
-  // {
-  //   path: 'forms-page',
-  //   component: FormulationsComponent,
-  // },
   {
     path: 'create-forms',
     component: CreateFormulationComponent,
+    canActivate: [AuthGuardGuard],
     canLoad: [AuthGuardGuard]
   },
   {
     path: 'user-profile',
     component: UsersProfileComponent,
+    canActivate: [AuthGuardGuard],
     canLoad: [AuthGuardGuard]
   },
   {
     path: 'coareviewcomponent',
     component: CoaReviewComponent,
-    canLoad: [AuthGuardGuard],
+    canActivate: [AuthGuardGuard],
+    canLoad: [AuthGuardGuard]
   },
   {
     path: 'coa-approval-formulation',
     component: CoaApprovalFormulationComponent,
+    canActivate: [AuthGuardGuard],
+    canLoad: [AuthGuardGuard]
   },
   {
     path: 'coa-approval-analysis',
     component: CoaApprovalAnalysisComponent,
+    canActivate: [AuthGuardGuard],
+    canLoad: [AuthGuardGuard]
   },
-  { 
+  {
     path: 'forms-page/qadashboard',
-     component: QaDashboardComponent 
+    component: QaDashboardComponent,
+    canActivate: [AuthGuardGuard],
+    canLoad: [AuthGuardGuard]
   },
-
-  { 
+  {
     path: 'qa-approval',
-     component: QaFormulationApprovalComponent 
+    component: QaFormulationApprovalComponent,
+    canActivate: [AuthGuardGuard],
+    canLoad: [AuthGuardGuard]
   },
-
-  { 
+  {
     path: 'qa-analysis-approval',
-     component: QaAnalysisApprovalComponent 
+    component: QaAnalysisApprovalComponent,
+    canActivate: [AuthGuardGuard],
+    canLoad: [AuthGuardGuard]
   },
-  { 
+  {
     path: 'auditlogs',
-     component:  AuditlogsComponent
+    component: AuditlogsComponent,
+    canActivate: [AuthGuardGuard],
+    canLoad: [AuthGuardGuard]
   },
-
+  {
+    path: 'superadmin',
+    component: SuperadminComponent,
+     canActivate: [AuthGuardGuard],
+     canLoad: [AuthGuardGuard]
+  },
 ];
 
+
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes,{ useHash: true })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

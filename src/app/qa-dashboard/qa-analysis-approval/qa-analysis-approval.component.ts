@@ -29,12 +29,12 @@ export class QaAnalysisApprovalComponent implements OnInit {
     pagingType: 'full_numbers',
   };
   analysisId: any;
-
+  reviewPwdErrorMessage: string = '';
   expId: number;
   experiment: any;
   staticTrfId = 'TRF123';
   department = 'ANALYSIS'
-
+  showPassword: boolean = false;
   tests: any = [];
   dropdownList: any = [];
   selectedItems: any = [];
@@ -104,16 +104,10 @@ export class QaAnalysisApprovalComponent implements OnInit {
   private experimentService: ExperimentService,) { }
 
   ngOnInit(): void {
-     // Fetch user details and role directly
      this.userDetails = this.loginService.userDetails;
      this.userRole = this.userService.userRole || 'N/A';
      this.currentDate = new Date().toISOString();
     this.userValidateForm.get('userName')?.setValue(this.userDetails.mailId);
-
-     // Debugging log
-     console.log('User Details:', this.userDetails);
-     console.log('User Role:', this.userRole);
-
     this.analysisId = this.activatedRoute.snapshot.queryParams['analysisId'];
     this.dropdownSettings = {
       singleSelection: false,
@@ -143,7 +137,6 @@ export class QaAnalysisApprovalComponent implements OnInit {
 
 
   getAnalysisExperimentsById() {
-    debugger
     const flatten = (object) => {
       let value = {};
       for (var property in object) {
@@ -171,11 +164,8 @@ export class QaAnalysisApprovalComponent implements OnInit {
     this.experimentService
     .getCoaUserDetailsByAnalysisId(this.analysisId)
     .subscribe((data) => {
-      console.log(data);
       if (data.length > 0) {
-        this.coadetails = data[0];
-        console.log("COA Details:", this.coadetails);
-      }
+        this.coadetails = data[0];      }
     });
   }
   
@@ -206,11 +196,6 @@ export class QaAnalysisApprovalComponent implements OnInit {
       .subscribe((tests) => {
         this.tests = tests;
         let test = tests.map((trf) => flatten(trf))[0];
-        console.log('Analysis Experiment:', this.analysisexperiment);
-        console.log('Test Request:', this.testRequest);
-        console.log("COA Details:", this.coadetails);
-
-        console.log('Test Results:', tests);
         this.testRequest['batchNumber'] = this.analysisexperiment.batchNumber;
         this.testRequest['dosageForm'] = this.analysisexperiment.dosageName;
         this.testRequest['projectName'] = this.analysisexperiment.projectName;
@@ -276,7 +261,6 @@ export class QaAnalysisApprovalComponent implements OnInit {
         password: this.userValidateForm.value.password || ''
       };
       this.loginService.login(request).subscribe(response => {
-        console.log('usersdeatils', response);       
          if (response.status=200) {
           this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
             this.updateCoaReviewDetails();
@@ -284,20 +268,22 @@ export class QaAnalysisApprovalComponent implements OnInit {
             this.downloadCoaPdfAnalysis(this.analysisexperiment.analysisId);
             this.redirectToExperiments();
           });
-        } else {
-          this.toastr.error('Invalid credentials', 'Error');
-        }
+        } 
       },
-      (error: HttpErrorResponse) => {       
-          this.toastr.error('Invalid credentials', 'Error');
-         });
+     (err: HttpErrorResponse) => {
+        const errorMessage =
+          typeof err.error === 'string'
+            ? err.error
+            : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+
+        this.reviewPwdErrorMessage = errorMessage;
+      });  
     } else {
       this.userValidateForm.get('userName')?.markAsDirty();
       this.userValidateForm.get('password')?.markAsDirty();
     }
   }  
   downloadCoaPdfAnalysis(analysisId: number) {
-    debugger
     this.analysisService.downloadCoaPdfAnalysis(analysisId).subscribe(
       (response) => {
         const blob = new Blob([response], { type: 'application/pdf' });

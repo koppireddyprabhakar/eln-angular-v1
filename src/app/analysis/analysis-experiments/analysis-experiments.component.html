@@ -125,7 +125,7 @@
         <form class="row g-3" [formGroup]="reviewSubmitForm">
           <div class="col-12">
             <label for="userId" class="form-label">Reviewer Name</label>
-            <select class="form-select" aria-label="Role Id" formControlName="userId">
+            <select class="form-select" aria-label="Role Id" formControlName="userId" required>
               <option *ngFor="let userRole of users" [ngValue]="userRole.userId">
                 {{ userRole.firstName + " " + userRole.lastName | titlecase }}
               </option>
@@ -146,9 +146,10 @@
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" #closeButton>
           Close
         </button>
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="submitReview()">
+        <button type="button" class="btn btn-primary" (click)="submitReview()">
           Submit Review
         </button>
+        <button #closeReviewModal type="button" class="d-none" data-bs-dismiss="modal"></button>
       </div>
     </div>
   </div>
