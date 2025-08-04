@@ -17,6 +17,9 @@ export class UpdatePasswordComponent implements OnInit {
   newpassword: string;
   confirmpassword: string;
   isSubmitted: boolean = false;
+  showNewPassword: boolean = false;
+  showConfirmPassword: boolean = false;
+
    constructor(private route:Router,
     private activatedRoute:ActivatedRoute,
     private formBuilder:FormBuilder,

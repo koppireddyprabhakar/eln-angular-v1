@@ -18,10 +18,13 @@ import { Subject, takeWhile } from 'rxjs';
   styleUrls: ['./qa-dashboard.component.css']
 })
 export class QaDashboardComponent implements OnInit {
-  
-  
-  @ViewChildren(DataTableDirective)
-  dtElements: QueryList<DataTableDirective>;
+
+  @ViewChildren('firstTable', { read: DataTableDirective }) dtElementsFormulation: QueryList<DataTableDirective>;
+  @ViewChildren('secondTable', { read: DataTableDirective }) dtElementsAnalysis: QueryList<DataTableDirective>;
+  @ViewChildren('thirdTable', { read: DataTableDirective }) dtElementsAnalysisDetails: QueryList<DataTableDirective>;
+
+  // @ViewChildren(DataTableDirective)
+  // dtElements: QueryList<DataTableDirective>;
   experiments: any = [];
   myExperiments: any = [];
   subscribeFlag = true;
@@ -31,12 +34,15 @@ export class QaDashboardComponent implements OnInit {
   options: any = { rowClickEvent: true };
   userId: any;
 
-  dtTrigger: Subject<any> = new Subject<any>();
-  dtOptions = {
+  dtFormulationExperimentTrigger: Subject<any> = new Subject<any>();
+  dtFormulationExperiments = {
     pagingType: 'full_numbers',
   };
-  dtMyProjectsTrigger: Subject<any> = new Subject<any>();
-  dtMyProjectsOptions: DataTables.Settings = {
+  dtAnalysisExperimentTrigger: Subject<any> = new Subject<any>();
+  dtTriggerForAnalysisOptions: DataTables.Settings = {};
+  dtTriggerForAnalysis: Subject<any> = new Subject<any>();
+
+  dtAnalysisExperiments: DataTables.Settings = {
     pagingType: 'full_numbers',
   };
 
@@ -44,11 +50,12 @@ export class QaDashboardComponent implements OnInit {
   reviewSubmitForm = this.formBuilder.group({
     userId: ['', [Validators.required]]
   });
-
   @ViewChild('expActionTpl', { static: true }) expActionTpl: TemplateRef<any>;
-expId: any;
-analysisId: any;
-
+  expId: any;
+  analysisId: any;
+  analysisDetails: any;
+  showNewPassword: boolean = false;
+  showConfirmPassword: boolean = false;
   constructor(
     private readonly globalService: GlobalService,
     private readonly analysisService: AnalysisService,
@@ -70,14 +77,6 @@ analysisId: any;
       { key: 'experimentName', title: 'Analysis Name' },
       { key: 'projectId', title: 'Project Id' },
       { key: 'status', title: 'Status' },
-      // {
-      //   key: 'options',
-      //   title: '<div class="blue">Options</div>',
-      //   align: { head: 'center', body: 'center' },
-      //   sorting: false,
-      //   width: 150,
-      //   cellTemplate: this.actionTpl,
-      // },
     ];
     this.myExpColumns = [
       { key: 'analysisName', title: 'Experiment Name' },
@@ -91,7 +90,7 @@ analysisId: any;
         key: 'options',
         title: '<div class="blue">Options</div>',
         align: { head: 'center', body: 'center' },
-        sorting: false,   
+        sorting: false,
         width: 150,
         cellTemplate: this.expActionTpl,
       },
@@ -99,8 +98,8 @@ analysisId: any;
   }
 
   ngAfterViewInit(): void {
-    this.dtTrigger.next(null);
-    this.dtMyProjectsTrigger.next(null);
+    this.dtFormulationExperimentTrigger.next(null);
+    this.dtAnalysisExperimentTrigger.next(null);
   }
 
   getFormulationExperiments() {
@@ -110,12 +109,12 @@ analysisId: any;
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((experiments) => {
         this.experiments = experiments;
-        this.dtElements.forEach(
+        this.dtElementsFormulation.forEach(
           (dtElement: DataTableDirective, index: number) => {
             dtElement.dtInstance.then((dtInstance: any) => {
               if (dtInstance.table().node().id === 'first-table') {
                 dtInstance.destroy();
-                this.dtTrigger.next(this.experiments);
+                this.dtFormulationExperimentTrigger.next(this.experiments);
               }
             });
           }
@@ -131,12 +130,12 @@ analysisId: any;
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((myExperiments) => {
         this.myExperiments = myExperiments;
-        this.dtElements.forEach(
+        this.dtElementsAnalysis.forEach(
           (dtElement: DataTableDirective, index: number) => {
             dtElement.dtInstance.then((dtInstance: any) => {
               if (dtInstance.table().node().id === 'second-table') {
                 dtInstance.destroy();
-                this.dtMyProjectsTrigger.next(this.myExperiments);
+                this.dtAnalysisExperimentTrigger.next(this.myExperiments);
               }
             });
           }
@@ -150,15 +149,15 @@ analysisId: any;
       `qa-approval?projectId=${event.projectId}&experimentId=${event.expId}`
     );
   }
-  
+
   onRowClickForAnalysis(event) {
     this.route.navigateByUrl(
       `qa-analysis-approval?projectId=${event.projectId}&analysisId=${event.analysisId}`
     );
   }
 
-  
-  
+
+
   getUsers() {
     this.globalService.showLoader();
     this.userService
@@ -174,7 +173,47 @@ analysisId: any;
       });
   }
 
+
+  getAnalysisExperimentsByExperimentId(experimentId) {
+    console.log(experimentId)
+    this.globalService.showLoader();
+    this.experimentService
+      .getAnalysisExperimentsByExperimentId(experimentId)
+      .pipe(takeWhile(() => this.subscribeFlag))
+      .subscribe((analysisDetails) => {
+        console.log(experimentId)
+        this.analysisDetails = analysisDetails;
+        console.log("✅ Analysis Details Received:", this.analysisDetails);
+        // this.dtElementsForAnalysis.forEach(
+        //   (dtElement: DataTableDirective, index: number) => {
+        //     dtElement.dtInstance.then((dtInstance: any) => {
+        //       if (dtInstance.table().node().id === 'third-table') {
+        //         dtInstance.destroy();
+        //         this.dtTriggerForAnalysis.next(this.analysisDetails);
+        //       }
+        //     });
+        //   }
+        // );
+        this.dtElementsAnalysisDetails.forEach((dtElement: DataTableDirective, index: number) => {
+          console.log('dtElementsForAnalysis:', this.dtElementsAnalysisDetails);
+          if (dtElement?.dtInstance) {
+            dtElement.dtInstance.then((dtInstance: any) => {
+              if (dtInstance.table().node().id === 'third-table') {
+                dtInstance.destroy();
+                this.dtTriggerForAnalysis.next(this.analysisDetails);
+              }
+            });
+          }
+        });
+
+        this.globalService.hideLoader();
+      });
+
+  }
+
+
   viewAnalysisExperiments(event) {
+    console.log('View Analysis Event:', event);
     this.route.navigateByUrl(
       `/exp-analysis/exp-dashboard?projectId=${event.projectId}&analysisId=${event.analysisId}`
     );
@@ -185,21 +224,4 @@ analysisId: any;
       `/view-formulation-experiment?projectId=${event.projectId}&experimentId=${event.expId}`
     );
   }
-
-  // viewTrfAnalysisExperiments(event) {
-  //   this.analysisService.getAnalysisIdByExpId(event.expId).subscribe(
-  //     (analysisId) => {
-  //       if (analysisId) {
-  //         this.route.navigateByUrl(
-  //           `/exp-analysis/view-analysis-experiment?projectId=${event.projectId}&analysisId=${analysisId}`
-  //         );
-  //       } else {
-  //         console.error('No analysis ID found for the given experiment ID');
-  //       }
-  //     },
-  //     (error) => {
-  //       console.error('Error fetching analysis ID:', error);
-  //     }
-  //   );
-  // }
 }

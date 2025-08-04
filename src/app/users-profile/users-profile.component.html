@@ -75,9 +75,10 @@
           'is-invalid': changePasswordForm.get('currentPassword')?.touched && changePasswordForm.get('currentPassword')?.invalid
         }"
       />
-      <span class="input-group-text" (click)="toggleCurrentPassword()" style="cursor: pointer;">
-        <i class="bi" [ngClass]="showCurrentPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
-      </span>
+     <button type="button" class="input-group-text" (mousedown)="showCurrentPassword = true"
+                          (mouseup)="showCurrentPassword = false" (mouseleave)="showCurrentPassword = false">
+                          <i class="bi" [ngClass]="showCurrentPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                        </button>
     </div>
     <div *ngIf="changePasswordForm.get('currentPassword')?.touched && changePasswordForm.get('currentPassword')?.hasError('required')" class="invalid-feedback d-block">
       Current password is required.
@@ -90,13 +91,19 @@
 <div class="row mb-3">
    <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
    <div class="col-md-8 col-lg-9">
+    <div class="input-group has-validation">
      <input
        id="newPassword"
        type="password"
        class="form-control"
+       [type]="showNewPassword ? 'text' : 'password'" 
        formControlName="newPassword"
        [ngClass]="{'is-invalid': changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.invalid}"
      />
+<button type="button" class="input-group-text" (mousedown)="showNewPassword = true"
+                          (mouseup)="showNewPassword = false" (mouseleave)="showNewPassword = false">
+                          <i class="bi" [ngClass]="showNewPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                        </button>
      <div *ngIf="changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.hasError('required')" class="invalid-feedback">
        New password is required.
      </div>
@@ -104,32 +111,32 @@
        New password must include 8-16 characters & at least one uppercase letter, one lowercase letter, one number, and one special character.
      </div>
    </div>
+   </div>
  </div>
- 
  <!-- Re-enter New Password -->
  <div class="row mb-3">
    <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New Password</label>
    <div class="col-md-8 col-lg-9">
+    <div class="input-group has-validation">
      <input
        id="renewPassword"
        type="password"
        class="form-control"
+       [type]="showRenewPassword? 'text' : 'password'"
        formControlName="renewPassword"
        [ngClass]="{'is-invalid': changePasswordForm.get('renewPassword')?.touched && changePasswordForm.get('renewPassword')?.invalid}"
      />
+      <button type="button" class="input-group-text" (mousedown)="showRenewPassword = true"
+                          (mouseup)="showRenewPassword = false" (mouseleave)="showRenewPassword = false">
+                          <i class="bi" [ngClass]="showRenewPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                        </button>
      <div *ngIf="changePasswordForm.get('renewPassword')?.touched && changePasswordForm.get('renewPassword')?.hasError('required')" class="invalid-feedback">
        Re-entered password is required.
      </div>
-     <div *ngIf="changePasswordForm.get('renewPassword')?.touched && changePasswordForm.get('renewPassword')?.hasError('pattern')" class="invalid-feedback">
-       Re-entered password must include at least one uppercase letter, one lowercase letter, one number, and one special character.
-     </div>
-     <!-- <div *ngIf="changePasswordForm.get('renewPassword')?.touched && changePasswordForm.get('renewPassword')?.hasError('notSame')" class="invalid-feedback">
-       Passwords do not match.
-     </div> -->
      <div *ngIf="changePasswordForm.hasError('notSame') && (changePasswordForm.get('renewPassword')?.touched || changePasswordForm.get('newPassword')?.touched)" class="invalid-feedback d-block">
   Passwords do not match.
 </div>
-
+</div>
    </div>
  </div>
       <!-- Change Password Button -->
@@ -138,7 +145,6 @@
       </div>
     </form> 
  </div>
- 
 </div>
 </div>
 </div>

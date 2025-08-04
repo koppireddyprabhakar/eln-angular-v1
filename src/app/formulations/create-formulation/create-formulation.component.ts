@@ -77,6 +77,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
   });
   private subscribeFlag: boolean = true;
   tests: any = [];
+  tempFiles: File[] = []; // temp list before upload
 
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions = {
@@ -242,6 +243,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     this.experimentService
       .getAttachmentsById(this.experimentId)
       .subscribe((attachments) => {
+        this.files = [];
         this.files = attachments;
 
         if (this.experimentDetails && (this.experimentDetails.experimentStatus.toUpperCase() === 'Review Completed'.toUpperCase() ||
@@ -306,6 +308,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
         .getIndvExperimentById(this.experimentId)
         .subscribe((experimentDetails) => {
           this.experimentDetails = experimentDetails;
+          this.getAttachments(); // <-- Refresh attachment list
           // if (this.editExperiment) {
 
           this.article = experimentDetails.experimentDetails.map((exp) => ({
@@ -388,14 +391,32 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
       experimentDetailsList: [],
       excipients: [],
     };
-
     if (!this.summaryForm.invalid) {
       this.experimentService
         .saveExperiment(summary)
         .subscribe((experiment: any) => {
           this.getExperimentDetails(experiment.data, 'firstLoad');
           // redirect to 2
-
+       if (this.tempFiles.length > 0) {
+            const uploadObservables = this.tempFiles.map(file =>
+              this.experimentService.saveExperimentAttachment(file, experiment['data'], this.projectId, "Y")
+            );
+            this.tempFiles = [];
+            forkJoin(uploadObservables).subscribe((responses) => {
+              // Combine all uploaded file responses
+              const allFiles: any[] = responses.flat();
+              // this.files = responses.flat();
+              this.files = allFiles.filter((file, index, self) =>
+                index === self.findIndex(f => f.attachmentId === file.attachmentId)
+              );
+              console.log('[saveSummary] after summary uploading files:', this.files);
+              console.log('[saveSummary] Before uploading files:', this.tempFiles);
+              this.getExperimentDetails(experiment.data, 'firstLoad');
+              this.toastr.success('Files Uploaded Successfully', 'Success');
+            });
+          } else {
+            this.getExperimentDetails(experiment.data, 'firstLoad');
+          }
           this.toastr.success('Formulation Experiment Started Successfully', 'Success');
         });
     }
@@ -424,6 +445,23 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
         .updateExperiment(summary)
         .subscribe((experiment: any) => {
           this.getExperimentDetails(this.experimentDetails.expId, 'firstLoad');
+          if (this.tempFiles.length > 0) {
+            const uploadObservables = this.tempFiles.map(file =>
+              // this.experimentService.saveExperimentAttachment(file, experiment['data'], this.projectId, "Y")
+              this.experimentService.saveExperimentAttachment(file, this.experimentDetails.expId, this.projectId, "Y")
+            );
+            this.files = [];
+            forkJoin(uploadObservables).subscribe((responses) => {
+              // Combine all uploaded file responses
+              this.files = responses.flat();
+              console.log('[saveSummary] Before uploading files:', this.tempFiles);
+              this.tempFiles = [];
+              this.getExperimentDetails(experiment.data, 'firstLoad');
+              this.toastr.success('Files Uploaded Successfully', 'Success');
+            });
+          } else {
+            this.getExperimentDetails(experiment.data, 'firstLoad');
+          }
           this.toastr.success('Formulation Experiment updated Successfully', 'Success');
         });
     } else {
@@ -593,10 +631,54 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     this.file = event.target.files[0];
   }
 
+   removeTempFile(file: File) {
+    this.tempFiles = this.tempFiles.filter(f => f.name !== file.name);
+  }
+
+   attachFile(event: any) {
+    const selectedFiles: FileList = event.target.files;
+
+    for (let i = 0; i < selectedFiles.length; i++) {
+      const file = selectedFiles[i];
+
+      const alreadyInTemp = this.tempFiles.some(f => f.name === file.name);
+      const alreadyUploaded = this.files.some(f => f.name === file.name && f.fromSummary === 'Y');
+
+      if (alreadyInTemp) {
+        this.toastr.warning(`"${file.name}" already selected`, 'Duplicate File');
+      } else if (alreadyUploaded) {
+        this.toastr.warning(`"${file.name}" already uploaded`, 'Duplicate File');
+      } else {
+        this.tempFiles.push(file);
+      }
+    }
+    event.target.value = '';
+  }
+
   processFile(event) {
     const selectedFile = event.target.files[0];
+    const uploadedInSummary = this.files.some(
+      f => f.name === selectedFile.name && f.fromSummary === 'Y'
+    );
+
+    if (uploadedInSummary) {
+      this.toastr.warning(`"${selectedFile.name}" was already uploaded in the Summary page`, 'File Exists');
+      event.target.value = ''; // Reset input
+      return;
+    }
+
+    const alreadyUploaded = this.files.some(
+      f => f.name === selectedFile.name
+    );
+
+    if (alreadyUploaded) {
+      this.toastr.warning(`"${selectedFile.name}" is already uploaded`, 'Duplicate File');
+      event.target.value = '';
+      return;
+    }
+
     this.experimentService
-      .saveExperimentAttachment(selectedFile, this.experimentId, this.projectId)
+      .saveExperimentAttachment(selectedFile, this.experimentId, this.projectId, 'N')
       .subscribe((response) => {
         this.files = response;
         this.toastr.success('File Uploaded Successfully', 'Success');

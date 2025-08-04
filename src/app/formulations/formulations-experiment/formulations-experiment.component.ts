@@ -31,6 +31,7 @@ export class FormulationsExperimentComponent implements OnInit {
   subscribeFlag = true;
   selectedUser: object;
   users: any = [];
+  filteredUsers: any = [];
   reviewSubmitForm = this.formBuilder.group({
     userId: ['', [Validators.required]]
   });
@@ -135,6 +136,8 @@ export class FormulationsExperimentComponent implements OnInit {
 
   selectUser(user) {
     this.selectedUser = user;
+    const creatorId = user.insertUserId || user.userId;
+    this.filteredUsers = this.users.filter((u: any) => u.userId !== creatorId);
     this.reviewSubmitForm.patchValue({ userId: null });
   }
 

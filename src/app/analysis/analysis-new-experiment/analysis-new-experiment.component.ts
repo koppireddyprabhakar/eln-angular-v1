@@ -120,6 +120,8 @@ export class AnalysisNewExperimentComponent implements OnInit {
     userName: [''],
      password: ['', Validators.required]
   });
+    tempFiles: File[] = []; // temp list before upload
+
 
   constructor(
     private readonly projectService: ProjectService,
@@ -617,6 +619,20 @@ export class AnalysisNewExperimentComponent implements OnInit {
         // change here
         this.getAnalysisById(experiment.data, 'firstLoad');
         // this.activeTab = this.dummyTabs[0].value;
+           if (this.tempFiles.length > 0) {
+          const uploadObservables = this.tempFiles.map(file =>
+            this.analysisService.saveAnalysisAttachment(file, experiment['data'], this.projectId, "Y")
+          );
+            this.tempFiles = [];
+          forkJoin(uploadObservables).subscribe((responses) => {
+            // Combine all uploaded file responses
+            this.files = responses.flat();
+            this.getAnalysisById(experiment.data, 'firstLoad');
+            this.toastr.success('Files Uploaded Successfully', 'Success');
+          });
+        } else {
+          this.getAnalysisById(experiment.data, 'firstLoad');
+        }
         this.toastr.success('Experiment Started Successfully', 'Success');
       });
     } else {
@@ -766,6 +782,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
 
     if (saveCalls.length) {
       forkJoin(saveCalls).subscribe(response => {
+      this.toastr.success('Auto Saved Successfully', 'Success');
       })
     }
 
@@ -783,8 +800,51 @@ export class AnalysisNewExperimentComponent implements OnInit {
     this.file = event.target.files[0];
   }
 
+   removeTempFile(file: File) {
+    this.tempFiles = this.tempFiles.filter(f => f.name !== file.name);
+  }
+
+   attachFile(event: any) {
+    const selectedFiles: FileList = event.target.files;
+
+    for (let i = 0; i < selectedFiles.length; i++) {
+      const file = selectedFiles[i];
+      const alreadyExists = this.tempFiles.some(f => f.name === file.name);
+
+      if (!alreadyExists) {
+        this.tempFiles.push(file);
+      } else {
+        this.toastr.warning(`File "${file.name}" already selected`, 'Duplicate File');
+      }
+    }
+    // Reset input value so same file can be re-selected if removed
+    event.target.value = '';
+  }
+
   processFile(event) {
     const selectedFile = event.target.files[0];
+     if (!selectedFile) return;
+
+  const uploadedInSummary = this.files.some(
+    f => f.name === selectedFile.name && f.fromSummary === 'Y'
+  );
+
+  if (uploadedInSummary) {
+    this.toastr.warning(`"${selectedFile.name}" was already uploaded in the Summary page`, 'File Exists');
+    event.target.value = ''; // Reset input
+    return;
+  }
+
+  const alreadyUploaded = this.files.some(
+    f => f.name === selectedFile.name
+  );
+
+  if (alreadyUploaded) {
+    this.toastr.warning(`"${selectedFile.name}" is already uploaded`, 'Duplicate File');
+    event.target.value = '';
+    return;
+  }
+
     this.analysisService
       .saveAnalysisAttachment(selectedFile, this.experimentId, this.projectId, "N")
       .subscribe((response) => {

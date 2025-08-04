@@ -155,6 +155,39 @@
                           </div>
                         </div>
                       </form>
+                       <div class="row g-3" style="padding-top: 14px;">
+                        <div class="row mb-3">
+                          <label for="inputNumber" class="col-sm-3 col-form-label">
+                            Upload</label>
+                          <div class="col-sm-9">
+                            <input class="form-control" type="file" id="formFile" multiple
+                              (change)="attachFile($event)" />
+                          </div>
+                        </div>
+                        <div class="row mb-3" *ngIf="tempFiles.length > 0">
+                          <label>Attachments</label>
+                          <span *ngFor="let file of tempFiles">
+                            <div class="file-container">
+                              <span class="file-list">{{ file.name | titlecase }}</span>
+                              <span class="align-right" (click)="removeTempFile(file)">Remove <i
+                                  class="bi bi-trash-fill pointer"></i></span>
+                            </div>
+                          </span>
+                        </div>
+
+                        <div class="row mb-3">
+                          <label *ngIf="files.length > 0">Uploaded Attachements</label>
+                          <span *ngFor="let file of files">
+                            <div class="file-container" *ngIf="file.fromSummary === 'Y'">
+                              <span class="file-list" (click)="getFileContent(file.name, file.experimentId)">{{
+                                file.name |
+                                titlecase }}</span>
+                              <span class="align-right" (click)="removeAttachment(file)">Remove <i
+                                  class="bi bi-trash-fill pointer"></i></span>
+                            </div>
+                          </span>
+                        </div>
+                      </div>
                       <div class="text-center" *ngIf="!experimentId">
                         <button type="submit" class="btn btn-primary" (click)="saveSummary()">
                           Start Experiment
@@ -281,7 +314,7 @@
             <div class="row mb-3">
               <label *ngIf="files.length > 0">Uploaded Attachements</label>
               <span *ngFor="let file of files">
-                <div class="file-container">
+                <div class="file-container" *ngIf="file.fromSummary === 'N'">
                   <span class="file-list" (click)="getFileContent(file.name, file.experimentId)">{{ file.name |
                     titlecase }}</span>
                   <span class="align-right" *ngIf="experimentDetails && (experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase() || 

@@ -78,7 +78,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     userName: [''],
     password: [''],
   });
-
+  tempFiles: File[] = []; // temp list before upload
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions = {
     pagingType: 'full_numbers',
@@ -144,7 +144,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       if (this.analysisExperimentDetails) {
         this.autoSave();
       }
-       this.getAnalysisReview();
+      this.getAnalysisReview();
     });
 
 
@@ -203,10 +203,10 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
       this.project = project;
-      this.testRequestForm.patchValue({   
+      this.testRequestForm.patchValue({
         dosageForm: this.project.dosageName,
         projectName: this.project.projectName,
-        strength: this.project.strength, 
+        strength: this.project.strength,
         testRequestId: this.staticTrfId,
         department: "ANALYSIS",
         productCode: this.project.productCode,
@@ -317,7 +317,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       analysisId: this.analysisID,
       insertUser: this.loginService.userDetails.userId,
     };
-    
+
     if (!this.testRequestForm.invalid) {
       this.analysisService.createTestForm(newTestRequest).subscribe(() => {
         this.toastr.success('Test has been added succesfully', 'Success');
@@ -378,7 +378,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     if (activeTab === 'results') {
       this.getTrfDetailsById();
     }
-     if (activeTab === 'review-comments') {
+    if (activeTab === 'review-comments') {
       this.getAnalysisReview();
     }
   }
@@ -408,8 +408,8 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
             let inward = this.inwards.find(i => i.excipientId == d.excipientId);
             return ({ ...d, experimentQuantity: d.quantity, excipientQuantity: inward.remainingQuantity })
           });
-          this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {         
-            dtInstance.destroy();         
+          this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+            dtInstance.destroy();
             this.dtTrigger.next(this.tableData);
           });
         }
@@ -449,8 +449,15 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     this.analysisService
       .deleteAnalysisAttachment(fileData)
       .subscribe((experimentDetails) => {
+        // if (experimentDetails['data'] === "Analysis Attachment Delete Successfully") {
+        //   this.getAttachments();
+        // }
         if (experimentDetails['data'] === "Analysis Attachment Delete Successfully") {
-          this.getAttachments();
+          //  Remove from the files list locally
+          this.files = this.files.filter(f => f.name !== file.name);
+          // Optional: also remove from tempFiles if it exists
+          this.tempFiles = this.tempFiles.filter(f => f.name !== file.name);
+          this.toastr.success(`"${file.name}" removed successfully`, 'Deleted');
         }
       });
   }
@@ -483,7 +490,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
               isEdit: false,
               value: 'tab' + exp.analysisDetailId,
             })
-          ); 
+          );
           this.selectedItems = analysisExperimentDetails.analysisExcipients;
           this.savedSelectedItems =
             analysisExperimentDetails.analysisExcipients;
@@ -494,9 +501,9 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
           });
           this.batchNumber = analysisExperimentDetails.batchNumber;
           this.testRequestForm.patchValue({
-              batchNumber: analysisExperimentDetails.batchNumber,
-              batchSize: analysisExperimentDetails.batchSize
-      });
+            batchNumber: analysisExperimentDetails.batchNumber,
+            batchSize: analysisExperimentDetails.batchSize
+          });
           this.summaryForm.patchValue({
             experimentName: analysisExperimentDetails.analysisName,
             batchSize: analysisExperimentDetails.batchSize,
@@ -542,7 +549,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       label: `Add On - ${length + 1}`,
       isEdit: false,
       value: `newTab-${(length + 1).toString()}`,
-       showDeleteIcon: true,
+      showDeleteIcon: true,
     });
   }
 
@@ -564,27 +571,27 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     this.analysisService
       .updateAnalysis(summary)
       .subscribe((experiment: any) => {
-        if (this.selectedFile) {
-          this.analysisService
-            .saveAnalysisAttachment(this.selectedFile, this.analysisExperimentDetails.analysisId, this.projectId,
-              "Y")
-            .subscribe((response) => {
-              this.files = response;
-              this.getAnalysisExperimentDetails(this.analysisExperimentDetails.analysisId);
-              this.toastr.success(experiment.data, 'Success');
-              this.activeTab = this.dummyTabs[0].value;
-            });
-        } else {
-          this.getAnalysisExperimentDetails(this.analysisExperimentDetails.analysisId);
-          this.toastr.success(experiment.data, 'Success');
-          this.activeTab = this.dummyTabs[0].value;
-        }
+        // if (this.selectedFile) {
+        //   this.analysisService
+        //     .saveAnalysisAttachment(this.selectedFile, this.analysisExperimentDetails.analysisId, this.projectId,
+        //       "Y")
+        //     .subscribe((response) => {
+        //       this.files = response;
+        //       this.getAnalysisExperimentDetails(this.analysisExperimentDetails.analysisId);
+        //       this.toastr.success(experiment.data, 'Success');
+        //       this.activeTab = this.dummyTabs[0].value;
+        //     });
+        // } else {
+        this.getAnalysisExperimentDetails(this.analysisExperimentDetails.analysisId);
+        this.toastr.success(experiment.data, 'Success');
+        this.activeTab = this.dummyTabs[0].value;
+        // }
       });
   }
 
   onItemSelect(item: any) {
     if (!this.tableData) {
-      this.tableData = [];  
+      this.tableData = [];
     }
     this.tableData.push(...this.inwards.filter(i => i.excipientId === item.excipientId)
       .map((data) => ({
@@ -597,7 +604,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
         e.errorMessage = "Please enter quantity.";
       }
     });
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {   
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.destroy();
       this.dtTrigger.next(this.tableData);
     });
@@ -616,28 +623,28 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.destroy();
       this.dtTrigger.next(this.tableData);
-       });
-       const existingData = this.tableData || [];
-
-  this.tableData = this.inwards.map((inward) => {
-    const existing = existingData.find(t => t.excipientId === inward.excipientId);
-    return {
-      ...inward,
-      analysisId: Number(this.experimentId),
-      experimentQuantity: existing?.experimentQuantity ?? 0,
-      excipientQuantity: inward.remainingQuantity,
-      quantity: existing?.quantity ?? 0,
-      errorMessage: existing?.errorMessage ?? "Please enter quantity."
-    };
-  });
-  this.dtElements.forEach((dtElement: DataTableDirective) => {
-    dtElement.dtInstance.then((dtInstance: any) => {
-      if (dtInstance.table().node().id === 'first-table') {
-        dtInstance.destroy();
-        this.dtTrigger.next(this.tableData);
-      }
     });
-     });
+    const existingData = this.tableData || [];
+
+    this.tableData = this.inwards.map((inward) => {
+      const existing = existingData.find(t => t.excipientId === inward.excipientId);
+      return {
+        ...inward,
+        analysisId: Number(this.experimentId),
+        experimentQuantity: existing?.experimentQuantity ?? 0,
+        excipientQuantity: inward.remainingQuantity,
+        quantity: existing?.quantity ?? 0,
+        errorMessage: existing?.errorMessage ?? "Please enter quantity."
+      };
+    });
+    this.dtElements.forEach((dtElement: DataTableDirective) => {
+      dtElement.dtInstance.then((dtInstance: any) => {
+        if (dtInstance.table().node().id === 'first-table') {
+          dtInstance.destroy();
+          this.dtTrigger.next(this.tableData);
+        }
+      });
+    });
   }
 
   onDeSelectAll() {
@@ -660,19 +667,25 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       this.toastr.error('Please enter some content before attempting to save.', 'Error');
       return;
     }
-    const sss = JSON.stringify(this.article[index].text);
+    const isNewTab = this.dummyTabs[index].value.startsWith('new');
+    let analysisDetailId: number | null = null;
+    if (!isNewTab) {
+      analysisDetailId = Number(this.dummyTabs[index].value.substring(3));
+    }
     let tabValue: any = {
       status: 'ACTIVE',
       analysisId: Number(this.analysisID),
-      analysisDetailId:
-        this.analysisExperimentDetails.analysisDetails[index].analysisDetailId,
+      analysisDetailId: isNewTab ? null : analysisDetailId,
       name: label,
       fileContent: this.article[index].text,
     };
 
     this.analysisService.saveAnalysisDetails(tabValue).subscribe((data) => {
       this.toastr.success(`Experiment details updated successfully`, 'Success');
-      this.getAnalysisExperimentDetails(this.analysisID);
+      if (isNewTab && data?.analysisDetailId) {
+        this.dummyTabs[index].value = `tab${data.analysisDetailId}`;
+        this.activeTab = `tab${data.analysisDetailId}`;
+      }
       this.dummyTabs[index].showDeleteIcon = false;
     });
   }
@@ -681,7 +694,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     let saveCalls: any = [];
     for (let index = 0; index < this.dummyTabs.length; index++) {
       if (this.article[index].text && this.article[index].text.trim().length) {
-        let tabValue: any = {
+        const tabValue: any = {
           status: 'ACTIVE',
           analysisId: Number(this.analysisID),
           analysisDetailId:
@@ -695,7 +708,8 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     }
 
     if (saveCalls.length) {
-      forkJoin(saveCalls).subscribe(response => { 
+      forkJoin(saveCalls).subscribe(response => {
+          this.toastr.success('Auto Saved Successfully', 'Success');
       })
     }
 
@@ -710,16 +724,67 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
 
   saveAttachment() { }
 
-  attachFile(event) {
-    this.selectedFile = event.target.files[0];
+  attachFile(event: any) {
+    const selectedFiles: FileList = event.target.files;
+    if (!selectedFiles || selectedFiles.length === 0)
+      return;
+
+    for (let i = 0; i < selectedFiles.length; i++) {
+      const file = selectedFiles[i];
+
+      const alreadyUploaded = this.files?.some(f => f.name === file.name);
+
+      if (alreadyUploaded) {
+        this.toastr.warning(`"${file.name}" is already uploaded`, 'Duplicate File');
+      } else {
+        // Directly upload the file to DB
+        this.analysisService
+          .saveAnalysisAttachment(file, this.analysisExperimentDetails.analysisId, this.projectId, "Y")
+          .subscribe({
+            next: (response: any) => {
+              this.files = response;
+              this.toastr.success(`"${file.name}" uploaded successfully`, 'Success');
+              this.getAnalysisExperimentDetails(this.analysisExperimentDetails.analysisId);
+            },
+            error: () => {
+              this.toastr.error(`"${file.name}" failed to upload`, 'Upload Failed');
+            }
+          });
+      }
+    }
+    event.target.value = ''; // Reset input for reselecting same file
   }
 
   onChange(event) {
     this.file = event.target.files[0];
   }
 
+  removeTempFile(file: File) {
+    this.tempFiles = this.tempFiles.filter(f => f.name !== file.name);
+  }
+
+
   processFile(event) {
     const attachedFile = event.target.files[0];
+    if (!attachedFile) return;
+    // Check if file was uploaded in Summary tab
+    const uploadedInSummary = this.files.some(
+      f => f.name === attachedFile.name && f.fromSummary === 'Y'
+    );
+    if (uploadedInSummary) {
+      this.toastr.warning(`File "${attachedFile.name}" was already uploaded in Summary page`, 'Duplicate File');
+      event.target.value = ''; // reset input
+      return;
+    }
+    // Optional: prevent re-upload by name (generally)
+    const alreadyUploaded = this.files.some(
+      f => f.name === attachedFile.name
+    );
+    if (alreadyUploaded) {
+      this.toastr.warning(`File "${attachedFile.name}" already uploaded`, 'Duplicate File');
+      event.target.value = '';
+      return;
+    }
     this.analysisService
       .saveAnalysisAttachment(
         attachedFile,
@@ -731,6 +796,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
         this.files = response;
         this.toastr.success('File Uploaded Successfully', 'Success');
       });
+    event.target.value = '';
   }
 
   getFileContent(fileName: string, experimentId: number) {
@@ -784,7 +850,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     const hasEmptyResults = this.resultsData.some(result => !result.testResult);
     if (hasEmptyResults) {
       this.toastr.error('Please enter a value for all results.', 'Error');
-      return; 
+      return;
     }
     this.analysisService.saveTrfResults(this.resultsData).subscribe((data) => {
       this.toastr.success(data.data, 'Success');
@@ -818,9 +884,9 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
               );
             });
           }
-           },(error) => {
+        }, (error) => {
           this.toastr.error('Invalid password', 'Electronic Signature Failed');
-        });    
+        });
       } else {
         this.userValidateForm.get('userName')?.markAsDirty();
         this.userValidateForm.get('password')?.markAsDirty();
@@ -856,6 +922,6 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       .subscribe((details) => {
         this.reviewData = details;
       });
-    }
+  }
 
 }

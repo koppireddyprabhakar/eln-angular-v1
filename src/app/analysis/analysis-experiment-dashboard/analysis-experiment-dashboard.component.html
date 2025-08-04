@@ -130,23 +130,32 @@
                           </div>
                         </div>
                       </form>                   
+                      <!--Upload attachmens start-->
                       <div class="row g-3" style="padding-top: 14px;">
-                        <div class="row mb-3">
+                        <!-- <div class="row mb-3">
                           <label for="inputNumber" class="col-sm-3 col-form-label">
                             Upload</label>
                           <div class="col-sm-9">
-                            <input class="form-control" type="file" id="formFile" (change)="attachFile($event)" />
+                            <input class="form-control" type="file" id="formFile" multiple (change)="attachFile($event)" />
+                          </div>
+                        </div> -->
+                        <div class="row mb-3">
+                          <label for="formFile" class="col-sm-3 col-form-label">Upload</label>
+                          <div class="col-sm-9">
+                            <input class="form-control" type="file" id="formFile" multiple
+                              (change)="attachFile($event)" />
                           </div>
                         </div>
-                        <div class="row mb-3" *ngIf="selectedFile && files.length === 0">
-                          <label>Attachements</label>
-                          <span>
+                        <!-- <div class="row mb-3" *ngIf="tempFiles.length > 0">
+                          <label>Attachments</label>
+                          <span *ngFor="let file of tempFiles">
                             <div class="file-container">
-                              <span class="file-list">{{ selectedFile.name |
-                                titlecase }}</span>
+                              <span class="file-list">{{ file.name | titlecase }}</span>
+                              <span class="align-right" (click)="removeTempFile(file)">Remove <i
+                                  class="bi bi-trash-fill pointer"></i></span>
                             </div>
                           </span>
-                        </div>
+                        </div> -->
                         <div class="row mb-3">
                           <label *ngIf="files.length > 0">Uploaded Attachements</label>
                           <span *ngFor="let file of files">
@@ -158,7 +167,7 @@
                             </div>
                           </span>
                         </div>
-                      </div>                   
+                      </div>   
                       <div class="text-center" *ngIf="analysisExperimentDetails && (analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase() 
                       || analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase())">
                         <button type="submit" class="btn btn-primary" (click)="saveSummary()">
@@ -519,7 +528,7 @@
               </div>
             </form>
             <table id="second-table" datatable [dtOptions]="dtMyProjectsOptions" [dtTrigger]="dtMyProjectsTrigger"
-              class="row-border hover">
+              class="row-border hover" style="table-layout: fixed; width: 100%;">
               <thead>
                 <tr>
                   <th>Test Id</th>

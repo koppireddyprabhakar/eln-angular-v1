@@ -8,7 +8,7 @@ import {
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Subject, tap } from 'rxjs';
+import { forkJoin, Subject, tap } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
@@ -65,16 +65,16 @@ export class AnalysisDashbaordComponent implements OnInit {
     pagingType: 'full_numbers',
   };
   activeTab = 'summary';
-
+  tempFiles: File[] = []; // temp list before upload
   summaryForm = this.formBuilder.group({
     experimentName: ['', [Validators.required]],
     batchSize: ['' as any, [Validators.required]],
   });
 
-   showPassword: boolean = false;
- userValidateForm = this.formBuilder.group({
+  showPassword: boolean = false;
+  userValidateForm = this.formBuilder.group({
     userName: [''],
-     password: ['', Validators.required]
+    password: ['', Validators.required]
   });
 
   public selectedFile: any;
@@ -137,9 +137,9 @@ export class AnalysisDashbaordComponent implements OnInit {
   }
 
   public editorConfig = {
-    customConfig: '/assets/ckeditor/config.js', 
+    customConfig: '/assets/ckeditor/config.js',
   };
- 
+
 
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
@@ -214,8 +214,8 @@ export class AnalysisDashbaordComponent implements OnInit {
       .getAttachmentsById(this.experimentId)
       .subscribe((attachments) => {
         this.files = attachments;
- 
-         if (this.experimentDetails?.status === 'Inprogress') {
+
+        if (this.experimentDetails?.status === 'Inprogress') {
           let userName = this.loginService.userDetails ? this.loginService.userDetails['mailId'] : '';
           this.userValidateForm = this.formBuilder.group({
             userName: [userName, [Validators.required]],
@@ -229,7 +229,7 @@ export class AnalysisDashbaordComponent implements OnInit {
     const fileData = { ...file, analysisAttachmentId: file.attachmentId, projectId: this.projectId };
     this.analysisService
       .deleteAnalysisAttachment(fileData)
-      .subscribe((experimentDetails) => { 
+      .subscribe((experimentDetails) => {
         if (experimentDetails['data'] === "Analysis Attachment Delete Successfully") {
           this.getAttachments();
         }
@@ -272,7 +272,7 @@ export class AnalysisDashbaordComponent implements OnInit {
           }));
           if (firstLoad === 'firstLoad') {
             this.activeTab = this.dummyTabs[0].value;
-          }       
+          }
         });
     }
   }
@@ -335,14 +335,29 @@ export class AnalysisDashbaordComponent implements OnInit {
     };
     if (!this.summaryForm.invalid) {
       this.analysisService.saveAnalysis(summary).subscribe((experiment: any) => {
-        if (this.selectedFile) {
-          this.analysisService
-            .saveAnalysisAttachment(this.selectedFile, experiment['data'], this.projectId,
-              "Y")
-            .subscribe((response) => {
-              this.files = response;
-              this.getAnalysisById(experiment.data, 'firstLoad');
-            });
+        // if (this.selectedFile) {
+        //   this.analysisService
+        //     .saveAnalysisAttachment(this.selectedFile, experiment['data'], this.projectId,
+        //       "Y")
+        //     .subscribe((response) => {
+        //       this.files = response;
+        //       this.getAnalysisById(experiment.data, 'firstLoad');
+        //     });
+        // } else {
+        //   this.getAnalysisById(experiment.data, 'firstLoad');
+        // }
+        if (this.tempFiles.length > 0) {
+          const uploadObservables = this.tempFiles.map(file =>
+            this.analysisService.saveAnalysisAttachment(file, experiment['data'], this.projectId, "Y")
+          );
+
+          forkJoin(uploadObservables).subscribe((responses) => {
+            // Combine all uploaded file responses
+            this.files = responses.flat();
+            this.tempFiles = [];
+            this.getAnalysisById(experiment.data, 'firstLoad');
+            this.toastr.success('Files Uploaded Successfully', 'Success');
+          });
         } else {
           this.getAnalysisById(experiment.data, 'firstLoad');
         }
@@ -358,14 +373,14 @@ export class AnalysisDashbaordComponent implements OnInit {
   onItemSelect(item: any) {
     this.tableData.push(...this.inwards.filter(i => i.excipientId === item.excipientId)
       .map((data) => ({ ...data, analysisId: Number(this.experimentId), experimentQuantity: 0, excipientQuantity: data.remainingQuantity })));
- 
+
     this.tableData.forEach(e => {
       if (e.excipientId === item.excipientId) {
         e.quantity = 0;
         e.errorMessage = "Please enter quantity.";
       }
     });
- 
+
     this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
       dtElement.dtInstance.then((dtInstance: any) => {
         if (dtInstance.table().node().id === 'first-table') {
@@ -391,8 +406,16 @@ export class AnalysisDashbaordComponent implements OnInit {
   }
 
   onSelectAll(items: any) {
-    this.tableData = this.inwards;
-    this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
+    this.tableData = this.inwards.map((data) => ({
+      ...data,
+      experimentId: Number(this.experimentId),
+      experimentQuantity: 0,
+      excipientQuantity: data.remainingQuantity,
+      quantity: 0,
+      errorMessage: 'Please enter quantity.'
+    }));
+
+    this.dtElements.forEach((dtElement: DataTableDirective) => {
       dtElement.dtInstance.then((dtInstance: any) => {
         if (dtInstance.table().node().id === 'first-table') {
           dtInstance.destroy();
@@ -467,17 +490,59 @@ export class AnalysisDashbaordComponent implements OnInit {
   }
 
   attachFile(event) {
-    this.selectedFile = event.target.files[0];
+    const selectedFiles: FileList = event.target.files;
+
+    for (let i = 0; i < selectedFiles.length; i++) {
+      const file = selectedFiles[i];
+      const alreadyExists = this.tempFiles.some(f => f.name === file.name);
+
+      if (!alreadyExists) {
+        this.tempFiles.push(file);
+      } else {
+        this.toastr.warning(`File "${file.name}" already selected`, 'Duplicate File');
+      }
+    }
+
+    // Reset input value so same file can be re-selected if removed
+    event.target.value = '';
   }
 
+  removeTempFile(file: File) {
+    this.tempFiles = this.tempFiles.filter(f => f.name !== file.name);
+  }
   processFile(event) {
     const attachedFile = event.target.files[0];
+    if (!attachedFile) return;
+
+    // Check if file was uploaded in Summary tab
+    const uploadedInSummary = this.files.some(
+      f => f.name === attachedFile.name && f.fromSummary === 'Y'
+    );
+
+    if (uploadedInSummary) {
+      this.toastr.warning(`File "${attachedFile.name}" was already uploaded in Summary page`, 'Duplicate File');
+      event.target.value = ''; // reset input
+      return;
+    }
+
+    // Optional: prevent re-upload by name (generally)
+    const alreadyUploaded = this.files.some(
+      f => f.name === attachedFile.name
+    );
+
+    if (alreadyUploaded) {
+      this.toastr.warning(`File "${attachedFile.name}" already uploaded`, 'Duplicate File');
+      event.target.value = '';
+      return;
+    }
+
     this.analysisService
       .saveAnalysisAttachment(attachedFile, this.experimentId, this.projectId, "N")
       .subscribe((response) => {
         this.files = response;
         this.toastr.success('File Uploaded Successfully', 'Success');
       });
+    event.target.value = ''; // reset input
   }
 
   getFileContent(fileName: string, experimentId: number) {
@@ -499,13 +564,13 @@ export class AnalysisDashbaordComponent implements OnInit {
         data['experimentQuantity'] = 0;
       })
     }
-   
+
     this.tableData.forEach(e => {
       if (e.experimentQuantity >= 0) {
         e['changedQuantity'] = e.quantity - e.experimentQuantity;
       }
     });
-   
+
     this.analysisService
       .saveAnalysisExcipient(this.tableData)
       .subscribe((data) => {
@@ -514,12 +579,12 @@ export class AnalysisDashbaordComponent implements OnInit {
   }
 
   trfResultChange(result, index) {
-     this.selectedTrfs[index].testResult = result.value;
+    this.selectedTrfs[index].testResult = result.value;
   }
 
   excipientQuantityChange(value, index) {
     this.tableData[index]['errorMessage'] = "";
-  
+
     if ((+value - this.tableData[index].experimentQuantity) > this.tableData[index].excipientQuantity) {
       this.tableData[index]['errorMessage'] = "Please enter <= remaining qty " + (this.tableData[index].excipientQuantity ? this.tableData[index].excipientQuantity : this.tableData[index].experimentQuantity);
       return;
@@ -527,10 +592,10 @@ export class AnalysisDashbaordComponent implements OnInit {
       this.tableData[index]['errorMessage'] = "Please enter quantity.";
       return;
     }
-  
+
     this.tableData[index].quantity = +value;
   }
-  
+
 
   saveResults() {
     this.isSaveClicked = true;
@@ -543,7 +608,7 @@ export class AnalysisDashbaordComponent implements OnInit {
       this.toastr.success(data.data, 'Success');
     });
   }
-  
+
   updateAnalysisStatus(status: string, summary?: string) {
     let analysisRequest = {
       analysisId: this.experimentId,
@@ -551,43 +616,43 @@ export class AnalysisDashbaordComponent implements OnInit {
       summary: summary ? summary : status,
       userId: this.loginService.userDetails.userId,
     }
-      if (this.experimentDetails?.status === 'Inprogress') {
-    if (this.userValidateForm.valid) {
-      const request = {
-        mailId: this.userValidateForm.value.userName ?? '',
-        password: this.userValidateForm.value.password ?? ''
-      };
- 
-      this.loginService.login(request).subscribe(
-        (response) => {
-          if (response) {
-            this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
-              this.toastr.success('Analysis Details Submitted successfully', 'Success');
-              this.route.navigateByUrl(`/exp-analysis/analysis-experiments`);
-            });
+    if (this.experimentDetails?.status === 'Inprogress') {
+      if (this.userValidateForm.valid) {
+        const request = {
+          mailId: this.userValidateForm.value.userName ?? '',
+          password: this.userValidateForm.value.password ?? ''
+        };
+
+        this.loginService.login(request).subscribe(
+          (response) => {
+            if (response) {
+              this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
+                this.toastr.success('Analysis Details Submitted successfully', 'Success');
+                this.route.navigateByUrl(`/exp-analysis/analysis-experiments`);
+              });
+            }
+          },
+          (error) => {
+            this.toastr.error('Invalid password', 'Electronic Signature Failed');
           }
-        },
-        (error) => {
-          this.toastr.error('Invalid password', 'Electronic Signature Failed');
-        }
-      );
+        );
+      } else {
+        this.userValidateForm.get('userName')?.markAsDirty();
+        this.userValidateForm.get('password')?.markAsDirty();
+      }
     } else {
-      this.userValidateForm.get('userName')?.markAsDirty();
-      this.userValidateForm.get('password')?.markAsDirty();
+      this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
+        this.toastr.success(data['data'], 'Success');
+        this.route.navigateByUrl(`/exp-analysis/list`);
+      });
     }
-  } else {
-    this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
-      this.toastr.success(data['data'], 'Success');
-      this.route.navigateByUrl(`/exp-analysis/list`);
-    });
-  }
 
   }
- 
-  generateUniqueAnalysisExperimentId() {   
+
+  generateUniqueAnalysisExperimentId() {
     this.analysisService.generateUniqueAnalysisExperimentId().subscribe({
       next: (data) => {
-        this.summaryForm.get('experimentName')?.setValue(data); 
+        this.summaryForm.get('experimentName')?.setValue(data);
         this.experimentName = data;
       }
     });

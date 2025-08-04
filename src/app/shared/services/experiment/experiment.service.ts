@@ -90,7 +90,7 @@ export class ExperimentService {
     return this.http.put<any>(url, experiment);
   }
 
-  saveExperimentAttachment(file, experimentId, projectId): Observable<any> {
+  saveExperimentAttachment(file, experimentId, projectId, fromSummary): Observable<any> {
     const url = elnEndpointsConfig.endpoints['saveExperimentAttachment'];
 
     const formData = new FormData();
@@ -98,7 +98,9 @@ export class ExperimentService {
     formData.append('projectId', projectId);
     formData.append('status', 'ACTIVE');
     formData.append('file', file, file.name);
-
+    if (fromSummary) {
+    formData.append('fromSummary', fromSummary);  // optional
+  }
     return this.http.post<string>(url, formData);
   }
 
@@ -238,6 +240,13 @@ export class ExperimentService {
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
+ getAnalysisExperimentsByExperimentId(experimentId) {
+    const url = `${elnEndpointsConfig.endpoints['getAnalysisExperimentsByExperimentId']
+      }?experimentId=${experimentId}`;
+    return this.http
+      .get<any>(url)
+      .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+  }
   getExperimentHistoryById(id) {
     const url = `${elnEndpointsConfig.endpoints['getExperimentHistoryById']}?experimentHistoryId=${id}`;
     return this.http

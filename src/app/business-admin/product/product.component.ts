@@ -89,17 +89,17 @@ export class ProductComponent implements OnInit {
   }
 
   saveProduct() {
-    let productCode = this.productForm.get('productCode')!.value;
+    debugger
+    let productCode = this.productForm.get('productCode')!.value?.trim().toLowerCase();;
 
-    let filteredProducts = this.products.filter(p => p.productCode === productCode);
+    let filteredProducts = this.products.filter(p => p.productCode?.trim().toLowerCase() === productCode);
 
-    if (filteredProducts && filteredProducts.length === 1 && this.selectedProduct && !this.selectedProduct.productId) {
-      this.showErrorMsg = true;
-      return;
-    } else if (filteredProducts && filteredProducts.length >= 1 && this.selectedProduct && this.selectedProduct.productId) {
-      this.showErrorMsg = true;
-      return;
-    }  
+      if (filteredProducts.length && (!this.selectedProduct || !this.selectedProduct.productId || 
+        filteredProducts[0].productId !== this.selectedProduct.productId))
+     {
+    this.showErrorMsg = true;
+    return;
+  }
 
     const newProduct = {
       productName: this.productForm.get('productName')!.value,
@@ -107,7 +107,7 @@ export class ProductComponent implements OnInit {
       insertUser: this.loginService.userDetails.userId
 
     };
-    if (this.productForm.get('productName')!.value) {
+    if (this.productForm.get('productName')!.value && this.productForm.get('productCode')!.value) {
       this.globalService.showLoader();
       if (Object.keys(this.selectedProduct).length === 0) {
         this.productService

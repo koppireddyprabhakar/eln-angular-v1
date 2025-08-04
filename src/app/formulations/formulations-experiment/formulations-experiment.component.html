@@ -153,7 +153,7 @@
           <div class="col-12">
             <label for="userId" class="form-label">Reviewer Name</label>
             <select class="form-select" aria-label="Role Id" formControlName="userId">
-              <option *ngFor="let userRole of users" [ngValue]="userRole.userId">
+              <option *ngFor="let userRole of filteredUsers" [ngValue]="userRole.userId">
                 {{ userRole.firstName + " " + userRole.lastName | titlecase }}
               </option>
             </select>
