@@ -378,12 +378,6 @@ export class ReviewExperimentsComponent implements OnInit {
   }
 
   updateAnalysisStatus(status: string) {
-    // let analysisRequest = {
-    //   analysisId: this.experimentId,
-    //   status: status,
-    //   summary: this.summary ? this.summary : status
-    // }
-   // this.reviewPwdErrorMessage = ''; //clear previous error
     this.submitClicked = true;
     if (!this.isOptionSelected) {
       return;
@@ -410,7 +404,7 @@ export class ReviewExperimentsComponent implements OnInit {
         password: this.userValidateForm.value.password || ''
       };
 
-      this.loginService.login(request).subscribe(response => {
+      this.loginService.login(request).subscribe({ next: (response) => {
         if (response) {
           this.analysisService.updateAnalysisReview(reviewRequest).subscribe((data) => {
             this.toastr.success(data['data'], 'Success');
@@ -418,14 +412,20 @@ export class ReviewExperimentsComponent implements OnInit {
           });
         }
          },
-   (err) => {
-  const errorMessage =
-    typeof err.error === 'string'
-      ? err.error
-      : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+   error: (err) => {
+        let errorMessage =
+          typeof err.error === 'string'
+            ? err.error
+            : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
 
-  this.reviewPwdErrorMessage = errorMessage;
-});
+        if (err.status === 403) {
+          errorMessage = 'Your account has been locked due to multiple failed login attempts.';
+          this.toastr.error(errorMessage, 'Account Locked');
+          this.route.navigateByUrl('');
+        }
+        this.reviewPwdErrorMessage = errorMessage;
+      }
+    });
     } else {
       this.userValidateForm.get('userName')?.markAsDirty();
       this.userValidateForm.get('password')?.markAsDirty();

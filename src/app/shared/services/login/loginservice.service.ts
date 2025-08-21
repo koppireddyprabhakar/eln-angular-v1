@@ -38,7 +38,7 @@ export class LoginserviceService {
   if (this.userDetails) {
     return this.userDetails;
   }
-  const storedUser = localStorage.getItem('userDetails');
+  const storedUser = sessionStorage.getItem('userDetails'); 
   if (storedUser) {
     try {
       this.userDetails = JSON.parse(storedUser);
@@ -54,16 +54,13 @@ export class LoginserviceService {
 
 setUserDetails(user: any) {
   this.userDetails = user;
-  localStorage.setItem('userDetails', JSON.stringify(user));
+  sessionStorage.setItem('userDetails', JSON.stringify(user))
 }
-
 
 clearUserDetails() {
   this.userDetails = null;
-  localStorage.removeItem('userDetails');
-}
-
-
+sessionStorage.removeItem('userDetails');  
+ }
 }
   
 

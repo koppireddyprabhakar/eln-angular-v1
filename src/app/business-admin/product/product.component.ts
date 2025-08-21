@@ -89,7 +89,6 @@ export class ProductComponent implements OnInit {
   }
 
   saveProduct() {
-    debugger
     let productCode = this.productForm.get('productCode')!.value?.trim().toLowerCase();;
 
     let filteredProducts = this.products.filter(p => p.productCode?.trim().toLowerCase() === productCode);

@@ -8,7 +8,7 @@ import {
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { forkJoin, Subject, tap } from 'rxjs';
+import { forkJoin, interval, Subject, Subscription, tap } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
@@ -83,6 +83,9 @@ export class AnalysisDashbaordComponent implements OnInit {
   resultsData: any;
   dtElements: any;
   experimentName: string;
+  public intervalSubscripton$: Subscription;
+  reviewPwdErrorMessage: any;
+
 
   constructor(
     private readonly projectService: ProjectService,
@@ -99,6 +102,12 @@ export class AnalysisDashbaordComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+      const saveDataForEveryFiveMinutes = 1* 60 * 1000;
+    this.intervalSubscripton$ = interval(saveDataForEveryFiveMinutes).subscribe((v) => {
+      if (this.experimentDetails) {
+        this.autoSave();
+      }
+    });
     this.selectedTrfs$.subscribe((trfs) => {
       this.selectedTrfs = trfs;
     });
@@ -134,6 +143,10 @@ export class AnalysisDashbaordComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.dtTrigger.next(null);
+  }
+
+  ngOnDestroy(): void {
+    this.intervalSubscripton$.unsubscribe();
   }
 
   public editorConfig = {
@@ -214,7 +227,6 @@ export class AnalysisDashbaordComponent implements OnInit {
       .getAttachmentsById(this.experimentId)
       .subscribe((attachments) => {
         this.files = attachments;
-
         if (this.experimentDetails?.status === 'Inprogress') {
           let userName = this.loginService.userDetails ? this.loginService.userDetails['mailId'] : '';
           this.userValidateForm = this.formBuilder.group({
@@ -315,6 +327,7 @@ export class AnalysisDashbaordComponent implements OnInit {
       isEdit: false,
       value: `newTab-${(length + 1).toString()}`,
       showDeleteIcon: true,
+       lastSavedContent: '' 
     });
   }
 
@@ -448,6 +461,14 @@ export class AnalysisDashbaordComponent implements OnInit {
       this.toastr.error('Please enter some content before attempting to save.', 'Error');
       return;
     }
+     const currentContent = this.article[index]?.text ?? '';
+     const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
+
+  // Check if content is unchanged
+  if (currentContent === lastSaved) {
+    this.toastr.warning("No changes detected. Update not required.", "Warning");
+    return;
+  }
     const sss = JSON.stringify(this.article[index].text);
     let tabValue: any = {
       status: 'string',
@@ -473,6 +494,7 @@ export class AnalysisDashbaordComponent implements OnInit {
         this.activeTab = `id${data.analysisDetailId}-tab`;
       }
       this.dummyTabs[index].showDeleteIcon = false;
+      this.dummyTabs[index].lastSavedContent = currentContent;
     });
   }
 
@@ -615,7 +637,7 @@ export class AnalysisDashbaordComponent implements OnInit {
       status: status,
       summary: summary ? summary : status,
       userId: this.loginService.userDetails.userId,
-    }
+    };
     if (this.experimentDetails?.status === 'Inprogress') {
       if (this.userValidateForm.valid) {
         const request = {
@@ -623,8 +645,8 @@ export class AnalysisDashbaordComponent implements OnInit {
           password: this.userValidateForm.value.password ?? ''
         };
 
-        this.loginService.login(request).subscribe(
-          (response) => {
+        this.loginService.login(request).subscribe({
+         next: (response) => {
             if (response) {
               this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
                 this.toastr.success('Analysis Details Submitted successfully', 'Success');
@@ -632,10 +654,21 @@ export class AnalysisDashbaordComponent implements OnInit {
               });
             }
           },
-          (error) => {
-            this.toastr.error('Invalid password', 'Electronic Signature Failed');
+          error: (err) => {
+          let errorMessage =
+            typeof err.error === 'string'
+              ? err.error
+              : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+
+          if (err.status === 403) {
+            errorMessage = 'Your account has been locked due to multiple failed login attempts.';
+            this.toastr.error(errorMessage, 'Account Locked');
+            this.route.navigateByUrl(''); 
           }
-        );
+
+          this.reviewPwdErrorMessage = errorMessage;
+        }
+      });
       } else {
         this.userValidateForm.get('userName')?.markAsDirty();
         this.userValidateForm.get('password')?.markAsDirty();
@@ -656,6 +689,39 @@ export class AnalysisDashbaordComponent implements OnInit {
         this.experimentName = data;
       }
     });
+  }
+
+
+  private autoSave() {
+    let saveCalls: any = [];
+    for (let index = 0; index < this.dummyTabs.length; index++) {
+      if (this.article[index].text && this.article[index].text.trim().length) {
+        let tabValue: any = {
+           status: 'string',
+          analysisId: this.experimentId,
+          name: this.dummyTabs[index].label,
+          fileContent: this.article[index].text,
+         // autoSave: 'Y'
+        };
+  
+        tabValue = {
+          ...tabValue,
+          analysisDetailId:
+            this.dummyTabs[index].value.substring(0, 3) === 'new'
+              ? null
+              : this.dummyTabs[index].value.substring('new'.length),
+           //  : this.dummyTabs[index].value.substring(3),
+        };
+  
+        saveCalls.push(this.analysisService.saveAnalysisDetails(tabValue));
+      }
+    }
+  
+     if (saveCalls.length) {
+      forkJoin(saveCalls).subscribe(response => {
+      this.toastr.success('Auto Saved Successfully', 'Success');
+      });
+    }
   }
 
 }

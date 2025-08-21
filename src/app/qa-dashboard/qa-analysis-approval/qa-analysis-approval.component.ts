@@ -271,18 +271,24 @@ export class QaAnalysisApprovalComponent implements OnInit {
         } 
       },
      (err: HttpErrorResponse) => {
-        const errorMessage =
+        let errorMessage =
           typeof err.error === 'string'
             ? err.error
             : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
-
+        if (err.status === 403) {
+          errorMessage = 'Your account has been locked due to multiple failed login attempts.';
+          this.toastr.error(errorMessage, 'Account Locked');
+          this.route.navigate(['']); 
+        }
         this.reviewPwdErrorMessage = errorMessage;
-      });  
+      }
+    ); 
     } else {
       this.userValidateForm.get('userName')?.markAsDirty();
       this.userValidateForm.get('password')?.markAsDirty();
     }
   }  
+
   downloadCoaPdfAnalysis(analysisId: number) {
     this.analysisService.downloadCoaPdfAnalysis(analysisId).subscribe(
       (response) => {

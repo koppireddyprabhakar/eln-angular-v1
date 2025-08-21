@@ -22,7 +22,7 @@ export class AuthGuardGuard implements CanLoad, CanActivate {
   }
 
   private validateSession(): boolean {
-    const userDetails = localStorage.getItem('userDetails');
+   const userDetails = sessionStorage.getItem('userDetails');
     if (!userDetails) {
       this.router.navigate(['']);
       return false;

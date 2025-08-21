@@ -20,7 +20,7 @@ import { departmentMapping } from '@app/shared/constants/mappings';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { TestService } from '@app/shared/services/test/test.service';
-//import { CommonFunctionsService } from '@app/shared/services/common-functions/common-functions.service';
+import { CommonFunctionsService } from '@app/shared/services/common-functions/common-functions.service';
 
 @Component({
   selector: 'app-analysis-experiment-dashboard',
@@ -120,6 +120,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   staticTrfId = 'TRF123';
   dtElements: QueryList<DataTableDirective>;
   selectedTestItems: any = [];
+  reviewPwdErrorMessage: any;
 
   constructor(
     private readonly projectService: ProjectService,
@@ -139,7 +140,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
   ngOnInit(): void {
     this.getExcipients();
 
-    const saveDataForEveryFiveMinutes = 5 * 60 * 1000;
+    const saveDataForEveryFiveMinutes = 1 * 60 * 1000;
     this.intervalSubscripton$ = interval(saveDataForEveryFiveMinutes).subscribe((v) => {
       if (this.analysisExperimentDetails) {
         this.autoSave();
@@ -388,7 +389,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       .getTrfDetailsById(this.analysisID)
       .subscribe((data) => {
         if (data.length > 0) {
-          this.resultsData = data;
+          this.resultsData = data;        
           this.tableTestData = !data[0].trfTestResults ? [] : data[0].trfTestResults;//check
           this.selectedTestItems = !data[0].trfTestResults ? [] : data[0].trfTestResults;
         }
@@ -422,6 +423,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       .subscribe((details) => {
         const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
         this.article[index].text = details.fileContent;
+         this.dummyTabs[index].lastSavedContent = details.fileContent;
       });
   }
 
@@ -478,9 +480,10 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
         .getAnalysisById(this.analysisID)
         .subscribe((analysisExperimentDetails) => {
           this.analysisExperimentDetails = analysisExperimentDetails;
+          console.log(analysisExperimentDetails);
           this.article = analysisExperimentDetails.analysisDetails.map(
-            (exp) => ({
-              title: '',
+            (exp) => ({          
+               title: '',
               text: '',
             })
           );
@@ -488,7 +491,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
             (exp) => ({
               label: exp.name,
               isEdit: false,
-              value: 'tab' + exp.analysisDetailId,
+              value: 'tab' + exp.analysisDetailId,          
             })
           );
           this.selectedItems = analysisExperimentDetails.analysisExcipients;
@@ -511,6 +514,9 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
         });
     }
   }
+    
+
+
 
   editMode(index) {
     this.inputValue = '';
@@ -550,6 +556,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       isEdit: false,
       value: `newTab-${(length + 1).toString()}`,
       showDeleteIcon: true,
+       lastSavedContent: '' 
     });
   }
 
@@ -667,6 +674,15 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       this.toastr.error('Please enter some content before attempting to save.', 'Error');
       return;
     }
+ const currentContent = this.article[index]?.text ?? '';
+const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
+
+  // Check if content is unchanged
+  if (currentContent === lastSaved) {
+    this.toastr.warning("No changes detected. Update not required.", "Warning");
+    return;
+  }
+
     const isNewTab = this.dummyTabs[index].value.startsWith('new');
     let analysisDetailId: number | null = null;
     if (!isNewTab) {
@@ -687,6 +703,8 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
         this.activeTab = `tab${data.analysisDetailId}`;
       }
       this.dummyTabs[index].showDeleteIcon = false;
+      // Update lastSavedContent after successful save
+    this.dummyTabs[index].lastSavedContent = currentContent;
     });
   }
 
@@ -714,6 +732,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     }
 
   }
+
 
   deleteNewTab(index: number, tab: any) {
     if (index >= 2) {
@@ -875,7 +894,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
           password: this.userValidateForm.value.password || ''
         };
 
-        this.loginService.login(request).subscribe(response => {
+        this.loginService.login(request).subscribe({ next:(response )=> {
           if (response) {
             this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
               this.toastr.success('Analysis Details Submitted successfully', 'Success');
@@ -884,9 +903,20 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
               );
             });
           }
-        }, (error) => {
-          this.toastr.error('Invalid password', 'Electronic Signature Failed');
-        });
+        },error: (err) => {
+          let errorMessage =
+            typeof err.error === 'string'
+              ? err.error
+              : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+
+          if (err.status === 403) {
+            errorMessage = 'Your account has been locked due to multiple failed login attempts.';
+            this.toastr.error(errorMessage, 'Account Locked');
+            this.route.navigateByUrl(''); 
+          }
+          this.reviewPwdErrorMessage = errorMessage;
+        },
+      });
       } else {
         this.userValidateForm.get('userName')?.markAsDirty();
         this.userValidateForm.get('password')?.markAsDirty();

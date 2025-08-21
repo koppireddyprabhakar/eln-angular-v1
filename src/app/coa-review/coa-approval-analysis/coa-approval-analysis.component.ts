@@ -177,7 +177,9 @@ export class CoaApprovalAnalysisComponent implements OnInit {
   }
 
   redirectToExperiments() {
-    this.route.navigate(['/coa-review']);
+   // this.route.navigate(['/coa-review']);
+   this.route.navigate(['/coareviewcomponent']);
+
   }
 
   getTestResultsByAnalysisId() {
@@ -249,7 +251,6 @@ export class CoaApprovalAnalysisComponent implements OnInit {
 }
 
 updateAnalysisStatus() {
-     ;
     let analysisRequest = {
       analysisId: this.analysisId,
       status: 'COA Reviewed',
@@ -261,23 +262,29 @@ updateAnalysisStatus() {
         mailId: this.userValidateForm.value.userName || '',
         password: this.userValidateForm.value.password || ''
       };
-      this.loginService.login(request).subscribe(response => {
+      this.loginService.login(request).subscribe({ next:(response) => {
          if (response.status=200) {
           this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
             this.updateCoaReviewDetails();
             this.toastr.success('Analysis Details Submitted successfully', 'Success');
-            this.route.navigate(['/coa-generation-list']);
+            this.route.navigate(['/coareviewcomponent']);
           });
         }
       },
-       (err: HttpErrorResponse) => {
-        const errorMessage =
-          typeof err.error === 'string'
-            ? err.error
-            : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
-
-        this.reviewPwdErrorMessage = errorMessage;
-      });  
+       error: (err) => {
+          this.globalService.hideLoader();
+          let errorMessage =
+            typeof err.error === 'string'
+              ? err.error
+              : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+          if (err.status === 403) { 
+            errorMessage = 'Your account has been locked due to multiple failed login attempts.';
+            this.toastr.error(errorMessage, 'Account Locked');
+            this.route.navigateByUrl('');
+          }
+          this.reviewPwdErrorMessage = errorMessage;
+        }
+      });
     } else {
       this.userValidateForm.get('userName')?.markAsDirty();
       this.userValidateForm.get('password')?.markAsDirty();

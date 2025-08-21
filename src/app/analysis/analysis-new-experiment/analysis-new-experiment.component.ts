@@ -13,7 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, interval, Subject, Subscription } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
-
+import { GlobalService } from '@app/shared/services/global/global.service';
 import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
@@ -121,6 +121,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
      password: ['', Validators.required]
   });
     tempFiles: File[] = []; // temp list before upload
+  reviewPwdErrorMessage: any;
 
 
   constructor(
@@ -135,7 +136,9 @@ export class AnalysisNewExperimentComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: Router,
     private loginService: LoginserviceService,
-    private commonFunctionsService: CommonFunctionsService
+    private commonFunctionsService: CommonFunctionsService,
+    private globalService: GlobalService,
+
   ) { }
 
   ngOnInit(): void {
@@ -593,6 +596,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
       isEdit: false,
       value: `newTab-${(length + 1).toString()}`,
       showDeleteIcon: true,
+       lastSavedContent: '' 
     });
   }
 
@@ -720,6 +724,14 @@ export class AnalysisNewExperimentComponent implements OnInit {
       this.toastr.error('Please enter some content before attempting to save.', 'Error');
       return;
     }
+     const currentContent = this.article[index]?.text ?? '';
+     const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
+
+  // Check if content is unchanged
+  if (currentContent === lastSaved) {
+    this.toastr.warning("No changes detected. Update not required.", "Warning");
+    return;
+  }
     const sss = JSON.stringify(this.article[index].text);
     let tabValue: any = {
       status: 'string',
@@ -750,17 +762,15 @@ export class AnalysisNewExperimentComponent implements OnInit {
         this.activeTab = `id${data.analysisDetailId}-tab`;
       }
       this.dummyTabs[index].showDeleteIcon = false;
+       this.dummyTabs[index].lastSavedContent = currentContent;
     });
   }
 
   private autoSave() {
 
     let saveCalls: any = [];
-
     for (let index = 0; index < this.dummyTabs.length; index++) {
-
       if (this.article[index].text && this.article[index].text.trim().length) {
-
         let tabValue: any = {
           status: 'Active',
           analysisId: this.experimentId,
@@ -903,8 +913,8 @@ export class AnalysisNewExperimentComponent implements OnInit {
       mailId: this.userValidateForm.value.userName ?? '',
       password: this.userValidateForm.value.password ?? ''
     };
-    this.loginService.login(request).subscribe(
-      (response) => {
+    this.loginService.login(request).subscribe({
+      next:(response) => {
         if (response) {
           this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
             this.toastr.success('Experiment Completed Successfully', 'Success');
@@ -912,10 +922,20 @@ export class AnalysisNewExperimentComponent implements OnInit {
           });
         }
       },
-      (error) => {
-        this.toastr.error('Invalid password', 'Electronic Signature Failed');
-      }
-    );
+     error: (err) => {
+          this.globalService.hideLoader();
+          let errorMessage =
+            typeof err.error === 'string'
+              ? err.error
+              : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+          if (err.status === 403) { 
+            errorMessage = 'Your account has been locked due to multiple failed login attempts.';
+            this.toastr.error(errorMessage, 'Account Locked');
+            this.route.navigateByUrl('');
+          }
+          this.reviewPwdErrorMessage = errorMessage;
+        }
+      });
   } else {
     this.userValidateForm.get('userName')?.markAsDirty();
     this.userValidateForm.get('password')?.markAsDirty();

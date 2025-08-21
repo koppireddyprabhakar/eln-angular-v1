@@ -96,6 +96,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
   });
   public intervalSubscripton$: Subscription;
   experimentName: any;
+  reviewPwdErrorMessage: any;
 
   constructor(
     private readonly projectService: ProjectService,
@@ -236,6 +237,8 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
       .subscribe((details) => {
         const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
         this.article[index].text = details.fileContent;
+       this.dummyTabs[index].lastSavedContent = details.fileContent;
+
       });
   }
 
@@ -373,6 +376,8 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
       isEdit: false,
       value: `newTab-${(length + 1).toString()}`,
       showDeleteIcon: true,
+       lastSavedContent: '' 
+
     });
   }
 
@@ -573,6 +578,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
 
     if (saveCalls.length) {
       forkJoin(saveCalls).subscribe(response => {
+        console.log("Auto-Saved Successfully..." + response);
         this.toastr.success('Saved Successfully', 'Success');
       })
     }
@@ -587,8 +593,13 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     if (this.isValid(index)) {
       this.toastr.error('Please enter some content before attempting to save.', 'Error');
       return;
-    }
-    
+    } 
+const currentContent = this.article[index]?.text ?? '';
+const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
+  if (currentContent === lastSaved) {
+    this.toastr.warning("No changes detected. Update not required.", "Warning");
+    return;
+  }
     let tabValue: any = {
       status: 'Active',
       experimentId: this.experimentId,
@@ -615,6 +626,8 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
       this.activeTab = `tab${data.experimentDetailId}`;
       }
       this.dummyTabs[index].showDeleteIcon = false;
+      this.dummyTabs[index].lastSavedContent = currentContent;
+
     });
   }
 
@@ -725,7 +738,6 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
 
   updateExperimentStatus() {
     let status = "Complete";
-
     if (this.experimentDetails && (this.experimentDetails.experimentStatus.toUpperCase() === 'Review Completed'.toUpperCase() ||
       this.experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase()
       || this.experimentDetails.experimentStatus.toUpperCase() === 'Need Correction'.toUpperCase())) {
@@ -735,15 +747,29 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
           mailId: this.userValidateForm.value.userName || '',
           password: this.userValidateForm.value.password || ''
         };
-
-        this.loginService.login(request).subscribe(response => {
+        this.globalService.showLoader();
+        this.loginService.login(request).subscribe({ next:(response) => {
           if (response) {
             this.experimentService.updateExperimentStatus(this.experimentId, status).subscribe((data) => {
               this.toastr.success('Formulation Experiment Completed Successfully ', 'Success');
               this.route.navigateByUrl(`/forms-page/experiments`);
             });
           }
-        });
+        },
+        error: (err) => {
+          this.globalService.hideLoader();
+          let errorMessage =
+            typeof err.error === 'string'
+              ? err.error
+              : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+          if (err.status === 403) { 
+            errorMessage = 'Your account has been locked due to multiple failed login attempts.';
+            this.toastr.error(errorMessage, 'Account Locked');
+            this.route.navigateByUrl('');
+          }
+          this.reviewPwdErrorMessage = errorMessage;
+        }
+      });
       } else {
         this.userValidateForm.get('userName')?.markAsDirty();
         this.userValidateForm.get('password')?.markAsDirty();
@@ -754,7 +780,6 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
         this.route.navigateByUrl(`/forms-page/experiments`);
       });
     }
-
   }
 
   getTestResults() {

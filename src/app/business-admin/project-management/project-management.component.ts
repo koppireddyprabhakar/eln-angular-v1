@@ -137,7 +137,7 @@ export class ProjectManagementComponent implements OnInit {
       .subscribe(() => {
         this.getProjects();
         this.confirmOnHoldModal.nativeElement.click();
-        this.toastr.success('Project has been deleted succesfully', 'Success');
+        this.toastr.success('Project has been put On Hold', 'Success');
       });
   }
 
@@ -158,7 +158,7 @@ export class ProjectManagementComponent implements OnInit {
       .subscribe(() => {
         this.getProjects();
         this.confirmOnHoldModal.nativeElement.click();
-        this.toastr.success('Project has been deleted succesfully', 'Success');
+        this.toastr.success('Project has been Reactivated succesfully', 'Success');
       });
   }
 

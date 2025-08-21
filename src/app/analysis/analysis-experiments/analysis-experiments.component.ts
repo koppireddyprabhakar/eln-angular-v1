@@ -156,7 +156,6 @@ export class AnalysisExperimentsComponent implements OnInit {
   }
 
   selectUser(user) {
-    debugger
     this.selectedUser = user;
     const creatorId = user.userId; // simple and clean
     this.filteredUsers = this.users.filter(user => user.userId !== creatorId);

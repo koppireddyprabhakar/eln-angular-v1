@@ -531,7 +531,7 @@ export class ReviewFormulationsComponent implements OnInit {
         return;
       }
     }
-    if (this.comments === undefined || this.comments.trim().length === 0) {
+    if (!this.comments  || this.comments.trim().length === 0) {
       this.comments = '';
       this.toastr.error('Please enter comments.', 'Error');
       return;
@@ -553,13 +553,14 @@ export class ReviewFormulationsComponent implements OnInit {
         password: this.userValidateForm.value.password || ''
       };
 
-      this.loginService.login(request).subscribe(response => {
-        if (response) {
+      this.loginService.login(request).subscribe({
+      next: (response) => {
+         if (response) {
           this.experimentService.updateExperimentReview(reviewRequest).subscribe((data) => {
-            if (reviewRequest.status == 'Need Correction') {
+            if (reviewRequest.status === 'Need Correction') {
               this.toastr.success('Need Correction request submitted successfully', 'Success');
             }
-            else if (reviewRequest.status == 'Prereview Completed') {
+            else if (reviewRequest.status === 'Prereview Completed') {
               this.toastr.success('Formulation PreReview completed successfully', 'Success');
             }
             else {
@@ -569,16 +570,21 @@ export class ReviewFormulationsComponent implements OnInit {
           });
         } 
       },
-   (err) => {
-  const errorMessage =
-    typeof err.error === 'string'
-      ? err.error
-      : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+   error: (err) => {
+        let errorMessage =
+          typeof err.error === 'string'
+            ? err.error
+            : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
 
-  this.reviewPwdErrorMessage = errorMessage;
-}
+        if (err.status === 403) {
+          errorMessage = 'Your account has been locked due to multiple failed login attempts.';
+          this.toastr.error(errorMessage, 'Account Locked');
+          this.route.navigateByUrl(''); 
+        }
 
-);
+        this.reviewPwdErrorMessage = errorMessage;
+      }
+    });
     } else {
       this.userValidateForm.get('userName')?.markAsDirty();
       this.userValidateForm.get('password')?.markAsDirty();

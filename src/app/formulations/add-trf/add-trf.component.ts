@@ -73,6 +73,7 @@ export class AddTrfComponent implements OnInit {
     userName: [''],
     password: [''],
   });
+  reviewPwdErrorMessage: any;
 
   // public testRequestRow: FormArray;
 
@@ -271,7 +272,7 @@ export class AddTrfComponent implements OnInit {
       };
       this.globalService.showLoader();
 
-      this.loginservice.login(request).subscribe(response => {
+      this.loginservice.login(request).subscribe({ next: (response) => {
         if (response) {
           this.trfService
             .createTestRequestForm(newTestRequest)
@@ -286,7 +287,24 @@ export class AddTrfComponent implements OnInit {
               this.route.navigate(['/forms-page/experiments']);
             });
         }
-      });
+      },
+       error: (err) => {
+        this.globalService.hideLoader();
+
+        let errorMessage =
+          typeof err.error === 'string'
+            ? err.error
+            : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+
+        if (err.status === 403) {
+          errorMessage = 'Your account has been locked due to multiple failed login attempts.';
+          this.toastr.error(errorMessage, 'Account Locked');
+          this.route.navigateByUrl(''); // Redirect to login
+        }
+
+        this.reviewPwdErrorMessage = errorMessage;
+      }
+    });
 
     } else {
       this.saveClicked = true;

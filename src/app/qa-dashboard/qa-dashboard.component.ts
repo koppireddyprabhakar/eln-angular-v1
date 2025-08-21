@@ -124,7 +124,6 @@ export class QaDashboardComponent implements OnInit {
   }
 
   getAnalysisExperiments() {
-    debugger
     // this.globalService.showLoader();
     this.analysisService.getAnalysisByStatusWithoutExpId('COA Reviewed')
       .pipe(takeWhile(() => this.subscribeFlag))
