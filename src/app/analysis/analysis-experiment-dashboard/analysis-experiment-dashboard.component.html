@@ -51,7 +51,8 @@
               Review Comments
             </button>
           </li>
-          <li class="nav-item" role="presentation">
+          <li class="nav-item" role="presentation" *ngIf="analysisExperimentDetails && (analysisExperimentDetails.status.toUpperCase() === 'Inprogress'.toUpperCase()
+              || analysisExperimentDetails.status.toUpperCase() === 'Need Correction'.toUpperCase())">
             <button class="nav-link" id="attachments-tab" [disabled]="!isCreatedExperiment" type="button"
               (click)="addNew()">
               Add New

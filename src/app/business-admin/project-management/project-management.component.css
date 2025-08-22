@@ -29,3 +29,9 @@
 .options-width {
   width: 200px;
 }
+
+.blue-icon {
+  color: #007bff; /* Bootstrap’s primary blue */
+  font-size: 2rem;
+}
+
