@@ -4,6 +4,7 @@ import { AnalysisService } from '@app/shared/services/analysis/analysis.service'
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
+import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject, takeWhile } from 'rxjs';
 
@@ -32,7 +33,8 @@ export class ReviewFormulationsListComponent implements OnInit {
     private readonly analysisService: AnalysisService,
     private readonly formulationService: FormulationsService,
     private readonly experimentService: ExperimentService,
-    private route: Router
+    private route: Router,
+    private loginService: LoginserviceService
   ) { }
 
   ngOnInit(): void {
@@ -54,9 +56,9 @@ export class ReviewFormulationsListComponent implements OnInit {
 
   getMyExperiments() {
     this.globalService.showLoader();
-
+    const userId =  this.loginService.userDetails.userId;
     this.experimentService
-      .getExperimentsByStatus('Inreview')
+      .getExperimentsByReviewerAndStatus(userId,'Inreview')
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((myExperiments) => {
         this.myExperiments = myExperiments;

@@ -144,6 +144,8 @@ export const elnEndpointsConfig: EndpointConfig = {
     getExcipientHistoryByAnalysisHistoryId: `${environment.API_BASE_PATH}` + '/analysis/get-excipient-history-by-analysis-historyId',
     resetPassword: `${environment.API_BASE_PATH}/login/resetPassword`,
     getAnalysisExperimentsByExperimentId: `${environment.API_BASE_PATH}` + '/analysis/get_analysis_experiments_by_experiment_id',
+    getExperimentsByReviewerAndStatus:  `${environment.API_BASE_PATH}` + '/experiment/get-experiments-by-reviewer',
+    getAnalysisExperimentsByReviewerAndStatus: `${environment.API_BASE_PATH}` + '/analysis/get-analysis-experiments-by-reviewer'
   },
 };
 

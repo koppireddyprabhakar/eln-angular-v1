@@ -311,7 +311,7 @@
                   </button>
                   </div>
                   <span *ngIf="userValidateForm.controls['password'].invalid &&
-                           (userValidateForm.controls['password'].dirty ||
+                           (submitClicked || userValidateForm.controls['password'].dirty ||
                            userValidateForm.controls['password'].touched) &&
                            userValidateForm.get('password')?.errors &&
                            userValidateForm.get('password')?.hasError('required')" class="text-danger">

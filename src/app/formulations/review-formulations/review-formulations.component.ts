@@ -586,6 +586,7 @@ export class ReviewFormulationsComponent implements OnInit {
       }
     });
     } else {
+      this.submitClicked = true;
       this.userValidateForm.get('userName')?.markAsDirty();
       this.userValidateForm.get('password')?.markAsDirty();
     }

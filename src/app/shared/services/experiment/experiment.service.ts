@@ -140,6 +140,14 @@ export class ExperimentService {
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
 
+  getExperimentsByReviewerAndStatus(userId: number, status: string) {
+  const url = `${elnEndpointsConfig.endpoints['getExperimentsByReviewerAndStatus']}?reviewUserId=${userId}&status=${status}`;
+  return this.http
+    .get<any>(url)
+    .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
+}
+
+
   createExperimentReview(experimentReview: any) {
     const url = `${elnEndpointsConfig.endpoints['createExperimentReview']}`
     return this.http.post<string>(url, experimentReview);
