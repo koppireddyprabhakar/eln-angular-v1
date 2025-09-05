@@ -7,12 +7,12 @@
         <i class="bi bi-chevron-down ms-auto"></i>
       </a>
       <ul id="components-projectDash" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-      <li>
+        <li>
           <a routerLink="/business-admin/products" routerLinkActive="active">
             <i class="bi bi-circle"></i><span>Product Management</span>
           </a>
         </li>
-         <li>
+        <li>
           <a routerLink="/business-admin/dosages" routerLinkActive="active">
             <i class="bi bi-circle"></i><span>Dosage Type Management</span>
           </a>
@@ -50,11 +50,11 @@
             <i class="bi bi-circle"></i><span>Team Management</span>
           </a>
         </li>
-        <li>
+        <!-- <li>
           <a routerLink="/business-admin/auditlogs" routerLinkActive="active">
             <i class="bi bi-circle"></i><span>Audit Logs</span>
           </a>
-        </li>
+        </li> -->
       </ul>
     </li>
     <li class="nav-item" *ngIf="!userService.isAdmin() && userService.isFromFormulationDept()">
@@ -194,6 +194,12 @@
           </a>
         </li>
       </ul>
+    </li>
+    <!-- Keep inside sidebar-nav, but outside admin-only blocks -->
+    <li class="nav-item">
+      <a routerLink="/auditlogs" routerLinkActive="active" class="nav-link collapsed">
+        <i class="bi bi-clipboard-data"></i><span>Audit Logs</span>
+      </a>
     </li>
   </ul>
 </aside>

@@ -146,7 +146,9 @@ export const elnEndpointsConfig: EndpointConfig = {
     resetPassword: `${environment.API_BASE_PATH}/login/resetPassword`,
     getAnalysisExperimentsByExperimentId: `${environment.API_BASE_PATH}` + '/analysis/get_analysis_experiments_by_experiment_id',
     getExperimentsByReviewerAndStatus:  `${environment.API_BASE_PATH}` + '/experiment/get-experiments-by-reviewer',
-    getAnalysisExperimentsByReviewerAndStatus: `${environment.API_BASE_PATH}` + '/analysis/get-analysis-experiments-by-reviewer'
+    getAnalysisExperimentsByReviewerAndStatus: `${environment.API_BASE_PATH}` + '/analysis/get-analysis-experiments-by-reviewer',
+    logout: `${environment.API_BASE_PATH}` + '/login/logout',
+    getAuditlogsByUserID: `${environment.API_BASE_PATH}` + '/audit/get-audit-logs-by-userid'
   },
 };
 

@@ -54,7 +54,7 @@
             <div class="d-flex flex-column mt-4">
               <button 
                 class="btn btn-primary btn-sm"
-                (click)="downloadAuditPdf(filteredLogs)">
+                (click)="downloadAuditPdf()">
                 Generate Audit Report
               </button>
             </div>
@@ -77,18 +77,22 @@
                 <thead class="table-light">
                   <tr>
                     <th>S.No</th>
-                    <th>ID</th>
                     <th>User</th>
                     <th>Action</th>
+                    <th>Event Type</th>       <!-- New -->
+                    <th>Module/Section</th>   <!-- New -->
+                    <th>IP Address</th>       <!-- New -->
                     <th>Date</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let log of filteredLogs; let i = index">
                     <td>{{ i + 1 }}</td>
-                    <td>{{ log.id }}</td>
                     <td>{{ log.userName }}</td>
                     <td>{{ log.action }}</td>
+                    <td>{{ log.eventType }}</td>           <!-- New -->
+                    <td>{{ log.moduleSection }}</td>       <!-- New -->
+                    <td>{{ log.ipAddress }}</td>           <!-- New -->
                     <td>{{ log.createdDate | date: 'short' }}</td>
                   </tr>
                 </tbody>

@@ -24,6 +24,10 @@ export class LoginserviceService {
    return this.http.post<{ firstLogin: boolean }>(url,request,{withCredentials: true });
   }
 
+  logout(): Observable<string> {
+  const url = elnEndpointsConfig.endpoints['logout'];
+  return this.http.post(url, {}, { withCredentials: true, responseType: 'text' });
+}
   handleError(error: HttpErrorResponse) {
     const errorDetail = ClientService.formatError(error);
     if (error.status === 401) { // Handle unauthorized errors specifically

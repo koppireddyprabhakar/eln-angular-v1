@@ -7,7 +7,7 @@ export const environment = {
  API_BASE_PATH:"http://localhost:8080"
 // API_BASE_PATH:"https://localhost:8443"
  // API_BASE_PATH:"https://eln-api-dev.azurewebsites.net"
-//API_BASE_PATH: "http://172.16.17.243:8025/eln-dev/"
+//API_BASE_PATH: "https://nextgeneln-test.ectdglobal.com/eln-dev/"
 
 };
 
