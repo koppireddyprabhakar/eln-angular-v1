@@ -77,6 +77,11 @@ export class AddTestComponent implements OnInit, OnDestroy {
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((selectedTest) => {
         this.selectedTest = selectedTest;
+        this.selectedTest.originalTestRow = [{
+          testName: selectedTest.testName,
+          description: selectedTest.description,
+          dosageId: selectedTest.dosageTest.dosageId
+        }];
         this.testRow.at(0).patchValue({
           testName: this.selectedTest.testName,
           description: this.selectedTest.description,
@@ -103,7 +108,6 @@ export class AddTestComponent implements OnInit, OnDestroy {
     return this.formBuilder.group({
       testName: ['', [Validators.required]],
       description: ['', [Validators.required]],
-      // dosageId: [null],
       dosageId: ['', [Validators.required]]
     });
   }
@@ -120,8 +124,8 @@ export class AddTestComponent implements OnInit, OnDestroy {
       insertUser: this.loginService.userDetails.userId
     }));
     const isInvalidForm = this.testForm.value.testRow?.some(
-  (row) => !row.testName?.trim() || !row.description?.trim() || !row.dosageId
-);
+      (row) => !row.testName?.trim() || !row.description?.trim() || !row.dosageId
+    );
     if (!isInvalidForm) {
       if (!this.editForm) {
         if (this.isTestExist(newTests)) {
@@ -135,15 +139,25 @@ export class AddTestComponent implements OnInit, OnDestroy {
             this.toastr.success('Test has been added succesfully', 'Success');
           });
       } else {
-        
-        const existingDosage: any = this.testForm.value.testRow?.map(
-          (val: any) => ({
-            ...this.selectedTest,
-            testName: val.testName.trim(),
-            description: val.description.trim(),
-            dosageTests: [{ dosageId: val.dosageId || null,testId: this.selectedTest.testId}],
-          })
-        );       
+
+        const existingDosage: any = this.testForm.value.testRow?.map((val: any) => ({
+          ...this.selectedTest,
+          testName: val.testName.trim(),
+          description: val.description.trim(),
+          dosageTests: [{ dosageId: val.dosageId || null, testId: this.selectedTest.testId }],
+        }));
+        const hasChanges = existingDosage.some((newRow: any, i: number) => {
+          const oldRow = this.selectedTest.originalTestRow?.[i];
+          return (
+            newRow.testName !== oldRow?.testName ||
+            newRow.description !== oldRow?.description ||
+            newRow.dosageTests[0].dosageId !== oldRow?.dosageId
+          );
+        });
+        if (!hasChanges) {
+          this.toastr.info('No changes detected', 'Info');
+          return;
+        }
         this.testService
           .updateTest(existingDosage[0])
           .pipe(takeWhile(() => this.subscribeFlag))

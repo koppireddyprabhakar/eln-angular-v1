@@ -64,38 +64,8 @@ export class ProjectExperimentsComponent implements OnInit {
         if (this.experiments && this.experiments.length === 0) {
           this.getAnalysisHistoryByProjectId(this.projectId);
         }
-        /*this.dtElements.forEach(
-          (dtElement: DataTableDirective, index: number) => {
-            dtElement.dtInstance.then((dtInstance: any) => {
-              if (dtInstance.table().node().id === 'first-table') {
-                dtInstance.destroy();
-                this.dtTrigger.next(this.experiments);
-              }
-            });
-          }
-        );*/
         this.globalService.hideLoader();
       });
-
-
-    // this.globalService.showLoader();
-    // this.experimentService
-    //   .getExperimentsByProjectId(this.projectId)
-    //   .pipe(takeWhile(() => this.subscribeFlag))
-    //   .subscribe((experiments) => {
-    //     this.experiments = experiments;
-    //     this.dtElements.forEach(
-    //       (dtElement: DataTableDirective, index: number) => {
-    //         dtElement.dtInstance.then((dtInstance: any) => {
-    //           if (dtInstance.table().node().id === 'first-table') {
-    //             dtInstance.destroy();
-    //             this.dtTrigger.next(this.experiments);
-    //           }
-    //         });
-    //       }
-    //     );
-    //     this.globalService.hideLoader();
-    //   });
   }
 
   viewExperiment(event) {

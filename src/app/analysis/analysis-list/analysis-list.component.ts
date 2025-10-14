@@ -30,6 +30,7 @@ export class AnalysisListComponent implements OnInit {
     pagingType: 'full_numbers',
     select: true,
   };
+  department: string = 'Formulation';
 
   constructor(
     private readonly testRequestService: TrfService,
@@ -86,8 +87,6 @@ export class AnalysisListComponent implements OnInit {
   onCheckboxClick(selectCheckBoxArr) {
     if (!this.selectedRows.some((e) => e.testRequestFormId === selectCheckBoxArr.testRequestFormId)) {
       this.selectedRows.push(selectCheckBoxArr);
-       
-      /* same result as above, but a different function return type */
     } else {
       this.selectedRows = this.selectedRows.filter(
         (e) => e.testRequestFormId !== selectCheckBoxArr.testRequestFormId

@@ -152,15 +152,6 @@
                               (change)="attachFile($event)" />
                           </div>
                         </div>
-                        <!-- <div class="row mb-3" *ngIf="selectedFile && files.length > 0">
-                          <label>Attachements</label>
-                          <span>
-                            <div class="file-container">
-                              <span class="file-list">{{ selectedFile.name |
-                                titlecase }}</span>
-                            </div>
-                          </span>
-                        </div> -->
                         <div class="row mb-3" *ngIf="tempFiles.length > 0">
                           <label>Attachments</label>
                           <span *ngFor="let file of tempFiles">

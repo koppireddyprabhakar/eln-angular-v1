@@ -97,8 +97,8 @@ export class QaAnalysisApprovalComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private readonly analysisService: AnalysisService,
     private formulationService: FormulationsService,
-    private userService: UserService, // Inject UserService
-    private loginService: LoginserviceService ,// Inject LoginserviceService
+    private userService: UserService,
+    private loginService: LoginserviceService ,
     private toastr: ToastrService,
     private formBuilder: FormBuilder,
   private experimentService: ExperimentService,) { }
@@ -137,25 +137,11 @@ export class QaAnalysisApprovalComponent implements OnInit {
 
 
   getAnalysisExperimentsById() {
-    const flatten = (object) => {
-      let value = {};
-      for (var property in object) {
-        if (typeof object[property] === 'object') {
-          for (var p in object[property]) {
-            value[p] = object[property][p];
-          }
-        } else {
-          value[property] = object[property];
-        }
-      }
-      return value;
-    };
     this.experimentService
       .getAnalysisExperimentsById(this.analysisId)
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((analysisexperiment) => {
-      //  this.analysisexperiment = analysisexperiment.map((trf) => flatten(trf))[0];
-      this.analysisexperiment = flatten(analysisexperiment);
+       this.analysisexperiment = analysisexperiment;
         this.getTestResultsByAnalysisId();
       });
   }
@@ -197,9 +183,9 @@ export class QaAnalysisApprovalComponent implements OnInit {
         this.tests = tests;
         let test = tests.map((trf) => flatten(trf))[0];
         this.testRequest['batchNumber'] = this.analysisexperiment.batchNumber;
-        this.testRequest['dosageForm'] = this.analysisexperiment.dosageName;
-        this.testRequest['projectName'] = this.analysisexperiment.projectName;
-        this.testRequest['strength'] = this.analysisexperiment.strength;
+        this.testRequest['dosageForm'] = this.analysisexperiment.project?.dosageName;
+        this.testRequest['projectName'] = this.analysisexperiment.project?.projectName;
+        this.testRequest['strength'] = this.analysisexperiment.project?.strength;
         this.testRequest['batchSize'] = this.analysisexperiment.batchSize;
         this.testRequest['testRequestId'] = test.testRequestFormId;
         this.testRequest['productCode'] = this.analysisexperiment.productCode;
@@ -212,7 +198,7 @@ export class QaAnalysisApprovalComponent implements OnInit {
         this.testRequest['packaging'] = test.packaging;
         this.testRequest['labelClaim'] = test.labelClaim;
         this.testRequest['quantity'] = test.quantity;
-        this.testRequest['market'] = this.analysisexperiment.markertName;
+        this.testRequest['market'] = this.analysisexperiment.project?.markertName;
         this.testRequest['preparedByName'] = this.coadetails.preparedName;
         this.testRequest['preparedByDesignation'] = this.coadetails.preparedDesignation;
         this.testRequest['preparedByDate'] = this.coadetails.preparedDate;
@@ -225,9 +211,7 @@ export class QaAnalysisApprovalComponent implements OnInit {
         this.testRequest['complianceStatus'] = this.coadetails.complianceStatus;
  
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          // Destroy the table first
           dtInstance.destroy();
-          // Call the dtTrigger to rerender again
           this.dtTrigger.next(this.tests);
         });
  
@@ -265,7 +249,6 @@ export class QaAnalysisApprovalComponent implements OnInit {
           this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
             this.updateCoaReviewDetails();
             this.toastr.success('Analysis Details Submitted successfully', 'Success');
-            this.downloadCoaPdfAnalysis(this.analysisexperiment.analysisId);
             this.redirectToExperiments();
           });
         } 

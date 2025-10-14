@@ -50,7 +50,7 @@ export class ExperimentService {
   getAttachmentsById(id) {
     const url = `${elnEndpointsConfig.endpoints['getExperimentAttachmentById']}?experimentId=${id}`;
     return this.http
-      .get<any>(url)
+      .get<any>(url,)
       .pipe(catchError((err: HttpErrorResponse) => this.handleError(err)));
   }
   deleteExperimentAttachment(file) {

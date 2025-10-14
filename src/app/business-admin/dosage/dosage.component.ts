@@ -47,13 +47,14 @@ export class DosageComponent implements OnInit {
 
   public showErrorMsg: boolean = false;
   saveButtonClicked: boolean = false;
+  originalDosage: any;
 
   constructor(
     private readonly dosageService: DosageService,
     private readonly formBuilder: FormBuilder,
     private readonly globalService: GlobalService,
     private toastr: ToastrService,
-    private loginService: LoginserviceService 
+    private loginService: LoginserviceService
   ) { }
 
   ngOnInit(): void {
@@ -66,11 +67,11 @@ export class DosageComponent implements OnInit {
 
   addFormulations(): FormGroup {
     return this.formBuilder.group({
-      formulationName: ['', Validators.required], // Add Validators.required here
+      formulationName: ['', Validators.required],
       formulationId: [null],
     });
   }
-  
+
 
   addNewFormulations() {
     this.formulations.push(this.addFormulations());
@@ -99,9 +100,7 @@ export class DosageComponent implements OnInit {
         }));
         this.dosages = [...newDosagesList];
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          // Destroy the table first
           dtInstance.destroy();
-          // Call the dtTrigger to rerender again
           this.dtTrigger.next(this.dosages);
         });
         this.globalService.hideLoader();
@@ -113,19 +112,18 @@ export class DosageComponent implements OnInit {
     this.saveButtonClicked = true;
     let dosageName = this.dosageForm.get('dosageName')?.value;
 
-if (!dosageName || typeof dosageName !== 'string') {
-  this.dosageForm.get('dosageName')?.markAsDirty();
-  return;
-}
-dosageName = dosageName.trim();
-// Check for case-insensitive duplicate (excluding the one being edited)
-const isDuplicate = this.dosages.some(d =>
-  d.dosageName?.trim().toLowerCase() === dosageName!.toLowerCase() &&
-  d.dosageId !== this.selectedDosage?.dosageId );
-if (isDuplicate) {
-  this.showErrorMsg = true;
-  return;
-}
+    if (!dosageName || typeof dosageName !== 'string') {
+      this.dosageForm.get('dosageName')?.markAsDirty();
+      return;
+    }
+    dosageName = dosageName.trim();
+    const isDuplicate = this.dosages.some(d =>
+      d.dosageName?.trim().toLowerCase() === dosageName!.toLowerCase() &&
+      d.dosageId !== this.selectedDosage?.dosageId);
+    if (isDuplicate) {
+      this.showErrorMsg = true;
+      return;
+    }
     let allFormulationsValid = false;
     this.formulations.controls.forEach(formulationGroup => {
       const formulationControl = formulationGroup.get('formulationName');
@@ -133,10 +131,30 @@ if (isDuplicate) {
         allFormulationsValid = true;
       }
     });
-  
+
     if (allFormulationsValid) {
-      // Show validation message for formulation names
       return;
+    }
+
+    const currentDosage: Dosages = {
+      ...this.selectedDosage,
+      dosageName: this.dosageForm.get('dosageName')!.value,
+      formulations: this.formulations.value
+    };
+    if (this.originalDosage) {
+      const isNameSame = this.originalDosage.dosageName === currentDosage.dosageName;
+      const originalFormulations = this.originalDosage.formulations || [];
+      const currentFormulations = currentDosage.formulations || [];
+      const isFormulationsSame =
+        originalFormulations.length === currentFormulations.length &&
+        originalFormulations.every(
+          (orig, i) => orig.formulationName === currentFormulations[i].formulationName
+        );
+      if (isNameSame && isFormulationsSame) {
+        this.toastr.info('No changes detected.', 'Info');
+        this.globalService.hideLoader();
+        return;
+      }
     }
 
     if (this.dosageForm.get('dosageName')!.value) {
@@ -192,8 +210,8 @@ if (isDuplicate) {
   }
 
   selectProduct(product: Dosages) {
-    this.selectedDosage = {} as Dosages;
-    this.selectedDosage = product;
+    this.selectedDosage = JSON.parse(JSON.stringify(product));
+    this.originalDosage = JSON.parse(JSON.stringify(product));
     this.showErrorMsg = false;
     this.formulations.clear();
     this.dosageForm.patchValue({ dosageName: product.dosageName });

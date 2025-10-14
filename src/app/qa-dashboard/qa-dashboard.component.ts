@@ -23,8 +23,7 @@ export class QaDashboardComponent implements OnInit {
   @ViewChildren('secondTable', { read: DataTableDirective }) dtElementsAnalysis: QueryList<DataTableDirective>;
   @ViewChildren('thirdTable', { read: DataTableDirective }) dtElementsAnalysisDetails: QueryList<DataTableDirective>;
 
-  // @ViewChildren(DataTableDirective)
-  // dtElements: QueryList<DataTableDirective>;
+  @ViewChildren('thirdTable', { read: DataTableDirective }) dtElementsForAnalysis: QueryList<DataTableDirective>;
   experiments: any = [];
   myExperiments: any = [];
   subscribeFlag = true;
@@ -39,8 +38,10 @@ export class QaDashboardComponent implements OnInit {
     pagingType: 'full_numbers',
   };
   dtAnalysisExperimentTrigger: Subject<any> = new Subject<any>();
-  dtTriggerForAnalysisOptions: DataTables.Settings = {};
   dtTriggerForAnalysis: Subject<any> = new Subject<any>();
+  dtTriggerForAnalysisOptions: DataTables.Settings = {
+    pagingType: 'full_numbers',
+  };
 
   dtAnalysisExperiments: DataTables.Settings = {
     pagingType: 'full_numbers',
@@ -100,15 +101,19 @@ export class QaDashboardComponent implements OnInit {
   ngAfterViewInit(): void {
     this.dtFormulationExperimentTrigger.next(null);
     this.dtAnalysisExperimentTrigger.next(null);
+    this.dtTriggerForAnalysis.next(null);
+ 
   }
 
   getFormulationExperiments() {
     this.globalService.showLoader();
     this.experimentService
-      .getExperimentsByStatus('COA Reviewed')
+      .getExperiments()
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((experiments) => {
-        this.experiments = experiments;
+        this.experiments = experiments.filter(
+        (exp: any) => exp.status === 'COA Reviewed' || exp.status === 'COA Approved'
+      );;
         this.dtElementsFormulation.forEach(
           (dtElement: DataTableDirective, index: number) => {
             dtElement.dtInstance.then((dtInstance: any) => {
@@ -124,11 +129,12 @@ export class QaDashboardComponent implements OnInit {
   }
 
   getAnalysisExperiments() {
-    // this.globalService.showLoader();
-    this.analysisService.getAnalysisByStatusWithoutExpId('COA Reviewed')
+    this.analysisService.getALlAnalysisExperiments()
       .pipe(takeWhile(() => this.subscribeFlag))
-      .subscribe((myExperiments) => {
-        this.myExperiments = myExperiments;
+      .subscribe((experiments) => {
+        this.myExperiments = experiments.filter(exp =>
+        exp.status === 'COA Reviewed' || exp.status === 'COA Approved'
+      );
         this.dtElementsAnalysis.forEach(
           (dtElement: DataTableDirective, index: number) => {
             dtElement.dtInstance.then((dtInstance: any) => {
@@ -172,47 +178,28 @@ export class QaDashboardComponent implements OnInit {
       });
   }
 
-
-  getAnalysisExperimentsByExperimentId(experimentId) {
-    console.log(experimentId)
-    this.globalService.showLoader();
-    this.experimentService
-      .getAnalysisExperimentsByExperimentId(experimentId)
-      .pipe(takeWhile(() => this.subscribeFlag))
-      .subscribe((analysisDetails) => {
-        console.log(experimentId)
-        this.analysisDetails = analysisDetails;
-        console.log("✅ Analysis Details Received:", this.analysisDetails);
-        // this.dtElementsForAnalysis.forEach(
-        //   (dtElement: DataTableDirective, index: number) => {
-        //     dtElement.dtInstance.then((dtInstance: any) => {
-        //       if (dtInstance.table().node().id === 'third-table') {
-        //         dtInstance.destroy();
-        //         this.dtTriggerForAnalysis.next(this.analysisDetails);
-        //       }
-        //     });
-        //   }
-        // );
-        this.dtElementsAnalysisDetails.forEach((dtElement: DataTableDirective, index: number) => {
-          console.log('dtElementsForAnalysis:', this.dtElementsAnalysisDetails);
-          if (dtElement?.dtInstance) {
-            dtElement.dtInstance.then((dtInstance: any) => {
-              if (dtInstance.table().node().id === 'third-table') {
-                dtInstance.destroy();
-                this.dtTriggerForAnalysis.next(this.analysisDetails);
-              }
-            });
+getAnalysisExperimentsByExperimentId(experimentId) {
+  this.globalService.showLoader();
+  this.experimentService
+    .getAnalysisExperimentsByExperimentId(experimentId)
+    .pipe(takeWhile(() => this.subscribeFlag))
+    .subscribe((analysisDetails) => {
+      this.analysisDetails = analysisDetails;
+      this.dtElementsForAnalysis.forEach((dtElement: DataTableDirective) => {
+        dtElement.dtInstance.then((dtInstance: any) => {
+          if (dtInstance.table().node().id === 'thirdTable') {
+            dtInstance.destroy();
+            this.dtTriggerForAnalysis.next(null);  // no arguments
           }
         });
-
-        this.globalService.hideLoader();
       });
-
-  }
+      this.globalService.hideLoader();
+    });
+}
+  
 
 
   viewAnalysisExperiments(event) {
-    console.log('View Analysis Event:', event);
     this.route.navigateByUrl(
       `/exp-analysis/exp-dashboard?projectId=${event.projectId}&analysisId=${event.analysisId}`
     );

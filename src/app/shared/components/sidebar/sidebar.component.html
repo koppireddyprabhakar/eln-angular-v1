@@ -1,6 +1,6 @@
 <aside id="sidebar" class="sidebar">
   <ul class="sidebar-nav" id="sidebar-nav">
-    <li class="nav-item" *ngIf="userService.isAdmin()">
+    <li class="nav-item" *ngIf="userService.isAdmin() || userService.isSuperAdmin()">
       <a class="nav-link collapsed" data-bs-target="#components-projectDash" data-bs-toggle="collapse"
         aria-expanded="true" routerLinkActive="active">
         <i class="bi bi-grid"></i> <span>Project Dashboard</span>

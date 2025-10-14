@@ -89,11 +89,6 @@ export class VersionHistoryComponent implements OnInit {
       );
     }
 
-    // editProject(project) {
-    //   this.route.navigateByUrl(
-    //     `/business-admin/project-management/add-project?projectId=${project.projectId}`
-    //   );
-    // }
 
   
     ngOnDestroy(): void {

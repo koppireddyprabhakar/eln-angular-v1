@@ -21,6 +21,7 @@ import { ExperimentService } from '@app/shared/services/experiment/experiment.se
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { TestService } from '@app/shared/services/test/test.service';
 import { CommonFunctionsService } from '@app/shared/services/common-functions/common-functions.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-analysis-experiment-dashboard',
@@ -135,6 +136,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     private route: Router,
     private loginService: LoginserviceService,
     private readonly testService: TestService,
+    private http: HttpClient
   ) { }
 
   ngOnInit(): void {
@@ -389,7 +391,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       .getTrfDetailsById(this.analysisID)
       .subscribe((data) => {
         if (data.length > 0) {
-          this.resultsData = data;        
+          this.resultsData = data;
           this.tableTestData = !data[0].trfTestResults ? [] : data[0].trfTestResults;//check
           this.selectedTestItems = !data[0].trfTestResults ? [] : data[0].trfTestResults;
         }
@@ -423,7 +425,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       .subscribe((details) => {
         const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
         this.article[index].text = details.fileContent;
-         this.dummyTabs[index].lastSavedContent = details.fileContent;
+        this.dummyTabs[index].lastSavedContent = details.fileContent;
       });
   }
 
@@ -451,13 +453,8 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
     this.analysisService
       .deleteAnalysisAttachment(fileData)
       .subscribe((experimentDetails) => {
-        // if (experimentDetails['data'] === "Analysis Attachment Delete Successfully") {
-        //   this.getAttachments();
-        // }
         if (experimentDetails['data'] === "Analysis Attachment Delete Successfully") {
-          //  Remove from the files list locally
           this.files = this.files.filter(f => f.name !== file.name);
-          // Optional: also remove from tempFiles if it exists
           this.tempFiles = this.tempFiles.filter(f => f.name !== file.name);
           this.toastr.success(`"${file.name}" removed successfully`, 'Deleted');
         }
@@ -480,10 +477,9 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
         .getAnalysisById(this.analysisID)
         .subscribe((analysisExperimentDetails) => {
           this.analysisExperimentDetails = analysisExperimentDetails;
-          console.log(analysisExperimentDetails);
           this.article = analysisExperimentDetails.analysisDetails.map(
-            (exp) => ({          
-               title: '',
+            (exp) => ({
+              title: '',
               text: '',
             })
           );
@@ -491,7 +487,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
             (exp) => ({
               label: exp.name,
               isEdit: false,
-              value: 'tab' + exp.analysisDetailId,          
+              value: 'tab' + exp.analysisDetailId,
             })
           );
           this.selectedItems = analysisExperimentDetails.analysisExcipients;
@@ -514,7 +510,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
         });
     }
   }
-    
+
 
 
 
@@ -556,7 +552,7 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       isEdit: false,
       value: `newTab-${(length + 1).toString()}`,
       showDeleteIcon: true,
-       lastSavedContent: '' 
+      lastSavedContent: ''
     });
   }
 
@@ -574,25 +570,12 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       batchNumber: this.analysisExperimentDetails.batchNumber,
       analysisDetailsList: this.analysisExperimentDetails.analysisDetails,
     };
-
     this.analysisService
       .updateAnalysis(summary)
       .subscribe((experiment: any) => {
-        // if (this.selectedFile) {
-        //   this.analysisService
-        //     .saveAnalysisAttachment(this.selectedFile, this.analysisExperimentDetails.analysisId, this.projectId,
-        //       "Y")
-        //     .subscribe((response) => {
-        //       this.files = response;
-        //       this.getAnalysisExperimentDetails(this.analysisExperimentDetails.analysisId);
-        //       this.toastr.success(experiment.data, 'Success');
-        //       this.activeTab = this.dummyTabs[0].value;
-        //     });
-        // } else {
         this.getAnalysisExperimentDetails(this.analysisExperimentDetails.analysisId);
         this.toastr.success(experiment.data, 'Success');
         this.activeTab = this.dummyTabs[0].value;
-        // }
       });
   }
 
@@ -674,15 +657,12 @@ export class AnalysisExperimentDashboardComponent implements OnInit {
       this.toastr.error('Please enter some content before attempting to save.', 'Error');
       return;
     }
- const currentContent = this.article[index]?.text ?? '';
-const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
-
-  // Check if content is unchanged
-  if (currentContent === lastSaved) {
-    this.toastr.warning("No changes detected. Update not required.", "Warning");
-    return;
-  }
-
+    const currentContent = this.article[index]?.text ?? '';
+    const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
+    if (currentContent === lastSaved) {
+      this.toastr.warning("No changes detected. Update not required.", "Warning");
+      return;
+    }
     const isNewTab = this.dummyTabs[index].value.startsWith('new');
     let analysisDetailId: number | null = null;
     if (!isNewTab) {
@@ -695,7 +675,6 @@ const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
       name: label,
       fileContent: this.article[index].text,
     };
-
     this.analysisService.saveAnalysisDetails(tabValue).subscribe((data) => {
       this.toastr.success(`Experiment details updated successfully`, 'Success');
       if (isNewTab && data?.analysisDetailId) {
@@ -703,8 +682,7 @@ const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
         this.activeTab = `tab${data.analysisDetailId}`;
       }
       this.dummyTabs[index].showDeleteIcon = false;
-      // Update lastSavedContent after successful save
-    this.dummyTabs[index].lastSavedContent = currentContent;
+      this.dummyTabs[index].lastSavedContent = currentContent;
     });
   }
 
@@ -727,7 +705,7 @@ const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
 
     if (saveCalls.length) {
       forkJoin(saveCalls).subscribe(response => {
-          this.toastr.success('Auto Saved Successfully', 'Success');
+        this.toastr.success('Auto Saved Successfully', 'Success');
       })
     }
 
@@ -756,7 +734,7 @@ const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
       if (alreadyUploaded) {
         this.toastr.warning(`"${file.name}" is already uploaded`, 'Duplicate File');
       } else {
-        // Directly upload the file to DB
+
         this.analysisService
           .saveAnalysisAttachment(file, this.analysisExperimentDetails.analysisId, this.projectId, "Y")
           .subscribe({
@@ -771,7 +749,7 @@ const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
           });
       }
     }
-    event.target.value = ''; // Reset input for reselecting same file
+    event.target.value = '';
   }
 
   onChange(event) {
@@ -786,16 +764,14 @@ const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
   processFile(event) {
     const attachedFile = event.target.files[0];
     if (!attachedFile) return;
-    // Check if file was uploaded in Summary tab
     const uploadedInSummary = this.files.some(
       f => f.name === attachedFile.name && f.fromSummary === 'Y'
     );
     if (uploadedInSummary) {
       this.toastr.warning(`File "${attachedFile.name}" was already uploaded in Summary page`, 'Duplicate File');
-      event.target.value = ''; // reset input
+      event.target.value = '';
       return;
     }
-    // Optional: prevent re-upload by name (generally)
     const alreadyUploaded = this.files.some(
       f => f.name === attachedFile.name
     );
@@ -819,9 +795,22 @@ const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
   }
 
   getFileContent(fileName: string, experimentId: number) {
-    window.location.assign(
-      `${environment.API_BASE_PATH}` + `/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`
-    );
+    const url = `${environment.API_BASE_PATH}/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`;
+    this.http.get(url, {
+      responseType: 'blob'
+    }).subscribe(blob => {
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = objectUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, error => {
+      console.error('Download failed', error);
+      this.toastr.error('Failed to download file');
+    });
   }
 
   trfResultChange(result, index) {
@@ -893,30 +882,29 @@ const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
           mailId: this.userValidateForm.value.userName || '',
           password: this.userValidateForm.value.password || ''
         };
-
-        this.loginService.login(request).subscribe({ next:(response )=> {
-          if (response) {
-            this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
-              this.toastr.success('Analysis Details Submitted successfully', 'Success');
-              this.route.navigateByUrl(
-                `/exp-analysis/analysis-experiments`
-              );
-            });
-          }
-        },error: (err) => {
-          let errorMessage =
-            typeof err.error === 'string'
-              ? err.error
-              : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
-
-          if (err.status === 403) {
-            errorMessage = 'Your account has been locked due to multiple failed login attempts.';
-            this.toastr.error(errorMessage, 'Account Locked');
-            this.route.navigateByUrl(''); 
-          }
-          this.reviewPwdErrorMessage = errorMessage;
-        },
-      });
+        this.loginService.login(request).subscribe({
+          next: (response) => {
+            if (response) {
+              this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
+                this.toastr.success('Analysis Details Submitted successfully', 'Success');
+                this.route.navigateByUrl(
+                  `/exp-analysis/analysis-experiments`
+                );
+              });
+            }
+          }, error: (err) => {
+            let errorMessage =
+              typeof err.error === 'string'
+                ? err.error
+                : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+            if (err.status === 403) {
+              errorMessage = 'Your account has been locked due to multiple failed login attempts.';
+              this.toastr.error(errorMessage, 'Account Locked');
+              this.route.navigateByUrl('');
+            }
+            this.reviewPwdErrorMessage = errorMessage;
+          },
+        });
       } else {
         this.userValidateForm.get('userName')?.markAsDirty();
         this.userValidateForm.get('password')?.markAsDirty();

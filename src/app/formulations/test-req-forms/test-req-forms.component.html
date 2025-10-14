@@ -20,8 +20,8 @@
                     <th>Test Name</th>
                     <th>Test ID</th>
                     <th>Project Name</th>
-                     <th>Formulation Exp Name</th>
-                    <th>Product Name</th>               
+                    <th>Formulation Exp Name</th>
+                    <th>Product Name</th>
                     <th>Batch Number</th>
                     <th>Creation Date</th>
                     <th>Test Status</th>
@@ -34,23 +34,20 @@
                     <td>{{trf.testName}}</td>
                     <td>{{ trf.testNumber }}</td>
                     <td>{{ trf.project.projectName | titlecase }}</td>
-                     <td>{{ trf.experiment.experimentName }}</td>
-                    <td>{{ trf.project.productName }}</td>                  
+                    <td>{{ trf.experiment.experimentName }}</td>
+                    <td>{{ trf.project.productName }}</td>
                     <td>{{ trf.experiment.batchNumber }}</td>
                     <td>{{ trf.insertDate }}</td>
-                    <td>{{ trf.testRequestFormStatus }}</td>
+                    <td>
+                      {{ trf.project && trf.project.status === 'OnHold'
+                      ? trf.project.status
+                      : trf.testRequestFormStatus }}
+                    </td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <div class="text-end">
-              <!-- <button
-                  type="submit"
-                  class="btn btn-primary margin-up"
-                  (click)="createExperiment()"
-                >
-                  Create Experiment
-                </button> -->
             </div>
           </div>
         </div>

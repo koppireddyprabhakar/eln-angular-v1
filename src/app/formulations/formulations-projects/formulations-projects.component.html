@@ -89,7 +89,7 @@
                           <td>{{ project.insertDate  | date }}</td>
                           <td>{{ project.status }}</td>
                           <td>
-                            <i class="btn btn-link" (click)="createFormulation(project.projectId)">
+                            <i *ngIf="project.status !== 'OnHold' && project.status !== 'Inactive'" class="btn btn-link" (click)="createFormulation(project.projectId)">
                               Add&nbsp;Experiment
                             </i>
                           </td>

@@ -1,11 +1,12 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { elnEndpointsConfig } from '@config/endpoints/eln.endpoints.config';
 import { ToastrService } from 'ngx-toastr';
-import { Observable, throwError } from 'rxjs';
+import { Observable, tap, throwError } from 'rxjs';
 import { ClientService } from '../client/client.service';
+import { AuthService } from '../auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,18 +17,34 @@ export class LoginserviceService {
 
 
   constructor(private http: HttpClient,clientService: ClientService,
-    private toastr: ToastrService, private router:Router) { }
+    private toastr: ToastrService, private router:Router,private authService: AuthService) { }
 
 
-  login(request:{mailId: string, password: string}): Observable<any> {
-    const url = elnEndpointsConfig.endpoints['login'];
-   return this.http.post<{ firstLogin: boolean }>(url,request,{withCredentials: true });
-  }
 
-  logout(): Observable<string> {
-  const url = elnEndpointsConfig.endpoints['logout'];
-  return this.http.post(url, {}, { withCredentials: true, responseType: 'text' });
+   login(request: { mailId: string; password: string }): Observable<any> {
+  const url = elnEndpointsConfig.endpoints['login'];
+  return this.http.post(url, request, { withCredentials: true }).pipe(
+    tap((res: any) => {
+      if (res.token && res.refreshToken) {
+        this.authService.saveTokens(res.token, res.refreshToken);
+      }
+      if (res.user) {
+        this.setUserDetails(res.user);
+      }
+    })
+  );
 }
+
+logout(): Observable<string> {
+  const url = elnEndpointsConfig.endpoints['logout'];
+  const token = this.getAccessToken();
+  let headers = new HttpHeaders();
+  if (token) {
+    headers = headers.set('Authorization', `Bearer ${token}`);
+  }
+return this.http.post(url, {}, { headers, responseType: 'text' as 'text' });
+}
+
   handleError(error: HttpErrorResponse) {
     const errorDetail = ClientService.formatError(error);
     if (error.status === 401) { // Handle unauthorized errors specifically
@@ -61,9 +78,26 @@ setUserDetails(user: any) {
   sessionStorage.setItem('userDetails', JSON.stringify(user))
 }
 
+setTokens(accessToken: string, refreshToken: string) {
+  sessionStorage.setItem('accessToken', accessToken);
+  sessionStorage.setItem('refreshToken', refreshToken);
+}
+
+getAccessToken(): string | null {
+  return sessionStorage.getItem('accessToken');
+}
+
+
+getRefreshToken(): string | null {
+  return sessionStorage.getItem('refreshToken');
+}
+
+
 clearUserDetails() {
   this.userDetails = null;
 sessionStorage.removeItem('userDetails');  
+sessionStorage.removeItem('refreshToken');
+  sessionStorage.removeItem('accessToken');
  }
 }
   

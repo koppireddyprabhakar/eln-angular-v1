@@ -18,6 +18,7 @@ import { LoginserviceService } from '@app/shared/services/login/loginservice.ser
 import { ProjectService } from '@app/shared/services/project/project.service';
 import { environment } from "src/environments/environment";
 import { departmentMapping } from '@app/shared/constants/mappings';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-analysis-dashbaord',
@@ -98,11 +99,12 @@ export class AnalysisDashbaordComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private route: Router,
-    private loginService: LoginserviceService
+    private loginService: LoginserviceService,
+    private http: HttpClient
   ) { }
 
   ngOnInit(): void {
-      const saveDataForEveryFiveMinutes = 1* 60 * 1000;
+    const saveDataForEveryFiveMinutes = 1 * 60 * 1000;
     this.intervalSubscripton$ = interval(saveDataForEveryFiveMinutes).subscribe((v) => {
       if (this.experimentDetails) {
         this.autoSave();
@@ -327,7 +329,7 @@ export class AnalysisDashbaordComponent implements OnInit {
       isEdit: false,
       value: `newTab-${(length + 1).toString()}`,
       showDeleteIcon: true,
-       lastSavedContent: '' 
+      lastSavedContent: ''
     });
   }
 
@@ -348,24 +350,12 @@ export class AnalysisDashbaordComponent implements OnInit {
     };
     if (!this.summaryForm.invalid) {
       this.analysisService.saveAnalysis(summary).subscribe((experiment: any) => {
-        // if (this.selectedFile) {
-        //   this.analysisService
-        //     .saveAnalysisAttachment(this.selectedFile, experiment['data'], this.projectId,
-        //       "Y")
-        //     .subscribe((response) => {
-        //       this.files = response;
-        //       this.getAnalysisById(experiment.data, 'firstLoad');
-        //     });
-        // } else {
-        //   this.getAnalysisById(experiment.data, 'firstLoad');
-        // }
         if (this.tempFiles.length > 0) {
           const uploadObservables = this.tempFiles.map(file =>
             this.analysisService.saveAnalysisAttachment(file, experiment['data'], this.projectId, "Y")
           );
 
           forkJoin(uploadObservables).subscribe((responses) => {
-            // Combine all uploaded file responses
             this.files = responses.flat();
             this.tempFiles = [];
             this.getAnalysisById(experiment.data, 'firstLoad');
@@ -461,14 +451,12 @@ export class AnalysisDashbaordComponent implements OnInit {
       this.toastr.error('Please enter some content before attempting to save.', 'Error');
       return;
     }
-     const currentContent = this.article[index]?.text ?? '';
-     const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
-
-  // Check if content is unchanged
-  if (currentContent === lastSaved) {
-    this.toastr.warning("No changes detected. Update not required.", "Warning");
-    return;
-  }
+    const currentContent = this.article[index]?.text ?? '';
+    const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
+    if (currentContent === lastSaved) {
+      this.toastr.warning("No changes detected. Update not required.", "Warning");
+      return;
+    }
     const sss = JSON.stringify(this.article[index].text);
     let tabValue: any = {
       status: 'string',
@@ -525,7 +513,6 @@ export class AnalysisDashbaordComponent implements OnInit {
       }
     }
 
-    // Reset input value so same file can be re-selected if removed
     event.target.value = '';
   }
 
@@ -536,22 +523,17 @@ export class AnalysisDashbaordComponent implements OnInit {
     const attachedFile = event.target.files[0];
     if (!attachedFile) return;
 
-    // Check if file was uploaded in Summary tab
     const uploadedInSummary = this.files.some(
       f => f.name === attachedFile.name && f.fromSummary === 'Y'
     );
-
     if (uploadedInSummary) {
       this.toastr.warning(`File "${attachedFile.name}" was already uploaded in Summary page`, 'Duplicate File');
-      event.target.value = ''; // reset input
+      event.target.value = '';
       return;
     }
-
-    // Optional: prevent re-upload by name (generally)
     const alreadyUploaded = this.files.some(
       f => f.name === attachedFile.name
     );
-
     if (alreadyUploaded) {
       this.toastr.warning(`File "${attachedFile.name}" already uploaded`, 'Duplicate File');
       event.target.value = '';
@@ -564,13 +546,26 @@ export class AnalysisDashbaordComponent implements OnInit {
         this.files = response;
         this.toastr.success('File Uploaded Successfully', 'Success');
       });
-    event.target.value = ''; // reset input
+    event.target.value = '';
   }
 
   getFileContent(fileName: string, experimentId: number) {
-    window.location.assign(
-      `${environment.API_BASE_PATH}` + `/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`
-    );
+    const url = `${environment.API_BASE_PATH}/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`;
+    this.http.get(url, {
+      responseType: 'blob'
+    }).subscribe(blob => {
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = objectUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, error => {
+      console.error('Download failed', error);
+      this.toastr.error('Failed to download file');
+    });
   }
 
   saveExcipients() {
@@ -646,7 +641,7 @@ export class AnalysisDashbaordComponent implements OnInit {
         };
 
         this.loginService.login(request).subscribe({
-         next: (response) => {
+          next: (response) => {
             if (response) {
               this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
                 this.toastr.success('Analysis Details Submitted successfully', 'Success');
@@ -655,20 +650,19 @@ export class AnalysisDashbaordComponent implements OnInit {
             }
           },
           error: (err) => {
-          let errorMessage =
-            typeof err.error === 'string'
-              ? err.error
-              : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+            let errorMessage =
+              typeof err.error === 'string'
+                ? err.error
+                : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+            if (err.status === 403) {
+              errorMessage = 'Your account has been locked due to multiple failed login attempts.';
+              this.toastr.error(errorMessage, 'Account Locked');
+              this.route.navigateByUrl('');
+            }
 
-          if (err.status === 403) {
-            errorMessage = 'Your account has been locked due to multiple failed login attempts.';
-            this.toastr.error(errorMessage, 'Account Locked');
-            this.route.navigateByUrl(''); 
+            this.reviewPwdErrorMessage = errorMessage;
           }
-
-          this.reviewPwdErrorMessage = errorMessage;
-        }
-      });
+        });
       } else {
         this.userValidateForm.get('userName')?.markAsDirty();
         this.userValidateForm.get('password')?.markAsDirty();
@@ -697,29 +691,27 @@ export class AnalysisDashbaordComponent implements OnInit {
     for (let index = 0; index < this.dummyTabs.length; index++) {
       if (this.article[index].text && this.article[index].text.trim().length) {
         let tabValue: any = {
-           status: 'string',
+          status: 'string',
           analysisId: this.experimentId,
           name: this.dummyTabs[index].label,
           fileContent: this.article[index].text,
-         // autoSave: 'Y'
         };
-  
+
         tabValue = {
           ...tabValue,
           analysisDetailId:
             this.dummyTabs[index].value.substring(0, 3) === 'new'
               ? null
               : this.dummyTabs[index].value.substring('new'.length),
-           //  : this.dummyTabs[index].value.substring(3),
         };
-  
+
         saveCalls.push(this.analysisService.saveAnalysisDetails(tabValue));
       }
     }
-  
-     if (saveCalls.length) {
+
+    if (saveCalls.length) {
       forkJoin(saveCalls).subscribe(response => {
-      this.toastr.success('Auto Saved Successfully', 'Success');
+        this.toastr.success('Auto Saved Successfully', 'Success');
       });
     }
   }

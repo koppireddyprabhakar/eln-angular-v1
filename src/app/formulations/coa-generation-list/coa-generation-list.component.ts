@@ -65,19 +65,10 @@ export class CoaGenerationListComponent implements OnInit {
     ngOnInit(): void {
       this.getFormulationExperiments();
       this.getAnalysisExperiments();
-      // this.getUsers();
       this.expColumns = [
         { key: 'experimentName', title: 'Analysis Name' },
         { key: 'projectId', title: 'Project Id' },
         { key: 'status', title: 'Status' },
-        // {
-        //   key: 'options',
-        //   title: '<div class="blue">Options</div>',
-        //   align: { head: 'center', body: 'center' },
-        //   sorting: false,
-        //   width: 150,
-        //   cellTemplate: this.actionTpl,
-        // },
       ];
       this.myExpColumns = [
         { key: 'analysisName', title: 'Experiment Name' },
@@ -124,27 +115,6 @@ export class CoaGenerationListComponent implements OnInit {
         });
     }
   
-    // getAnalysisExperiments() {
-       
-    //   // this.globalService.showLoader();
-    //   this.analysisService
-    //     .getAnalysisByStatus('Analysis Submitted')
-    //     .pipe(takeWhile(() => this.subscribeFlag))
-    //     .subscribe((myExperiments) => {
-    //       this.myExperiments = myExperiments;
-    //       this.dtElements.forEach(
-    //         (dtElement: DataTableDirective, index: number) => {
-    //           dtElement.dtInstance.then((dtInstance: any) => {
-    //             if (dtInstance.table().node().id === 'second-table') {
-    //               dtInstance.destroy();
-    //               this.dtMyProjectsTrigger.next(this.myExperiments);
-    //             }
-    //           });
-    //         }
-    //       );
-    //       this.globalService.hideLoader();
-    //     });
-    // }
     getAnalysisExperiments() {
       // this.globalService.showLoader();
       this.analysisService.getAnalysisByStatusWithoutExpId('Analysis Submitted')
@@ -177,20 +147,6 @@ export class CoaGenerationListComponent implements OnInit {
       );
     }
 
-    // getUsers() {
-    //   this.globalService.showLoader();
-    //   this.userService
-    //     .getCustomRoles('ANALYSIS')
-    //     .pipe(takeWhile(() => this.subscribeFlag))
-    //     .subscribe((users) => {
-    //       const usersList = users.map((user: any) => ({
-    //         ...user,
-    //         status: 'str',
-    //       }));
-    //       this.users = usersList;
-    //       this.globalService.hideLoader();
-    //     });
-    // }
 
     viewAnalysisExperiments(event) {
       this.route.navigateByUrl(

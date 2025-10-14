@@ -73,14 +73,6 @@ export class AnalysisExperimentsComponent implements OnInit {
       { key: 'analysisName', title: 'Analysis Name' },
       { key: 'projectId', title: 'Project Id' },
       { key: 'status', title: 'Status' },
-      // {
-      //   key: 'options',
-      //   title: '<div class="blue">Options</div>',
-      //   align: { head: 'center', body: 'center' },
-      //   sorting: false,
-      //   width: 150,
-      //   cellTemplate: this.actionTpl,
-      // },
     ];
     this.myExpColumns = [
       { key: 'analysisName', title: 'Experiment Name' },
@@ -157,10 +149,8 @@ export class AnalysisExperimentsComponent implements OnInit {
 
   selectUser(user) {
     this.selectedUser = user;
-    const creatorId = user.userId; // simple and clean
+    const creatorId = user.userId; 
     this.filteredUsers = this.users.filter(user => user.userId !== creatorId);
-    console.log('Creator ID:', creatorId);
-    console.log('Filtered Users:', this.filteredUsers);
     this.reviewSubmitForm.patchValue({ userId: null });
   }
 
@@ -184,9 +174,7 @@ export class AnalysisExperimentsComponent implements OnInit {
           this.closeReviewModal.nativeElement.click();
           this.globalService.hideLoader();
           this.getMyExperiments();
-          // this.route.navigateByUrl(
-          //   `/exp-analysis/analysis-experiments`
-          // );
+        
         });
     } else {
       this.reviewSubmitForm.get('roleId')?.markAsDirty();

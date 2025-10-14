@@ -148,7 +148,9 @@ export const elnEndpointsConfig: EndpointConfig = {
     getExperimentsByReviewerAndStatus:  `${environment.API_BASE_PATH}` + '/experiment/get-experiments-by-reviewer',
     getAnalysisExperimentsByReviewerAndStatus: `${environment.API_BASE_PATH}` + '/analysis/get-analysis-experiments-by-reviewer',
     logout: `${environment.API_BASE_PATH}` + '/login/logout',
-    getAuditlogsByUserID: `${environment.API_BASE_PATH}` + '/audit/get-audit-logs-by-userid'
+    getAuditlogsByUserID: `${environment.API_BASE_PATH}` + '/audit/get-audit-logs-by-userid',
+    refreshToken: `${environment.API_BASE_PATH}`+ '/login/refresh'
+
   },
 };
 

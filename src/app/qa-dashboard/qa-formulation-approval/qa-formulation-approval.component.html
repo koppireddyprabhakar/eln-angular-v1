@@ -4,7 +4,7 @@
             <div class="d-flex justify-content-between">
                 <h5 class="card-title">COA GENERATION FORM</h5>
                 <h5 class="card-title text-end">Formulation</h5>
-            </div> 
+            </div>
             <div class="row g-3">
                 <div class="col-4">
                     <label for="testRequestId" class="form-label">Test Request ID</label>
@@ -12,6 +12,7 @@
                         readonly />
                 </div>
  
+
                 <div class="col-4">
                     <label for="department" class="form-label">Department</label>
                     <input type="text" class="form-control" id="department" [ngModel]="testRequest.department"
@@ -22,7 +23,7 @@
                     <input type="text" class="form-control" id="dosageForm" [ngModel]="testRequest.dosageForm"
                         readonly />
                 </div>
- 
+
                 <div class="col-4">
                     <label for="projectName" class="form-label">Project Name</label>
                     <input type="text" class="form-control" id="projectName" [ngModel]="testRequest.projectName"
@@ -35,8 +36,7 @@
                 </div>
                 <div class="col-4">
                     <label for="market" class="form-label">Market</label>
-                    <input type="text" class="form-control" id="market" [ngModel]="testRequest.market"
-                        readonly />
+                    <input type="text" class="form-control" id="market" [ngModel]="testRequest.market" readonly />
                 </div>
                 <div class="col-4">
                     <label for="strength" class="form-label">Strength</label>
@@ -102,8 +102,8 @@
                         <td>{{ test.testResult }}</td>
                     </tr>
                 </tbody>
-            </table>   &nbsp;&nbsp;
- 
+            </table> &nbsp;&nbsp;
+
             <table class="coa-table">
                 <thead>
                     <tr>
@@ -135,62 +135,69 @@
                 </tbody>
             </table> &nbsp;&nbsp;&nbsp;
            
- 
+
+
             <div class="col-4">
-                <label class="form-label fw-bold">Compliance Status</label><br>          
+                <label class="form-label fw-bold">Compliance Status</label><br>
                 <input class="form-check-input" type="checkbox" id="compliance"
-                       [checked]="testRequest.complianceStatus === true"
-                       disabled>
+                    [checked]="testRequest.complianceStatus === true" disabled>
                 <label for="compliance" class="form-check-label me-3">Compliance</label>
-           
+
                 <input class="form-check-input" type="checkbox" id="nonCompliance"
-                       [checked]="testRequest.complianceStatus === false"
-                       disabled>
-                <label for="nonCompliance" class="form-check-label">Non-Compliance</label>        
-            </div>            
-                   &nbsp;&nbsp;
+                    [checked]="testRequest.complianceStatus === false" disabled>
+                <label for="nonCompliance" class="form-check-label">Non-Compliance</label>
+            </div>
+            &nbsp;&nbsp;
             <div class="text-center pt-3">
                 <form class="row g-3" [formGroup]="userValidateForm">
-                  <div class="row mb-3">
-                    <label for="userName" class="col-sm-2 col-form-label" style="width: 11% !important;">User Name</label>
-                    <div class="col-sm-3">
-                      <input type="text" class="form-control" id="userName" formControlName="userName" readonly />
+                    <div class="row mb-3">
+                        <label for="userName" class="col-sm-2 col-form-label" style="width: 11% !important;">User
+                            Name</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="userName" formControlName="userName" readonly />
+                        </div>
                     </div>
-                  </div>
-             
-                  <div class="row mb-3">
-                    <label for="password" class="col-sm-2 col-form-label" style="width: 11% !important;">Password</label>
-                    <div class="col-sm-3">
-                          <div class="input-group has-validation">
-                      <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="password" formControlName="password"  (input)="reviewPwdErrorMessage = ''" />
-                           <button type="button" class="input-group-text"(mousedown)="showPassword = true"(mouseup)="showPassword = false"(mouseleave)="showPassword = false">
-                      <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
-                       </button>
-                      </div>
-                      <span *ngIf="userValidateForm.controls['password'].invalid &&
+
+                    <div class="row mb-3">
+                        <label for="password" class="col-sm-2 col-form-label"
+                            style="width: 11% !important;">Password</label>
+                        <div class="col-sm-3">
+                            <div class="input-group has-validation">
+                                <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="password"
+                                    formControlName="password" (input)="reviewPwdErrorMessage = ''" />
+                                <button type="button" class="input-group-text" (mousedown)="showPassword = true"
+                                    (mouseup)="showPassword = false" (mouseleave)="showPassword = false">
+                                    <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                                </button>
+                            </div>
+                            <span *ngIf="userValidateForm.controls['password'].invalid &&
                                  (userValidateForm.controls['password'].dirty ||
                                  userValidateForm.controls['password'].touched) &&
                                  userValidateForm.get('password')?.errors &&
                                  userValidateForm.get('password')?.hasError('required')" class="text-danger">
-                        Please enter Password
-                      </span>
-                       <span *ngIf="reviewPwdErrorMessage" class="text-danger">
-                              {{ reviewPwdErrorMessage }}
-                         </span>  
+                                Please enter Password
+                            </span>
+                            <span *ngIf="reviewPwdErrorMessage" class="text-danger">
+                                {{ reviewPwdErrorMessage }}
+                            </span>
+                        </div>
                     </div>
-                  </div>
                 </form>
                 <button type="button" class="btn btn-secondary" (click)="redirectToExperiments()" #closeButton>
                     Close
                 </button>
                 &nbsp;&nbsp;&nbsp;
-                <!-- COA Generated Button -->
-                <button type="submit" class="btn btn-primary" (click)="updateExperimentStatus()">
-                  COA Approved
+                <button *ngIf="experiment?.experimentStatus === 'COA Reviewed'" type="submit" class="btn btn-primary"
+                    (click)="updateExperimentStatus()">
+                    COA Approved
                 </button>
-              </div>
+                <button *ngIf="experiment?.experimentStatus === 'COA Approved'" type="button" class="btn btn-success"
+                    (click)="downloadCoaPdf(expId)">
+                    Download COA
+                </button>
+
+            </div>
         </div>
- 
+
     </div>
 </main>
- 

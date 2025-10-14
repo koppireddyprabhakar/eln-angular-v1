@@ -80,7 +80,5 @@ export class ReviewFormulationsListComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.subscribeFlag = false;
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
   }
 }

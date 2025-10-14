@@ -13,7 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
-
+import { HttpClient } from '@angular/common/http';
 import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
@@ -132,7 +132,10 @@ export class ReviewExperimentsComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
     private route: Router,
-    private loginService: LoginserviceService
+    private loginService: LoginserviceService,
+    private http: HttpClient
+
+
   ) { }
 
   ngOnInit(): void {
@@ -197,7 +200,7 @@ export class ReviewExperimentsComponent implements OnInit {
   }
 
   public editorConfig = {
-    customConfig: '/assets/ckeditor/config.js', // Path to the config.js file
+    customConfig: '/assets/ckeditor/config.js',
   };
 
   getProjectDetails() {
@@ -210,7 +213,6 @@ export class ReviewExperimentsComponent implements OnInit {
         strength: this.project.strength,
         batchSize: this.project.batchSize,
         testRequestId: this.staticTrfId,
-        // department: 'string',
         productCode: this.project.productCode,
         market: this.project.markertName
       });
@@ -248,8 +250,7 @@ export class ReviewExperimentsComponent implements OnInit {
     this.analysisService
       .getTestFormResults(this.experimentId)
       .subscribe((data) => {
-        //this.resultData = data.get(0);
-       this.resultData = Array.isArray(data) && data.length ? data[0] : null;
+        this.resultData = Array.isArray(data) && data.length ? data[0] : null;
         this.testRequestForm.patchValue({
           condition: this.resultData.condition,
           stage: this.resultData.stage,
@@ -276,11 +277,6 @@ export class ReviewExperimentsComponent implements OnInit {
               });
             }
           );
-
-          // this.tableTestData = this.resultData.trfTestResults.map((result) => ({
-          //   ...result,
-          //   testResult: result.testResult,
-          // }));
         }
       });
   }
@@ -290,12 +286,6 @@ export class ReviewExperimentsComponent implements OnInit {
       .getExcipientDetailsById(this.experimentId)
       .subscribe((data) => {
         this.tableData = data;
-        // this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-        //   // Destroy the table first
-        //   dtInstance.destroy();
-        //   // Call the dtTrigger to rerender again
-        //   this.dtTrigger.next(this.tableData);
-        // });
         this.dtElements.forEach(
           (dtElement: DataTableDirective, index: number) => {
             dtElement.dtInstance.then((dtInstance: any) => {
@@ -404,28 +394,28 @@ export class ReviewExperimentsComponent implements OnInit {
         password: this.userValidateForm.value.password || ''
       };
 
-      this.loginService.login(request).subscribe({ next: (response) => {
-        if (response) {
-          this.analysisService.updateAnalysisReview(reviewRequest).subscribe((data) => {
-            this.toastr.success(data['data'], 'Success');
-            this.route.navigateByUrl(`/exp-analysis/review-list`);
-          });
+      this.loginService.login(request).subscribe({
+        next: (response) => {
+          if (response) {
+            this.analysisService.updateAnalysisReview(reviewRequest).subscribe((data) => {
+              this.toastr.success(data['data'], 'Success');
+              this.route.navigateByUrl(`/exp-analysis/review-list`);
+            });
+          }
+        },
+        error: (err) => {
+          let errorMessage =
+            typeof err.error === 'string'
+              ? err.error
+              : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+          if (err.status === 403) {
+            errorMessage = 'Your account has been locked due to multiple failed login attempts.';
+            this.toastr.error(errorMessage, 'Account Locked');
+            this.route.navigateByUrl('');
+          }
+          this.reviewPwdErrorMessage = errorMessage;
         }
-         },
-   error: (err) => {
-        let errorMessage =
-          typeof err.error === 'string'
-            ? err.error
-            : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
-
-        if (err.status === 403) {
-          errorMessage = 'Your account has been locked due to multiple failed login attempts.';
-          this.toastr.error(errorMessage, 'Account Locked');
-          this.route.navigateByUrl('');
-        }
-        this.reviewPwdErrorMessage = errorMessage;
-      }
-    });
+      });
     } else {
       this.userValidateForm.get('userName')?.markAsDirty();
       this.userValidateForm.get('password')?.markAsDirty();
@@ -478,7 +468,6 @@ export class ReviewExperimentsComponent implements OnInit {
             isEdit: false,
             value: 'tab' + exp.analysisDetailId,
           }));
-          // Commented becaise of no resonse
           this.summaryForm.patchValue({
             experimentName: experimentDetails.analysisName,
             batchSize: experimentDetails.batchSize,
@@ -528,7 +517,6 @@ export class ReviewExperimentsComponent implements OnInit {
   }
 
   saveSummary() {
-    // if () {
     const summary = {
       status: 'string',
       projectId: this.project.projectId,
@@ -545,9 +533,7 @@ export class ReviewExperimentsComponent implements OnInit {
     };
 
     this.analysisService.saveAnalysis(summary).subscribe((experiment: any) => {
-      // change here
       this.getAnalysisById(experiment.data, 'firstLoad');
-      // this.activeTab = this.dummyTabs[0].value;
       this.toastr.success('Experiment Started Successfully', 'Success');
     });
   }
@@ -598,8 +584,22 @@ export class ReviewExperimentsComponent implements OnInit {
   }
 
   getFileContent(fileName: string, experimentId: number) {
-    window.location.assign(
-      `${environment.API_BASE_PATH}` + `/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`
-    );
+    const url = `${environment.API_BASE_PATH}/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`;
+    this.http.get(url, { responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        const objectUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = objectUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(objectUrl);
+      },
+      error: (err) => {
+        console.error('Download failed:', err);
+        this.toastr.error('Failed to download file', 'Error');
+      }
+    });
   }
 }

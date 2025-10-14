@@ -35,7 +35,7 @@ import { CoaApprovalAnalysisComponent } from './coa-review/coa-approval-analysis
 import { QaAnalysisApprovalComponent } from './qa-dashboard/qa-analysis-approval/qa-analysis-approval.component';
 import { QaFormulationApprovalComponent } from './qa-dashboard/qa-formulation-approval/qa-formulation-approval.component';
 import { SuperadminComponent } from './superadmin/superadmin.component';
-import {  UserInterceptorService } from './shared/services/UserInterceptor/user-interceptor.service';
+import { UserInterceptorService } from './shared/services/UserInterceptor/user-interceptor.service';
 
 @NgModule({
   declarations: [

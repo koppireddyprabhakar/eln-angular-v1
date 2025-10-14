@@ -90,21 +90,17 @@ export class ProductComponent implements OnInit {
 
   saveProduct() {
     let productCode = this.productForm.get('productCode')!.value?.trim().toLowerCase();;
-
     let filteredProducts = this.products.filter(p => p.productCode?.trim().toLowerCase() === productCode);
-
       if (filteredProducts.length && (!this.selectedProduct || !this.selectedProduct.productId || 
         filteredProducts[0].productId !== this.selectedProduct.productId))
      {
     this.showErrorMsg = true;
     return;
   }
-
     const newProduct = {
       productName: this.productForm.get('productName')!.value,
       productCode: this.productForm.get('productCode')!.value,
       insertUser: this.loginService.userDetails.userId
-
     };
     if (this.productForm.get('productName')!.value && this.productForm.get('productCode')!.value) {
       this.globalService.showLoader();
@@ -126,13 +122,18 @@ export class ProductComponent implements OnInit {
               'Success'
             );
           });
-      } else {
-        this.selectedProduct = {
-          ...this.selectedProduct,
-          ...newProduct,
-        };
+      } else {         
+        const updatedproduct={...this.selectedProduct, ...newProduct} ;
+         const hasChanges =
+    updatedproduct.productName !== this.selectedProduct.productName ||
+    updatedproduct.productCode !== this.selectedProduct.productCode;
+  if (!hasChanges) {
+    this.globalService.hideLoader();
+    this.toastr.info('No changes detected', 'Info');
+    return;
+  }
         this.productService
-          .updateProduct(this.selectedProduct)
+          .updateProduct(updatedproduct)
           .pipe(
             finalize(() => {
               this.globalService.hideLoader();

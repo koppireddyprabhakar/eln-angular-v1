@@ -170,14 +170,12 @@ export class CoaApprovalAnalysisComponent implements OnInit {
       .getAnalysisExperimentsById(this.analysisId)  // Use the captured `analysisId`
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((analysisexperiment) => {
-       // this.analysisexperiment = analysisexperiment.map((trf) => flatten(trf))[0];
        this.analysisexperiment = flatten(analysisexperiment);
         this.getTestResultsByAnalysisId();
       });
   }
 
   redirectToExperiments() {
-   // this.route.navigate(['/coa-review']);
    this.route.navigate(['/coareviewcomponent']);
 
   }

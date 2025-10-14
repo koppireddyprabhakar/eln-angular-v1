@@ -12,7 +12,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { DataTableDirective } from 'angular-datatables';
 import { ActivatedRoute, Route, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-
+import { HttpClient } from '@angular/common/http';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { InwardManagementService } from '@app/shared/services/inward-management/inward-management.service';
@@ -118,6 +118,8 @@ export class ViewFormulationExperimentComponent implements OnInit {
     private route: Router,
     private loginService: LoginserviceService,
     private globalService: GlobalService,
+    private http: HttpClient
+
   ) { }
 
   ngOnInit(): void {
@@ -194,13 +196,13 @@ export class ViewFormulationExperimentComponent implements OnInit {
         .subscribe((data) => {
           if (data.length > 0) {
             this.tableData = data.map(d => {
-            const inward = this.inwards.find(i => i.excipientId == d.excipientId);
-            return {
-              ...d,
-              expiryDate: inward?.expiryDate ?? null
-            };
-          });
-           this.selectedItems = this.tableData;
+              const inward = this.inwards.find(i => i.excipientId == d.excipientId);
+              return {
+                ...d,
+                expiryDate: inward?.expiryDate ?? null
+              };
+            });
+            this.selectedItems = this.tableData;
             this.dtElements.forEach(
               (dtElement: DataTableDirective, index: number) => {
                 dtElement.dtInstance.then((dtInstance: any) => {
@@ -218,14 +220,14 @@ export class ViewFormulationExperimentComponent implements OnInit {
         .getExcipientDetailsById(this.experimentId)
         .subscribe((data) => {
           if (data.length > 0) {
-           this.tableData = data.map(d => {
-            const inward = this.inwards.find(i => i.excipientId == d.excipientId);
-            return {
-              ...d,
-              expiryDate: inward?.expiryDate ?? null
-            };
-          });
-           this.selectedItems = this.tableData;
+            this.tableData = data.map(d => {
+              const inward = this.inwards.find(i => i.excipientId == d.excipientId);
+              return {
+                ...d,
+                expiryDate: inward?.expiryDate ?? null
+              };
+            });
+            this.selectedItems = this.tableData;
             this.dtElements.forEach(
               (dtElement: DataTableDirective, index: number) => {
                 dtElement.dtInstance.then((dtInstance: any) => {
@@ -355,10 +357,25 @@ export class ViewFormulationExperimentComponent implements OnInit {
   }
 
   getFileContent(fileName: string, experimentId: number) {
-    window.location.assign(
-      `${environment.API_BASE_PATH}` + `/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`
-    );
+    const url = `${environment.API_BASE_PATH}/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`;
+    this.http.get(url, { responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        const downloadUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = fileName; // keep the same filename
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(downloadUrl);
+      },
+      error: (err) => {
+        console.error('Download failed:', err);
+        this.toastr?.error('Failed to download file', 'Error');
+      }
+    });
   }
+
 
   getTestResults() {
     this.globalService.showLoader();
@@ -367,16 +384,6 @@ export class ViewFormulationExperimentComponent implements OnInit {
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((tests) => {
         this.tests = tests;
-
-        // this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
-        //   dtElement.dtInstance.then((dtInstance: any) => {
-        //     if (dtInstance.table().node().id === 'second-table') {
-        //       dtInstance.destroy();
-        //       this.dtResultTrigger.next(this.tests);
-        //     }
-        //   });
-        // });
-
         this.globalService.hideLoader();
       });
   }

@@ -33,6 +33,7 @@ export class QaFormulationApprovalComponent implements OnInit {
   };
 
   expId: number;
+  isCoaApproved: boolean = false; 
   experiment: any;
   staticTrfId = 'TRF123';
   showPassword: boolean = false;
@@ -95,13 +96,12 @@ export class QaFormulationApprovalComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private formulationService: FormulationsService,
     private experimentService: ExperimentService,
-    private userService: UserService, // Inject UserService
-    private loginService: LoginserviceService ,// Inject LoginserviceService
+    private userService: UserService,
+    private loginService: LoginserviceService ,
     private toastr: ToastrService,
   private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
-     // Fetch user details and role directly
      this.userDetails = this.loginService.userDetails;
      this.userRole = this.userService.userRole || 'N/A';
      this.currentDate = new Date().toISOString();
@@ -155,7 +155,6 @@ export class QaFormulationApprovalComponent implements OnInit {
       .subscribe((experiment) => {
         this.experiment = experiment.map((trf) => flatten(trf))[0];
         this.getTestResults();
-        // this.globalService.hideLoader();
       });
   }
 
@@ -224,9 +223,7 @@ export class QaFormulationApprovalComponent implements OnInit {
         this.testRequest['complianceStatus'] = this.coadetails.complianceStatus;
 
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          // Destroy the table first
           dtInstance.destroy();
-          // Call the dtTrigger to rerender again
           this.dtTrigger.next(this.tests);
         });
 
@@ -260,7 +257,7 @@ updateExperimentStatus() {
           this.experimentService.updateExperimentStatus(this.experiment.expId, 'COA Approved').subscribe((data) => {
             this.updateCoaReviewDetails();
             this.toastr.success(data['data'], 'Success');
-            this.downloadCoaPdf(this.experiment.expId);
+             this.isCoaApproved = true;
             this.redirectToExperiments();
           });
         } 

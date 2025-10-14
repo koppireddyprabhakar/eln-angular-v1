@@ -88,10 +88,9 @@
                 <td>{{ experiment.project && experiment.project.status === 'OnHold' ? experiment.project.status
                   : experiment.status }}</td>
                 <td>
-                  <!-- <i (click)="onRowClick(experiment)" class="editIcon ri-edit-2-fill"></i> -->
-                  <i *ngIf="experiment.status && (experiment.status.toUpperCase() ===
-                             'Inprogress'.toUpperCase() || experiment.status.toUpperCase() ===
-                             'Need Correction'.toUpperCase())" (click)="onRowClick(experiment)"
+                
+                  <i *ngIf="experiment.status &&
+          (experiment.status.toUpperCase() === 'INPROGRESS'|| experiment.status.toUpperCase() === 'NEED CORRECTION')&& experiment.project?.status?.toUpperCase() !== 'ONHOLD'" (click)="onRowClick(experiment)"
                     class="editIcon ri-edit-2-fill">
                   </i>
                   <i *ngIf="experiment.status && (experiment.status.toUpperCase() !==

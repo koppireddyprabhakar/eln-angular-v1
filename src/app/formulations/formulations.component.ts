@@ -88,14 +88,6 @@ export class FormulationsComponent implements OnInit {
       { key: 'formulationName', title: 'Formulation Type' },
       { key: 'strength', title: 'Strength' },
       { key: 'experimentStatus', title: 'Status' },
-      // {
-      //   key: 'options',
-      //   title: '<div class="blue">Options</div>',
-      //   align: { head: 'center', body: 'center' },
-      //   sorting: false,
-      //   width: 150,
-      //   cellTemplate: this.actionTpl,
-      // },
     ];
     this.myExpColumns = [
       { key: 'experimentName', title: 'Experiment Name' },
@@ -172,9 +164,6 @@ export class FormulationsComponent implements OnInit {
 
   addTrf(row) {
     this.route.navigateByUrl(`/forms-page/add-trf?expId=${row.expId}`);
-    // var someTabTriggerEl = document.querySelector('#projects');
-    // var tab = new bootstrap.Tab(someTabTriggerEl)
-    // someTabTriggerEl.show()
   }
 
   selectUser(user) {

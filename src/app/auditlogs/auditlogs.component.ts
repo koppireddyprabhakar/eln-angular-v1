@@ -34,7 +34,6 @@ export class AuditlogsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    debugger
     this.userId = this.loginService.userDetails.userId;
     this.deptId = this.loginService.userDetails.deptId;
     if (this.deptId === 3) {
@@ -150,8 +149,8 @@ export class AuditlogsComponent implements OnInit {
     }
     const request = {
       logs: this.filteredLogs,
-      fromDate: this.fromDate || undefined, // <- use undefined instead of null
-      toDate: this.toDate || undefined,     // <- use undefined instead of null
+      fromDate: this.fromDate || undefined, 
+      toDate: this.toDate || undefined,    
       userName: this.selectedUser || undefined
     };
     this.auditLogService.downloadAuditPdf(request).subscribe(

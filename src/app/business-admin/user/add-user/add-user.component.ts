@@ -11,7 +11,7 @@ import { finalize, takeWhile } from 'rxjs';
 import { Departments, Teams, UserRoles } from '../user.interface';
 import { DosageService } from '@app/shared/services/dosage/dosage.service';
 import { LoginserviceService } from '@app/shared/services/login/loginservice.service';
-import { departmentMapping } from 'src/app/shared/constants/mappings'; 
+import { departmentMapping } from 'src/app/shared/constants/mappings';
 
 
 @Component({
@@ -55,6 +55,7 @@ export class AddUserComponent implements OnInit {
 
   });
   public showErrorMsg: boolean = false;
+  originalUser: any;
 
   constructor(
     private readonly userService: UserService,
@@ -86,11 +87,9 @@ export class AddUserComponent implements OnInit {
 
   saveUser() {
     let formMailId = this.userForm['controls'] && this.userForm['controls']['mailId'].value ? this.userForm['controls']['mailId'].value : '';
-
     let isObjectExists = this.users.find(user =>
       user.mailId === formMailId && user.userId !== this.userId
     );
-
     if (isObjectExists && (Object.keys(this.selectedUser).length === 0 || (this.selectedUser.mailId !== formMailId))) {
       this.showErrorMsg = true;
       return;
@@ -131,6 +130,25 @@ export class AddUserComponent implements OnInit {
             this.route.navigate(['/business-admin/users/']);
           });
       } else {
+        if (Object.keys(this.selectedUser).length !== 0 && this.originalUser) {
+          // Compare relevant fields
+          const fieldsToCompare = [
+            'firstName', 'lastName', 'dateOfBirth', 'gender', 'deptId', 'roleId',
+            'contactNo', 'mailId', 'addressLine1', 'addressLine2', 'city', 'zipCode',
+            'certifiedReviewer', 'coaPermission', 'accountLocked'
+          ];
+          const isSame = fieldsToCompare.every(field =>
+            this.originalUser[field] === newUser[field]
+          );
+          // Compare teamId separately
+          const originalTeamId = (this.originalUser.userTeams && this.originalUser.userTeams[0]?.teamId) || null;
+          const currentTeamId = this.userForm.get('teamId')?.value || null;
+          if (isSame && originalTeamId === currentTeamId) {
+            this.toastr.info('No changes detected.', 'Warning');
+            this.globalService.hideLoader();
+            return;
+          }
+        }
         this.selectedUser = [
           {
             ...this.selectedUser,
@@ -179,13 +197,7 @@ export class AddUserComponent implements OnInit {
       this.departmentList = department;
     });
   }
-  /*
-    getUserRoles() {
-      this.userRoleService.getUserRoles().subscribe((userRoles) => {
-        this.userRoles = userRoles;
-      });
-    }
-  */
+  
 
   getUserRoles() {
     this.globalService.showLoader();
@@ -212,9 +224,9 @@ export class AddUserComponent implements OnInit {
     });
   }
 
-  getUsers(){
+  getUsers() {
     this.userService.getUsers().subscribe((users) => {
-    this.users=users
+      this.users = users
     });
   }
 
@@ -226,6 +238,7 @@ export class AddUserComponent implements OnInit {
       .subscribe((selectedUser) => {
         this.globalService.hideLoader();
         this.selectedUser = selectedUser;
+        this.originalUser = JSON.parse(JSON.stringify(selectedUser));
         this.userForm.patchValue({
           firstName: selectedUser.firstName,
           lastName: selectedUser.lastName,
@@ -265,12 +278,12 @@ export class AddUserComponent implements OnInit {
     const selectedDeptId = deptControl.value;
     // Check for null or undefined deptId
     if (selectedDeptId == null) {
-      roleControl.setValue(null); 
+      roleControl.setValue(null);
       return;
     }
     const selectedDeptName = departmentMapping[+selectedDeptId];
     if (selectedDeptName === 'ADMIN MANAGEMENT') {
-      roleControl.setValue(4); 
+      roleControl.setValue(4);
     } else {
       roleControl.setValue(null);
     }

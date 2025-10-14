@@ -69,14 +69,6 @@ export class CoaReviewComponent implements OnInit {
         { key: 'experimentName', title: 'Analysis Name' },
         { key: 'projectId', title: 'Project Id' },
         { key: 'status', title: 'Status' },
-        // {
-        //   key: 'options',
-        //   title: '<div class="blue">Options</div>',
-        //   align: { head: 'center', body: 'center' },
-        //   sorting: false,
-        //   width: 150,
-        //   cellTemplate: this.actionTpl,
-        // },
       ];
       this.myExpColumns = [
         { key: 'analysisName', title: 'Experiment Name' },
@@ -141,38 +133,7 @@ export class CoaReviewComponent implements OnInit {
           this.globalService.hideLoader();
         });
     }
-    // getAnalysisExperiments() {
-    //   // this.globalService.showLoader();
-    //   this.analysisService
-    //     .getAnalysisByStatus('COA Generated')
-    //     .pipe(takeWhile(() => this.subscribeFlag))
-    //     .subscribe((myExperiments) => {
-    //       this.myExperiments = myExperiments;
-    //       this.dtElements.forEach(
-    //         (dtElement: DataTableDirective, index: number) => {
-    //           dtElement.dtInstance.then((dtInstance: any) => {
-    //             if (dtInstance.table().node().id === 'second-table') {
-    //               dtInstance.destroy();
-    //               this.dtMyProjectsTrigger.next(this.myExperiments);
-    //             }
-    //           });
-    //         }
-    //       );
-    //       this.globalService.hideLoader();
-    //     });
-    // }
-  
-    // onRowClickForFormulation(event) {
-    //   this.route.navigateByUrl(
-    //     `coa-approval-formulation?projectId=${event.projectId}&experimentId=${event.expId}`
-    //   );
-    // }
     
-    // onRowClickForAnalysis(event) {
-    //   this.route.navigateByUrl(
-    //     `coa-approval-analysis?projectId=${event.projectId}&analysisId=${event.analysisId}`
-    //   );
-    // }
     onRowClickForFormulation(event) {
       this.route.navigateByUrl(
         `coa-approval-formulation?projectId=${event.projectId}&experimentId=${event.expId}`

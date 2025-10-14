@@ -129,9 +129,6 @@ export class FormulationsExperimentComponent implements OnInit {
 
   addTrf(row) {
     this.route.navigateByUrl(`/forms-page/add-trf?expId=${row.expId}`);
-    // var someTabTriggerEl = document.querySelector('#projects');
-    // var tab = new bootstrap.Tab(someTabTriggerEl)
-    // someTabTriggerEl.show()
   }
 
   selectUser(user) {
@@ -162,9 +159,6 @@ export class FormulationsExperimentComponent implements OnInit {
           }
           this.globalService.hideLoader();
           this.getMyExperiments();
-       // this.route.navigateByUrl(
-          //   `/forms-page/experiments`
-          // );
         });
     } 
   }else {

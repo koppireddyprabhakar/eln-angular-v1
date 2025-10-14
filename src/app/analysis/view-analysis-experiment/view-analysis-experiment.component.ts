@@ -13,7 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
-
+import { HttpClient } from '@angular/common/http';
 import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
@@ -89,7 +89,9 @@ export class ViewAnalysisExperimentComponent implements OnInit {
     private renderer2: Renderer2,
     private activatedRoute: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private route: Router
+    private route: Router,
+    private http: HttpClient
+
   ) { }
 
   ngOnInit(): void {
@@ -117,7 +119,6 @@ export class ViewAnalysisExperimentComponent implements OnInit {
     };
     this.analysisID = this.activatedRoute.snapshot.queryParams['analysisId'];
     this.projectId = this.activatedRoute.snapshot.queryParams['projectId'];
-    // this.isCreatedExperiment = this.analysisID ? true : false;
     this.isVersionHistory = this.activatedRoute.snapshot.queryParams['isVersionHistory'];
     this.getAnalysisExperimentDetails(this.analysisID);
     this.getProjectDetails();
@@ -168,9 +169,7 @@ export class ViewAnalysisExperimentComponent implements OnInit {
             this.tableData = data;
             this.selectedItems = data;
             this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-              // Destroy the table first
               dtInstance.destroy();
-              // Call the dtTrigger to rerender again
               this.dtTrigger.next(this.tableData);
             });
           }
@@ -184,9 +183,7 @@ export class ViewAnalysisExperimentComponent implements OnInit {
             this.tableData = data;
             this.selectedItems = data;
             this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-              // Destroy the table first
               dtInstance.destroy();
-              // Call the dtTrigger to rerender again
               this.dtTrigger.next(this.tableData);
             });
           }
@@ -262,12 +259,9 @@ export class ViewAnalysisExperimentComponent implements OnInit {
               analysisExperimentDetails.analysisExcipients;
             this.tableData = analysisExperimentDetails.analysisExcipients;
             this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-              // Destroy the table first
               dtInstance.destroy();
-              // Call the dtTrigger to rerender again
               this.dtTrigger.next(this.tableData);
             });
-            // this.experimentDetails = experimentDetails;
             this.batchNumber = analysisExperimentDetails.batchNumber;
             this.summaryForm.patchValue({
               experimentName: analysisExperimentDetails.analysisName,
@@ -295,24 +289,14 @@ export class ViewAnalysisExperimentComponent implements OnInit {
                 value: 'tab' + exp.analysisDetailId,
               })
             );
-            // this.resultsData = analysisExperimentDetails.testRequestForms.map(
-            //   (result) => ({
-            //     ...result,
-            //     testRequestFormStatus: 'active',
-            //     analysisId: Number(this.analysisID),
-            //   })
-            // );
             this.selectedItems = analysisExperimentDetails.analysisExcipients;
             this.savedSelectedItems =
               analysisExperimentDetails.analysisExcipients;
             this.tableData = analysisExperimentDetails.analysisExcipients;
             this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-              // Destroy the table first
               dtInstance.destroy();
-              // Call the dtTrigger to rerender again
               this.dtTrigger.next(this.tableData);
             });
-            // this.experimentDetails = experimentDetails;
             this.batchNumber = analysisExperimentDetails.batchNumber;
             this.summaryForm.patchValue({
               experimentName: analysisExperimentDetails.analysisName,
@@ -372,32 +356,23 @@ export class ViewAnalysisExperimentComponent implements OnInit {
       )
       .map((table) => ({ ...table, analysisId: Number(this.analysisID) }));
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
       dtInstance.destroy();
-      // Call the dtTrigger to rerender again
       this.dtTrigger.next(this.tableData);
     });
   }
   deselect(item: any) {
-    // this.tableData = this.inwards.filter(({ excipientId: id1 }) =>
-    //   this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
-    // );
     this.tableData = this.tableData.filter(
       (data) => data.excipientId !== item.excipientId
     );
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
       dtInstance.destroy();
-      // Call the dtTrigger to rerender again
       this.dtTrigger.next(this.tableData);
     });
   }
   onSelectAll(items: any) {
     this.tableData = this.inwards;
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
       dtInstance.destroy();
-      // Call the dtTrigger to rerender again
       this.dtTrigger.next(this.tableData);
     });
   }
@@ -407,10 +382,25 @@ export class ViewAnalysisExperimentComponent implements OnInit {
   }
 
   getFileContent(fileName: string, experimentId: number) {
-    window.location.assign(
-      `${environment.API_BASE_PATH}` + `/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`
-    );
+    const url = `${environment.API_BASE_PATH}/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`;
+    this.http.get(url, { responseType: 'blob' }).subscribe({
+      next: (blob: Blob) => {
+        const downloadUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(downloadUrl);
+      },
+      error: (err) => {
+        console.error('Download failed:', err);
+        this.toastr?.error('Failed to download file', 'Error');
+      }
+    });
   }
+
 
   trfResultChange(result, index) {
     this.resultsData[index].testResult = result.value;

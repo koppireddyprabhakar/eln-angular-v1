@@ -81,9 +81,7 @@ export class ProjectManagementComponent implements OnInit {
       .subscribe((projects) => {
         this.projects = projects;
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          // Destroy the table first
           dtInstance.destroy();
-          // Call the dtTrigger to rerender again
           this.dtTrigger.next(this.projects);
         });
         this.globalService.hideLoader();

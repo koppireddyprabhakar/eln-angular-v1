@@ -90,40 +90,26 @@
                           <td>{{ experiment.insertDate}}</td>
                           <td>{{experiment.project && experiment.project.status === 'OnHold' ? experiment.project.status
                             : experiment.experimentStatus}}</td>
-                          <td>
-
-                            <i *ngIf="experiment && experiment.experimentStatus && (experiment.experimentStatus.toUpperCase() ===
-                             'Inprogress'.toUpperCase() || experiment.experimentStatus.toUpperCase() === 'Need Correction'.toUpperCase()) "
-                              (click)="onRowClick(experiment)" class="editIcon ri-edit-2-fill">
+                          <td>                         
+                            <i *ngIf="experiment && experiment.experimentStatus && ((experiment.experimentStatus.toUpperCase() === 'INPROGRESS'|| experiment.experimentStatus.toUpperCase() === 'NEED CORRECTION')&& experiment.project?.status?.toUpperCase() !== 'ONHOLD')" (click)="onRowClick(experiment)"
+                              class="editIcon ri-edit-2-fill">
                             </i>
                             <i *ngIf="experiment && experiment.experimentStatus && (experiment.experimentStatus.toUpperCase() !==
                              'Inprogress'.toUpperCase() && experiment.experimentStatus.toUpperCase() !== 'Need Correction'.toUpperCase()
                               || (experiment.project && experiment.project.status === 'OnHold'))"
                               (click)="onRowClick(experiment)" class="viewIcon bi-eye-fill">
                             </i>
-                            <i *ngIf="experiment && experiment.experimentStatus && experiment.experimentStatus.toUpperCase() === 'Prereview Completed'.toUpperCase()"
-                              class="btn btn-link" (click)="addTrf(experiment)">
+                            <i *ngIf="experiment && experiment.experimentStatus?.toUpperCase() === 'PREREVIEW COMPLETED'
+&& experiment?.project?.status?.toUpperCase() !== 'ONHOLD'"
+                              class="btn btn-link" (click)="addTrf(experiment)" >
                               Add TRF
                             </i>
-
-                            <i *ngIf="experiment && experiment.experimentStatus && experiment.experimentStatus.toUpperCase() ==='Complete'.toUpperCase()"
+                            <i *ngIf="experiment && experiment.experimentStatus?.toUpperCase() === 'COMPLETE' && experiment?.project?.status !== 'OnHold'"
                               class="btn btn-link" data-bs-toggle="modal" data-bs-target="#reviewSubmitForms"
                               (click)="selectUser(experiment)">
                               PreReview
-                            </i>
-
-                            <!-- <button type="button" *ngIf="
-                                experiment.experimentStatus.toUpperCase() ===
-                                'Complete'.toUpperCase()
-                              " class="btn btn-outline-primary" (click)="addTrf(experiment)">
-                              Add TRF
-                            </button> -->
-
-                            &nbsp;&nbsp;
-                            <!-- <i *ngIf="experiment && experiment.experimentStatus.toUpperCase() === 'Analysis Submitted'.toUpperCase() "
-                              data-bs-toggle="modal" data-bs-target="#reviewSubmitForms"
-                              (click)="selectUser(experiment)" class="tertiaryIcon bi bi-person-badge"></i> -->
-
+                            </i>                       
+                            &nbsp;&nbsp;                       
                           </td>
                         </tr>
                       </tbody>
@@ -178,7 +164,7 @@
           'Complete'.toUpperCase() ? 'Submit PreReview' : 'Submit Review'}}
         </button>
       </div>
-          <button #closeReviewModal type="button" class="d-none" data-bs-dismiss="modal"></button>
+      <button #closeReviewModal type="button" class="d-none" data-bs-dismiss="modal"></button>
     </div>
   </div>
 </div>

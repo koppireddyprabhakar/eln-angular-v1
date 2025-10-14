@@ -41,6 +41,7 @@ export class TeamComponent implements OnInit {
     pagingType: 'full_numbers',
   };
   public showErrorMsg: boolean = false;
+  originalTeam: any = {};
 
   @ViewChild('closeButton') closeButton: ElementRef;
   @ViewChild('closeDeleteButton') closeDeleteButton: ElementRef;
@@ -159,6 +160,18 @@ export class TeamComponent implements OnInit {
             this.toastr.success('Team has been added succesfully', 'Success');
           });
       } else {
+        if (Object.keys(this.selectedTeam).length !== 0 && this.originalTeam) {
+          const fieldsToCompare = ['teamName', 'deptId'];
+          const isSameFields = fieldsToCompare.every(field =>
+            this.originalTeam[field] === this.teamForm.get(field)?.value
+          );
+          const originalDosageId = this.originalTeam.dosageId || null;
+          const currentDosageId = this.teamForm.get('dosageId')?.value || null;
+          if (isSameFields && originalDosageId === currentDosageId) {
+            this.toastr.info('No changes detected.', 'Warning');
+            return;
+          }
+        }
         this.selectedTeam = {
           ...this.selectedTeam,
           ...newTeam,
@@ -185,7 +198,9 @@ export class TeamComponent implements OnInit {
 
   selectTeam(team) {
     this.showErrorMsg = false;
-    this.selectedTeam = team;
+    this.selectedTeam = JSON.parse(JSON.stringify(team));
+   this.originalTeam = JSON.parse(JSON.stringify(this.selectedTeam));
+    // this.selectedTeam = team;
     this.teamForm.patchValue({
       teamName: team.teamName,
       deptId: team.deptId,

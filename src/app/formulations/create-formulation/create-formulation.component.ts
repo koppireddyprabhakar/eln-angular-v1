@@ -13,7 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, interval, Observable, of, Subject, Subscription, switchMap, takeWhile } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
-
+import { HttpClient } from '@angular/common/http';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
 import { GlobalService } from '@app/shared/services/global/global.service';
@@ -67,7 +67,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
   dropdownSettings: any = {};
   public files: any = [];
   showPassword: boolean = false;
- reviewData: any = {};
+  reviewData: any = {};
   activeTab = 'summary';
   isNewTabDataSaved: boolean = false;
 
@@ -77,7 +77,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
   });
   private subscribeFlag: boolean = true;
   tests: any = [];
-  tempFiles: File[] = []; // temp list before upload
+  tempFiles: File[] = [];
 
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions = {
@@ -110,7 +110,8 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     private route: Router,
     private loginService: LoginserviceService,
     private globalService: GlobalService,
-    private commonFunctionsService: CommonFunctionsService
+    private commonFunctionsService: CommonFunctionsService,
+    private http: HttpClient
   ) { }
 
   ngOnInit(): void {
@@ -165,7 +166,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
   }
 
   public editorConfig = {
-    customConfig: '/assets/ckeditor/config.js', // Path to the config.js file
+    customConfig: '/assets/ckeditor/config.js',
   };
 
   getProjectDetails() {
@@ -237,7 +238,10 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
       .subscribe((details) => {
         const index = this.dummyTabs.findIndex((tab) => tab.value == tabValue);
         this.article[index].text = details.fileContent;
-       this.dummyTabs[index].lastSavedContent = details.fileContent;
+        this.dummyTabs[index].lastSavedContent = details.fileContent;
+        if (index == 1) {
+          this.article[index].text = details?.fileContent || this.defaultFormulationTable;
+        }
 
       });
   }
@@ -311,9 +315,7 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
         .getIndvExperimentById(this.experimentId)
         .subscribe((experimentDetails) => {
           this.experimentDetails = experimentDetails;
-          this.getAttachments(); // <-- Refresh attachment list
-          // if (this.editExperiment) {
-
+          this.getAttachments();
           this.article = experimentDetails.experimentDetails.map((exp) => ({
             title: '',
             text: '',
@@ -328,8 +330,6 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
           }
 
           this.tableData = experimentDetails.experimentExcipients;
-
-          // }
           this.summaryForm.patchValue({
             experimentName: experimentDetails?.experimentName,
             batchSize: experimentDetails?.batchSize,
@@ -376,13 +376,12 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
       isEdit: false,
       value: `newTab-${(length + 1).toString()}`,
       showDeleteIcon: true,
-       lastSavedContent: '' 
+      lastSavedContent: ''
 
     });
   }
 
   saveSummary() {
-    // if () {
     const summary = {
       status: 'Inprogress',
       projectId: this.project.projectId,
@@ -401,21 +400,16 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
         .saveExperiment(summary)
         .subscribe((experiment: any) => {
           this.getExperimentDetails(experiment.data, 'firstLoad');
-          // redirect to 2
-       if (this.tempFiles.length > 0) {
+          if (this.tempFiles.length > 0) {
             const uploadObservables = this.tempFiles.map(file =>
               this.experimentService.saveExperimentAttachment(file, experiment['data'], this.projectId, "Y")
             );
             this.tempFiles = [];
             forkJoin(uploadObservables).subscribe((responses) => {
-              // Combine all uploaded file responses
               const allFiles: any[] = responses.flat();
-              // this.files = responses.flat();
               this.files = allFiles.filter((file, index, self) =>
                 index === self.findIndex(f => f.attachmentId === file.attachmentId)
               );
-              console.log('[saveSummary] after summary uploading files:', this.files);
-              console.log('[saveSummary] Before uploading files:', this.tempFiles);
               this.getExperimentDetails(experiment.data, 'firstLoad');
               this.toastr.success('Files Uploaded Successfully', 'Success');
             });
@@ -452,14 +446,11 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
           this.getExperimentDetails(this.experimentDetails.expId, 'firstLoad');
           if (this.tempFiles.length > 0) {
             const uploadObservables = this.tempFiles.map(file =>
-              // this.experimentService.saveExperimentAttachment(file, experiment['data'], this.projectId, "Y")
               this.experimentService.saveExperimentAttachment(file, this.experimentDetails.expId, this.projectId, "Y")
             );
             this.files = [];
             forkJoin(uploadObservables).subscribe((responses) => {
-              // Combine all uploaded file responses
               this.files = responses.flat();
-              console.log('[saveSummary] Before uploading files:', this.tempFiles);
               this.tempFiles = [];
               this.getExperimentDetails(experiment.data, 'firstLoad');
               this.toastr.success('Files Uploaded Successfully', 'Success');
@@ -497,19 +488,9 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
   }
 
   deselect(item: any) {
-    // this.tableData = this.inwards.filter(({ excipientId: id1 }) =>
-    //   this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
-    // );
     this.tableData = this.tableData.filter(
       (data) => data.excipientId !== item.excipientId
     );
-    // this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-    //   // Destroy the table first
-    //   dtInstance.destroy();
-    //   // Call the dtTrigger to rerender again
-    //   this.dtTrigger.next(this.tableData);
-    // });
-
     this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
       dtElement.dtInstance.then((dtInstance: any) => {
         if (dtInstance.table().node().id === 'first-table') {
@@ -521,13 +502,13 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
   }
   onSelectAll(items: any) {
     this.tableData = this.inwards.map((data) => ({
-    ...data,
-    experimentId: Number(this.experimentId),
-    experimentQuantity: 0,
-    excipientQuantity: data.remainingQuantity,
-    quantity: 0,
-    errorMessage: 'Please enter quantity.'
-  }));
+      ...data,
+      experimentId: Number(this.experimentId),
+      experimentQuantity: 0,
+      excipientQuantity: data.remainingQuantity,
+      quantity: 0,
+      errorMessage: 'Please enter quantity.'
+    }));
     this.dtElements.forEach((dtElement: DataTableDirective) => {
       dtElement.dtInstance.then((dtInstance: any) => {
         if (dtInstance.table().node().id === 'first-table') {
@@ -578,7 +559,6 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
 
     if (saveCalls.length) {
       forkJoin(saveCalls).subscribe(response => {
-        console.log("Auto-Saved Successfully..." + response);
         this.toastr.success('Saved Successfully', 'Success');
       })
     }
@@ -593,13 +573,13 @@ export class CreateFormulationComponent implements OnInit, OnDestroy {
     if (this.isValid(index)) {
       this.toastr.error('Please enter some content before attempting to save.', 'Error');
       return;
-    } 
-const currentContent = this.article[index]?.text ?? '';
-const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
-  if (currentContent === lastSaved) {
-    this.toastr.warning("No changes detected. Update not required.", "Warning");
-    return;
-  }
+    }
+    const currentContent = this.article[index]?.text ?? '';
+    const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
+    if (currentContent === lastSaved) {
+      this.toastr.warning("No changes detected. Update not required.", "Warning");
+      return;
+    }
     let tabValue: any = {
       status: 'Active',
       experimentId: this.experimentId,
@@ -621,9 +601,9 @@ const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
         'Success'
       );
 
-     if (this.dummyTabs[index].value.startsWith('new') && data?.experimentDetailId) {
-       this.dummyTabs[index].value = `tab${data.experimentDetailId}`;
-      this.activeTab = `tab${data.experimentDetailId}`;
+      if (this.dummyTabs[index].value.startsWith('new') && data?.experimentDetailId) {
+        this.dummyTabs[index].value = `tab${data.experimentDetailId}`;
+        this.activeTab = `tab${data.experimentDetailId}`;
       }
       this.dummyTabs[index].showDeleteIcon = false;
       this.dummyTabs[index].lastSavedContent = currentContent;
@@ -644,11 +624,11 @@ const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
     this.file = event.target.files[0];
   }
 
-   removeTempFile(file: File) {
+  removeTempFile(file: File) {
     this.tempFiles = this.tempFiles.filter(f => f.name !== file.name);
   }
 
-   attachFile(event: any) {
+  attachFile(event: any) {
     const selectedFiles: FileList = event.target.files;
 
     for (let i = 0; i < selectedFiles.length; i++) {
@@ -676,7 +656,7 @@ const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
 
     if (uploadedInSummary) {
       this.toastr.warning(`"${selectedFile.name}" was already uploaded in the Summary page`, 'File Exists');
-      event.target.value = ''; // Reset input
+      event.target.value = '';
       return;
     }
 
@@ -698,11 +678,24 @@ const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
       });
   }
 
+
   getFileContent(fileName: string, experimentId: number) {
-    window.location.assign(
-      `${environment.API_BASE_PATH}` + `/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`
-    );
+    const url = `${environment.API_BASE_PATH}/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`;
+    this.http.get(url, {
+      responseType: 'blob'
+    }).subscribe(blob => {
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = objectUrl;
+      link.download = fileName;
+      link.click();
+      URL.revokeObjectURL(objectUrl);
+    }, error => {
+      console.error('Download failed', error);
+      this.toastr.error('Failed to download file');
+    });
   }
+
 
   saveExcipients() {
     if (this.selectedItems.length === 0) {
@@ -748,28 +741,29 @@ const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
           password: this.userValidateForm.value.password || ''
         };
         this.globalService.showLoader();
-        this.loginService.login(request).subscribe({ next:(response) => {
-          if (response) {
-            this.experimentService.updateExperimentStatus(this.experimentId, status).subscribe((data) => {
-              this.toastr.success('Formulation Experiment Completed Successfully ', 'Success');
-              this.route.navigateByUrl(`/forms-page/experiments`);
-            });
+        this.loginService.login(request).subscribe({
+          next: (response) => {
+            if (response) {
+              this.experimentService.updateExperimentStatus(this.experimentId, status).subscribe((data) => {
+                this.toastr.success('Formulation Experiment Completed Successfully ', 'Success');
+                this.route.navigateByUrl(`/forms-page/experiments`);
+              });
+            }
+          },
+          error: (err) => {
+            this.globalService.hideLoader();
+            let errorMessage =
+              typeof err.error === 'string'
+                ? err.error
+                : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+            if (err.status === 403) {
+              errorMessage = 'Your account has been locked due to multiple failed login attempts.';
+              this.toastr.error(errorMessage, 'Account Locked');
+              this.route.navigateByUrl('');
+            }
+            this.reviewPwdErrorMessage = errorMessage;
           }
-        },
-        error: (err) => {
-          this.globalService.hideLoader();
-          let errorMessage =
-            typeof err.error === 'string'
-              ? err.error
-              : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
-          if (err.status === 403) { 
-            errorMessage = 'Your account has been locked due to multiple failed login attempts.';
-            this.toastr.error(errorMessage, 'Account Locked');
-            this.route.navigateByUrl('');
-          }
-          this.reviewPwdErrorMessage = errorMessage;
-        }
-      });
+        });
       } else {
         this.userValidateForm.get('userName')?.markAsDirty();
         this.userValidateForm.get('password')?.markAsDirty();
@@ -789,22 +783,12 @@ const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((tests) => {
         this.tests = tests;
-
-        // this.dtElements.forEach((dtElement: DataTableDirective, index: number) => {
-        //   dtElement.dtInstance.then((dtInstance: any) => {
-        //     if (dtInstance.table().node().id === 'second-table') {
-        //       dtInstance.destroy();
-        //       this.dtResultTrigger.next(this.tests);
-        //     }
-        //   });
-        // });
-
         this.globalService.hideLoader();
       });
   }
 
   checkStatus(status: string) {
-    let formulationStatuses = ["Analysis Submitted", "Inreview", "Review Completed", "COA Generated", "Archive"];
+    let formulationStatuses = ["Analysis Submitted", "Inreview", "Review Completed", "COA Generated", "COA Reviewed", "COA Approved", "Archive"];
 
     return formulationStatuses.find(f => f.toLocaleUpperCase() === status) ? true : false;
   }
@@ -823,4 +807,29 @@ const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
     this.tableData[index].quantity = +result.value;
   }
 
+  defaultFormulationTable: string = `
+<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+  <tbody>
+    <tr>
+      <td colspan="2"><b>Exp/Batch Number:</b></td>
+      <td colspan="3"><b>Batch Size:</b></td>
+    </tr>
+    <tr>
+      <th>Ingredient Name</th>
+      <th>Quantity per Unit Dose</th>
+      <th>Quantity per Batch</th>
+      <th>Function</th>
+      <th>Remarks</th>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+<p><br/>You can add formulation-related notes or additional content below this table...</p>
+`;
 }

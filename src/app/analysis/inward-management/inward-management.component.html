@@ -29,6 +29,7 @@
                   <th>Grade</th>
                   <th>Qunatity</th>
                   <th>Remaining Quantity</th>
+                  <th>Created Date</th>
                   <th>Expiry</th>
                   <th>Options</th>
                 </tr>
@@ -45,6 +46,7 @@
                   <td>{{ inward.grade }}</td>
                   <td>{{inward.quantity}}</td>
                   <td class="text-center">{{inward.remainingQuantity}}</td> 
+                   <td>{{ inward.insertDate | date }}</td>
                   <td>{{inward.expiryDate | date}}</td>                
                   <td>
                     <i data-bs-toggle="modal" data-bs-target="#inwardForms" (click)="selectInward(inward)"

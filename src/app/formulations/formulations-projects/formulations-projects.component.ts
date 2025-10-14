@@ -129,13 +129,6 @@ export class FormulationsProjectsComponent implements OnInit {
 
   addTrf(row) {
     this.route.navigateByUrl(`/forms-page/add-trf?expId=${row.expId}`);
-    // var someTabTriggerEl = document.querySelector('#projects');
-    // var tab = new bootstrap.Tab(someTabTriggerEl)
-    // someTabTriggerEl.show()
   }
 
-  // ngOnDestroy(): void {
-  //   // Do not forget to unsubscribe the event
-  //   this.dtTrigger.unsubscribe();
-  // }
 }

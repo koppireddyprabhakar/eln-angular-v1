@@ -50,22 +50,23 @@ onSubmit() {
 
     this.loginService.login(request).subscribe(
       (data) => {
-        if (data.passwordExpired) {
-          this.toastr.error(data.passwordExpiryWarning, 'Password Expired');
+        if (data.user.passwordExpired) {
+          this.toastr.error(data.user.passwordExpiryWarning, 'Password Expired');
           this.route.navigate(['/app-update-password'], {
             queryParams: { email: this.username },
           });
-        } else if (data.firstLogin == 1) {
+        } else if (data.user.firstLogin == 1) {
           this.route.navigate(['/app-update-password'], {
             queryParams: { email: this.username },
           });
         } else {
-          this.loginService.userDetails = data;
-          this.loginService.setUserDetails(data);
+          this.loginService.userDetails = data.user;
+          this.loginService.setUserDetails(data.user);     
+         this.loginService.setTokens(data.accessToken, data.refreshToken); 
           this.getUserRoleAndDepartment(this.loginService.userDetails);
           this.route.navigate(['/dashboard']).then(() => {
-            if (data.passwordExpiryWarning) {
-              this.toastr.warning(data.passwordExpiryWarning, 'Password Expiry Warning');
+            if (data.user.passwordExpiryWarning) {
+              this.toastr.warning(data.user.passwordExpiryWarning, 'Password Expiry Warning');
             }
           });
         }

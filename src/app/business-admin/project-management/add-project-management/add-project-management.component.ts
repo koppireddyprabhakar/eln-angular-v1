@@ -133,15 +133,17 @@ export class AddProjectManagementComponent implements OnInit {
           teamName: this.teamName || this.selectedProject.teamName,
           marketId: this.projectForm.get('market')?.value,
           markertName: this.marketName || this.selectedProject.markertName,
-        };
-        this.selectedProject = [
-          {
-            ...this.selectedProject,
-            ...newProject,
-          },
-        ];
+        };     
+        const updatedProject = { ...this.selectedProject, ...newProject };       
+       ///Deep compare using JSON.stringify
+    if (JSON.stringify(updatedProject) === JSON.stringify(this.selectedProject)) {
+         this.globalService.hideLoader();
+         this.toastr.info('No changes detected', 'Info');
+         this.editForm = true;
+          return;
+      }else{
         this.projectService
-          .updateProject(this.selectedProject[0])
+          .updateProject(updatedProject)
           .pipe(
             takeWhile(() => this.subscribeFlag),
             finalize(() => {
@@ -157,7 +159,8 @@ export class AddProjectManagementComponent implements OnInit {
             this.editForm = false;
           });
       }
-    } else {
+    } 
+  }else {
       this.projectForm.get('projectName')?.markAsDirty();
       // this.projectForm.get('status')?.markAsDirty();
       this.projectForm.get('productName')?.markAsDirty();
@@ -248,9 +251,7 @@ export class AddProjectManagementComponent implements OnInit {
       .pipe(takeWhile(() => this.subscribeFlag))
       .subscribe((selectedProject) => {
         this.globalService.hideLoader();
-
-        setTimeout(() => {
-          // <<<---using ()=> syntax
+        setTimeout(() => {      
           this.formulations = this.dosages.filter(
             (dosage) => dosage.dosageId === selectedProject.dosageId
           )[0].formulations;
@@ -265,7 +266,7 @@ export class AddProjectManagementComponent implements OnInit {
             market: selectedProject.marketId,
             productCode:selectedProject.productCode,
           });
-        }, 1000);
+        }, 100);
       });
   }
 

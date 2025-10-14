@@ -127,13 +127,6 @@ export class CoaGenerationComponent implements OnInit {
 
     this.getTestResults();
    
-    // this.testRequest.preparedByName = this.userDetails.name;
-    // this.testRequest.preparedByDesignation = this.userDetails.designation;
-    // this.testRequest.reviewedByName = this.userDetails.name;
-    // this.testRequest.reviewedByDate = this.currentDate;
-
-    // this.testRequest.approvedByName = this.userDetails.name;
-    // this.testRequest.approvedByDate = this.currentDate;
 
   }
 

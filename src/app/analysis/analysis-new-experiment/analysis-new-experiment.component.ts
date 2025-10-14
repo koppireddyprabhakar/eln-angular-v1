@@ -24,6 +24,7 @@ import { TestService } from '@app/shared/services/test/test.service';
 import { environment } from "src/environments/environment";
 import { departmentMapping } from '@app/shared/constants/mappings';
 import { CommonFunctionsService } from '@app/shared/services/common-functions/common-functions.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-analysis-new-experiment',
@@ -115,12 +116,12 @@ export class AnalysisNewExperimentComponent implements OnInit {
   errorMessage: string = "Please enter details.";
   public intervalSubscripton$: Subscription;
   experimentName: string;
-    showPassword: boolean = false;
+  showPassword: boolean = false;
   userValidateForm = this.formBuilder.group({
     userName: [''],
-     password: ['', Validators.required]
+    password: ['', Validators.required]
   });
-    tempFiles: File[] = []; // temp list before upload
+  tempFiles: File[] = [];
   reviewPwdErrorMessage: any;
 
 
@@ -138,6 +139,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
     private loginService: LoginserviceService,
     private commonFunctionsService: CommonFunctionsService,
     private globalService: GlobalService,
+    private http: HttpClient
 
   ) { }
 
@@ -215,9 +217,8 @@ export class AnalysisNewExperimentComponent implements OnInit {
   }
 
   public editorConfig = {
-    customConfig: '/assets/ckeditor/config.js', // Path to the config.js file
+    customConfig: '/assets/ckeditor/config.js',
   };
- 
 
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
@@ -230,7 +231,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
         batchSize: this.project.batchSize,
         testRequestId: this.staticTrfId,
         department: "ANALYSIS",
-        productCode:  this.project.productCode,
+        productCode: this.project.productCode,
         market: this.project.markertName
       });
     });
@@ -265,7 +266,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
     this.analysisService
       .getTestFormResults(this.experimentId)
       .subscribe((data) => {
-       this.resultData = Array.isArray(data) && data.length ? data[0] : null;
+        this.resultData = Array.isArray(data) && data.length ? data[0] : null;
         this.testRequestForm.patchValue({
           condition: this.resultData.condition,
           stage: this.resultData.stage,
@@ -321,6 +322,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
         }
       });
   }
+
 
   getAnalysisDetailsById(tabValue) {
     this.analysisService
@@ -451,10 +453,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
       analysisId: this.experimentId,
       insertUser: this.loginService.userDetails.userId,
     };
-    // if (!this.selectedTestItems || this.selectedTestItems.length === 0) {
-    //   this.toastr.error('Please select at least one lab test', 'Error');
-    //   return;
-    // }
+
     if (!this.testRequestForm.invalid) {
       if (this.resultData.analysisId) {
         this.analysisService.updateTestForm(newTestRequest).subscribe(() => {
@@ -493,7 +492,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
       .getAttachmentsById(this.experimentId)
       .subscribe((attachments) => {
         this.files = attachments;
-      if (this.experimentDetails?.status === 'Inprogress') {
+        if (this.experimentDetails?.status === 'Inprogress') {
           let userName = this.loginService.userDetails ? this.loginService.userDetails['mailId'] : '';
           this.userValidateForm = this.formBuilder.group({
             userName: [userName, [Validators.required]],
@@ -549,7 +548,6 @@ export class AnalysisNewExperimentComponent implements OnInit {
             isEdit: false,
             value: 'tab' + exp.analysisDetailId,
           }));
-          // Commented becaise of no resonse
           this.summaryForm.patchValue({
             experimentName: experimentDetails.analysisName,
             batchSize: experimentDetails.batchSize,
@@ -596,12 +594,11 @@ export class AnalysisNewExperimentComponent implements OnInit {
       isEdit: false,
       value: `newTab-${(length + 1).toString()}`,
       showDeleteIcon: true,
-       lastSavedContent: '' 
+      lastSavedContent: ''
     });
   }
 
   saveSummary() {
-    // if () {
     const summary = {
       status: 'Active',
       projectId: this.project.projectId,
@@ -620,16 +617,13 @@ export class AnalysisNewExperimentComponent implements OnInit {
 
     if (!this.summaryForm.invalid) {
       this.analysisService.saveAnalysis(summary).subscribe((experiment: any) => {
-        // change here
         this.getAnalysisById(experiment.data, 'firstLoad');
-        // this.activeTab = this.dummyTabs[0].value;
-           if (this.tempFiles.length > 0) {
+        if (this.tempFiles.length > 0) {
           const uploadObservables = this.tempFiles.map(file =>
             this.analysisService.saveAnalysisAttachment(file, experiment['data'], this.projectId, "Y")
           );
-            this.tempFiles = [];
+          this.tempFiles = [];
           forkJoin(uploadObservables).subscribe((responses) => {
-            // Combine all uploaded file responses
             this.files = responses.flat();
             this.getAnalysisById(experiment.data, 'firstLoad');
             this.toastr.success('Files Uploaded Successfully', 'Success');
@@ -667,9 +661,6 @@ export class AnalysisNewExperimentComponent implements OnInit {
     });
   }
   deselect(item: any) {
-    // this.tableData = this.inwards.filter(({ excipientId: id1 }) =>
-    //   this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
-    // );
     this.tableData = this.tableData.filter(
       (data) => data.excipientId !== item.excipientId
     );
@@ -684,17 +675,16 @@ export class AnalysisNewExperimentComponent implements OnInit {
   }
   onSelectAll(items: any) {
     this.tableData = this.inwards.map((inward) => {
-    // Try to find matching row in existing tableData
-    const existing = this.tableData.find(t => t.excipientId === inward.excipientId);
-    return {
-      ...inward,
-      analysisId: Number(this.experimentId),
-      experimentQuantity: existing?.experimentQuantity ?? 0,
-      excipientQuantity: inward.remainingQuantity,
-      quantity: existing?.quantity ?? 0,
-      errorMessage: existing?.errorMessage ?? "Please enter quantity."
-    };
-  });
+      const existing = this.tableData.find(t => t.excipientId === inward.excipientId);
+      return {
+        ...inward,
+        analysisId: Number(this.experimentId),
+        experimentQuantity: existing?.experimentQuantity ?? 0,
+        excipientQuantity: inward.remainingQuantity,
+        quantity: existing?.quantity ?? 0,
+        errorMessage: existing?.errorMessage ?? "Please enter quantity."
+      };
+    });
     this.dtElements.forEach((dtElement: DataTableDirective) => {
       dtElement.dtInstance.then((dtInstance: any) => {
         if (dtInstance.table().node().id === 'first-table') {
@@ -724,14 +714,13 @@ export class AnalysisNewExperimentComponent implements OnInit {
       this.toastr.error('Please enter some content before attempting to save.', 'Error');
       return;
     }
-     const currentContent = this.article[index]?.text ?? '';
-     const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
+    const currentContent = this.article[index]?.text ?? '';
+    const lastSaved = this.dummyTabs[index]?.lastSavedContent ?? '';
 
-  // Check if content is unchanged
-  if (currentContent === lastSaved) {
-    this.toastr.warning("No changes detected. Update not required.", "Warning");
-    return;
-  }
+    if (currentContent === lastSaved) {
+      this.toastr.warning("No changes detected. Update not required.", "Warning");
+      return;
+    }
     const sss = JSON.stringify(this.article[index].text);
     let tabValue: any = {
       status: 'string',
@@ -753,16 +742,12 @@ export class AnalysisNewExperimentComponent implements OnInit {
         } successfully`,
         'Success'
       );
-      // if (this.dummyTabs[index].value.substring(0, 3) === 'new') {
-      //   this.activeTab = `${this.dummyTabs[index].value}-tab`;
-      //   this.getAnalysisById(this.experimentId);
-      // }
       if (this.dummyTabs[index].value.startsWith('new') && data?.analysisDetailId) {
         this.dummyTabs[index].value = `id${data.analysisDetailId}`;
         this.activeTab = `id${data.analysisDetailId}-tab`;
       }
       this.dummyTabs[index].showDeleteIcon = false;
-       this.dummyTabs[index].lastSavedContent = currentContent;
+      this.dummyTabs[index].lastSavedContent = currentContent;
     });
   }
 
@@ -792,7 +777,7 @@ export class AnalysisNewExperimentComponent implements OnInit {
 
     if (saveCalls.length) {
       forkJoin(saveCalls).subscribe(response => {
-      this.toastr.success('Auto Saved Successfully', 'Success');
+        this.toastr.success('Auto Saved Successfully', 'Success');
       })
     }
 
@@ -810,11 +795,11 @@ export class AnalysisNewExperimentComponent implements OnInit {
     this.file = event.target.files[0];
   }
 
-   removeTempFile(file: File) {
+  removeTempFile(file: File) {
     this.tempFiles = this.tempFiles.filter(f => f.name !== file.name);
   }
 
-   attachFile(event: any) {
+  attachFile(event: any) {
     const selectedFiles: FileList = event.target.files;
 
     for (let i = 0; i < selectedFiles.length; i++) {
@@ -827,33 +812,32 @@ export class AnalysisNewExperimentComponent implements OnInit {
         this.toastr.warning(`File "${file.name}" already selected`, 'Duplicate File');
       }
     }
-    // Reset input value so same file can be re-selected if removed
     event.target.value = '';
   }
 
   processFile(event) {
     const selectedFile = event.target.files[0];
-     if (!selectedFile) return;
+    if (!selectedFile) return;
 
-  const uploadedInSummary = this.files.some(
-    f => f.name === selectedFile.name && f.fromSummary === 'Y'
-  );
+    const uploadedInSummary = this.files.some(
+      f => f.name === selectedFile.name && f.fromSummary === 'Y'
+    );
 
-  if (uploadedInSummary) {
-    this.toastr.warning(`"${selectedFile.name}" was already uploaded in the Summary page`, 'File Exists');
-    event.target.value = ''; // Reset input
-    return;
-  }
+    if (uploadedInSummary) {
+      this.toastr.warning(`"${selectedFile.name}" was already uploaded in the Summary page`, 'File Exists');
+      event.target.value = '';
+      return;
+    }
 
-  const alreadyUploaded = this.files.some(
-    f => f.name === selectedFile.name
-  );
+    const alreadyUploaded = this.files.some(
+      f => f.name === selectedFile.name
+    );
 
-  if (alreadyUploaded) {
-    this.toastr.warning(`"${selectedFile.name}" is already uploaded`, 'Duplicate File');
-    event.target.value = '';
-    return;
-  }
+    if (alreadyUploaded) {
+      this.toastr.warning(`"${selectedFile.name}" is already uploaded`, 'Duplicate File');
+      event.target.value = '';
+      return;
+    }
 
     this.analysisService
       .saveAnalysisAttachment(selectedFile, this.experimentId, this.projectId, "N")
@@ -863,11 +847,27 @@ export class AnalysisNewExperimentComponent implements OnInit {
       });
   }
 
+
+
   getFileContent(fileName: string, experimentId: number) {
-    window.location.assign(
-      `${environment.API_BASE_PATH}` + `/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`
-    );
+    const url = `${environment.API_BASE_PATH}/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`;
+    this.http.get(url, {
+      responseType: 'blob'
+    }).subscribe(blob => {
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = objectUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+    }, error => {
+      console.error('Download failed', error);
+      this.toastr.error('Failed to download file', 'Error');
+    });
   }
+
 
   saveExcipients() {
     if (this.selectedItems.length === 0) {
@@ -908,27 +908,27 @@ export class AnalysisNewExperimentComponent implements OnInit {
       summary: summary ? summary : status,
       userId: this.loginService.userDetails.userId,
     };
-   if (this.userValidateForm.valid) {
-    const request = {
-      mailId: this.userValidateForm.value.userName ?? '',
-      password: this.userValidateForm.value.password ?? ''
-    };
-    this.loginService.login(request).subscribe({
-      next:(response) => {
-        if (response) {
-          this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
-            this.toastr.success('Experiment Completed Successfully', 'Success');
-            this.route.navigateByUrl('/exp-analysis/list');
-          });
-        }
-      },
-     error: (err) => {
+    if (this.userValidateForm.valid) {
+      const request = {
+        mailId: this.userValidateForm.value.userName ?? '',
+        password: this.userValidateForm.value.password ?? ''
+      };
+      this.loginService.login(request).subscribe({
+        next: (response) => {
+          if (response) {
+            this.analysisService.updateAnalysisStatus(analysisRequest).subscribe((data) => {
+              this.toastr.success('Experiment Completed Successfully', 'Success');
+              this.route.navigateByUrl('/exp-analysis/list');
+            });
+          }
+        },
+        error: (err) => {
           this.globalService.hideLoader();
           let errorMessage =
             typeof err.error === 'string'
               ? err.error
               : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
-          if (err.status === 403) { 
+          if (err.status === 403) {
             errorMessage = 'Your account has been locked due to multiple failed login attempts.';
             this.toastr.error(errorMessage, 'Account Locked');
             this.route.navigateByUrl('');
@@ -936,10 +936,10 @@ export class AnalysisNewExperimentComponent implements OnInit {
           this.reviewPwdErrorMessage = errorMessage;
         }
       });
-  } else {
-    this.userValidateForm.get('userName')?.markAsDirty();
-    this.userValidateForm.get('password')?.markAsDirty();
-  }
+    } else {
+      this.userValidateForm.get('userName')?.markAsDirty();
+      this.userValidateForm.get('password')?.markAsDirty();
+    }
   }
 
 

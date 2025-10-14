@@ -11,7 +11,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { DataTableDirective } from 'angular-datatables';
 import { ToastrService } from 'ngx-toastr';
-
+import { HttpClient } from '@angular/common/http';
 import { AnalysisService } from '@app/shared/services/analysis/analysis.service';
 import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
 import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
@@ -127,6 +127,7 @@ export class ReviewFormulationsComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: Router,
     private loginService: LoginserviceService,
+    private http: HttpClient
   ) { }
 
   ngOnInit(): void {
@@ -189,10 +190,10 @@ export class ReviewFormulationsComponent implements OnInit {
     this.dtTrigger.next(null);
   }
 
-   public editorConfig = {
-    customConfig: '/assets/ckeditor/config.js', // Path to the config.js file
+  public editorConfig = {
+    customConfig: '/assets/ckeditor/config.js',
   };
-   
+
 
   getProjectDetails() {
     this.projectService.getProjectById(this.projectId).subscribe((project) => {
@@ -235,13 +236,6 @@ export class ReviewFormulationsComponent implements OnInit {
   }
 
   getExperimentDetailsById(tabValue) {
-    // const expDetailsId = Number(id.slice(-1));
-    // this.experimentService
-    //   .getExperimentDetailsById(expDetailsId)
-    //   .subscribe((details) => {
-    //     this.article[this.activeTabIndex].text = details?.fileContent;
-    //   });
-
     this.experimentService
       .getExperimentDetailsById(tabValue.substring(3))
       .subscribe((details) => {
@@ -256,24 +250,22 @@ export class ReviewFormulationsComponent implements OnInit {
       .getExcipientDetailsById(this.experimentId)
       .subscribe((data) => {
         data.forEach((excipient) => {
-        const match = this.inwards.find(
-          (inward) =>
-            inward.excipientId === excipient.excipientId &&
-            inward.materialName === excipient.materialName &&
-            inward.batchNo === excipient.batchNo
-        );
-        if (match) {
-          excipient.expiryDate = match.expiryDate;
-        }
-      });
-          this.tableData = data;
-          this.selectedItems = data;
-          this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-            // Destroy the table first
-            dtInstance.destroy();
-            // Call the dtTrigger to rerender again
-            this.dtTrigger.next(this.tableData);
-          });
+          const match = this.inwards.find(
+            (inward) =>
+              inward.excipientId === excipient.excipientId &&
+              inward.materialName === excipient.materialName &&
+              inward.batchNo === excipient.batchNo
+          );
+          if (match) {
+            excipient.expiryDate = match.expiryDate;
+          }
+        });
+        this.tableData = data;
+        this.selectedItems = data;
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+          this.dtTrigger.next(this.tableData);
+        });
       });
   }
 
@@ -369,8 +361,6 @@ export class ReviewFormulationsComponent implements OnInit {
         .getIndvExperimentById(this.experimentId)
         .subscribe((experimentDetails) => {
           this.experimentDetails = experimentDetails;
-          // if (this.editExperiment) {
-
           this.article = experimentDetails.experimentDetails.map((exp) => ({
             title: '',
             text: '',
@@ -441,32 +431,23 @@ export class ReviewFormulationsComponent implements OnInit {
       )
       .map((table) => ({ ...table, analysisId: Number(this.experimentId) }));
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
       dtInstance.destroy();
-      // Call the dtTrigger to rerender again
       this.dtTrigger.next(this.tableData);
     });
   }
   deselect(item: any) {
-    // this.tableData = this.inwards.filter(({ excipientId: id1 }) =>
-    //   this.selectedItems.some(({ excipientId: id2 }) => id2 === id1)
-    // );
     this.tableData = this.tableData.filter(
       (data) => data.excipientId !== item.excipientId
     );
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
       dtInstance.destroy();
-      // Call the dtTrigger to rerender again
       this.dtTrigger.next(this.tableData);
     });
   }
   onSelectAll(items: any) {
     this.tableData = this.inwards;
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
       dtInstance.destroy();
-      // Call the dtTrigger to rerender again
       this.dtTrigger.next(this.tableData);
     });
   }
@@ -488,10 +469,25 @@ export class ReviewFormulationsComponent implements OnInit {
   }
 
   getFileContent(fileName: string, experimentId: number) {
-    window.location.assign(
-      `${environment.API_BASE_PATH}` + `/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`
-    );
+    const url = `${environment.API_BASE_PATH}/experiment/get-experiment-attachment-content/${fileName}/${experimentId}/${this.projectId}`;
+    this.http.get(url, { responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        const objectUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = objectUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(objectUrl);
+      },
+      error: (err) => {
+        console.error('Download failed:', err);
+        this.toastr.error('Failed to download file', 'Error');
+      }
+    });
   }
+
 
   saveExcipients() {
     if (this.selectedItems.length === 0) {
@@ -526,12 +522,11 @@ export class ReviewFormulationsComponent implements OnInit {
     this.submitClicked = true;
     if (this.reviewData['reviewType'] !== "FinalReview" && !this.isOptionSelected) {
       if (this.reviewData['reviewType'] === "Review") {
-        // Handle the logic for the review phase without the need for correction or TRF
       } else {
         return;
       }
     }
-    if (!this.comments  || this.comments.trim().length === 0) {
+    if (!this.comments || this.comments.trim().length === 0) {
       this.comments = '';
       this.toastr.error('Please enter comments.', 'Error');
       return;
@@ -554,37 +549,37 @@ export class ReviewFormulationsComponent implements OnInit {
       };
 
       this.loginService.login(request).subscribe({
-      next: (response) => {
-         if (response) {
-          this.experimentService.updateExperimentReview(reviewRequest).subscribe((data) => {
-            if (reviewRequest.status === 'Need Correction') {
-              this.toastr.success('Need Correction request submitted successfully', 'Success');
-            }
-            else if (reviewRequest.status === 'Prereview Completed') {
-              this.toastr.success('Formulation PreReview completed successfully', 'Success');
-            }
-            else {
-              this.toastr.success('Formulation Experiment review completed successfully', 'Success');
-            }
-            this.route.navigateByUrl(`/forms-page/review-formulations`);
-          });
-        } 
-      },
-   error: (err) => {
-        let errorMessage =
-          typeof err.error === 'string'
-            ? err.error
-            : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
+        next: (response) => {
+          if (response) {
+            this.experimentService.updateExperimentReview(reviewRequest).subscribe((data) => {
+              if (reviewRequest.status === 'Need Correction') {
+                this.toastr.success('Need Correction request submitted successfully', 'Success');
+              }
+              else if (reviewRequest.status === 'Prereview Completed') {
+                this.toastr.success('Formulation PreReview completed successfully', 'Success');
+              }
+              else {
+                this.toastr.success('Formulation Experiment review completed successfully', 'Success');
+              }
+              this.route.navigateByUrl(`/forms-page/review-formulations`);
+            });
+          }
+        },
+        error: (err) => {
+          let errorMessage =
+            typeof err.error === 'string'
+              ? err.error
+              : err?.error?.message || err?.message || 'Something went wrong. Please try again.';
 
-        if (err.status === 403) {
-          errorMessage = 'Your account has been locked due to multiple failed login attempts.';
-          this.toastr.error(errorMessage, 'Account Locked');
-          this.route.navigateByUrl(''); 
+          if (err.status === 403) {
+            errorMessage = 'Your account has been locked due to multiple failed login attempts.';
+            this.toastr.error(errorMessage, 'Account Locked');
+            this.route.navigateByUrl('');
+          }
+
+          this.reviewPwdErrorMessage = errorMessage;
         }
-
-        this.reviewPwdErrorMessage = errorMessage;
-      }
-    });
+      });
     } else {
       this.submitClicked = true;
       this.userValidateForm.get('userName')?.markAsDirty();
