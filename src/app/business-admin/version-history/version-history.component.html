@@ -1,0 +1,62 @@
+<main id="main" class="main">
+    <div class="pagetitle">
+      <h1>Project Management</h1>
+    </div>
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="align-header">
+                <h5 class="card-title">Projects</h5>
+              </div>
+  
+              <table
+                datatable
+                [dtOptions]="dtOptions"
+                [dtTrigger]="dtTrigger"
+                class="row-border hover"
+              >
+                <thead>
+                  <tr>
+                    <th>S.No</th>
+                    <th>Project&nbsp;Name</th>
+                    <th>Product Name</th>
+                    <th>Code</th>
+                    <th>Dosage</th>
+                    <th>Team Name</th>
+                    <th>Formulation</th>
+                    <th>Strength</th>
+                    <th>Creation Date</th>
+                    <th>Status</th>
+                    <th>Options</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let project of projects; let i = index">
+                    <td>{{i + 1}}</td>
+                    <td>{{ project.projectName }}</td>
+                    <td>{{ project.productName }}</td>
+                    <td>{{ project.productCode }}</td>
+                    <td>{{ project.dosageName }}</td>
+                    <td>{{ project.teamName }}</td>
+                    <td>{{ project.formulationName }}</td>
+                    <td>{{ project.strength }}</td>
+                    <td>{{ project.insertDate  | date }}</td>
+                    <td>{{ project.status }}</td>
+                      <td>
+                        <div class="d-flex align-items-center gap-2">
+                          <i (click)="viewExperiment(project)"
+                          class="viewIcon bi-eye-fill"></i>
+                        </div>
+                      </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  

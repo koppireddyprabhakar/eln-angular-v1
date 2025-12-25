@@ -1,0 +1,383 @@
+<main id="main" class="main body-height">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-body">
+        <ul class="nav nav-tabs outer-tab-border pt-4" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" [ngClass]="{ active: activeTab === 'summary' }" id="summary-tab"
+              data-bs-toggle="tab" data-bs-target="#summary" (click)="search('summary', -1)" type="button" role="tab"
+              aria-controls="summary" aria-selected="false">
+              Summary
+            </button>
+          </li>
+          <li class="nav-item" role="presentation" *ngFor="let dumm of dummyTabs; index as i">
+            <button *ngIf="!dumm.isEdit" class="nav-link" id="{{ dumm.value }}-tab" [disabled]="!isCreatedExperiment"
+              data-bs-toggle="tab" [attr.data-bs-target]="'#' + dumm.value" type="button" role="tab"
+              (click)="search(dumm.value, i)" [ngClass]="{ active: activeTab === dumm.value }"
+              [attr.aria-controls]="dumm.value" aria-selected="true">
+              {{ dumm.label }}
+              <i class="bi bi-pencil-square" *ngIf="isCreatedExperiment" (click)="editMode(i)"></i>&nbsp;&nbsp;
+              <i *ngIf="i >= 2 && dumm.showDeleteIcon" class="bi bi-x ml-2" (click)="deleteNewTab(i, dumm)" style="color: red; font-size: 15px;"></i>
+            </button>
+
+            <input *ngIf="dumm.isEdit" [(ngModel)]="inputValue" type="text" class="form-control"
+              (blur)="resetEditMode(i, dumm.label)" #inputfields autofocus="true" />
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="contact-tab" [disabled]="!isCreatedExperiment" data-bs-toggle="tab"
+              data-bs-target="#contact" (click)="search('excipients', -1)"
+              [ngClass]="{ active: activeTab === 'contact' }" type="button" role="tab" aria-controls="contact"
+              aria-selected="false">
+              Excipients/Chemicals
+            </button>
+          </li>
+          <li *ngIf="experimentDetails && (checkStatus(experimentDetails.experimentStatus.toUpperCase()))"
+            class="nav-item" role="presentation">
+            <button class="nav-link" id="results-tab" [disabled]="!isCreatedExperiment" data-bs-toggle="tab"
+              data-bs-target="#results" (click)="search('results', -1)" [ngClass]="{ active: activeTab === 'results' }"
+              type="button" role="tab" aria-controls="results" aria-selected="false">
+              Results
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="attachments-tab" [disabled]="!isCreatedExperiment" data-bs-toggle="tab"
+              data-bs-target="#attachments" (click)="search('attachments', -1)"
+              [ngClass]="{ active: activeTab === 'attachments' }" type="button" role="tab" aria-controls="attachments"
+              aria-selected="false">
+              Attachments
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+           <button class="nav-link" id="review-comments-tab" data-bs-toggle="tab" data-bs-target="#review-comments"
+            (click)="search('review-comments', -1)" [ngClass]="{ active: activeTab === 'review-comments' }" type="button" role="tab" aria-controls="review-comments" aria-selected="false">
+             Review Comments
+           </button>
+          </li>
+          <li class="nav-item" role="presentation" *ngIf="experimentDetails && (experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase() ||
+            experimentDetails.experimentStatus.toUpperCase() === 'Need Correction'.toUpperCase())">
+            <button class="nav-link" id="attachments-tab" [disabled]="!isCreatedExperiment" type="button"
+              (click)="addNew()">
+              Add New Tab
+            </button>
+          </li>
+        </ul>
+        <div class="tab-content pt-2" id="myTabContent">
+          <div class="tab-pane fade show" [ngClass]="{
+              active: activeTab === 'summary',
+              show: activeTab === 'summary'
+            }" id="summary" role="tabpanel" aria-labelledby="summary-tab">
+            <div>
+              <!-- <h4 class="pt-2">Details of the experiment</h4> -->
+              <div class="row pt-3">
+                <div class="col-lg-12">
+                  <div class="card">
+                    <div class="card-body" *ngIf="project">
+                      <h5 class="card-title">Details of the experiment</h5>
+                      <form class="row g-3" [formGroup]="summaryForm">
+                        <div class="row mb-3 pt-2">
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Project Name</label>
+                          <div class="col-sm-9 pt-1">
+                            {{ project.projectName }}
+                          </div>
+                        </div>
+                        <div class="row mb-3 pt-2">
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Product Name</label>
+                          <div class="col-sm-9 pt-1">
+                            {{ project.productName }}
+                          </div>
+                        </div>
+                        <div class="row mb-3 pt-2">
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Product Code</label>
+                          <div class="col-sm-9 pt-1">
+                            {{ project.productCode }}
+                          </div>
+                        </div>
+                        <div class="row mb-3 pt-2">
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Dosage Name</label>
+                          <div class="col-sm-9 pt-1">
+                            {{ project.dosageName }}
+                          </div>
+                        </div>
+                        <!-- <input class="form-control" type="text"  /> -->
+                        <div class="row mb-3">
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Formulation Type</label>
+                          <div class="col-sm-9 pt-1">
+                            {{ project.formulationName }}
+                          </div>
+                        </div>
+                        <div class="row mb-3">
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Batch Number</label>
+                          <div class="col-sm-9 pt-1">{{ batchNumber }}</div>
+                        </div>
+
+                        <div class="row mb-3">
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Start Date</label>
+                          <div class="col-sm-9 pt-1">{{ (experimentDetails && experimentDetails.expStartDate ||
+                            startDate | date:'medium') }}</div>
+                        </div>
+
+                        <div class="row mb-3" *ngIf="(experimentDetails && experimentDetails.analysisSubmitDate)">
+                          <label for="inputEmail3" class="col-sm-3 col-form-label">Analysis Submitted Date</label>
+                          <div class="col-sm-9 pt-1">{{ (experimentDetails && experimentDetails.analysisSubmitDate) |
+                            date :'medium'}}</div>
+                        </div>
+
+                        <div class="row mb-3">
+                          <label for="experimentName" class="col-sm-3 col-form-label">Experiment Name</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" id="experimentName"
+                              formControlName="experimentName" readonly/>
+                            <span *ngIf="
+                              summaryForm.controls['experimentName'].invalid &&
+                               (summaryForm.controls['experimentName'].dirty ||
+                               summaryForm.controls['experimentName'].touched) &&
+                               summaryForm.get('experimentName')?.errors &&
+                               summaryForm.get('experimentName')?.hasError('required')
+                              " class="text-danger">
+                              Please enter Experiment Name
+                            </span>
+                          </div>
+                        </div>
+                        <div class="row mb-3">
+                          <label for="batchSize" class="col-sm-3 col-form-label">Batch Size</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" id="batchSize" [readonly]="experimentId"
+                              formControlName="batchSize" />
+                            <span *ngIf="
+                              summaryForm.controls['batchSize'].invalid &&
+                               (summaryForm.controls['batchSize'].dirty ||
+                               summaryForm.controls['batchSize'].touched) &&
+                               summaryForm.get('batchSize')?.errors &&
+                               summaryForm.get('batchSize')?.hasError('required')
+                              " class="text-danger">
+                              Please enter BatchSize
+                            </span>
+                          </div>
+                        </div>
+                      </form>
+                       <div class="row g-3" style="padding-top: 14px;">
+                        <div class="row mb-3">
+                          <label for="inputNumber" class="col-sm-3 col-form-label">
+                            Upload</label>
+                          <div class="col-sm-9">
+                            <input class="form-control" type="file" id="formFile" multiple
+                              (change)="attachFile($event)" />
+                          </div>
+                        </div>
+                        <div class="row mb-3" *ngIf="tempFiles.length > 0">
+                          <label>Attachments</label>
+                          <span *ngFor="let file of tempFiles">
+                            <div class="file-container">
+                              <span class="file-list">{{ file.name | titlecase }}</span>
+                              <span class="align-right" (click)="removeTempFile(file)">Remove <i
+                                  class="bi bi-trash-fill pointer"></i></span>
+                            </div>
+                          </span>
+                        </div>
+
+                        <div class="row mb-3">
+                          <label *ngIf="files.length > 0">Uploaded Attachements</label>
+                          <span *ngFor="let file of files">
+                            <div class="file-container" *ngIf="file.fromSummary === 'Y'">
+                              <span class="file-list" (click)="getFileContent(file.name, file.experimentId)">{{
+                                file.name |
+                                titlecase }}</span>
+                              <span class="align-right" (click)="removeAttachment(file)">Remove <i
+                                  class="bi bi-trash-fill pointer"></i></span>
+                            </div>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="text-center" *ngIf="!experimentId">
+                        <button type="submit" class="btn btn-primary" (click)="saveSummary()">
+                          Start Experiment
+                        </button>
+                      </div>
+
+                      <div class="text-center" *ngIf="experimentId && experimentDetails && (experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase() || 
+                      experimentDetails.experimentStatus.toUpperCase() === 'Need Correction'.toUpperCase())">
+                        <button type="submit" class="btn btn-primary" (click)="updateSummary()">
+                          Update Experiment
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <section > -->
+          <div *ngFor="let dumm of dummyTabs; index as i" class="tab-pane fade" [ngClass]="{
+              active: activeTab === dumm.value,
+              show: activeTab === dumm.value
+            }" id="{{ dumm.value }}" role="tabpanel" [attr.aria-labelledby]="dumm + '-tab'">
+            <ckeditor [config]="editorConfig" required [(ngModel)]="article[i].text" data="" name="text" ></ckeditor>
+            <!-- <ckeditor data="<p>Hello, world!</p>"></ckeditor> -->
+            <div class="text-center pt-3">
+              <button type="submit" class="btn btn-primary" *ngIf="experimentDetails && (experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase() || 
+                experimentDetails.experimentStatus.toUpperCase() === 'Need Correction'.toUpperCase())"
+                (click)="saveTab(i, dumm)">
+                Save
+              </button>
+            </div>
+          </div>
+
+          <!-- </section> -->
+          <div class="tab-pane fade" [ngClass]="{
+              active: activeTab === 'contact',
+              show: activeTab === 'contact'
+            }" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+            <div class="pt-3 pb-3">
+              <ng-multiselect-dropdown [settings]="dropdownSettings" [data]="inwards" [(ngModel)]="selectedItems"
+                (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)" (onDeSelect)="deselect($event)"
+                (onDeSelectAll)="onDeSelectAll()">
+              </ng-multiselect-dropdown>
+            </div>
+            <table id="first-table" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+              <thead>
+                <tr>
+                  <th>Inward Name</th>
+                  <th>Material Name</th>
+                  <th>Material Type</th>
+                  <th>Batch Number</th>
+                  <th>Source Name</th>
+                  <th>Potency</th>
+                  <th>Grade</th>
+                  <th>Quantity</th>
+                  <th>Expiry</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let excipient of tableData; let i = index">
+                  <td>{{ excipient.excipientsName }}</td>
+                  <td>{{ excipient.materialName }}</td>
+                  <td>{{ excipient.materialType }}</td>
+                  <td>{{ excipient.batchNo }}</td>
+                  <td>{{ excipient.sourceName }}</td>
+                  <td>{{ excipient.potency }}</td>
+                  <td>{{ excipient.grade }}</td>
+                  <td>
+                    <input type="number" class="form-control" style="height: 50px" ngModel="{{ excipient.quantity }}"
+                      (change)="excipientQuantityChange($event.target, i)">
+                    <div *ngIf="excipient['errorMessage']" class="text-danger">{{excipient.errorMessage}}</div>
+                  </td>
+                  <td>{{excipient.expiryDate | date}}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="text-center pt-3">
+              <button type="submit" class="btn btn-primary mt-3" *ngIf="experimentDetails && (experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase() || 
+                experimentDetails.experimentStatus.toUpperCase() === 'Need Correction'.toUpperCase())"
+                (click)="saveExcipients()">
+                Save
+              </button>
+            </div>
+          </div>
+          <div *ngIf="experimentDetails && checkStatus(experimentDetails.experimentStatus.toUpperCase())"
+            class="tab-pane fade" [ngClass]="{
+                        active: activeTab === 'results',
+                        show: activeTab === 'results'
+                      }" id="results" role="tabpanel" aria-labelledby="results-tab">
+
+            <h3>RESULTS</h3>
+
+            <table id="second-table" datatable [dtOptions]="dtResultOptions" [dtTrigger]="dtResultTrigger"
+              class="row-border hover pt-4">
+              <thead>
+                <tr>
+                  <th style="padding-right: 50px;">Test Id</th>
+                  <th style="padding-right: 50px;">Test Name</th>
+                  <th style="padding-right: 50px;">Results</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let test of tests" class="py-2">
+                  <td style="padding-right: 50px;">{{ test.testNumber }}</td>
+                  <td style="padding-right: 50px;">{{ test.testName }}</td>
+                  <td style="padding-right: 50px;">{{ test.testResult }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="tab-pane fade" [ngClass]="{
+              active: activeTab === 'attachments',
+              show: activeTab === 'attachments'
+            }" id="attachments" role="tabpanel" aria-labelledby="attachments-tab">
+            <div class="row mb-3" *ngIf="experimentDetails && (experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase() || 
+              experimentDetails.experimentStatus.toUpperCase() === 'Need Correction'.toUpperCase())">
+              <label for="inputNumber" class="col-sm-2 col-form-label">
+                Upload</label>
+              <div class="col-sm-10">
+                <input class="form-control" type="file" id="formFile" (change)="processFile($event)" />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label *ngIf="files.length > 0">Uploaded Attachements</label>
+              <span *ngFor="let file of files">
+                <div class="file-container" *ngIf="file.fromSummary === 'N'">
+                  <span class="file-list" (click)="getFileContent(file.name, file.experimentId)">{{ file.name |
+                    titlecase }}</span>
+                  <span class="align-right" *ngIf="experimentDetails && (experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase() || 
+                    experimentDetails.experimentStatus.toUpperCase() === 'Need Correction'.toUpperCase())"
+                    (click)="removeAttachment(file)">Remove <i class="bi bi-trash-fill pointer"></i></span>
+                </div>
+              </span>
+            </div>
+
+            <!-- COMPLETE BUTTON-->
+            <div class="text-center pt-3" *ngIf="experimentDetails && (experimentDetails.experimentStatus.toUpperCase() === 'Inprogress'.toUpperCase() || 
+            experimentDetails.experimentStatus.toUpperCase() === 'Need Correction'.toUpperCase())">
+              <form class="row g-3" [formGroup]="userValidateForm">
+                <div class="row mb-3">
+                  <label for="userName" class="col-sm-2 col-form-label" style="width: 11% !important;">User
+                    Name</label>
+                  <div class="col-sm-3">
+                    <input type="text" class="form-control" id="userName" formControlName="userName" readonly />
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <label for="password" class="col-sm-2 col-form-label" style="width: 11% !important;">Password</label>
+                  <div class="col-sm-3">
+                      <div class="input-group has-validation">
+                    <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="password" formControlName="password"  (input)="reviewPwdErrorMessage = ''"  />
+                              <button type="button" class="input-group-text"(mousedown)="showPassword = true"(mouseup)="showPassword = false"(mouseleave)="showPassword = false">
+                   <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                  </button>
+                  </div>
+                    <span *ngIf="userValidateForm.controls['password'].invalid &&
+                             (userValidateForm.controls['password'].dirty ||
+                             userValidateForm.controls['password'].touched) &&
+                             userValidateForm.get('password')?.errors &&
+                             userValidateForm.get('password')?.hasError('required')" class="text-danger">
+                      Please enter Password
+                    </span>
+                     <span
+                   *ngIf="reviewPwdErrorMessage"
+                     class="text-danger"
+                     >
+                      {{ reviewPwdErrorMessage }}
+                   </span>
+                  </div>
+                </div>
+              </form>
+
+              <button type="submit" class="btn btn-primary mt-3" (click)="updateExperimentStatus()">
+                Complete Formulation
+              </button>
+            </div>
+          </div>
+          <div class="tab-content pt-3">
+            <div class="tab-pane fade" id="review-comments" role="tabpanel" aria-labelledby="review-comments-tab"
+               [ngClass]="{ active: activeTab === 'review-comments', show: activeTab === 'review-comments' }">
+                <div class="pt-3">
+                <h5>Review Comments</h5>
+                  <textarea class="form-control" rows="5" readonly>{{ reviewData?.comments }}</textarea>
+              </div>
+             </div>
+           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

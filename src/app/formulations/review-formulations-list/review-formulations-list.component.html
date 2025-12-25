@@ -1,0 +1,54 @@
+<main id="main" class="main body-height">
+  <div class="pagetitle">
+    <h1>Review Experiments</h1>
+  </div>
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="align-header">
+              <h5 class="card-title">Experiments</h5>
+            </div>
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover pt-4">
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  <th>Experiment Name</th>
+                  <th>Batch No.</th>
+                  <th>Batch Size</th>
+                  <th>Project Name</th>
+                  <th>Formulation Type</th>
+                  <th>Strength</th>
+                  <th>Status</th>
+                  <th>Options</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let experiment of myExperiments; let i = index">
+                  <td>{{i + 1}}</td>
+                  <td>
+                    {{ experiment.experimentName | titlecase }}
+                  </td>
+                  <td>{{ experiment.batchNumber }}</td>
+                  <td>{{ experiment.batchSize }}</td>
+                  <td>{{ experiment.project.projectName }}</td>
+                  <td>{{ experiment.project.formulationName}}</td>
+                  <td>{{ experiment.project.strength}}</td>
+                  <td>{{ experiment.project && experiment.project.status === 'OnHold' ? experiment.project.status
+                    : experiment.experimentStatus }}</td>
+                  <td>
+                    <i class="btn btn-link" *ngIf="experiment.project && experiment.project.status !== 'OnHold'"
+                      (click)="onRowClick(experiment)">
+                      Review
+                    </i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

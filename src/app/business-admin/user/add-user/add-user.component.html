@@ -1,0 +1,285 @@
+<main id="main" class="main">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">User Form</h5>
+      <form class="row g-3" [formGroup]="userForm">
+        <div class="col-4">
+          <label for="firstName" class="form-label">First Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="firstName"
+            formControlName="firstName"
+          />
+          <span
+            *ngIf="
+              userForm.controls['firstName'].invalid &&
+              (userForm.controls['firstName'].dirty ||
+              userForm.controls['firstName'].touched) &&
+              userForm.get('firstName')?.errors &&
+              userForm.get('firstName')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please enter First Name
+          </span>
+        </div>
+
+        <div class="col-4">
+          <label for="lastName" class="form-label">Last Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="lastName"
+            formControlName="lastName"
+          />
+        </div>
+        <div class="col-4">
+          <label for="dateOfBirth" class="form-label">Date of birth</label>
+          <input
+            type="date"
+            class="form-control"
+            id="dateOfBirth"
+            formControlName="dateOfBirth"
+          />
+          <span
+            *ngIf="
+              userForm.controls['dateOfBirth'].invalid &&
+              (userForm.controls['dateOfBirth'].dirty ||
+                userForm.controls['dateOfBirth'].touched) &&
+              userForm.get('dateOfBirth')?.errors &&
+              userForm.get('dateOfBirth')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please enter DOB
+          </span>
+        </div>
+        <div class="col-4">
+          <label for="gender" class="form-label">Gender</label>
+          <select
+            class="form-select"
+            aria-label="Gender"
+            formControlName="gender"
+          >
+            <option *ngFor="let gender of genderList" [ngValue]="gender.value">
+              {{ gender.label | titlecase }}
+            </option>
+          </select>
+          <span
+            *ngIf="
+              userForm.controls['gender'].invalid &&
+              (userForm.controls['gender'].dirty ||
+                userForm.controls['gender'].touched) &&
+              userForm.get('gender')?.errors &&
+              userForm.get('gender')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please select Gender
+          </span>
+        </div>
+        <div class="col-4">
+          <label for="deptId" class="form-label">Department Name</label>
+          <select
+            class="form-select"
+            aria-label="Department Id"
+            formControlName="deptId"
+           (change)="assignAdminRoleIfNeeded()"
+          >
+            <option *ngFor="let dept of departmentList" [ngValue]="dept.deptId">
+              {{ dept.departmentName | titlecase }}
+            </option>
+          </select>
+          <span
+            *ngIf="
+              userForm.controls['deptId'].invalid &&
+              (userForm.controls['deptId'].dirty ||
+                userForm.controls['deptId'].touched) &&
+              userForm.get('deptId')?.errors &&
+              userForm.get('deptId')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please select Department Name
+          </span>
+        </div>
+        <div class="col-4">
+          <label for="roleId" class="form-label">Role Name</label>
+          <select
+            class="form-select"
+            aria-label="Role Id"
+            id="roleId"
+            formControlName="roleId"
+          >
+            <option
+              *ngFor="let userRole of userRoles"
+              [ngValue]="userRole.roleId"
+            >
+              {{ userRole.roleName | titlecase }}
+            </option>
+          </select>
+          <span
+            *ngIf="
+              userForm.controls['roleId'].invalid &&
+              (userForm.controls['roleId'].dirty ||
+                userForm.controls['roleId'].touched) &&
+              userForm.get('roleId')?.errors &&
+              userForm.get('roleId')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please select Role Name
+          </span>
+        </div>
+        <!-- <div class="col-4">
+          <label for="certifiedReviewer" class="form-label">Certified Reviewer</label><br>
+          <input class="form-check-input" formControlName="certifiedReviewer" type="checkbox" id="certifiedReviewer">
+        </div> -->
+        <!-- <div class="col-4">
+          <label for="coaPermission" class="form-label">Coa Permission</label><br>
+          <input class="form-check-input" formControlName="coaPermission" type="checkbox" id="coaPermission">
+        </div> -->
+        <div class="col-4">
+          <label for="accountLocked" class="form-label">UnLock</label><br>
+          <input class="form-check-input" formControlName="accountLocked" type="checkbox" id="accountLocked">
+        </div>
+        <div class="col-4">
+          <label for="teamId" class="form-label">Team Name</label>
+
+          <select
+            class="form-select"
+            aria-label="Teams"
+            id ="teamId"
+            formControlName="teamId"
+          >
+            <option *ngFor="let team of teams" [ngValue]="team.teamId">
+              {{ team.teamName | titlecase }}
+            </option>
+          </select>
+          <span
+            *ngIf="
+              userForm.controls['teamId'].invalid &&
+              (userForm.controls['teamId'].dirty ||
+                userForm.controls['teamId'].touched) &&
+              userForm.get('teamId')?.errors &&
+              userForm.get('teamId')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please select Team
+          </span>
+        </div>
+        <!-- <div class="col-4">
+          <label for="dosageId" class="form-label">Dosage Name</label>
+
+          <select
+            class="form-select"
+            aria-label="Dosages"
+            id="dosageId"
+            formControlName="dosageId"
+          >
+            <option *ngFor="let dosage of dosages" [ngValue]="dosage.dosageId">
+              {{ dosage.dosageName | titlecase }}
+            </option>
+          </select>
+        </div> -->
+        <div class="col-4">
+          <label for="contactNo" class="form-label">Contact Number</label>
+          <input
+            type="number"
+            class="form-control"
+            id="contactNo"
+            formControlName="contactNo"
+          />
+          <span
+            *ngIf="
+              userForm.controls['contactNo'].invalid &&
+              (userForm.controls['contactNo'].dirty ||
+                userForm.controls['contactNo'].touched) &&
+              userForm.get('contactNo')?.errors &&
+              userForm.get('contactNo')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please enter Contact Number
+          </span>
+        </div>
+        <div class="col-4">
+          <label for="mailId" class="form-label">Mail Id</label>
+          <input
+            type="email"
+            class="form-control"
+            id="mailId"
+            formControlName="mailId"
+          />
+          <span
+            *ngIf="
+              userForm.controls['mailId'].invalid &&
+              (userForm.controls['mailId'].dirty ||
+                userForm.controls['mailId'].touched) &&
+              userForm.get('mailId')?.errors &&
+              userForm.get('mailId')?.hasError('required')
+            "
+            class="text-danger"
+          >
+            Please enter Mail Id
+          </span>
+          <div *ngIf="showErrorMsg">
+            <span style="color:red">This email is already exist</span>
+          </div>
+        </div>
+        <div class="col-4">
+          <label for="addressLine1" class="form-label">Address Line 1</label>
+          <input
+            type="text"
+            class="form-control"
+            id="addressLine1"
+            formControlName="addressLine1"
+          />
+        </div>
+        <div class="col-4">
+          <label for="addressLine2" class="form-label">Address Line 2</label>
+          <input
+            type="text"
+            class="form-control"
+            id="addressLine2"
+            formControlName="addressLine2"
+          />
+        </div>
+        <div class="col-4">
+          <label for="city" class="form-label">City</label>
+          <input
+            type="text"
+            class="form-control"
+            id="city"
+            formControlName="city"
+          />
+        </div>
+        <div class="col-4">
+          <label for="zipCode" class="form-label">ZipCode</label>
+          <input
+            type="number"
+            class="form-control"
+            id="zipCode"
+            formControlName="zipCode"
+          />
+        </div>
+      </form>
+      <div class="text-center pt-4">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="redirectToUsers()"
+          #closeButton
+        >
+          Close
+        </button>
+        &nbsp;&nbsp;&nbsp;
+        <button type="button" class="btn btn-primary" (click)="saveUser()">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</main>

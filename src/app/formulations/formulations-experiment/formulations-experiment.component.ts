@@ -1,0 +1,185 @@
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  QueryList,
+  TemplateRef,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
+import { Router } from '@angular/router';
+import { ExperimentService } from '@app/shared/services/experiment/experiment.service';
+import { FormulationsService } from '@app/shared/services/formulations/formulations.service';
+import { GlobalService } from '@app/shared/services/global/global.service';
+import { ProjectService } from '@app/shared/services/project/project.service';
+import { DataTableDirective } from 'angular-datatables';
+import { Subject, takeWhile } from 'rxjs';
+import { UserService } from '@app/shared/services/user/user.service';
+import { FormBuilder, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+
+@Component({
+  selector: 'app-formulations-experiment',
+  templateUrl: './formulations-experiment.component.html',
+  styleUrls: ['./formulations-experiment.component.css'],
+})
+export class FormulationsExperimentComponent implements OnInit {
+  @ViewChildren(DataTableDirective)
+  dtElements: QueryList<DataTableDirective>;
+  experiments: any = [];
+  myExperiments: any = [];
+  subscribeFlag = true;
+  selectedUser: object;
+  users: any = [];
+  filteredUsers: any = [];
+  reviewSubmitForm = this.formBuilder.group({
+    userId: ['', [Validators.required]]
+  });
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions = {
+    pagingType: 'full_numbers',
+  };
+  dtMyProjectsTrigger: Subject<any> = new Subject<any>();
+  dtMyProjectsOptions: DataTables.Settings = {
+    pagingType: 'full_numbers',
+  };
+
+  @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
+  @ViewChild('expActionTpl', { static: true }) expActionTpl: TemplateRef<any>;
+  @ViewChild('closeReviewModal') closeReviewModal!: ElementRef;
+
+
+  constructor(
+    private readonly globalService: GlobalService,
+    private readonly projectService: ProjectService,
+    private readonly formulationService: FormulationsService,
+    private readonly experimentService: ExperimentService,
+    private readonly userService: UserService,
+    private route: Router,
+    private readonly formBuilder: FormBuilder,
+    private readonly toastr: ToastrService
+  ) { }
+
+  ngOnInit(): void {
+    this.getExperiments();
+    this.getUsers();
+  }
+
+  ngAfterViewInit(): void {
+    this.dtTrigger.next(null);
+    this.dtMyProjectsTrigger.next(null);
+  }
+
+  getExperiments() {
+    this.globalService.showLoader();
+    this.experimentService
+      .getExperiments()
+      .pipe(takeWhile(() => this.subscribeFlag))
+      .subscribe((experiments) => {
+        this.experiments = experiments;
+        this.dtElements.forEach(
+          (dtElement: DataTableDirective, index: number) => {
+            dtElement.dtInstance.then((dtInstance: any) => {
+              if (dtInstance.table().node().id === 'first-table') {
+                dtInstance.destroy();
+                this.dtTrigger.next(this.experiments);
+              }
+            });
+          }
+        );
+        this.globalService.hideLoader();
+      });
+  }
+
+  getMyExperiments() {
+    this.globalService.showLoader();
+    this.formulationService
+      .getExperimentsByUserId()
+      .pipe(takeWhile(() => this.subscribeFlag))
+      .subscribe((myExperiments) => {
+        this.myExperiments = myExperiments;
+        this.dtElements.forEach(
+          (dtElement: DataTableDirective, index: number) => {
+            dtElement.dtInstance.then((dtInstance: any) => {
+              if (dtInstance.table().node().id === 'second-table') {
+                dtInstance.destroy();
+                this.dtMyProjectsTrigger.next(this.myExperiments);
+              }
+            });
+          }
+        );
+        this.globalService.hideLoader();
+      });
+  }
+
+  createFormulation(id) {
+    this.route.navigateByUrl(`/create-forms?projectId=${id}`);
+  }
+
+  onRowClick(event) {
+    this.route.navigateByUrl(
+      `/create-forms?projectId=${event.projectId}&experimentId=${event.expId}`
+    );
+  }
+  viewExperiment(event) {
+    this.route.navigateByUrl(
+      `/view-formulation-experiment?projectId=${event.projectId}&experimentId=${event.expId}`
+    );
+  }
+
+  addTrf(row) {
+    this.route.navigateByUrl(`/forms-page/add-trf?expId=${row.expId}`);
+  }
+
+  selectUser(user) {
+    this.selectedUser = user;
+    const creatorId = user.insertUserId || user.userId;
+    this.filteredUsers = this.users.filter((u: any) => u.userId !== creatorId);
+    this.reviewSubmitForm.patchValue({ userId: null });
+  }
+
+  submitReview() {
+       if (this.reviewSubmitForm.valid) {
+    const reviewObj = {
+      reviewUserId: this.reviewSubmitForm.get('userId')!.value,
+      experimentId: this.selectedUser['expId'],
+      reviewType: this.selectedUser && this.selectedUser['experimentStatus'].toUpperCase() ===
+        'Complete'.toUpperCase() ? "PreReview" : "Review"
+    };
+    if (this.reviewSubmitForm.get('userId')!.value) {
+      this.globalService.showLoader();
+      this.experimentService
+        .createExperimentReview(reviewObj)
+        .subscribe((data) => {
+          if (reviewObj.reviewType === 'PreReview') {
+            this.toastr.success('PreReview form submit successfully', 'Success');
+             this.closeReviewModal.nativeElement.click();
+          } else {
+            this.toastr.success('Experiment review created successfully', 'Success');
+          }
+          this.globalService.hideLoader();
+          this.getMyExperiments();
+        });
+    } 
+  }else {
+      this.reviewSubmitForm.get('userId')?.markAsDirty();
+    }
+  }
+
+
+  getUsers() {
+    this.globalService.showLoader();
+    this.userService
+      .getCustomRoles('FORMULATION')
+      .pipe(takeWhile(() => this.subscribeFlag))
+      .subscribe((users) => {
+        const usersList = users.map((user: any) => ({
+          ...user,
+          status: 'str',
+        }));
+        this.users = usersList;
+        this.globalService.hideLoader();
+      });
+  }
+
+}

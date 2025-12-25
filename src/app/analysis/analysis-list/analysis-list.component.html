@@ -1,0 +1,59 @@
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Analysis Dashboard</h1>
+  </div>
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="align-header">
+              <h5 class="card-title">Test Request Forms List</h5>
+            </div>
+            <div class="tableNgx">
+              <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>TRF ID</th>
+                    <th>Test Name</th>
+                    <th>Test ID</th>                   
+                    <th>Project Name</th>
+                     <th>Formulation Exp Name</th>
+                     <th>department</th>
+                    <th>Product Name</th>
+                    <th>Batch Number</th>
+                    <th>Created Date</th>
+                    <th>Test Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let trf of trfList">
+                    <td>
+                      <input [disabled]= "trf && trf.testRequestFormStatus.toUpperCase() !== 'New'.toUpperCase()" class="form-check-input" type="checkbox" id="gridCheck1" (click)="onCheckboxClick(trf)" />
+                    </td>
+                    <td>{{trf.trfNumber}}</td>
+                    <td>{{trf.testName}}</td>
+                    <td>{{ trf.testNumber }}</td>                   
+                    <td>{{ trf.project.projectName | titlecase }}</td>
+                    <td>{{ trf.experiment.experimentName }}</td>
+                    <td>{{ department }}</td>
+                    <td>{{ trf.project.productName }}</td>
+                    <td>{{ trf.experiment.batchNumber }}</td>
+                    <td>{{ trf.insertDate }}</td>
+                    <td>{{ trf.testRequestFormStatus }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="text-end">
+              <button type="submit" class="btn btn-primary margin-up" (click)="createExperiment()">
+                Create Experiment
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

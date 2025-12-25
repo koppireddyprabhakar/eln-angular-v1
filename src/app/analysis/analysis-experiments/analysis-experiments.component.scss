@@ -1,0 +1,46 @@
+.align-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.file-container {
+  padding: 0.5rem 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.align-right {
+  text-align: end;
+  color: red;
+}
+
+.file-list {
+  color: #0d6efd;
+  cursor: pointer;
+}
+.align-button {
+  text-align: end;
+  align-self: center;
+}
+
+.loader-height {
+  min-height: 20rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tableNgx ::ng-deep label {
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: 5px;
+  font-weight: 700;
+}
+
+.tableNgx ::ng-deep .text-right {
+  text-align: right;
+}
+.tableNgx ::ng-deep {
+  .form-control {
+    border-radius: 0.25rem !important;
+  }
+}

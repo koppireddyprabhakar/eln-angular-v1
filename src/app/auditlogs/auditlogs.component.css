@@ -1,0 +1,38 @@
+
+
+.card-body {
+  padding: 1.2rem; /* Reduced card-body padding */
+}
+
+
+.table thead th {
+  border-bottom: none; /* No bottom border under header */
+  font-size: 0.9rem;
+}
+
+/* Button Styling */
+.btn {
+  min-width: 70px; /* Smaller buttons */
+  padding: 0.25rem 0.5rem; /* Tighter buttons */
+  font-size: 0.8rem;
+}
+
+/* Filters Section Grid Styling */
+.align-header {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.5rem; /* Reduced gap between From Date, To Date, User, Buttons */
+}
+
+.align-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card-title {
+	padding: 5px 0 5px 0;
+	font-size: 18px;
+	font-weight: 500;
+	color: #012970;
+	font-family: "Poppins", sans-serif;
+  }

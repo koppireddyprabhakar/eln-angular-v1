@@ -1,0 +1,163 @@
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Project Management</h1>
+  </div>
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="align-header">
+              <h5 class="card-title">Projects</h5>
+              <div class="align-button">
+                <a routerLink="/business-admin/project-management/add-project">
+                  <button type="button" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Add Project
+                  </button>
+                </a>
+              </div>
+            </div>
+
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  <th>Project&nbsp;Name</th>
+                  <th>Product Name</th>
+                  <th>Code</th>
+                  <th>Dosage</th>
+                  <th>Team Name</th>
+                  <th>Formulation</th>
+                  <th>Strength</th>
+                  <th>Creation Date</th>
+                  <th>Status</th>
+                  <th>Options</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let project of projects; let i = index">
+                  <td>{{i + 1}}</td>
+                  <td>{{ project.projectName }}</td>
+                  <td>{{ project.productName }}</td>
+                  <td>{{ project.productCode }}</td>
+                  <td>{{ project.dosageName }}</td>
+                  <td>{{ project.teamName }}</td>
+                  <td>{{ project.formulationName }}</td>
+                  <td>{{ project.strength }}</td>
+                  <td>{{ project.insertDate | date }}</td>
+                  <td>{{ project.status }}</td>
+                  <!-- <td class="options-width"> -->
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <i *ngIf="project.status !== 'OnHold' && project.status !== 'Inactive'"
+                        (click)="editProject(project)" class="editIcon ri-edit-2-fill"></i>
+                      <!-- <i
+                          (click)="editProject(project)"
+                          class="editIcon ri-edit-2-fill"
+                        ></i>  -->
+                      <i *ngIf="project.status !== 'OnHold' && project.status !== 'Inactive'" type="button"
+                        data-bs-toggle="modal" data-bs-target="#deleteForm" (click)="confirmInwardDeletetion(project)"
+                        class="deleteIcon ri-delete-bin-5-fill"></i>
+                      <!-- <i
+                          type="button"
+                          data-bs-toggle="modal"
+                          data-bs-target="#deleteForm"
+                          (click)="confirmInwardDeletetion(project)"
+                          class="deleteIcon ri-delete-bin-5-fill"
+                        ></i> -->
+                      <i *ngIf="userDetails.roleId === 4 && project.status !== 'OnHold' && project.status !== 'Inactive'"
+                        type="button" class="btn btn-link p-0" data-bs-toggle="modal"
+                        data-bs-target="#confirmOnHoldModal" (click)="confirmOnHoldProject(project)">
+                        On Hold
+                      </i>
+
+                      <i type="button" (click)="generateProjectPdf(project.projectId)"
+                       class="bi bi-file-earmark-arrow-down-fill fs-4  blue-icon">
+                        
+                        <!-- class="pdf-icon"> -->
+                      </i>
+                      <i *ngIf="(userDetails.roleId === 4 || userDetails.roleId === 1) && project.status === 'OnHold'"
+                        type="button" class="btn btn-link p-0" (click)="OnReactivateProject(project)">
+                        Reactivate
+                      </i>
+
+                    </div>
+                  </td>
+
+                  <!-- <td>
+                    <i
+                      (click)="editProject(project)"
+                      class="editIcon ri-edit-2-fill"
+                    ></i>
+                    &nbsp;&nbsp;
+                    <i
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteForm"
+                      (click)="confirmInwardDeletetion(project)"
+                      class="deleteIcon ri-delete-bin-5-fill"
+                    ></i>
+                   <i *ngIf="userDetails.roleId === 4 && project.status !== 'OnHold'"
+                    type="button"
+                    class="btn btn-link"
+                    data-bs-toggle="modal"
+                    data-bs-target="#confirmOnHoldModal"
+                    (click)="confirmOnHoldProject(project)">
+                    On Hold
+                   </i>
+                  </td> -->
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- (click)="saveInward()" -->
+<div class="modal fade" id="deleteForm" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Project</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this Project?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" #closeDeleteButton>
+          Close
+        </button>
+        <!--  -->
+        <button type="button" class="btn btn-primary" (click)="deleteProject()">
+          <!--  -->
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="confirmOnHoldModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Change to On Hold</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to change the project status to On Hold?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" #confirmOnHoldModal>
+          Cancel
+        </button>
+        <button type="button" class="btn btn-primary" (click)="OnHoldProject()">
+          Yes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

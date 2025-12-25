@@ -1,0 +1,154 @@
+<main id="main" class="main">
+   <div class="pagetitle">
+      <h1>Profile</h1>
+   </div>
+   <section class="section profile">
+      <div class="row">
+         <div class="col-xl-8">
+            <div class="card">
+               <div class="card-body pt-3">
+                  <ul class="nav nav-tabs nav-tabs-bordered">
+                     <li class="nav-item"> <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Overview</button></li>
+                     <li class="nav-item"> <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Change Password</button></li>
+                  </ul>
+                  <div class="tab-content pt-2">
+                     <div class="tab-pane fade show active profile-overview" id="profile-overview">
+                       
+                        <h5 class="card-title">Profile Details</h5>
+                        <div class="row">
+                           <div class="col-lg-3 col-md-4 label ">First Name</div>
+                           <div class="col-lg-9 col-md-8">{{userDetails.firstName}}</div>
+                        </div>
+                        <div class="row">
+                           <div class="col-lg-3 col-md-4 label">Last Name</div>
+                           <div class="col-lg-9 col-md-8">{{userDetails.lastName}}</div>
+                        </div>
+                        <div class="row">
+                           <div class="col-lg-3 col-md-4 label">Department</div>
+                           <div class="col-lg-9 col-md-8">{{userDepartment}}</div>
+                        </div>
+                        <div class="row">
+                           <div class="col-lg-3 col-md-4 label">Role</div>
+                           <div class="col-lg-9 col-md-8">{{userRole}}</div>
+                        </div>
+                        <div class="row">
+                           <div class="col-lg-3 col-md-4 label">Contact No.</div>
+                           <div class="col-lg-9 col-md-8">{{userDetails.contactNo}}</div>
+                        </div>
+                        <div class="row">
+                           <div class="col-lg-3 col-md-4 label">Email</div>
+                           <div class="col-lg-9 col-md-8"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e982c788878d8c9b9a8687a98c91888499858cc78a8684">{{userDetails.mailId}}</a></div>
+                        </div>
+                        <div class="row">
+                           <div class="col-lg-3 col-md-4 label">Gender</div>
+                           <div class="col-lg-9 col-md-8">{{userDetails.gender}}</div>
+                        </div>
+                        <div class="row">
+                           <div class="col-lg-3 col-md-4 label">Address</div>
+                           <div class="col-lg-9 col-md-8">{{userDetails.addressLine1 ? userDetails.addressLine1 + ' , '+userDetails.addressLine2 : ''}}</div>
+                        </div>
+                        <div class="row">
+                           <div class="col-lg-3 col-md-4 label">City</div>
+                           <div class="col-lg-9 col-md-8">{{userDetails.city}}</div>
+                        </div>
+                        <div class="row">
+                           <div class="col-lg-3 col-md-4 label">Zip Code</div>
+                           <div class="col-lg-9 col-md-8">{{userDetails.zipCode}}</div>
+                        </div>
+                     </div>
+                   
+                    
+<div class="tab-pane fade pt-3" id="profile-change-password">
+   <form [formGroup]="changePasswordForm">
+
+ <!-- Current Password -->
+<div class="row mb-3">
+  <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
+  <div class="col-md-8 col-lg-9">
+    <div class="input-group">
+      <input
+        id="currentPassword"
+        [type]="showCurrentPassword ? 'text' : 'password'"
+        class="form-control"
+        formControlName="currentPassword"
+        [ngClass]="{
+          'is-invalid': changePasswordForm.get('currentPassword')?.touched && changePasswordForm.get('currentPassword')?.invalid
+        }"
+      />
+     <button type="button" class="input-group-text" (mousedown)="showCurrentPassword = true"
+                          (mouseup)="showCurrentPassword = false" (mouseleave)="showCurrentPassword = false">
+                          <i class="bi" [ngClass]="showCurrentPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                        </button>
+    </div>
+    <div *ngIf="changePasswordForm.get('currentPassword')?.touched && changePasswordForm.get('currentPassword')?.hasError('required')" class="invalid-feedback d-block">
+      Current password is required.
+    </div>
+  </div>
+</div>
+
+
+<!-- New Password -->
+<div class="row mb-3">
+   <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
+   <div class="col-md-8 col-lg-9">
+    <div class="input-group has-validation">
+     <input
+       id="newPassword"
+       type="password"
+       class="form-control"
+       [type]="showNewPassword ? 'text' : 'password'" 
+       formControlName="newPassword"
+       [ngClass]="{'is-invalid': changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.invalid}"
+     />
+<button type="button" class="input-group-text" (mousedown)="showNewPassword = true"
+                          (mouseup)="showNewPassword = false" (mouseleave)="showNewPassword = false">
+                          <i class="bi" [ngClass]="showNewPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                        </button>
+     <div *ngIf="changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.hasError('required')" class="invalid-feedback">
+       New password is required.
+     </div>
+     <div *ngIf="changePasswordForm.get('newPassword')?.touched && changePasswordForm.get('newPassword')?.hasError('pattern')" class="invalid-feedback">
+       New password must include 8-16 characters & at least one uppercase letter, one lowercase letter, one number, and one special character.
+     </div>
+   </div>
+   </div>
+ </div>
+ <!-- Re-enter New Password -->
+ <div class="row mb-3">
+   <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New Password</label>
+   <div class="col-md-8 col-lg-9">
+    <div class="input-group has-validation">
+     <input
+       id="renewPassword"
+       type="password"
+       class="form-control"
+       [type]="showRenewPassword? 'text' : 'password'"
+       formControlName="renewPassword"
+       [ngClass]="{'is-invalid': changePasswordForm.get('renewPassword')?.touched && changePasswordForm.get('renewPassword')?.invalid}"
+     />
+      <button type="button" class="input-group-text" (mousedown)="showRenewPassword = true"
+                          (mouseup)="showRenewPassword = false" (mouseleave)="showRenewPassword = false">
+                          <i class="bi" [ngClass]="showRenewPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                        </button>
+     <div *ngIf="changePasswordForm.get('renewPassword')?.touched && changePasswordForm.get('renewPassword')?.hasError('required')" class="invalid-feedback">
+       Re-entered password is required.
+     </div>
+     <div *ngIf="changePasswordForm.hasError('notSame') && (changePasswordForm.get('renewPassword')?.touched || changePasswordForm.get('newPassword')?.touched)" class="invalid-feedback d-block">
+  Passwords do not match.
+</div>
+</div>
+   </div>
+ </div>
+      <!-- Change Password Button -->
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary"(click)="onChangePassword()">Change Password</button>
+      </div>
+    </form> 
+ </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
